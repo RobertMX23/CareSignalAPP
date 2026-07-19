@@ -245,6 +245,10 @@ select {
   border-color: var(--color-yellow);
 }
 
+.summary-card--green {
+  border-color: var(--color-green);
+}
+
 .summary-card__value {
   font-size: 1.75rem;
   font-weight: 700;
@@ -346,6 +350,73 @@ select {
   text-decoration: underline;
   font: inherit;
   cursor: pointer;
+}
+
+.badge--unassigned {
+  background: var(--color-red-bg);
+  color: var(--color-red);
+  border: 1px solid var(--color-red);
+}
+
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+}
+
+.filter-field__label {
+  color: var(--color-text-muted);
+  font-weight: 600;
+}
+
+.filter-field select {
+  min-height: 40px;
+  padding: 0.3rem 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+.timeline {
+  list-style: none;
+  margin: 0 0 1.5rem;
+  padding: 0;
+  border-left: 3px solid var(--color-border);
+}
+
+.timeline li {
+  position: relative;
+  padding: 0.15rem 0 0.9rem 1.25rem;
+}
+
+.timeline li::before {
+  content: '';
+  position: absolute;
+  left: -7px;
+  top: 0.35rem;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  border: 2px solid var(--color-surface);
+}
+
+.timeline-time {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  display: block;
 }
 
 .inline-banner {

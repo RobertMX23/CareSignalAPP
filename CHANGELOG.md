@@ -7,6 +7,46 @@ silenciosamente; toda modificación material aprobada crea una nueva versión (p
 
 ## [Unreleased]
 
+### Chunk 6 — Dashboard, alertas y escalamiento (Gate C6)
+
+Solo el flujo del supervisor. No se modificó la taxonomía ni la máquina de estados;
+los 6 resultados de verificación ya existían desde el Chunk 2.
+
+- **Añadido** `src/features/dashboard/dashboardMetrics.ts` — `computeDashboardMetrics`
+  (puro): residentes verde/amarillo/rojo (`deriveResidentStatus`), rondas
+  próximas/vencidas, alertas abiertas/sin asignar/escaladas, verificaciones en
+  progreso y tiempo mediano de respuesta (derivado del primer evento de auditoría
+  posterior a la creación de cada alerta, no de un campo nuevo en `Alert`).
+- **Añadido** `src/features/alerts/alertOperations.ts` — las 8 acciones del
+  supervisor sobre `transitionAlert`/`transitionIncident` (dominio sin modificar):
+  `acknowledgeAlert`, `assignAlert`, `reassignAlert` (registra su propio
+  `AuditEvent` porque no cambia de estado —`assigned`/`escalated`— y aun así "toda
+  reasignación genera auditoría"), `escalateAlert`, `startVerification` (abre o
+  reutiliza el `Incident` asociado), `resolveAlert` (registrar resultado + resolver
+  son una sola transición de dominio; también resuelve el incidente vinculado) y
+  `closeAlert` (también cierra el incidente resuelto).
+- **Añadido** `src/features/alerts/alertQueries.ts` — `getAssignmentHistory` y
+  `getAlertTimeline` (puros), derivados del registro de auditoría append-only.
+- **Añadido** `src/features/alerts/AssignAlertModal.tsx` y `ResolveAlertModal.tsx`.
+- **Reescrito** `src/pages/SupervisorDashboardPage.tsx` — las 10 métricas del
+  contrato en tarjetas, más las tablas de residentes y alertas activas (con
+  responsable).
+- **Reescrito** `src/pages/AlertDetailPage.tsx` — lista con los 6 filtros exigidos
+  (severidad, estado, responsable, residente, turno, asignación) y detalle completo:
+  residente, habitación, ronda de origen, hora programada, retraso (reutiliza
+  `describeDelay` del Chunk 5), severidad, estado, responsable, incidente asociado,
+  historial de asignaciones y línea de tiempo auditable combinada (alerta +
+  incidente). Acciones condicionadas al estado real de la alerta; "sin asignar" se
+  muestra con una insignia de texto, no solo color.
+- **Validado** `npm run typecheck` y `npm run build`: sin errores. Ciclo completo de
+  alerta probado en el navegador: abierta → reconocida → asignada → reasignada →
+  escalada → en verificación (incidente creado) → resuelta (incidente resuelto) →
+  cerrada (incidente cerrado); auditoría e historial de asignaciones verificados
+  campo por campo. Guardas de dominio verificadas también con un arnés aislado:
+  resolver una alerta que no está en verificación, resolver sin resultado y cerrar
+  sin resolver se rechazan con `INVALID_TRANSITION`/`MISSING_VERIFICATION_OUTCOME`
+  sin corromper datos.
+
 ### Chunk 5 — Flujo operacional del cuidador (Gate C5)
 
 Solo el flujo del cuidador. No se tocó el dashboard completo del supervisor (Chunk 6),

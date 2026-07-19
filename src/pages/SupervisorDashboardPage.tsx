@@ -1,46 +1,88 @@
 /**
- * SupervisorDashboardPage.tsx — Vista general de residentes y alertas activas.
+ * SupervisorDashboardPage.tsx — Dashboard del supervisor (contrato Chunk 6).
  *
- * Solo lectura en Chunk 4: muestra datos reales del repositorio y el estado derivado
- * (`deriveResidentStatus`, puro, nunca persistido). El ciclo de vida completo de
- * alertas (asignar, escalar, verificar, resolver, cerrar) llega en el Chunk 6.
+ * Solo lectura: agrega datos reales del repositorio vía `computeDashboardMetrics`
+ * (puro). El color de cada residente se recalcula en cada render con
+ * `deriveResidentStatus`, nunca se persiste.
  */
 
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useDemoSession } from '../components/DemoSessionContext';
 import { StatusBadge } from '../components/StatusBadge';
-import { listAlerts, listResidents, listRounds } from '../data/repository';
+import { computeDashboardMetrics } from '../features/dashboard/dashboardMetrics';
+import { getStaffMemberById, listAlerts, listAuditEvents, listIncidents, listResidents, listRounds } from '../data/repository';
 import { deriveResidentStatus, isAlertActive } from '../domain/rules';
 
 export const SupervisorDashboardPage = (): JSX.Element => {
   const { refreshToken } = useDemoSession();
 
-  const { residents, rounds, alerts } = useMemo(
-    () => ({ residents: listResidents(), rounds: listRounds(), alerts: listAlerts() }),
-    [refreshToken],
-  );
+  const { residents, rounds, alerts, metrics } = useMemo(() => {
+    const residents = listResidents();
+    const rounds = listRounds();
+    const alerts = listAlerts();
+    const incidents = listIncidents();
+    const auditEvents = listAuditEvents();
+    return { residents, rounds, alerts, metrics: computeDashboardMetrics(residents, rounds, alerts, incidents, auditEvents) };
+  }, [refreshToken]);
 
   const activeAlerts = alerts.filter((a) => isAlertActive(a.status));
-  const activeRed = activeAlerts.filter((a) => a.severity === 'red').length;
-  const activeYellow = activeAlerts.filter((a) => a.severity === 'yellow').length;
 
   return (
     <section>
       <h1>Dashboard del supervisor</h1>
 
+      <h2>Residentes por estado</h2>
       <div className="summary-cards">
-        <div className="summary-card summary-card--red">
-          <span className="summary-card__value">{activeRed}</span>
-          <span className="summary-card__label">Alertas rojas activas</span>
+        <div className="summary-card summary-card--green">
+          <span className="summary-card__value">{metrics.residentsGreen}</span>
+          <span className="summary-card__label">Residentes en verde</span>
         </div>
         <div className="summary-card summary-card--yellow">
-          <span className="summary-card__value">{activeYellow}</span>
-          <span className="summary-card__label">Alertas amarillas activas</span>
+          <span className="summary-card__value">{metrics.residentsYellow}</span>
+          <span className="summary-card__label">Residentes en amarillo</span>
+        </div>
+        <div className="summary-card summary-card--red">
+          <span className="summary-card__value">{metrics.residentsRed}</span>
+          <span className="summary-card__label">Residentes en rojo</span>
+        </div>
+      </div>
+
+      <h2>Rondas</h2>
+      <div className="summary-cards">
+        <div className="summary-card">
+          <span className="summary-card__value">{metrics.roundsUpcoming}</span>
+          <span className="summary-card__label">Rondas próximas</span>
+        </div>
+        <div className="summary-card summary-card--red">
+          <span className="summary-card__value">{metrics.roundsOverdue}</span>
+          <span className="summary-card__label">Rondas vencidas</span>
+        </div>
+      </div>
+
+      <h2>Alertas y verificaciones</h2>
+      <div className="summary-cards">
+        <div className="summary-card">
+          <span className="summary-card__value">{metrics.alertsOpen}</span>
+          <span className="summary-card__label">Alertas abiertas</span>
+        </div>
+        <div className="summary-card summary-card--red">
+          <span className="summary-card__value">{metrics.alertsUnassigned}</span>
+          <span className="summary-card__label">Alertas sin asignar</span>
         </div>
         <div className="summary-card">
-          <span className="summary-card__value">{residents.length}</span>
-          <span className="summary-card__label">Residentes</span>
+          <span className="summary-card__value">{metrics.verificationsInProgress}</span>
+          <span className="summary-card__label">Verificaciones en progreso</span>
+        </div>
+        <div className="summary-card">
+          <span className="summary-card__value">{metrics.alertsEscalated}</span>
+          <span className="summary-card__label">Alertas escaladas</span>
+        </div>
+        <div className="summary-card">
+          <span className="summary-card__value">
+            {metrics.medianResponseMinutes === undefined ? '—' : `${Math.round(metrics.medianResponseMinutes)} min`}
+          </span>
+          <span className="summary-card__label">Tiempo mediano de respuesta</span>
         </div>
       </div>
 
@@ -82,6 +124,7 @@ export const SupervisorDashboardPage = (): JSX.Element => {
                 <th>Residente</th>
                 <th>Severidad</th>
                 <th>Estado</th>
+                <th>Responsable</th>
               </tr>
             </thead>
             <tbody>
@@ -95,6 +138,13 @@ export const SupervisorDashboardPage = (): JSX.Element => {
                     <td>{resident?.displayName ?? alert.residentId}</td>
                     <td>{alert.severity === 'red' ? 'Roja' : 'Amarilla'}</td>
                     <td>{alert.status}</td>
+                    <td>
+                      {alert.assignedStaffId === undefined ? (
+                        <span className="badge badge--unassigned">Sin asignar</span>
+                      ) : (
+                        getStaffMemberById(alert.assignedStaffId)?.displayName ?? alert.assignedStaffId
+                      )}
+                    </td>
                   </tr>
                 );
               })}
