@@ -7,6 +7,30 @@ silenciosamente; toda modificación material aprobada crea una nueva versión (p
 
 ## [Unreleased]
 
+### Chunk 3 — Datos ficticios y persistencia local (Gate C3)
+
+Solo capa de datos. No se creó interfaz (React).
+
+- **Añadido** `src/data/seed.ts` — semilla determinista: 10 residentes, 4 miembros de
+  personal (3 cuidadores + 1 supervisor, 3 turnos), 20 rondas (cubren los 6 estados de
+  ronda), 5 alertas y 2 incidentes coherentes; genera el trazado de auditoría llamando
+  a `transitionRound`/`transitionAlert`/`transitionIncident` del dominio (sin
+  modificarlo) en vez de escribir estados finales a mano. Cubre los 10 escenarios
+  obligatorios del contrato. Incluye `validateReferentialIntegrity()`.
+- **Añadido** `src/data/repository.ts` — única capa de persistencia (`localStorage`):
+  listar/consultar por ID/guardar para residentes, personal, rondas, alertas e
+  incidentes; auditoría append-only; documento versionado (`schemaVersion`) con
+  limpieza y reemplazo por semilla fresca ante datos corruptos o incompatibles.
+- **Añadido** `src/data/demoClock.ts` — reloj simulado determinista: avanzar 1/5/15
+  minutos y restablecer, sin esperas reales; el offset se persiste vía el repositorio.
+- **Añadido** `src/data/resetDemo.ts` — punto de entrada único para restablecer datos y
+  reloj a la semilla original (usado por el futuro botón "restablecer demo", Chunk 4).
+- **Validado** `tsc --strict --noEmit` (entorno aislado, sin `package.json`/
+  `node_modules` en el repo): 0 errores, sin `any`. Prueba de humo funcional: conteos de
+  semilla correctos, 0 problemas de integridad referencial, CRUD del repositorio,
+  avance/restablecimiento del reloj y `resetDemo()` verificados con un `localStorage`
+  simulado.
+
 ### Chunk 2 — Máquina de estados y modelo de datos (Gate C2)
 
 Solo capa de dominio pura. No se creó interfaz ni datos de semilla.
