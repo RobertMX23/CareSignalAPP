@@ -113,28 +113,30 @@ export const DemoControlPage = (): JSX.Element => {
       </button>
 
       <h2>Últimos eventos de auditoría</h2>
-      <table className="data-table">
-        <thead>
-          <tr>
-            <th>Cuándo</th>
-            <th>Entidad</th>
-            <th>Acción</th>
-            <th>Actor</th>
-          </tr>
-        </thead>
-        <tbody>
-          {recentAudit.map((event) => (
-            <tr key={event.id}>
-              <td>{new Date(event.timestamp).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' })}</td>
-              <td>
-                {event.entityType} · {event.entityId}
-              </td>
-              <td>{event.action}</td>
-              <td>{event.actorId}</td>
+      <div className="table-scroll">
+        <table className="data-table">
+          <thead>
+            <tr>
+              <th>Cuándo</th>
+              <th>Entidad</th>
+              <th>Acción</th>
+              <th>Actor</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {recentAudit.map((event) => (
+              <tr key={event.id}>
+                <td>{new Date(event.timestamp).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' })}</td>
+                <td>
+                  {event.entityType} · {event.entityId}
+                </td>
+                <td>{event.action}</td>
+                <td>{event.actorId}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </section>
   );
 };

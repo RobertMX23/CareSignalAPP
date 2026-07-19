@@ -23,30 +23,32 @@ const ResidentList = (): JSX.Element => {
   return (
     <section>
       <h1>Residentes</h1>
-      <table className="data-table">
-        <thead>
-          <tr>
-            <th>Residente</th>
-            <th>Habitación</th>
-            <th>Frecuencia de monitoreo</th>
-            <th>Estado</th>
-          </tr>
-        </thead>
-        <tbody>
-          {residents.map((resident) => (
-            <tr key={resident.id}>
-              <td>
-                <Link to={`/residentes/${resident.id}`}>{resident.displayName}</Link>
-              </td>
-              <td>{resident.room}</td>
-              <td>{resident.monitoringFrequency}</td>
-              <td>
-                <StatusBadge status={deriveResidentStatus(resident.id, rounds, alerts)} />
-              </td>
+      <div className="table-scroll">
+        <table className="data-table">
+          <thead>
+            <tr>
+              <th>Residente</th>
+              <th>Habitación</th>
+              <th>Frecuencia de monitoreo</th>
+              <th>Estado</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {residents.map((resident) => (
+              <tr key={resident.id}>
+                <td>
+                  <Link to={`/residentes/${resident.id}`}>{resident.displayName}</Link>
+                </td>
+                <td>{resident.room}</td>
+                <td>{resident.monitoringFrequency}</td>
+                <td>
+                  <StatusBadge status={deriveResidentStatus(resident.id, rounds, alerts)} />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </section>
   );
 };
@@ -86,51 +88,55 @@ const ResidentDetail = ({ residentId }: { residentId: string }): JSX.Element => 
       </p>
 
       <h2>Rondas</h2>
-      <table className="data-table">
-        <thead>
-          <tr>
-            <th>Programada</th>
-            <th>Tipo</th>
-            <th>Estado</th>
-            <th>Cuidador asignado</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.rounds.map((round) => (
-            <tr key={round.id}>
-              <td>{new Date(round.scheduledAt).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' })}</td>
-              <td>{round.type}</td>
-              <td>{round.status}</td>
-              <td>{staffName(round.assignedStaffId)}</td>
+      <div className="table-scroll">
+        <table className="data-table">
+          <thead>
+            <tr>
+              <th>Programada</th>
+              <th>Tipo</th>
+              <th>Estado</th>
+              <th>Cuidador asignado</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {data.rounds.map((round) => (
+              <tr key={round.id}>
+                <td>{new Date(round.scheduledAt).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' })}</td>
+                <td>{round.type}</td>
+                <td>{round.status}</td>
+                <td>{staffName(round.assignedStaffId)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       <h2>Alertas</h2>
       {data.alerts.length === 0 ? (
         <p>Este residente no tiene alertas registradas.</p>
       ) : (
-        <table className="data-table">
-          <thead>
-            <tr>
-              <th>Alerta</th>
-              <th>Severidad</th>
-              <th>Estado</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.alerts.map((alert) => (
-              <tr key={alert.id}>
-                <td>
-                  <Link to={`/alertas/${alert.id}`}>{alert.id}</Link>
-                </td>
-                <td>{alert.severity === 'red' ? 'Roja' : 'Amarilla'}</td>
-                <td>{alert.status}</td>
+        <div className="table-scroll">
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>Alerta</th>
+                <th>Severidad</th>
+                <th>Estado</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {data.alerts.map((alert) => (
+                <tr key={alert.id}>
+                  <td>
+                    <Link to={`/alertas/${alert.id}`}>{alert.id}</Link>
+                  </td>
+                  <td>{alert.severity === 'red' ? 'Roja' : 'Amarilla'}</td>
+                  <td>{alert.status}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </section>
   );

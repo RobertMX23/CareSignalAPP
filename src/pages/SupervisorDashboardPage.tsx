@@ -45,58 +45,62 @@ export const SupervisorDashboardPage = (): JSX.Element => {
       </div>
 
       <h2>Residentes</h2>
-      <table className="data-table">
-        <thead>
-          <tr>
-            <th>Residente</th>
-            <th>Habitación</th>
-            <th>Estado</th>
-          </tr>
-        </thead>
-        <tbody>
-          {residents.map((resident) => (
-            <tr key={resident.id}>
-              <td>
-                <Link to={`/residentes/${resident.id}`}>{resident.displayName}</Link>
-              </td>
-              <td>{resident.room}</td>
-              <td>
-                <StatusBadge status={deriveResidentStatus(resident.id, rounds, alerts)} />
-              </td>
+      <div className="table-scroll">
+        <table className="data-table">
+          <thead>
+            <tr>
+              <th>Residente</th>
+              <th>Habitación</th>
+              <th>Estado</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {residents.map((resident) => (
+              <tr key={resident.id}>
+                <td>
+                  <Link to={`/residentes/${resident.id}`}>{resident.displayName}</Link>
+                </td>
+                <td>{resident.room}</td>
+                <td>
+                  <StatusBadge status={deriveResidentStatus(resident.id, rounds, alerts)} />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       <h2>Alertas activas</h2>
       {activeAlerts.length === 0 ? (
         <p>No hay alertas activas en este momento.</p>
       ) : (
-        <table className="data-table">
-          <thead>
-            <tr>
-              <th>Alerta</th>
-              <th>Residente</th>
-              <th>Severidad</th>
-              <th>Estado</th>
-            </tr>
-          </thead>
-          <tbody>
-            {activeAlerts.map((alert) => {
-              const resident = residents.find((r) => r.id === alert.residentId);
-              return (
-                <tr key={alert.id}>
-                  <td>
-                    <Link to={`/alertas/${alert.id}`}>{alert.id}</Link>
-                  </td>
-                  <td>{resident?.displayName ?? alert.residentId}</td>
-                  <td>{alert.severity === 'red' ? 'Roja' : 'Amarilla'}</td>
-                  <td>{alert.status}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+        <div className="table-scroll">
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>Alerta</th>
+                <th>Residente</th>
+                <th>Severidad</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              {activeAlerts.map((alert) => {
+                const resident = residents.find((r) => r.id === alert.residentId);
+                return (
+                  <tr key={alert.id}>
+                    <td>
+                      <Link to={`/alertas/${alert.id}`}>{alert.id}</Link>
+                    </td>
+                    <td>{resident?.displayName ?? alert.residentId}</td>
+                    <td>{alert.severity === 'red' ? 'Roja' : 'Amarilla'}</td>
+                    <td>{alert.status}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       )}
     </section>
   );

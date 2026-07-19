@@ -20,28 +20,30 @@ const AlertList = (): JSX.Element => {
   return (
     <section>
       <h1>Alertas</h1>
-      <table className="data-table">
-        <thead>
-          <tr>
-            <th>Alerta</th>
-            <th>Residente</th>
-            <th>Severidad</th>
-            <th>Estado</th>
-          </tr>
-        </thead>
-        <tbody>
-          {alerts.map((alert) => (
-            <tr key={alert.id}>
-              <td>
-                <Link to={`/alertas/${alert.id}`}>{alert.id}</Link>
-              </td>
-              <td>{getResidentById(alert.residentId)?.displayName ?? alert.residentId}</td>
-              <td>{SEVERITY_LABEL[alert.severity] ?? alert.severity}</td>
-              <td>{alert.status}</td>
+      <div className="table-scroll">
+        <table className="data-table">
+          <thead>
+            <tr>
+              <th>Alerta</th>
+              <th>Residente</th>
+              <th>Severidad</th>
+              <th>Estado</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {alerts.map((alert) => (
+              <tr key={alert.id}>
+                <td>
+                  <Link to={`/alertas/${alert.id}`}>{alert.id}</Link>
+                </td>
+                <td>{getResidentById(alert.residentId)?.displayName ?? alert.residentId}</td>
+                <td>{SEVERITY_LABEL[alert.severity] ?? alert.severity}</td>
+                <td>{alert.status}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </section>
   );
 };

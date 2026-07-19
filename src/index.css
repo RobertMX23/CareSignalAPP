@@ -255,11 +255,16 @@ select {
   font-size: 0.9rem;
 }
 
+.table-scroll {
+  overflow-x: auto;
+  margin-bottom: 1.5rem;
+}
+
 .data-table {
   width: 100%;
   border-collapse: collapse;
   background: var(--color-surface);
-  margin-bottom: 1.5rem;
+  margin-bottom: 0;
 }
 
 .data-table th,
@@ -319,6 +324,110 @@ select {
 .status-badge--red {
   background: var(--color-red-bg);
   color: var(--color-red);
+}
+
+.button--small {
+  min-height: 38px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.9rem;
+}
+
+.row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.link-button {
+  background: none;
+  border: none;
+  padding: 0;
+  color: inherit;
+  text-decoration: underline;
+  font: inherit;
+  cursor: pointer;
+}
+
+.inline-banner {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.inline-banner--success {
+  background: var(--color-green-bg);
+  color: var(--color-green);
+  border: 1px solid var(--color-green);
+}
+
+.inline-banner--error {
+  background: var(--color-red-bg);
+  color: var(--color-red);
+  border: 1px solid var(--color-red);
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 39, 51, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 20;
+}
+
+.modal {
+  background: var(--color-surface);
+  border-radius: 10px;
+  padding: 1.5rem;
+  max-width: 480px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.modal-fieldset {
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.modal-fieldset legend {
+  font-weight: 600;
+  padding: 0 0.25rem;
+}
+
+.modal-radio {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 32px;
+}
+
+.modal-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.modal-field input {
+  min-height: 44px;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
 }
 
 @media (max-width: 720px) {

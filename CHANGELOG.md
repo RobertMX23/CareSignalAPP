@@ -7,6 +7,49 @@ silenciosamente; toda modificación material aprobada crea una nueva versión (p
 
 ## [Unreleased]
 
+### Chunk 5 — Flujo operacional del cuidador (Gate C5)
+
+Solo el flujo del cuidador. No se tocó el dashboard completo del supervisor (Chunk 6),
+no se añadieron campos clínicos ni se modificó la taxonomía ni la máquina de estados.
+
+- **Añadido** `src/features/rounds/roundPriority.ts` — clasificación pura de "Mis
+  rondas" en 5 grupos (roja, amarilla, en progreso, próxima, completada/cancelada) y
+  cálculo de texto de retraso frente al reloj simulado.
+- **Añadido** `src/features/rounds/roundOperations.ts` — orquesta las 4 acciones del
+  cuidador llamando a `transitionRound`/`transitionAlert` (dominio sin modificar) y
+  escribiendo solo a través de `repository.ts`:
+  - `startRound` (`due → in_progress`);
+  - `completeRound` (`in_progress → completed`; el "resultado operacional" —
+    `completed_without_issue` / `assistance_requested` /
+    `supervisor_verification_required` — se guarda como `metadata` del `AuditEvent`,
+    no como campo nuevo en `Round`, según la decisión ya registrada en
+    `docs/03-data-model.md`);
+  - `requestSupport` (crea una alerta `open`; reutiliza `hasActiveAlertForRound` para
+    impedir duplicados, regla 4);
+  - `acceptAlert` (autoasignación `open → assigned`; es la única transición
+    congelada compatible con "aceptar una alerta", ya que `assigned` no tiene una
+    transición de "confirmar recepción" propia).
+- **Añadido** `src/features/rounds/CompleteRoundModal.tsx` y `RequestSupportModal.tsx`
+  — diálogos propios (no `window.prompt`) para pedir el resultado operacional/nota y
+  la severidad, respectivamente.
+- **Reescrito** `src/pages/CaregiverRoundsPage.tsx` — "Mis rondas" ahora incluye las
+  rondas asignadas al usuario activo, las que tienen una alerta activa ya asignada a
+  él y las que tienen una alerta activa abierta (sin asignar, disponible para
+  cualquier cuidador); columnas de prioridad y retraso; botones de acción
+  condicionados al estado real de la ronda/alerta.
+- **Añadido** contenedor `.table-scroll` (desplazamiento horizontal) a todas las
+  tablas existentes para que la nueva tabla de 8 columnas —y el resto— sigan siendo
+  usables en pantallas angostas sin desbordar la página.
+- **Validado** `npm run typecheck` y `npm run build`: sin errores. Las 7 pruebas
+  manuales del contrato se ejecutaron en el navegador (algunas verificadas también a
+  nivel de dominio con un arnés aislado): iniciar ronda, completar ronda (con nota +
+  resultado operacional en el `AuditEvent`), solicitar apoyo (alerta creada,
+  duplicado bloqueado), completar dos veces (`INVALID_TRANSITION`, sin corromper
+  datos), transición inválida (`completed → in_progress` rechazada), cambiar de
+  cuidador (la lista se refiltra), refrescar la página (los datos persisten en
+  `localStorage`). Una ronda `due` normal se completa en 2 acciones tras "Iniciar
+  ronda" (abrir el modal + confirmar), dentro del límite de 3 del contrato.
+
 ### Chunk 4 — Shell de la aplicación y navegación (Gate C4)
 
 Solo cascarón visual; sin lógica operacional completa (acciones de ronda/alerta llegan
