@@ -1,0 +1,348 @@
+/**
+ * index.css — Estilos globales del shell (contrato Chunk 4: diseño profesional,
+ * sencillo, alta legibilidad, botones grandes, contraste adecuado, responsive,
+ * sin depender solo del color, sin gráficas decorativas ni animaciones.
+ */
+
+:root {
+  --color-bg: #f4f6f8;
+  --color-surface: #ffffff;
+  --color-text: #1a2733;
+  --color-text-muted: #52616f;
+  --color-border: #cbd5e0;
+  --color-primary: #0b5e8c;
+  --color-primary-dark: #084a70;
+  --color-red: #b3261e;
+  --color-red-bg: #fbe9e7;
+  --color-yellow: #8a6100;
+  --color-yellow-bg: #fff4d6;
+  --color-green: #1e6b3c;
+  --color-green-bg: #e3f3e8;
+
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+h1,
+h2 {
+  color: var(--color-text);
+}
+
+a {
+  color: var(--color-primary-dark);
+}
+
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.banner {
+  margin: 0;
+  padding: 0.5rem 1rem;
+  text-align: center;
+  font-weight: 600;
+}
+
+.banner--notice {
+  background: var(--color-primary);
+  color: #ffffff;
+}
+
+.app-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.app-header__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.app-header__title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.badge--fictional {
+  background: #e0e7ff;
+  color: #3730a3;
+  border: 1px solid #a5b4fc;
+}
+
+.app-header__session {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+}
+
+.session-field {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.85rem;
+  gap: 0.15rem;
+}
+
+.session-field__label {
+  color: var(--color-text-muted);
+  font-weight: 600;
+}
+
+.role-indicator,
+.clock-indicator {
+  font-weight: 600;
+}
+
+.clock-indicator--large {
+  font-size: 1.5rem;
+}
+
+select {
+  min-height: 44px;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.nav-toggle {
+  display: none;
+}
+
+.app-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  padding: 0.5rem 1rem;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.app-nav__link {
+  padding: 0.6rem 1rem;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  border-radius: 6px;
+  color: var(--color-text);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.app-nav__link:hover {
+  background: var(--color-bg);
+}
+
+.app-nav__link--active {
+  background: var(--color-primary);
+  color: #ffffff;
+}
+
+.app-main {
+  flex: 1;
+  padding: 1.5rem;
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.button {
+  min-height: 44px;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: 1px solid var(--color-primary-dark);
+  background: var(--color-primary);
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.button:hover {
+  background: var(--color-primary-dark);
+}
+
+.button--secondary {
+  background: var(--color-surface);
+  color: var(--color-primary-dark);
+}
+
+.button--secondary:hover {
+  background: var(--color-bg);
+}
+
+.button--danger {
+  background: var(--color-red-bg);
+  color: var(--color-red);
+  border-color: var(--color-red);
+}
+
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.hint {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.summary-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.summary-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  min-width: 150px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.summary-card--red {
+  border-color: var(--color-red);
+}
+
+.summary-card--yellow {
+  border-color: var(--color-yellow);
+}
+
+.summary-card__value {
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.summary-card__label {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--color-surface);
+  margin-bottom: 1.5rem;
+}
+
+.data-table th,
+.data-table td {
+  text-align: left;
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.data-table th {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.detail-list {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.4rem 1rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.detail-list dt {
+  color: var(--color-text-muted);
+  font-weight: 600;
+}
+
+.detail-list dd {
+  margin: 0;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.status-badge--green {
+  background: var(--color-green-bg);
+  color: var(--color-green);
+}
+
+.status-badge--yellow {
+  background: var(--color-yellow-bg);
+  color: var(--color-yellow);
+}
+
+.status-badge--red {
+  background: var(--color-red-bg);
+  color: var(--color-red);
+}
+
+@media (max-width: 720px) {
+  .nav-toggle {
+    display: inline-flex;
+    min-height: 44px;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    font-weight: 600;
+  }
+
+  .app-nav {
+    display: none;
+    flex-direction: column;
+  }
+
+  .app-nav--open {
+    display: flex;
+  }
+
+  .app-header__session {
+    width: 100%;
+    justify-content: space-between;
+  }
+}

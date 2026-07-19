@@ -7,6 +7,40 @@ silenciosamente; toda modificación material aprobada crea una nueva versión (p
 
 ## [Unreleased]
 
+### Chunk 4 — Shell de la aplicación y navegación (Gate C4)
+
+Solo cascarón visual; sin lógica operacional completa (acciones de ronda/alerta llegan
+en Chunks 5–6; automatización temporal completa llega en Chunk 7).
+
+- **Añadido** tooling de React + TypeScript + Vite: `package.json`, `tsconfig.json`,
+  `vite.config.ts`, `index.html`. `react-router-dom` como única dependencia nueva de
+  navegación (además de `react`/`react-dom`).
+- **Añadido** `src/main.tsx`, `src/App.tsx` — punto de entrada y `HashRouter` con las 5
+  rutas del contrato.
+- **Añadido** `src/components/AppLayout.tsx` — cascarón con encabezado ("CareSignal"),
+  selector de usuario ficticio, indicador de rol, hora simulada, navegación responsive
+  (con menú colapsable en móvil), botón "Restablecer demo", indicador "Datos ficticios"
+  y el aviso "MVP operacional, no dispositivo médico".
+- **Añadido** `src/components/DemoSessionContext.tsx` — estado de sesión ficticia
+  (usuario activo) y un `refreshToken` compartido para releer el repositorio tras
+  restablecer la demo o avanzar el reloj. No es autenticación real.
+- **Añadido** `src/components/StatusBadge.tsx` — estado derivado del residente con
+  texto + ícono (nunca solo color).
+- **Añadido** las 5 páginas: `SupervisorDashboardPage`, `CaregiverRoundsPage`,
+  `ResidentDetailPage` (lista + detalle vía `:residentId`), `AlertDetailPage` (lista +
+  detalle vía `:alertId`, incluye incidente asociado si existe), `DemoControlPage`
+  (control del reloj simulado y snapshot de datos/auditoría). Todas leen datos reales
+  del repositorio; ninguna toca `localStorage` directamente.
+- **Añadido** `src/index.css` — estilos globales: botones grandes, alto contraste,
+  responsive, sin gráficas decorativas ni animaciones.
+- **Eliminado** `.gitkeep` de `src/domain/`, `src/data/`, `src/components/`,
+  `src/pages/` (ya contienen archivos reales).
+- **Validado** `npm run typecheck` (`tsc --strict --noEmit`): 0 errores. `npm run
+  build`: compila y genera `dist/`. Verificación manual en navegador (servidor de
+  desarrollo): las 5 páginas cargan con datos del repositorio, navegación funcional
+  en escritorio y móvil (menú colapsable), reloj simulado sincronizado entre el
+  encabezado y el Control de demo, sin errores de consola.
+
 ### Chunk 3 — Datos ficticios y persistencia local (Gate C3)
 
 Solo capa de datos. No se creó interfaz (React).
