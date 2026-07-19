@@ -1,13 +1,15 @@
 /**
- * DemoControlPage.tsx — Control del reloj simulado y restablecimiento de la demo.
+ * DemoControlPage.tsx — Control del reloj simulado, escenarios y restablecimiento
+ * (contrato Chunk 7).
  *
- * El reloj solo avanza cuando se pulsa un botón (sin esperas reales, contrato Chunk 3).
- * Chunk 4 no implementa todavía la automatización temporal completa (ronda → vencida →
- * alerta automática); eso corresponde al motor temporal del Chunk 7. Aquí solo se
- * exhibe el instante simulado y se permite adelantarlo o restablecerlo.
+ * El reloj solo avanza cuando se pulsa un botón (sin esperas reales). Desde el
+ * Chunk 7, cada avance ejecuta el motor temporal (`temporalEngine.ts`): las rondas
+ * pasan de `scheduled`→`due`→`overdue` y se generan/escalan alertas automáticamente.
+ * Los tres escenarios (`features/demo/scenarios.ts`) son atajos deterministas sobre
+ * ese mismo motor, para poder mostrar el ciclo completo de una alerta en segundos.
  */
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useDemoSession } from '../components/DemoSessionContext';
 import {
   advanceFifteenMinutes,
@@ -17,10 +19,12 @@ import {
   resetClock,
 } from '../data/demoClock';
 import { resetDemo } from '../data/resetDemo';
+import { runEscalatedAlertScenario, runFullResolutionScenario, runMissedRoundScenario, type ScenarioResult } from '../features/demo/scenarios';
 import { listAlerts, listAuditEvents, listIncidents, listResidents, listRounds, listStaffMembers } from '../data/repository';
 
 export const DemoControlPage = (): JSX.Element => {
   const { refreshToken, refreshDemoData } = useDemoSession();
+  const [message, setMessage] = useState<{ kind: 'success' | 'error'; text: string } | undefined>(undefined);
 
   const counts = useMemo(
     () => ({
@@ -52,6 +56,13 @@ export const DemoControlPage = (): JSX.Element => {
     );
     if (!confirmed) return;
     resetDemo();
+    setMessage(undefined);
+    refreshDemoData();
+  };
+
+  const runScenario = (scenario: () => ScenarioResult): void => {
+    const result = scenario();
+    setMessage(result.ok ? { kind: 'success', text: result.summary } : { kind: 'error', text: result.message });
     refreshDemoData();
   };
 
@@ -76,9 +87,37 @@ export const DemoControlPage = (): JSX.Element => {
         </button>
       </div>
       <p className="hint">
-        El reloj solo avanza al pulsar un botón; no representa tiempo real. La detección
-        automática de rondas vencidas se implementará en un chunk posterior.
+        El reloj solo avanza al pulsar un botón; no representa tiempo real. Cada avance
+        sincroniza automáticamente rondas y alertas con la nueva hora (motor temporal).
       </p>
+
+      <h2>Escenarios de demostración</h2>
+      <p className="hint">
+        Los tres escenarios operan siempre sobre la misma ronda de demostración
+        (Marta Ibáñez, <code>round-01</code>). Cada uno revisa el estado actual antes
+        de actuar: ejecutarlos más de una vez o fuera de orden no duplica alertas ni
+        repite transiciones.
+      </p>
+      <div className="button-row">
+        <button type="button" className="button" onClick={() => runScenario(runMissedRoundScenario)}>
+          Escenario: ronda omitida
+        </button>
+        <button type="button" className="button" onClick={() => runScenario(runEscalatedAlertScenario)}>
+          Escenario: alerta escalada
+        </button>
+        <button type="button" className="button" onClick={() => runScenario(runFullResolutionScenario)}>
+          Escenario: resolución completa
+        </button>
+      </div>
+
+      {message !== undefined && (
+        <p className={message.kind === 'success' ? 'inline-banner inline-banner--success' : 'inline-banner inline-banner--error'}>
+          {message.text}{' '}
+          <button type="button" className="link-button" onClick={() => setMessage(undefined)}>
+            Cerrar
+          </button>
+        </p>
+      )}
 
       <h2>Datos de la demo</h2>
       <div className="summary-cards">

@@ -7,6 +7,48 @@ silenciosamente; toda modificación material aprobada crea una nueva versión (p
 
 ## [Unreleased]
 
+### Chunk 7 — Motor temporal y escenarios de demostración (Gate C7)
+
+Integra el reloj de demostración con rondas y alertas. No se modificó la taxonomía
+ni la máquina de estados: el motor solo dispara transiciones ya existentes
+(`transitionRound`) y crea/actualiza alertas con las mismas guardas usadas en
+capítulos anteriores (`hasActiveAlertForRound`, `isAlertActive`).
+
+- **Añadido** `src/data/temporalEngine.ts` — `runTemporalEngine(currentTime)`:
+  recorre las rondas no terminales y aplica `scheduled→due→overdue` según
+  `scheduledAt`/`dueAt`; para toda ronda `overdue` sin alerta activa crea una alerta
+  (amarilla si el retraso es inicial, roja si ya supera `CRITICAL_DELAY_MINUTES = 15`
+  minutos) y, si ya existe una amarilla, la sube a roja cuando el retraso cruza ese
+  umbral. Nunca toca rondas `completed`/`cancelled` ni cierra/resuelve alertas por su
+  cuenta (regla: requiere verificación humana). Idempotente por diseño.
+- **Modificado** `src/data/demoClock.ts` — cada avance del reloj (`advanceByMinutes`,
+  usado por los botones de 1/5/15 min) y `resetClock()` ahora llaman a
+  `runTemporalEngine` con la nueva hora, para que el reloj y los datos nunca queden
+  desincronizados.
+- **Añadido** `src/features/demo/scenarios.ts` — los tres escenarios deterministas
+  del contrato, todos sobre la misma ronda fija (`round-01`, Marta Ibáñez) para ser
+  reproducibles: `runMissedRoundScenario` (avanza el reloj justo después del
+  vencimiento), `runEscalatedAlertScenario` (avanza hasta superar el umbral crítico,
+  asigna y escala), `runFullResolutionScenario` (verifica, registra resultado,
+  resuelve y cierra, y reporta el tiempo total). Cada uno revisa el estado actual
+  antes de actuar, así que ejecutarlos más de una vez o fuera de orden no duplica
+  alertas ni repite transiciones.
+- **Modificado** `src/pages/DemoControlPage.tsx` — tres botones de escenario junto a
+  los controles de reloj existentes, con un aviso de resultado/error.
+- **Nota de estructura (para revisión):** el contrato (§9.2 / `CLAUDE.md`) nombra
+  `src/features/{rounds,alerts,incidents,dashboard}/`; este chunk agrega
+  `src/features/demo/` para el motor temporal orquestado a nivel de escenario, ya
+  que no encajaba limpiamente en ninguna de las cuatro carpetas existentes. No
+  introduce entidades ni estados nuevos, solo organiza código.
+- **Validado** `npm run typecheck` y `npm run build`: sin errores. Probado en el
+  navegador: avanzar el reloj crea automáticamente una alerta amarilla al vencer una
+  ronda (`round-02`) y la sube a roja al superar el umbral; repetir el avance no
+  duplica ni la alerta ni el evento de escalado. Los tres escenarios ejecutados en
+  secuencia llevan `round-01`/su alerta de abierta a cerrada (con incidente
+  sincronizado) en segundos; repetir cualquiera de los tres después no duplica nada
+  (mensajes de "ya estaba..." en vez de nuevas transiciones). Cumple el límite de
+  cinco minutos con margen amplio.
+
 ### Chunk 6 — Dashboard, alertas y escalamiento (Gate C6)
 
 Solo el flujo del supervisor. No se modificó la taxonomía ni la máquina de estados;
