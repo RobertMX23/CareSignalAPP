@@ -6,6 +6,7 @@
  */
 
 import { useState } from 'react';
+import { useAutoFocusModal } from '../../components/useAutoFocusModal';
 import type { AlertSeverity } from '../../domain/taxonomy';
 
 interface RequestSupportModalProps {
@@ -16,10 +17,11 @@ interface RequestSupportModalProps {
 
 export const RequestSupportModal = ({ residentName, onCancel, onConfirm }: RequestSupportModalProps): JSX.Element => {
   const [severity, setSeverity] = useState<AlertSeverity>('yellow');
+  const { containerRef, handleKeyDown } = useAutoFocusModal<HTMLDivElement>(onCancel);
 
   return (
-    <div className="modal-overlay" role="presentation">
-      <div className="modal" role="dialog" aria-modal="true" aria-labelledby="request-support-title">
+    <div className="modal-overlay" role="presentation" onKeyDown={handleKeyDown}>
+      <div className="modal" role="dialog" aria-modal="true" aria-labelledby="request-support-title" ref={containerRef}>
         <h2 id="request-support-title">Solicitar apoyo — {residentName}</h2>
 
         <fieldset className="modal-fieldset">

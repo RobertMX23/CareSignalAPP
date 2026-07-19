@@ -7,6 +7,7 @@
  */
 
 import { useState } from 'react';
+import { useAutoFocusModal } from '../../components/useAutoFocusModal';
 import type { RoundCompletionOutcome } from './roundOperations';
 
 const OUTCOME_OPTIONS: { value: RoundCompletionOutcome; label: string }[] = [
@@ -24,10 +25,11 @@ interface CompleteRoundModalProps {
 export const CompleteRoundModal = ({ residentName, onCancel, onConfirm }: CompleteRoundModalProps): JSX.Element => {
   const [outcome, setOutcome] = useState<RoundCompletionOutcome | undefined>(undefined);
   const [note, setNote] = useState('');
+  const { containerRef, handleKeyDown } = useAutoFocusModal<HTMLDivElement>(onCancel);
 
   return (
-    <div className="modal-overlay" role="presentation">
-      <div className="modal" role="dialog" aria-modal="true" aria-labelledby="complete-round-title">
+    <div className="modal-overlay" role="presentation" onKeyDown={handleKeyDown}>
+      <div className="modal" role="dialog" aria-modal="true" aria-labelledby="complete-round-title" ref={containerRef}>
         <h2 id="complete-round-title">Completar ronda — {residentName}</h2>
 
         <fieldset className="modal-fieldset">

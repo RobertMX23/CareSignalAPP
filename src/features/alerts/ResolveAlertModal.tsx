@@ -8,6 +8,7 @@
  */
 
 import { useState } from 'react';
+import { useAutoFocusModal } from '../../components/useAutoFocusModal';
 import type { VerificationOutcome } from '../../domain/taxonomy';
 
 const OUTCOME_OPTIONS: { value: VerificationOutcome; label: string }[] = [
@@ -27,10 +28,11 @@ interface ResolveAlertModalProps {
 
 export const ResolveAlertModal = ({ residentName, onCancel, onConfirm }: ResolveAlertModalProps): JSX.Element => {
   const [outcome, setOutcome] = useState<VerificationOutcome | undefined>(undefined);
+  const { containerRef, handleKeyDown } = useAutoFocusModal<HTMLDivElement>(onCancel);
 
   return (
-    <div className="modal-overlay" role="presentation">
-      <div className="modal" role="dialog" aria-modal="true" aria-labelledby="resolve-alert-title">
+    <div className="modal-overlay" role="presentation" onKeyDown={handleKeyDown}>
+      <div className="modal" role="dialog" aria-modal="true" aria-labelledby="resolve-alert-title" ref={containerRef}>
         <h2 id="resolve-alert-title">Registrar resultado — {residentName}</h2>
 
         <fieldset className="modal-fieldset">

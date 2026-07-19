@@ -3,6 +3,7 @@
  */
 
 import { useState } from 'react';
+import { useAutoFocusModal } from '../../components/useAutoFocusModal';
 import type { ID, StaffMember } from '../../domain/types';
 
 interface AssignAlertModalProps {
@@ -16,10 +17,11 @@ interface AssignAlertModalProps {
 export const AssignAlertModal = ({ title, staffMembers, currentStaffId, onCancel, onConfirm }: AssignAlertModalProps): JSX.Element => {
   const firstOther = staffMembers.find((s) => s.id !== currentStaffId);
   const [staffId, setStaffId] = useState<ID | undefined>(firstOther?.id ?? staffMembers[0]?.id);
+  const { containerRef, handleKeyDown } = useAutoFocusModal<HTMLDivElement>(onCancel);
 
   return (
-    <div className="modal-overlay" role="presentation">
-      <div className="modal" role="dialog" aria-modal="true" aria-labelledby="assign-alert-title">
+    <div className="modal-overlay" role="presentation" onKeyDown={handleKeyDown}>
+      <div className="modal" role="dialog" aria-modal="true" aria-labelledby="assign-alert-title" ref={containerRef}>
         <h2 id="assign-alert-title">{title}</h2>
 
         <label className="modal-field">

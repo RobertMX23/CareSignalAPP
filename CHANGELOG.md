@@ -5,7 +5,45 @@ Versionado según el contrato congelado §13.4: la línea base congelada nunca s
 silenciosamente; toda modificación material aprobada crea una nueva versión (p. ej.
 `0.1.1`, `0.2.0`) con trazabilidad.
 
-## [Unreleased]
+## [0.1.0-workshop] — 2026-07-18
+
+### Chunk 8 — QA, accesibilidad y release (Gate C8)
+
+No se agregaron funciones nuevas; solo correcciones `high`, documentación y pruebas.
+
+- **Añadido** `tests/` (vitest + jsdom): 38 pruebas cubriendo la máquina de estados
+  (transiciones válidas/bloqueadas, guardas `MISSING_VERIFICATION_OUTCOME` /
+  `RESOLVE_BEFORE_CLOSE`), `deriveResidentStatus` y la regla de alerta duplicada,
+  integridad y determinismo de la semilla, el motor temporal (generación/escalado de
+  alertas, idempotencia, rondas completadas/canceladas nunca vencen) y las
+  operaciones de cuidador/supervisor (ciclo completo de alerta, reasignación con su
+  propio evento de auditoría). `npm run test` / `npm run typecheck` (ahora incluye
+  `tests/`).
+- **Corregido (hallazgo high)** los 4 diálogos (`CompleteRoundModal`,
+  `RequestSupportModal`, `AssignAlertModal`, `ResolveAlertModal`) no movían el foco
+  al abrirse ni cerraban con Escape — un usuario de teclado tenía que tabular por el
+  resto de la tabla para alcanzarlos (prueba obligatoria #17). Se añadió
+  `src/components/useAutoFocusModal.ts`, usado por los cuatro.
+- **Añadido** `docs/04-acceptance-tests.md` — matriz de las 20 pruebas obligatorias
+  del contrato con su evidencia (automatizada y/o manual) y el registro de hallazgos
+  clasificados (high corregido, medium y low documentados en backlog, cero
+  `blocker`).
+- **Actualizado** `docs/05-known-limitations.md` — documenta explícitamente que una
+  ronda `overdue` es terminal (un residente sigue en rojo aunque su alerta se
+  resuelva y cierre) y la limitación de la tabla ancha en móviles muy angostos.
+- **Añadido** `README.md` — problema, alcance, usuarios, arquitectura, instalación,
+  ejecución, reinicio, demo, pruebas, limitaciones, exclusiones médicas y próximos
+  pasos (backlog v0.2).
+- **Añadido** `WORKSHOP_DEMO_SCRIPT.md` — guion de demo paso a paso (recorrido
+  rápido, escenario principal vía botones, el mismo ciclo hecho a mano, reinicio).
+- **Verificado manualmente** (además de lo automatizado): ancho móvil (375 px) en
+  las 5 páginas — navegación colapsable, filtros y tablas se adaptan (scroll
+  horizontal en la tabla más ancha); navegación con teclado — todos los controles
+  son elementos nativos con foco visible, confirmado tras la corrección de los
+  diálogos.
+- **Release:** `CareSignal MVP v0.1.0-workshop`. Resultado de la auditoría: **PASS**
+  (ver `docs/04-acceptance-tests.md`) — sin hallazgos `blocker`, un hallazgo `high`
+  corregido, sin expansión de alcance.
 
 ### Chunk 7 — Motor temporal y escenarios de demostración (Gate C7)
 

@@ -1,7 +1,9 @@
 # 05 — Limitaciones conocidas y exclusiones — CareSignal MVP
 
 > Fuente de verdad derivada del contrato congelado (§3.2, §3.3, §9). Este documento
-> declara explícitamente qué NO hace el MVP y por qué. Estado: Chunk 1 / Gate C1.
+> declara explícitamente qué NO hace el MVP y por qué. Estado: Chunk 8 / release
+> `v0.1.0-workshop` (revisado; las exclusiones fundamentales no cambiaron desde el
+> Chunk 1, ver también `docs/04-acceptance-tests.md` §4 para hallazgos de QA).
 
 ## 1. Naturaleza del producto
 
@@ -47,6 +49,16 @@ derivado**, no un diagnóstico.
 - El "cambio de usuario" es una selección de usuario ficticio, no un inicio de sesión.
 - El MVP no está endurecido para producción ni cumple todavía requisitos regulatorios
   de una solución comercial.
+- **Una ronda `overdue` es terminal** en la máquina de estados congelada (§7): no
+  existe una transición de vuelta a `completed`/`in_progress`. Por eso, un residente
+  cuya ronda quedó vencida seguirá mostrándose en **rojo** aunque su alerta asociada
+  se resuelva y se cierre por completo — el color depende de la ronda, no solo de la
+  alerta. Es el comportamiento esperado del modelo actual, no un error; una futura
+  versión podría introducir una forma explícita de "reabrir"/reemplazar la ronda
+  vencida (backlog v0.2).
+- En teléfonos muy angostos (~375 px), la tabla de "Mis rondas" (8 columnas) requiere
+  desplazamiento horizontal notable; es usable pero no ideal (backlog v0.2, ver
+  `docs/04-acceptance-tests.md` §4).
 
 ## 5. No objetivos
 
