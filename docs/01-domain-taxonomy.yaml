@@ -1,0 +1,146 @@
+# 01 — Taxonomía del dominio (CONGELADA) — CareSignal MVP
+#
+# Fuente de verdad derivada del contrato congelado
+# (contract/CareSignal_MVP_..._FROZEN.md §5). Posición en jerarquía de autoridad: #3.
+# Los identificadores canónicos están en inglés y NO se renombran ni se amplían sin
+# una solicitud formal de cambio y una nueva versión del contrato (§13).
+# Estado: Chunk 1 / Gate C1. Solo documentación; sin código.
+
+meta:
+  baseline: "0.1.0-workshop-frozen"
+  status: "FROZEN"
+  language: "es-MX"
+  authority_rank: 3
+  note: "MVP operacional, no dispositivo médico. Datos ficticios."
+
+roles:
+  - id: caregiver
+    es: "cuidador"
+    def: "Usuario ficticio que ejecuta rondas y solicita apoyo."
+  - id: supervisor
+    es: "supervisor"
+    def: "Usuario ficticio que observa, asigna, escala, verifica, resuelve y cierra."
+  - id: demo_admin
+    es: "administrador de demostración"
+    def: "Controla usuario activo, reloj simulado, escenarios y reinicio. No es rol comercial real."
+
+entities:
+  - id: resident
+    es: "residente"
+    def: "Persona ficticia asociada con rondas y alertas. No contiene diagnóstico."
+  - id: staff_member
+    es: "miembro del personal"
+    def: "Usuario ficticio con rol, turno y disponibilidad."
+  - id: round
+    es: "ronda"
+    def: "Actividad operacional programada para verificar o asistir a un residente."
+  - id: alert
+    es: "alerta"
+    def: "Señal operacional que requiere asignación, atención y verificación."
+  - id: incident
+    es: "incidente"
+    def: "Registro formal abierto cuando una alerta entra en proceso de verificación."
+  - id: audit_event
+    es: "evento de auditoría"
+    def: "Registro inmutable de una acción o transición con actor y hora."
+
+round_types:
+  note: "Categorías operativas y ficticias. NO son indicaciones médicas."
+  values:
+    - routine_check
+    - hydration_check
+    - mobility_assistance
+    - meal_assistance
+    - custom_operational_check
+
+round_states:
+  values:
+    - scheduled       # antes de scheduledAt
+    - due             # desde scheduledAt hasta dueAt
+    - in_progress     # ronda iniciada
+    - completed       # ronda concluida (no puede vencerse después)
+    - overdue         # vencida sin iniciar tras dueAt
+    - cancelled       # cancelada; no genera alerta
+
+alert_states:
+  values:
+    - open
+    - acknowledged
+    - assigned
+    - escalated
+    - in_verification
+    - resolved
+    - closed
+
+alert_severity:
+  values:
+    - yellow
+    - red
+
+incident_states:
+  values:
+    - open
+    - verification_in_progress
+    - resolved
+    - closed
+
+staff_availability:
+  values:
+    - available
+    - busy
+    - off_shift
+
+# Estado visual DERIVADO del residente. Computado por deriveResidentStatus() (chunk 2).
+# NUNCA se persiste como fuente primaria. NO es un diagnóstico.
+resident_status_derived:
+  computed: true
+  persisted: false
+  values:
+    - id: green
+      rule: "No existen rondas vencidas ni alertas activas relevantes."
+    - id: yellow
+      rule: "Existe retraso inicial o alerta amarilla activa."
+    - id: red
+      rule: "Existe ronda vencida crítica o alerta roja no resuelta."
+
+# Distinciones conceptuales que Gate C1 exige mantener explícitas.
+distinctions:
+  alert_vs_incident:
+    alert: "Comunica que existe una condición operacional que requiere atención."
+    incident: "Documenta la verificación, el resultado y el cierre formal."
+    notes:
+      - "Una alerta puede existir antes de que se abra un incidente."
+      - "El MVP puede crear el incidente al iniciar la verificación."
+  resolve_vs_close:
+    resolved: "Existe un resultado de verificación válido."
+    closed: "El resultado fue revisado y el ciclo administrativo terminó."
+    invariants:
+      - "Toda alerta cerrada debe haber sido resuelta."
+      - "Cerrar no elimina la auditoría ni el historial."
+
+# Prohibido usar como estados, entidades o sinónimos en código/estado. Solo se permite
+# la expresión de interfaz "evento que requiere verificación".
+forbidden_synonyms:
+  - paciente
+  - "emergencia médica"
+  - diagnóstico
+  - "evento clínico"
+  - "visita médica"
+  - "muerte detectada"
+  - "monitor cardíaco"
+  - expediente
+  - "alarma finalizada"
+allowed_ui_phrase: "evento que requiere verificación"
+
+# Reglas mínimas asociadas a la taxonomía (detalle completo en 00-product-contract.md §7).
+minimal_rules:
+  - "Una ronda pertenece a un residente."
+  - "Una ronda puede tener cero o un cuidador asignado."
+  - "Una ronda vencida puede originar una alerta."
+  - "Una misma ronda no puede tener dos alertas activas simultáneas."
+  - "Una alerta puede tener cero o un responsable activo."
+  - "Toda reasignación conserva al responsable anterior en la auditoría."
+  - "Toda transición registra actor, fecha y hora."
+  - "Una alerta resuelta requiere resultado de verificación."
+  - "Una alerta cerrada debe haber sido resuelta previamente."
+  - "El estado visual del residente se calcula a partir de rondas y alertas."
