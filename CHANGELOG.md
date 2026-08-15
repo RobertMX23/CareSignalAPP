@@ -5,6 +5,14 @@ Versionado según el contrato congelado §13.4: la línea base congelada nunca s
 silenciosamente; toda modificación material aprobada crea una nueva versión (p. ej.
 `0.1.1`, `0.2.0`) con trazabilidad.
 
+## [Unreleased]
+
+- **Añadido** `README.md` §0 "Resumen ejecutivo y punto de control": estado del
+  protocolo de gates (C0–C8, todos aprobados), resultados medibles de la auditoría
+  de QA (20/20 pruebas de aceptación, 38/38 pruebas automatizadas, 0 `blocker`) y un
+  resumen de la estructura de carpetas construida, con fines de reporte ejecutivo.
+  Solo documentación; no cambia código ni versión.
+
 ## [0.1.0-workshop] — 2026-07-18
 
 ### Chunk 8 — QA, accesibilidad y release (Gate C8)
