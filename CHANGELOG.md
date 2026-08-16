@@ -7,6 +7,14 @@ silenciosamente; toda modificación material aprobada crea una nueva versión (p
 
 ## [Unreleased]
 
+- **Añadido** `docs/06-event-map.md` — mapa event-driven de la aplicación: catálogo de
+  los 20 eventos de auditoría realmente emitidos (agrupados por agregado), los
+  comandos que los disparan, las 8 políticas automáticas, las guardas/invariantes y
+  las proyecciones de solo lectura. Extraído del código (`transitions.ts`,
+  `*Operations.ts`, `temporalEngine.ts`, `seed.ts`), no de un diseño teórico.
+  **Nota de alcance:** el contrato §9.2 enumera `docs/00`–`05`; este `06` es
+  documentación derivada añadida tras el Gate C8 y no introduce entidades, estados,
+  transiciones ni actores nuevos.
 - **Añadido** `README.md` §0 "Resumen ejecutivo y punto de control": estado del
   protocolo de gates (C0–C8, todos aprobados), resultados medibles de la auditoría
   de QA (20/20 pruebas de aceptación, 38/38 pruebas automatizadas, 0 `blocker`) y un
