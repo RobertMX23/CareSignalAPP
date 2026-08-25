@@ -50,11 +50,23 @@ Prompt 0 (master instruction)
   → Chunk 8 → Gate C8   QA, accessibility, release v0.1.0-workshop
 ```
 
-**Current state: Gate C2 approved** — C0 (scaffold), C1 (docs 00/01/05 + CHANGELOG),
-and C2 (docs 02/03 + `src/domain/{taxonomy,types,rules,transitions}.ts`) are done.
-The next authorized step is **Chunk 3** (fake data, repository, deterministic demo
-clock → Gate C3). See `docs/RESUME.md` for exact state and a paste-ready Chunk 3 prompt.
-Do not advance past a gate without explicit human authorization.
+**Current state: BUILD COMPLETE — all 8 gates approved.** C0 through C8 are done and
+released as `v0.1.0-workshop`, with a `PASS` QA audit (20/20 contract acceptance tests,
+38/38 automated tests, zero blockers). The product MVP is **finished**; do not rebuild it.
+
+Active work is now the **E track (entrega/delivery)** — preparing the project for the
+WomenCISO 4 / MenCISO 1 competition. It is NOT product development and does not modify
+the frozen contract. See `docs/RESUME.md` for exact position and next step.
+
+```
+E0 → Repo hygiene: state sync, tree order, generators, indexes
+E1 → Human decisions: security angle, pricing, team, GitHub account
+E2 → Content: security doc, competition, value metrics, innovation, delivery README
+E3 → Assembly: finish deck, publish to GitHub, record 4-min video
+E4 → Semifinal prep (only if selected)
+```
+
+Same rule as the C track: **one phase at a time, each closes with human approval.**
 
 Gate summaries:
 - **C1**: alert ≠ incident; colors are derived; no medical language; no extra features.
@@ -65,6 +77,25 @@ Gate summaries:
 - **C6**: full alert cycle works end to end, audit visible, cannot close without outcome.
 - **C7**: scenarios deterministic and reproducible, full demo runs in <5 minutes.
 - **C8**: release is `PASS`, no `blocker`, no demo-breaking `high`, no scope expansion.
+
+## Commercial material — separate from the product
+
+Business deliverables (decks, dossiers, market analysis, pitch material) live in
+`business/` and are indexed in `docs/08-entregables.md`. Market figures with their
+sources live in `docs/09-datos-mercado.md` — **cite from there, never from memory.**
+
+Three rules that hold for every piece of commercial material:
+
+1. **It never alters the frozen contract.** A slide claiming a feature that does not
+   exist is a defect, not marketing licence.
+2. **It repeats the product's own limits.** No medical-device claims, no "saves lives",
+   no "detects falls", no replacing staff (contract §8). Say what the MVP does *not*
+   do — with this buyer, declared limits build credibility.
+3. **Every figure carries its source and date.** Where sources disagree (e.g. DENUE
+   ~1,297 vs INEGI ~1,500 establishments), say so rather than picking the flattering one.
+
+Generators for these deliverables live in `tools/` — regenerate with the `docs:*` npm
+scripts rather than rewriting them from scratch.
 
 ## Frozen taxonomy (do NOT rename or add without a change request)
 

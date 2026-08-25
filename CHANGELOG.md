@@ -7,6 +7,39 @@ silenciosamente; toda modificación material aprobada crea una nueva versión (p
 
 ## [Unreleased]
 
+### E0 — Higiene del repositorio (track de entrega)
+
+Preparación para la entrega al concurso WomenCISO 4 / MenCISO 1. **No modifica el
+producto ni el contrato congelado**; reorganiza documentación y herramientas.
+
+- **Corregido (crítico para la operación)** `CLAUDE.md` y `docs/RESUME.md` declaraban
+  «Gate C2 aprobado, siguiente Chunk 3» cuando las ocho fases están cerradas desde el
+  release `v0.1.0-workshop`. Como `CLAUDE.md` se carga al inicio de cada sesión, toda
+  sesión nueva arrancaba con un mapa falso del proyecto. Ambos reescritos con el estado
+  real y el track E como trabajo vigente.
+- **Añadido** a `CLAUDE.md` la sección «Commercial material», con las tres reglas que
+  rigen el material comercial: no altera el contrato, repite los límites del producto y
+  cita cifras desde la ficha de datos.
+- **Movido** el material comercial de la raíz a `business/` (5 de 6 archivos; el PDF
+  quedó bloqueado por un visor abierto). **Renombrado** `docs/mockup-prompt.md` a
+  `docs/07-mockup-prompt.md` para respetar la numeración.
+- **Añadido** `tools/` con los tres generadores de entregables
+  (`build-dossier.cjs`, `build-deck.cjs`, `build-lamina.cjs`), que vivían en un
+  directorio temporal de sesión y se perdían. Extensión `.cjs` porque el proyecto
+  declara `"type": "module"`. Nuevos guiones: `docs:dossier`, `docs:deck`,
+  `docs:lamina`, `docs:all`. Escriben a `business/`.
+- **Añadido** `docs/08-entregables.md` (índice de todo el material producido y cómo
+  regenerarlo) y `docs/09-datos-mercado.md` (cifras con fuente, fecha y advertencias
+  metodológicas, incluida la discrepancia DENUE/INEGI sobre el número de
+  establecimientos).
+- **Actualizado** `react-router-dom` de 6.30.4 a 6.30.6 por tres avisos de seguridad
+  (open redirect vía backslash, inyección de constructor en hidratación SSR, y open
+  redirect con XSS). **Riesgo residual aceptado y documentado:** el cierre completo
+  exige React Router v7, un cambio mayor. En esta aplicación los `<Link>` solo reciben
+  identificadores generados internamente, no hay `useNavigate` ni renderizado en
+  servidor, de modo que la explotabilidad real es marginal. Verificado tras actualizar:
+  typecheck limpio, 38/38 pruebas, compilación correcta.
+
 - **Añadido** `docs/06-event-map.md` — mapa event-driven de la aplicación: catálogo de
   los 20 eventos de auditoría realmente emitidos (agrupados por agregado), los
   comandos que los disparan, las 8 políticas automáticas, las guardas/invariantes y
