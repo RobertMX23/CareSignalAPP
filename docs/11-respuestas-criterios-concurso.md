@@ -465,7 +465,55 @@ volumen mínimo para BigQuery, con costo de almacenamiento inferior a $1 USD/mes
 
 A **100 clientes:** ~$110–180 USD/mes. Margen bruto >90% a cualquier escala de este rango.
 
-### Factibilidad financiera
+### Estimado de costos de IA — agentes y modelos
+
+Los agentes de IA operan sobre **Vertex AI / Gemini API** con facturación por tokens
+consumidos. Se modelan tres agentes independientes:
+
+#### Agente de ciberseguridad (monitoreo continuo)
+Analiza la bitácora de auditoría cada 5 minutos buscando anomalías y secuencias
+imposibles según la máquina de estados. Opera 24/7.
+
+| Parámetro | Estimado |
+|---|---|
+| Ejecuciones/mes por residencia | ~8,640 (288/día × 30) |
+| Tokens de entrada por ejecución | ~200 (ventana de eventos recientes) |
+| Tokens de salida por ejecución | ~50 (score + motivo) |
+| Costo a 33 clientes (Gemini Flash) | **~$8–10 USD/mes** |
+
+#### Agente de soporte al administrador y al cuidador
+Chatbot operativo con acceso al manual de la residencia, historial de incidentes y
+estado actual. Responde preguntas en lenguaje natural: "¿cuántas alertas hubo este turno?",
+"¿qué protocolo aplica si un residente no responde?"
+
+| Parámetro | Estimado |
+|---|---|
+| Consultas/mes a 33 clientes | ~15,000 (≈15/día por residencia) |
+| Tokens de entrada por consulta | ~1,000 (contexto RAG + pregunta) |
+| Tokens de salida por consulta | ~500 (respuesta estructurada) |
+| Costo a 33 clientes (Gemini Flash) | **~$3–5 USD/mes** |
+
+#### Modelos de IA operativa (v0.2 — alertas predictivas, anomalías, asignación)
+Inferencia por lotes sobre BigQuery ML / Vertex AI, ejecución cada hora.
+
+| Parámetro | Estimado |
+|---|---|
+| Predicciones/mes a 33 clientes | ~1.2M (33 × 50 residentes × 24 corridas/día × 30) |
+| Tokens de entrada promedio | ~200 por predicción |
+| Costo (Vertex AI AutoML / BigQuery ML) | **~$18–22 USD/mes** |
+
+#### Resumen de costos de IA a 33 clientes
+
+| Agente / modelo | Costo estimado USD/mes |
+|---|---|
+| Agente de ciberseguridad (continuo) | $8–10 |
+| Agente de soporte admin + cuidador | $3–5 |
+| Modelos operativos v0.2 (predictivos) | $18–22 |
+| **Total IA** | **~$29–37 USD/mes** |
+
+---
+
+### Factibilidad financiera — costo total y margen
 
 **Modelo de ingresos:** SaaS B2B, suscripción mensual por residencia.
 
@@ -477,22 +525,79 @@ A **100 clientes:** ~$110–180 USD/mes. Margen bruto >90% a cualquier escala de
 
 **Escenario conservador — 3% de penetración** (DENUE 2025: ~1,100 residencias privadas):
 
-| Métrica | Valor |
+| Concepto | Valor |
 |---|---|
 | Clientes | ~33 residencias |
-| Ingreso mensual (mix Esencial/Profesional) | ~$80,000 MXN/mes |
+| Ingreso mensual (mix Esencial/Profesional) | ~$80,000 MXN (~$4,000 USD) |
 | Ingreso anual | ~$960,000 MXN (~$48,000 USD) |
-| Costo infraestructura Google Cloud | ~$37–62 USD/mes |
-| Margen bruto estimado | **>95%** |
+| Infraestructura Google Cloud | ~$37–62 USD/mes |
+| Agentes e IA (Vertex AI / Gemini) | ~$29–37 USD/mes |
+| **Costo total operativo** | **~$66–99 USD/mes** |
+| **Margen bruto estimado** | **>97%** |
 
-El modelo es rentable desde el primer cliente — Cloud Run escala a cero cuando no hay
-tráfico y no genera costo fijo.
+El modelo es rentable desde el primer cliente. Los agentes de IA se facturan por uso
+real — a cero clientes, costo cero. No hay costo fijo de infraestructura.
 
 ---
 
 ## Criterio 10 · Valor al usuario y al dueño
 
-> _pendiente_
+### Usuario 1: El cuidador
+
+**El dolor:**
+Trabaja en turnos de 8–12 horas con 15–30 residentes a cargo. Al final del turno tiene
+que recordar qué hizo, cuándo y con quién — y transcribirlo en una planilla o un
+cuaderno. Si algo salió mal y no quedó registrado, la responsabilidad cae sobre él. No
+tiene forma de demostrar que siguió el protocolo si alguien lo cuestiona. El miedo a
+la queja lo acompaña en cada turno.
+
+**La solución:**
+Con CareSignal registra cada ronda en el momento en que ocurre, en 3 acciones desde su
+teléfono. Si algo requiere atención, el sistema lo detecta y lo escala — él no tiene
+que decidir si "merece" reportarse. Al final del turno, todo está documentado con su
+nombre, la hora exacta y el resultado. Su trabajo queda protegido por el propio registro.
+
+---
+
+### Usuario 2: El supervisor
+
+**El dolor:**
+No tiene visibilidad de lo que pasa en el piso hasta que alguien se lo avisa — o hasta
+que ya es tarde. Se entera de que una ronda se atrasó una hora cuando el cuidador del
+siguiente turno lo menciona de paso. Asigna tareas por WhatsApp y no sabe si se
+cumplieron. Si hay un incidente, reconstruir la cronología lleva horas revisando papeles
+y mensajes.
+
+**La solución:**
+Ve el estado de todos los residentes en tiempo real desde el dashboard. Recibe alertas
+automáticas en el momento en que una ronda se retrasa — sin esperar a que nadie se lo
+diga. Asigna, reasigna y escala con un clic, y cada acción queda registrada con actor y
+timestamp. Si hay un incidente, la cronología completa está en la bitácora — sin
+reconstrucción, sin suposiciones.
+
+---
+
+### Usuario 3: El dueño / director de la residencia
+
+**El dolor:**
+Vive con tres miedos que no puede controlar completamente: que una familia reclame que
+su familiar no recibió atención, que una inspección encuentre que los registros no
+existen o son inconsistentes, y que una demanda por negligencia llegue sin evidencia
+para defenderse. Hoy no tiene forma de demostrar que los protocolos se siguieron —
+porque nadie los registra de forma sistemática.
+
+**La solución:**
+
+| Miedo | Qué CareSignal entrega |
+|---|---|
+| **Queja familiar** | Bitácora inmutable: quién atendió a su familiar, a qué hora, qué encontró y qué hizo — en segundos |
+| **Inspección NOM-031** | Registros operativos generados automáticamente como subproducto del trabajo diario — sin trabajo extra |
+| **Demanda por negligencia** | Evidencia de que los protocolos se siguieron; o de que la desviación fue detectada, escalada y atendida |
+
+**El argumento de compra:**
+$1,490 MXN al mes es menos de lo que cuesta **un día de honorarios de un abogado**.
+La residencia que tiene CareSignal llega a cualquier cuestionamiento con evidencia —
+la que no lo tiene, llega con una disculpa.
 
 ---
 
