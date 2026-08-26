@@ -110,17 +110,26 @@ a la residencia ante una inspección, ante una familia inconforme, ante una dema
 
 ### Por qué esta solución es innovadora
 
-CareSignal no es la primera aplicación web — es la primera diseñada específicamente para
-el dominio operativo de las residencias de adultos mayores en México. La innovación no
-está en la tecnología: está en la especificidad del modelo.
+CareSignal no es la primera aplicación web para residencias en México — existen Cronos Care
+(+50 residencias activas) y GERIGES (versión localizada para MX). Pero ambas resuelven
+la **administración**: expediente del residente, medicamentos, facturación, portal familiar.
+
+Ninguna modela el **ciclo operativo del turno**:
+
+| Lo que los competidores cubren | Lo que ninguno cubre | Lo que CareSignal agrega |
+|---|---|---|
+| Expediente de residente | Rondas con estados formales | Programación → ejecución → retraso detectado automáticamente |
+| Control de medicamentos | Alertas por incumplimiento | Alerta automática al supervisor con timestamp y actor |
+| Facturación y cobros | Escalación trazable | Escalación con historial de quién tenía la alerta en cada momento |
+| Portal familiar | Auditoría inmutable del turno | Bitácora append-only: 20 tipos de evento, no editable |
+
+La innovación no está en la tecnología — está en que nadie había modelado ese ciclo con
+una máquina de estados formal para este sector. CareSignal lleva al mercado de residencias
+mexicanas una capacidad de trazabilidad operativa que hasta hoy solo existía en sistemas
+hospitalarios de $500K USD o en papel.
 
 > Ver criterio 8 para la tipología completa de innovación (de producto, de proceso,
-> combinatoria y exploratoria) y su evidencia técnica.
-
-Lo que ningún formulario genérico, hoja de cálculo ni sistema hospitalario hace:
-modelar el ciclo ronda → alerta → escalación → verificación → cierre con una máquina de
-estados que impide registros inválidos, en español, sin instalación, al costo de un
-servicio SaaS operativo.
+> combinatoria y exploratoria) con su evidencia técnica.
 
 ---
 
