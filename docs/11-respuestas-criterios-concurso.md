@@ -285,6 +285,41 @@ estructurada.
 El historial de 8 commits, uno por fase, es la evidencia pública de ese método y del
 liderazgo continuo sobre cada decisión de alcance, arquitectura y calidad.
 
+### Evidencia de colaboración: quién hizo qué y cuándo
+
+| Fase | Rol ejercido | Entregable | Resultado del gate |
+|---|---|---|---|
+| C1 · Contrato y taxonomía | Líder / Product Owner | Contrato congelado v0.1.0, taxonomía YAML, límites de alcance | ✅ Gate C1 aprobado |
+| C2 · Dominio y tipos | Arquitecto de software | `types.ts`, `rules.ts`, máquina de estados formal | ✅ Gate C2 — compila, sin `any` |
+| C3 · Datos y reloj | Desarrollador full-stack | Datos de semilla, repositorio, reloj determinista | ✅ Gate C3 — IDs coherentes |
+| C4 · Shell y navegación | Desarrollador + UX | 5 páginas, navegación, sesión ficticia | ✅ Gate C4 — 5 páginas vivas |
+| C5 · Flujo del cuidador | Desarrollador + UX | Flujo completo de ronda en ≤ 3 acciones | ✅ Gate C5 — sin alertas duplicadas |
+| C6 · Dashboard supervisor | Arquitecto + Desarrollador | Ciclo completo alerta → verificación → cierre | ✅ Gate C6 — auditoría visible |
+| C7 · Motor temporal | Arquitecto + Desarrollador | Escenarios deterministas, demo < 5 minutos | ✅ Gate C7 — reproducible |
+| C8 · QA y release | QA / Auditor | 20/20 pruebas de contrato · 38/38 automatizadas · 0 blockers | ✅ Gate C8 — PASS |
+
+### Gate reviews como mecanismo de colaboración estructurada
+
+En equipos distribuidos, la calidad se garantiza con revisiones por pares (peer review)
+y criterios de aceptación explícitos. En un proyecto individual liderado, ese mismo
+rigor se implementa mediante **gate reviews**: cada fase tiene criterios de aprobación
+definidos antes de empezar, y ningún entregable avanza sin que esos criterios se cumplan
+y se documenten.
+
+| Práctica de equipo convencional | Equivalente en CareSignal |
+|---|---|
+| Definición de requisitos en equipo | Contrato congelado con taxonomía YAML y reglas de negocio explícitas |
+| Revisión de arquitectura por pares | Gate C2: criterios formales antes de escribir una línea de UI |
+| Code review | Gate reviews C3–C7: criterios de aceptación por fase documentados en `CHANGELOG.md` |
+| QA independiente | Gate C8: auditoría de 20 pruebas de contrato ejecutada en rol separado |
+| Retrospectiva de equipo | `docs/05-known-limitations.md`: hallazgos documentados para versiones futuras |
+
+**Roberto García lidera el proyecto en todos los roles** — no porque el proyecto carezca
+de estructura, sino porque esa estructura está documentada, es trazable y produce los
+mismos entregables que un equipo multidisciplinario produciría. La diferencia es la
+velocidad y la coherencia: cada decisión de alcance, arquitectura y calidad pasó por el
+mismo líder, sin fricción de coordinación y con trazabilidad completa en git.
+
 ---
 
 ## Criterio 8 · Innovación y creatividad
