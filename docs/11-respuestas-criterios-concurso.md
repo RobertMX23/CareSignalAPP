@@ -730,6 +730,58 @@ la que no lo tiene, llega con una disculpa.
 
 ---
 
+### Tablas comparativas — resumen ejecutivo del criterio 10
+
+#### Tabla 1 — Operación diaria: sin CareSignal vs. con CareSignal
+
+| Actividad | Sin CareSignal | Con CareSignal |
+|---|---|---|
+| Registrar una ronda completada | 4–6 min · planilla en papel · a mano | ~1 min · 3 acciones en el teléfono |
+| Detectar una ronda atrasada | Al final del turno — o nunca | Alerta automática en el momento |
+| Escalar un problema al supervisor | Llamada o búsqueda física | Un clic · trazable · con actor y timestamp |
+| Saber el estado de un residente | Imposible sin buscar el cuaderno | Dashboard — visible en segundos |
+| Asignar una tarea a un cuidador | WhatsApp · sin confirmación | Sistema · con registro de cumplimiento |
+| Preparar el reporte del turno | 20–30 min de transcripción manual | Generado automáticamente al cerrar turno |
+| Traspaso entre turnos | Verbal o en papel — incompleto por definición | Instantáneo y completo desde el dashboard |
+
+---
+
+#### Tabla 2 — Control documental: sin CareSignal vs. con CareSignal
+
+| Elemento | Sin CareSignal | Con CareSignal |
+|---|---|---|
+| Formato de registro | Papel o cuaderno sin versión controlada | Estandarizado · imprimible desde el sistema |
+| Respaldo del registro | Solo el papel — si se pierde, se pierde | Copia digital inmutable con mismo timestamp |
+| Localización de un registro histórico | Búsqueda manual en archivos físicos | Búsqueda en sistema — segundos |
+| Revisión administrativa | Presencial · periódica · con info desactualizada | Programada · con agenda definida |
+| Validación del director | Solo firma física · sin registro de cuándo | **Firma digital + firma física — doble validación** |
+
+---
+
+#### Tabla 3 — Valor por usuario
+
+| Usuario | Dolor principal | Lo que CareSignal resuelve | Resultado |
+|---|---|---|---|
+| **Cuidador** | Responsabilidad sin evidencia | Registro automático en 3 acciones | Su trabajo queda protegido por el sistema |
+| **Supervisor** | Gestión reactiva · sin visibilidad | Dashboard en tiempo real + alertas automáticas | Pasa de reaccionar a anticipar |
+| **Dueño / Director** | Riesgo legal sin defensa | Bitácora inmutable + doble validación documental | Evidencia lista ante queja, inspección o demanda |
+
+---
+
+#### Tabla 4 — El costo del riesgo vs. el costo de la solución
+
+| Escenario de riesgo | Costo estimado | CareSignal 12 meses | Diferencia |
+|---|---|---|---|
+| Multa leve Art. 419 LGS | ~$234,620 MXN | $17,880 MXN | **13× el costo anual** |
+| Multa grave Art. 420 LGS | hasta $703,860 MXN | $17,880 MXN | **39× el costo anual** |
+| Clausura · 6 meses de ingresos | ~$1,920,000 MXN | $17,880 MXN | **107× el costo anual** |
+| Honorarios de abogado defensor | $50,000–$150,000 MXN | $17,880 MXN | **3–8× el costo anual** |
+
+**CareSignal cuesta menos del 0.5% del ingreso mensual de la residencia y genera la
+evidencia que puede evitar o defender todos los escenarios anteriores.**
+
+---
+
 ## Criterio 11 · Framework de ciberseguridad
 
 > _pendiente_
