@@ -135,17 +135,44 @@ hospitalarios de $500K USD o en papel.
 
 ## Criterio 3 · Conocimiento del mercado
 
-### El mercado
+### El mercado — dimensión y crecimiento
 
-México registra entre **1,297 y 1,500 residencias de cuidado de adultos mayores** según
-la fuente (DENUE 2025 / INEGI 2020), más una informalidad no cuantificada. El 85% son
-privadas. El sector crece al 18% interanual — impulsado por el envejecimiento acelerado
-de la población: de 17.1 millones de personas mayores hoy a más de 20 millones en 2030
-(CONAPO).
+El envejecimiento acelerado está creando uno de los mercados de mayor crecimiento de la
+próxima década. México es el punto de entrada; América Latina es el horizonte.
+
+| Indicador | Valor actual | Proyección | Fuente |
+|---|---|---|---|
+| Personas de 60+ en México | **17.1 M (12.8 % de la población)** | ~28 M en 2040 · ~33 M en 2050 | CONAPO / INAPAM |
+| Personas de 65+ en LatAm | **~65 millones** | ~138 M en 2050 (18.9 % región) | CEPAL / OPS |
+| Personas con dependencia de cuidados en LatAm | **~8 millones** | se triplica hacia 2050 | BID / OPS |
+| Déficit de cuidadores remunerados en LatAm | 3 M hoy vs. **14 M necesarios** | brecha de 11 M | BID |
+| Economía del cuidado no remunerado en México | **26.3 % del PIB** | — | INEGI (ENUT) |
+| Mercado geriátrico / salud adultos mayores MX | **USD 20.6 B** | USD 37.6 B en 2034 (CAGR 6.7 %) | IMARC Group ⚠ |
+| Long-Term Care (cuidados de largo plazo) MX | **USD 25.6 B** | USD 43.9 B en 2033 (CAGR 6.6 %) | Grand View Research ⚠ |
+| Residencias privadas formales en México | **~1,297–1,500** | crecimiento +18 % interanual | DENUE 2025 / INEGI |
+
+> ⚠ IMARC Group y Grand View Research son firmas privadas de investigación de mercado, no fuentes oficiales.
+> Declararlo ante jueces; son las mejores referencias disponibles para este segmento.
+
+### TAM / SAM / SOM — modelo B2B CareSignal
+
+| Nivel | Descripción | Estimación | Lógica |
+|---|---|---|---|
+| **TAM** | Mercado total de cuidados geriátricos y tecnología (MX + LatAm) | Decenas de miles de millones USD | LTC solo en MX supera USD 25 B; LatAm multiplica |
+| **SAM** | Residencias privadas formales en México con capacidad de adoptar SaaS operativo | ~1,100–1,300 residencias | DENUE 2025; segmento con presupuesto y obligación normativa |
+| **SOM** | Captura realista en 3–5 años (equipo en etapa temprana, ciclo de venta B2B) | **50–200 residencias** | Requiere pilotos, referencias y construcción de confianza |
+
+**Revenue potencial del SOM:**
+
+| Escenario | Residencias | Plan promedio | MRR estimado |
+|---|---|---|---|
+| Conservador | 50 | Esencial ($1,490/mes) | ~$74,500 MXN/mes |
+| Base | 100 | Profesional ($3,490/mes) | ~$349,000 MXN/mes |
+| Optimista | 200 | Profesional ($3,490/mes) | ~$698,000 MXN/mes |
 
 El segmento comprador es la **dirección de la residencia privada**: una operación con
 presión familiar, riesgo reputacional y obligaciones normativas bajo la NOM-031-SSA3-2012
-— y sin herramientas digitales específicas para su operación.
+— y sin herramientas digitales específicas para la trazabilidad del turno operativo.
 
 ### Análisis de competencia directa — mercado mexicano
 

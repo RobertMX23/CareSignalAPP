@@ -4,7 +4,7 @@
 > fuente, su fecha y su advertencia si la tiene. Si una cifra no está en este archivo,
 > no debe aparecer en un entregable.
 >
-> Última verificación: **25 de agosto de 2026**.
+> Última verificación: **26 de agosto de 2026**.
 
 ---
 
@@ -12,10 +12,45 @@
 
 | Dato | Valor | Fuente | Fecha |
 |---|---|---|---|
-| Personas de 60 años o más en México | **17.1 millones** | CONAPO, vía Gaceta UNAM | 2025 |
+| Personas de 60 años o más en México | **17.1 millones** | CONAPO / INAPAM | 2025 |
 | Proporción de la población total | **12.8 %** | CONAPO | 2025 |
-| Proyección de personas mayores | **más de 20 millones** | Proyección CONAPO | 2030 |
-| Proporción proyectada de la población | **27.7 %** | Proyección CONAPO | 2050 |
+| Proyección México — personas mayores | **~28 millones** | CONAPO / INAPAM | 2040 ⚠ |
+| Proyección México — personas mayores | **~33–34 millones** | CONAPO / INAPAM | 2050 ⚠ |
+| Personas mayores en LatAm (65+) | **~65 millones** | CEPAL / Naciones Unidas | 2024 |
+| Proyección LatAm (65+) | **~138 millones (18.9 %)** | CEPAL / OPS/OMS | 2050 |
+| Personas mayores con dependencia de cuidados en LatAm | **~8 millones** | BID / OPS | 2024 |
+| Proyección dependencia de cuidados en LatAm | **se triplica (~24 M)** | BID | 2050 |
+| Cuidadores remunerados en LatAm (hoy) | **~3 millones** | BID | 2024 |
+| Cuidadores remunerados necesarios en LatAm | **~14 millones** | BID | 2050 |
+| Economía del cuidado no remunerado en México | **26.3 % del PIB** | INEGI (ENUT) | reciente |
+
+> ⚠ Las proyecciones 2040/2050 son estimaciones de CONAPO/INAPAM — citar la fuente
+> específica ante jueces; no mezclar con el dato de 17.1 M de 2025 en la misma frase.
+
+## 1b. Tamaño de mercado en dinero
+
+| Segmento | 2025 | Proyección | CAGR | Fuente | Nota |
+|---|---|---|---|---|---|
+| Mercado geriátrico / salud adultos mayores MX | **USD 20.6 B** | USD 37.6 B (2034) | **~6.7 %** | IMARC Group | ⚠ Firma privada |
+| Long-Term Care (cuidados de largo plazo) MX | **USD 25.6 B** | USD 43.9 B (2033) | **~6.6 %** | Grand View Research | ⚠ Firma privada |
+
+> ⚠ Estas cifras provienen de firmas de investigación de mercado privadas (no oficiales).
+> Son las mejores referencias disponibles para el segmento. Declarar esto ante jueces:
+> *"Según IMARC Group / Grand View Research — no son datos gubernamentales"*.
+
+### TAM / SAM / SOM (modelo CareSignal B2B)
+
+| Nivel | Definición | Estimación | Lógica |
+|---|---|---|---|
+| **TAM** | Mercado total de cuidados y tecnología geriátrica en MX y LatAm | Decenas de miles de millones USD | Mercado LTC MX ya supera USD 25 B; LatAm multiplica ese número |
+| **SAM** | Residencias privadas formales en México con capacidad de adoptar SaaS operativo | ~1,100–1,300 residencias | DENUE 2025; segmento privado con presupuesto y motivación normativa |
+| **SOM** | Captura realista en 3–5 años con equipo en etapa temprana | **50–200 residencias** | Ciclo de venta B2B, necesidad de pilotos, construcción de confianza |
+
+> SOM a precio Esencial ($1,490/mes): 50 residencias = $74,500 MXN/mes · 200 = $298,000 MXN/mes
+> SOM a precio Profesional ($3,490/mes): 50 = $174,500 · 200 = $698,000 MXN/mes
+
+> ⚠ El modelo B2C (familias) NO está en el MVP actual. Incluirlo en el SOM requiere
+> declararlo como roadmap v0.2, no como capacidad presente.
 
 ## 2. Estructura del sector de residencias
 
