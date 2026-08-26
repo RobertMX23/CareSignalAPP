@@ -577,6 +577,42 @@ reconstrucción, sin suposiciones.
 
 ---
 
+### La sincronía entre turnos — donde los tres usuarios se conectan
+
+El momento de mayor riesgo en una residencia no es una emergencia — es el **cambio de
+turno**. Es cuando la información que un cuidador tiene en la cabeza (o en un papel)
+tiene que pasarle al siguiente, sin perderse, sin errores, sin olvidos.
+
+**Hoy el traspaso depende de:**
+- Lo que el cuidador saliente recuerda o anotó
+- La disponibilidad del supervisor para coordinar
+- Un cuaderno que puede estar incompleto, ilegible o perdido
+- WhatsApp con mensajes que se pierden entre conversaciones
+
+**El cuidador entrante llega sin saber:**
+- Qué rondas quedaron pendientes del turno anterior
+- Qué residente generó una alerta y cómo está
+- Qué tareas están programadas para las próximas horas
+- Si hay algo urgente que nadie le comunicó
+
+**Con CareSignal el traspaso es instantáneo y completo:**
+
+| Qué necesita saber el turno entrante | Cómo CareSignal lo entrega |
+|---|---|
+| Rondas pendientes o atrasadas | Dashboard en tiempo real — visibles desde el primer segundo |
+| Alertas activas y su estado | Bitácora con actor, hora y última acción registrada |
+| Cuidados programados para el turno | Agenda generada por el motor temporal — sin transcripción |
+| Historial reciente de cada residente | Accesible por residente — sin buscar en cuadernos |
+
+El cuidador entrante no depende de lo que el saliente recuerda — depende del sistema.
+El supervisor no necesita estar presente en el cambio de turno para garantizar la
+continuidad. El dueño sabe que ninguna tarea programada se perdió entre turnos.
+
+**Eso es continuidad operativa trazable** — y es exactamente lo que una familia exige
+cuando pregunta: *"¿quién estuvo con mi mamá esta noche y qué hizo?"*
+
+---
+
 ### Usuario 3: El dueño / director de la residencia
 
 **El dolor:**
@@ -594,10 +630,55 @@ porque nadie los registra de forma sistemática.
 | **Inspección NOM-031** | Registros operativos generados automáticamente como subproducto del trabajo diario — sin trabajo extra |
 | **Demanda por negligencia** | Evidencia de que los protocolos se siguieron; o de que la desviación fue detectada, escalada y atendida |
 
-**El argumento de compra:**
-$1,490 MXN al mes es menos de lo que cuesta **un día de honorarios de un abogado**.
-La residencia que tiene CareSignal llega a cualquier cuestionamiento con evidencia —
+---
+
+### Riesgo potencial — casos reales y marco sancionatorio
+
+#### Casos documentados en México (2024–2025)
+
+| Caso | Fecha | Lo que ocurrió | Consecuencia |
+|---|---|---|---|
+| **Asilo Santa Sofía, SLP** | Mayo 2025 | Videos de maltrato difundidos en redes; operaba sin permisos ni protección civil | Clausura definitiva · 10 residentes rescatados · intervención de la Fiscalía estatal |
+| **Casa de reposo, CDMX** | Diciembre 2024 | Cámaras ocultas captaron maltrato verbal y físico a residentes | Denuncia pública viral · investigación abierta |
+| **"La Aldea de los Abuelos", SLP** | Mayo 2025 | Denuncia ciudadana en redes por condiciones de insalubridad | Inspección solicitada · exposición mediática |
+
+**El patrón es siempre el mismo:** sin registros operativos, la residencia no puede
+demostrar qué ocurrió ni cuándo. La clausura o la demanda llegan antes de que haya
+evidencia para defenderse.
+
+#### Marco sancionatorio — Ley General de Salud (UMA 2026 = $117.31/día)
+
+| Artículo | Sanción | Monto estimado en pesos |
+|---|---|---|
+| Art. 419 LGS | Multa por infracciones leves | Hasta 2,000 UMA = **~$234,620 MXN** |
+| Art. 420 LGS | Multa por infracciones graves | 2,000–6,000 UMA = **$234,620–$703,860 MXN** |
+| Art. 417 LGS | Clausura temporal o definitiva | Sin límite de monto — pérdida total del negocio |
+
+Además de las multas administrativas, las familias pueden iniciar **demanda civil por
+daños y perjuicios** — sin tope legal en México para indemnizaciones por negligencia
+contra población vulnerable.
+
+#### La comparativa que cierra el argumento
+
+Una residencia con 40 residentes a $8,000 MXN/mes genera **~$320,000 MXN/mes de
+ingreso**. Una multa del Art. 420 LGS puede representar **hasta 2.2 meses de ingreso
+bruto** — sin contar el costo reputacional, la pérdida de residentes ni una eventual
+demanda civil.
+
+| Concepto | Monto |
+|---|---|
+| Multa grave (Art. 420 LGS) | $234,620–$703,860 MXN (una sola vez) |
+| Pérdida de ingresos por clausura (6 meses) | ~$1,920,000 MXN |
+| Honorarios de abogado defensor | $50,000–$150,000 MXN estimado |
+| **CareSignal Plan Esencial (12 meses)** | **$17,880 MXN** |
+
+**CareSignal a $1,490 MXN/mes es menos del 0.5% del ingreso mensual de la residencia**
+y genera la evidencia que puede evitar — o defender — cualquiera de esos escenarios.
+La residencia que tiene CareSignal llega a cualquier cuestionamiento con evidencia;
 la que no lo tiene, llega con una disculpa.
+
+> Fuentes: Infobae (mayo 2025) · Proceso (mayo 2025) · Infobae CDMX (diciembre 2024) ·
+> Ley General de Salud Arts. 417–420 · INEGI — UMA 2026 ($117.31/día)
 
 ---
 
