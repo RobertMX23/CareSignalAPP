@@ -168,7 +168,7 @@ function c1() {
     h1('Criterio 1 · Definición del problema, alineado con IA y ciberseguridad'),
     h2('El problema'),
     p([bold('17.1 millones'), normal(' de personas mayores de 60 años viven en México (CONAPO, 2025). Más de '), bold('1,297 residencias de cuidado'), normal(' operan en el país (DENUE, 2025), el 85% privadas, creciendo al '), bold('+18% interanual'), normal('. La mayoría opera con registros en papel o en hojas de cálculo. Cuando una ronda se retrasa, nadie lo sabe hasta que es demasiado tarde.')]),
-    p([bold('El resultado:'), normal(' adultos mayores sin trazabilidad operativa. La CNDH en su informe '), bold('ISP-12/2020'), normal(' documentó que de '), bold('58 residencias visitadas'), normal(' se observaron condiciones de abandono, falta de personal y deficiencias operativas.')]),
+    p([bold('El resultado:'), normal(' adultos mayores sin trazabilidad operativa. En un informe de la CNDH se documentaron condiciones de abandono, falta de personal y deficiencias operativas en residencias de adultos mayores en México — consecuencia de no contar con '), bold('sistemas de gestión operativa'), normal(' que garanticen que el cuidado ocurrió, en el momento correcto, con la persona correcta.')]),
     h2('Contexto internacional — escala global del problema'),
     note('Se estima (fuentes: US Census Bureau, Statistics Japan, Destatis, UN World Population Prospects 2022). Datos no verificados directamente — declarar ante jueces.'),
     tabla(
