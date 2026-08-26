@@ -561,55 +561,103 @@ nombre, la hora exacta y el resultado. Su trabajo queda protegido por el propio 
 
 ### Usuario 2: El supervisor
 
-**El dolor:**
-No tiene visibilidad de lo que pasa en el piso hasta que alguien se lo avisa — o hasta
-que ya es tarde. Se entera de que una ronda se atrasó una hora cuando el cuidador del
-siguiente turno lo menciona de paso. Asigna tareas por WhatsApp y no sabe si se
-cumplieron. Si hay un incidente, reconstruir la cronología lleva horas revisando papeles
-y mensajes.
+**El dolor — cómo opera hoy:**
 
-**La solución:**
-Ve el estado de todos los residentes en tiempo real desde el dashboard. Recibe alertas
-automáticas en el momento en que una ronda se retrasa — sin esperar a que nadie se lo
-diga. Asigna, reasigna y escala con un clic, y cada acción queda registrada con actor y
-timestamp. Si hay un incidente, la cronología completa está en la bitácora — sin
-reconstrucción, sin suposiciones.
+| Situación | Lo que vive el supervisor sin CareSignal |
+|---|---|
+| Visibilidad del piso | Cero en tiempo real — se entera cuando alguien lo llama o al revisar el cuaderno al final del turno |
+| Ronda atrasada | Se entera una hora después, cuando el cuidador del siguiente turno lo menciona de paso — o nunca |
+| Asignación de tareas | Por WhatsApp: sin confirmación, sin trazabilidad, sin saber si se cumplió |
+| Incidente ocurrido | Reconstruir la cronología lleva horas: papeles, mensajes, llamadas, versiones distintas |
+| Cierre de turno | Resumen verbal o anotado a mano — incompleto, dependiente de la memoria del cuidador saliente |
+
+El supervisor no gestiona — **reacciona**. Y cuando reacciona, ya es tarde.
+
+**La solución — con CareSignal:**
+
+| Situación | Lo que CareSignal entrega al supervisor |
+|---|---|
+| Visibilidad del piso | Dashboard en tiempo real: estado de cada residente, rondas activas y alertas abiertas |
+| Ronda atrasada | Alerta automática en el momento en que ocurre — sin esperar que nadie lo avise |
+| Asignación de tareas | Un clic: asignación registrada con actor, hora y estado de cumplimiento |
+| Incidente ocurrido | Cronología completa en la bitácora — sin reconstrucción, sin suposiciones, sin versiones |
+| Cierre de turno | Bitácora lista, generada como subproducto de la operación — sin transcripción |
+
+El supervisor pasa de **reaccionar** a **anticipar**.
 
 ---
 
 ### La sincronía entre turnos — donde los tres usuarios se conectan
 
 El momento de mayor riesgo en una residencia no es una emergencia — es el **cambio de
-turno**. Es cuando la información que un cuidador tiene en la cabeza (o en un papel)
-tiene que pasarle al siguiente, sin perderse, sin errores, sin olvidos.
+turno**. Es el instante en que toda la información operativa del turno saliente tiene que
+transferirse al entrante, sin perderse, sin errores, sin olvidos.
 
-**Hoy el traspaso depende de:**
-- Lo que el cuidador saliente recuerda o anotó
-- La disponibilidad del supervisor para coordinar
-- Un cuaderno que puede estar incompleto, ilegible o perdido
-- WhatsApp con mensajes que se pierden entre conversaciones
+**Hoy — el traspaso en modo manual:**
 
-**El cuidador entrante llega sin saber:**
-- Qué rondas quedaron pendientes del turno anterior
-- Qué residente generó una alerta y cómo está
-- Qué tareas están programadas para las próximas horas
-- Si hay algo urgente que nadie le comunicó
+| Qué se necesita transferir | Cómo ocurre hoy | Resultado |
+|---|---|---|
+| Rondas pendientes o incompletas | El cuidador saliente lo menciona de memoria | Se olvida, se pierde, llega incompleto |
+| Alertas activas y su estado | Anotado en un cuaderno o dicho de palabra | Sin contexto, sin historial, sin actor |
+| Cuidados programados para el turno | Lista en papel o en un grupo de WhatsApp | Difícil de verificar, fácil de saltarse |
+| Novedades de cada residente | Transmisión verbal entre cuidadores | Depende de quién esté disponible y de cuánto recuerda |
 
-**Con CareSignal el traspaso es instantáneo y completo:**
+**El cuidador entrante llega sin saber nada que no le dijeron en voz alta.**
+El supervisor no tiene forma de verificar que el traspaso fue completo.
+El dueño no sabe qué se perdió entre turnos — hasta que hay un problema.
 
-| Qué necesita saber el turno entrante | Cómo CareSignal lo entrega |
+**Con CareSignal — el traspaso es automático y completo:**
+
+| Qué necesita el turno entrante | Cómo CareSignal lo entrega |
 |---|---|
 | Rondas pendientes o atrasadas | Dashboard en tiempo real — visibles desde el primer segundo |
 | Alertas activas y su estado | Bitácora con actor, hora y última acción registrada |
-| Cuidados programados para el turno | Agenda generada por el motor temporal — sin transcripción |
+| Cuidados programados para el turno | Motor temporal — agenda generada sin transcripción |
 | Historial reciente de cada residente | Accesible por residente — sin buscar en cuadernos |
 
-El cuidador entrante no depende de lo que el saliente recuerda — depende del sistema.
-El supervisor no necesita estar presente en el cambio de turno para garantizar la
-continuidad. El dueño sabe que ninguna tarea programada se perdió entre turnos.
+El cuidador entrante no depende de lo que el saliente recuerda — **depende del sistema**.
+El supervisor no necesita estar presente en el cambio de turno para garantizar continuidad.
+El dueño sabe que ninguna tarea programada se perdió entre turnos.
 
 **Eso es continuidad operativa trazable** — y es exactamente lo que una familia exige
 cuando pregunta: *"¿quién estuvo con mi mamá esta noche y qué hizo?"*
+
+---
+
+### Control de documentos — del papel sin gestión al respaldo digital con doble validación
+
+**El problema actual — documentación en papel sin control:**
+
+| Situación | Sin CareSignal |
+|---|---|
+| Formatos de registro | Papel impreso o cuadernos — sin versión controlada, sin índice |
+| Localización de un registro histórico | Búsqueda manual en archivos físicos — minutos u horas |
+| Pérdida o alteración de un documento | Sin forma de detectarlo ni reconstruirlo |
+| Revisión de cumplimiento por la administración | Revisión presencial, periódica, con información desactualizada |
+| Validación del reporte por la dirección | Firma física — sin registro de cuándo ni quién revisó |
+
+**Con CareSignal — gestión documental con doble validación:**
+
+Cada registro operativo generado en el sistema puede:
+
+1. **Imprimirse en formato estandarizado** — el mismo campo, el mismo orden, siempre — listo para el expediente físico que exige la NOM-031-SSA3-2012.
+
+2. **Respaldarse digitalmente de forma automática** — la versión impresa tiene su copia digital inmutable en el sistema, con el mismo timestamp y los mismos datos. Si el papel se pierde, el respaldo existe.
+
+3. **Programarse para revisión digital por la administración** — los reportes de turno, semanales o mensuales se envían al administrador con una agenda definida. No hay que ir a buscar el cuaderno.
+
+4. **Firmarse digitalmente por la administración** — el reporte revisado recibe la firma digital del director o supervisor con fecha y hora de revisión. Esa firma queda registrada en el sistema.
+
+5. **Complementarse con firma física en el impreso** — la firma digital **no sustituye** la firma física en el reporte impreso. Ambas coexisten: **doble validación**, digital y en papel, que se refuerzan mutuamente ante cualquier auditoría o inspección.
+
+| Elemento de validación | Modo manual | Con CareSignal |
+|---|---|---|
+| Registro del evento | Anotación manual, sin hora exacta | Evento digital con timestamp inmutable |
+| Reporte impreso | Papel sin respaldo | Impresión desde el sistema + copia digital |
+| Revisión administrativa | Presencial, sin registro de cuándo | Programada, con firma digital y fecha |
+| Validación final | Solo firma física | **Firma digital + firma física — doble validación** |
+
+La doble validación convierte cada reporte en un documento **legalmente robusto**: tiene la trazabilidad digital del sistema y la autenticidad de la firma física del responsable. Ante una inspección de la Secretaría de Salud o una demanda civil, esa combinación es el estándar más alto de evidencia que una residencia puede presentar.
 
 ---
 
