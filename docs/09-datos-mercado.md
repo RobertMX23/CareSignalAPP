@@ -27,6 +27,23 @@
 > ⚠ Las proyecciones 2040/2050 son estimaciones de CONAPO/INAPAM — citar la fuente
 > específica ante jueces; no mezclar con el dato de 17.1 M de 2025 en la misma frase.
 
+## 1c. Contexto internacional — personas mayores (65+)
+
+> ⚠ Estas cifras provienen de fuentes oficiales de cada país y de Naciones Unidas,
+> pero no han sido verificadas directamente en este repositorio. Usar con la fórmula
+> **"se estima"** y declarar la fuente ante jueces.
+
+| País / Región | Se estima personas 65+ | % de población | Fuente estimada | Año ref. |
+|---|---|---|---|---|
+| **Estados Unidos** | ~57 millones | ~17 % | US Census Bureau | 2023 |
+| **Japón** | ~36 millones | ~29 % | Statistics Japan | 2023 |
+| **Alemania** | ~18 millones | ~22 % | Destatis | 2023 |
+| **Global (total mundial)** | ~771 millones | ~10 % | UN World Population Prospects | 2022 |
+| **Proyección global** | ~1,600 millones | ~16 % | UN World Population Prospects | 2050 ⚠ |
+
+> ⚠ La proyección global de 1,600 millones para 2050 es una estimación de las Naciones
+> Unidas (World Population Prospects 2022) — citar como "según estimaciones de la ONU".
+
 ## 1b. Tamaño de mercado en dinero
 
 | Segmento | 2025 | Proyección | CAGR | Fuente | Nota |

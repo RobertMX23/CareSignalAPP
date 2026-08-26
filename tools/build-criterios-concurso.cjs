@@ -168,7 +168,23 @@ function c1() {
     h1('Criterio 1 · Definición del problema, alineado con IA y ciberseguridad'),
     h2('El problema'),
     p([bold('17.1 millones'), normal(' de personas mayores de 60 años viven en México (CONAPO, 2025). Más de '), bold('1,297 residencias de cuidado'), normal(' operan en el país (DENUE, 2025), el 85% privadas, creciendo al '), bold('+18% interanual'), normal('. La mayoría opera con registros en papel o en hojas de cálculo. Cuando una ronda se retrasa, nadie lo sabe hasta que es demasiado tarde.')]),
-    p([bold('El resultado:'), normal(' adultos mayores sin trazabilidad operativa, en instalaciones que la CNDH supervisó en '), bold('menos del 4% de los casos'), normal(' durante la pandemia (CNDH ISP-12/2020).')]),
+    p([bold('El resultado:'), normal(' adultos mayores sin trazabilidad operativa, en instalaciones que la CNDH solo pudo inspeccionar en '), bold('58 de más de 1,500 residencias'), normal(' del país (CNDH ISP-12/2020). En las que logró visitar documentó condiciones de abandono, falta de personal y deficiencias operativas.')]),
+    h2('Contexto internacional — escala global del problema'),
+    note('Se estima (fuentes: US Census Bureau, Statistics Japan, Destatis, UN World Population Prospects 2022). Datos no verificados directamente — declarar ante jueces.'),
+    tabla(
+      ['País / Región', 'Se estima personas 65+', '% de población', 'Fuente de referencia'],
+      [
+        ['México', '17.1 millones (60+)', '12.8 %', 'CONAPO 2025 ✅ verificado'],
+        ['Estados Unidos', '~57 millones', '~17 %', 'US Census Bureau 2023'],
+        ['Japón', '~36 millones', '~29 %', 'Statistics Japan 2023'],
+        ['Alemania', '~18 millones', '~22 %', 'Destatis 2023'],
+        ['América Latina (65+)', '~65 millones', '—', 'CEPAL / ONU 2024 ✅ verificado'],
+        ['Global (total mundial)', '~771 millones', '~10 %', 'UN World Population Prospects 2022'],
+        ['Proyección global 2050', '~1,600 millones', '~16 %', 'UN World Population Prospects 2022'],
+      ],
+      [2500, 2000, 1500, 3000]
+    ),
+    br(),
     h2('Por qué ahora — ventana de oportunidad 2026'),
     tabla(
       ['Fuerza', 'Dato clave', 'Implicación'],
