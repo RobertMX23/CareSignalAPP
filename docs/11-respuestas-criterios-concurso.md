@@ -52,8 +52,8 @@ Firebase**, con cifrado en tránsito y en reposo, y reglas de acceso por rol.
 20 tipos de evento por ronda, alerta e incidente — es el insumo exacto para modelos
 predictivos: anticipar qué residente tiene mayor probabilidad de requerir atención no
 programada, detectar anomalías en los tiempos de respuesta, optimizar la asignación de
-cuidadores por turno. Esas funciones están diseñadas para v0.2, sobre **BigQuery ML /
-Vertex AI**. La decisión de excluirlas de v0.1.0 fue deliberada: primero la estructura
+cuidadores por turno. Esas funciones están diseñadas para v0.2, sobre **BigQuery ML ·
+Gemini API (vía Vertex AI)**. La decisión de excluirlas de v0.1.0 fue deliberada: primero la estructura
 de datos correcta, luego la inferencia sobre ella.
 
 ---
@@ -480,7 +480,7 @@ La tendencia del mercado es añadir IA sin datos estructurados que la sustenten.
 CareSignal hizo lo contrario: primero los 20 tipos de evento, el motor temporal y la
 bitácora append-only — luego los modelos sobre esa base.
 
-Las funciones de IA planificadas para v0.2, sobre **BigQuery ML / Vertex AI**:
+Las funciones de IA planificadas para v0.2, sobre **BigQuery ML · Gemini API (vía Vertex AI)**:
 
 | Función de IA | Tipo | Qué problema resuelve |
 |---|---|---|
@@ -627,7 +627,7 @@ A **100 clientes:** ~$110–180 USD/mes. Margen bruto >90% a cualquier escala de
 
 ### Estimado de costos de IA — agentes y modelos
 
-Los agentes de IA operan sobre **Vertex AI / Gemini API** con facturación por tokens
+Los agentes de IA operan sobre **Gemini API (vía Vertex AI)** con facturación por tokens
 consumidos. Se modelan tres agentes independientes:
 
 #### Agente de ciberseguridad (monitoreo continuo)
@@ -654,13 +654,13 @@ estado actual. Responde preguntas en lenguaje natural: "¿cuántas alertas hubo 
 | Costo a 33 clientes (Gemini Flash) | **~$3–5 USD/mes** |
 
 #### Modelos de IA operativa (v0.2 — alertas predictivas, anomalías, asignación)
-Inferencia por lotes sobre BigQuery ML / Vertex AI, ejecución cada hora.
+Inferencia por lotes sobre BigQuery ML · Gemini API (vía Vertex AI), ejecución cada hora.
 
 | Parámetro | Estimado |
 |---|---|
 | Predicciones/mes a 33 clientes | ~1.2M (33 × 50 residentes × 24 corridas/día × 30) |
 | Tokens de entrada promedio | ~200 por predicción |
-| Costo (Vertex AI AutoML / BigQuery ML) | **~$18–22 USD/mes** |
+| Costo (Gemini API · BigQuery ML) | **~$18–22 USD/mes** |
 
 #### Resumen de costos de IA a 33 clientes
 
@@ -691,7 +691,7 @@ Inferencia por lotes sobre BigQuery ML / Vertex AI, ejecución cada hora.
 | Ingreso mensual (mix Esencial/Profesional) | ~$80,000 MXN (~$4,000 USD) |
 | Ingreso anual | ~$960,000 MXN (~$48,000 USD) |
 | Infraestructura Google Cloud | ~$37–62 USD/mes |
-| Agentes e IA (Vertex AI / Gemini) | ~$29–37 USD/mes |
+| Agentes e IA (Gemini API) | ~$29–37 USD/mes |
 | **Costo total operativo** | **~$66–99 USD/mes** |
 | **Margen bruto estimado** | **>97%** |
 
@@ -981,7 +981,7 @@ infraestructura y monitoreo activo.
 |---|---|---|---|
 | **Diseño (Privacy by Design)** | Superficie de ataque y exposición de datos | Arquitectura cloud-ready · dominio puro · sin dependencias externas · datos ficticios en demo | v0.1.0 — listo para despliegue en Google Cloud Run |
 | **Infraestructura (Google Cloud)** | Datos en tránsito y en reposo | TLS 1.3 · cifrado en reposo · Firebase Security Rules · acceso por rol · aislamiento por residencia | v1.0 producción |
-| **Monitoreo activo (Agente IA)** | Integridad de la operación 24/7 | Agente de ciberseguridad sobre Vertex AI · análisis continuo de la bitácora | v0.2 roadmap |
+| **Monitoreo activo (Agente IA)** | Integridad de la operación 24/7 | Agente de ciberseguridad vía Gemini API (Vertex AI) · análisis continuo de la bitácora | v0.2 roadmap |
 
 ---
 
