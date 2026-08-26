@@ -213,7 +213,39 @@ extensible por cualquier desarrollador que tome el proyecto.
 
 ## Criterio 6 · Comunicación clara, visual y segura
 
-> _pendiente_
+### Claridad para el usuario final
+
+CareSignal fue diseñado para cuidadores con distintos niveles de alfabetización digital,
+en turnos de alta carga cognitiva. Cada decisión de UX refleja eso:
+
+- **Tres acciones máximo** para completar una ronda normal — sin menús profundos, sin
+  formularios largos.
+- **Semáforo visual** (verde / amarillo / rojo) para el estado de cada residente —
+  legible de un vistazo desde el dashboard.
+- **Avisos obligatorios en pantalla:** "MVP operacional, no dispositivo médico" y "Datos
+  ficticios" — el sistema nunca permite confundir el demo con un entorno real.
+- **Accesibilidad de teclado** corregida y verificada en el QA de la fase C8 —
+  navegación completa sin ratón.
+
+### Claridad para el evaluador
+
+El repositorio incluye documentación estructurada en tres niveles:
+
+| Nivel | Documento | Para quién |
+|---|---|---|
+| Ejecutivo | `README.md` — executive summary | Juez, inversionista |
+| Operativo | `WORKSHOP_DEMO_SCRIPT.md` — guion de demo de 5 min | Evaluador técnico |
+| Técnico | `docs/00` al `docs/10` — contrato, taxonomía, máquina de estados, pruebas | Desarrollador, auditor |
+
+### Seguridad en la comunicación
+
+- Ninguna pantalla expone datos reales de personas — la aplicación opera exclusivamente
+  con datos ficticios generados por el sistema.
+- La arquitectura de producción en **Google Cloud Run + Firebase** establece comunicación
+  cifrada TLS en tránsito y cifrado en reposo — sin canales inseguros como correo o
+  mensajería sin control.
+- El material comercial (deck, dossier) está versionado en el repositorio — no circula
+  en canales no controlados durante el proceso de entrega.
 
 ---
 
