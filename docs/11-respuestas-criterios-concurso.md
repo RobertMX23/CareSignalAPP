@@ -251,19 +251,242 @@ El repositorio incluye documentación estructurada en tres niveles:
 
 ## Criterio 7 · Trabajo en equipo: roles y colaboración
 
-> _pendiente_
+### Estructura del equipo requerida por el proyecto
+
+CareSignal es un proyecto de innovación liderado por **Roberto García, fundador y líder
+del proyecto**. La naturaleza del MVP — sistema de dominio complejo con contrato
+congelado, máquina de estados, pruebas de aceptación y material comercial — requiere
+cinco roles claramente definidos:
+
+| Rol | Responsabilidad en el proyecto | Evidencia |
+|---|---|---|
+| **Líder de proyecto / Product Owner** | Visión del producto, definición del contrato, aprobación de cada fase | `contract/`, decisiones de gate en `CHANGELOG.md` |
+| **Arquitecto de software** | Diseño del dominio, máquina de estados, modelo de datos, reglas de negocio | `src/domain/`, `docs/00–03` |
+| **Desarrollador full-stack** | Implementación React + TypeScript estricto, motor temporal, escenarios | `src/`, `tests/` |
+| **QA / Auditor de calidad** | 20 pruebas de aceptación, 38 pruebas automatizadas, reporte de hallazgos | `docs/04`, `tests/` |
+| **Diseñador de UX** | Flujos de cuidador y supervisor, accesibilidad, semáforo visual | `src/pages/`, `src/components/` |
+
+### Método de trabajo y trazabilidad
+
+El proyecto opera bajo un **protocolo de gate reviews**: cada fase requirió aprobación
+explícita antes de avanzar a la siguiente. Ese proceso — con criterios definidos,
+resultados documentados y decisiones trazables en `CHANGELOG.md` — garantiza la misma
+disciplina que exige la colaboración en equipo: ningún entregable avanzó sin validación
+estructurada.
+
+El historial de 8 commits, uno por fase, es la evidencia pública de ese método y del
+liderazgo continuo sobre cada decisión de alcance, arquitectura y calidad.
 
 ---
 
 ## Criterio 8 · Innovación y creatividad
 
-> _pendiente_
+### Definición de innovación en este proyecto
+
+**Innovación** es resolver un problema real de una forma que antes no existía o no era
+accesible para ese mercado. Se clasifica por su naturaleza: de producto, de proceso, de
+modelo de negocio o tecnológica.
+
+**Creatividad** es la capacidad de combinar elementos existentes de formas no obvias para
+generar valor. Se expresa como creatividad combinatoria (unir ideas de dominios distintos),
+exploratoria (profundizar dentro de un espacio definido) o transformacional (cambiar las
+reglas del espacio).
+
+En CareSignal, ambas operan en cuatro planos simultáneos.
+
+---
+
+### 1. Innovación en la solución
+
+> **Tipo de innovación:** de producto + de acceso al mercado
+> **Tipo de creatividad:** combinatoria — herramientas de trazabilidad de sectores regulados (salud, finanzas) aplicadas por primera vez al mercado de residencias de adultos mayores en México
+
+El mercado de residencias opera hoy con papel, WhatsApp y hojas de cálculo — no por
+falta de tecnología, sino porque ninguna solución fue diseñada para su dominio específico:
+rondas, alertas, escalación, verificación y cierre con trazabilidad completa.
+
+CareSignal modela ese ciclo en una **máquina de estados formal**, en español, sin
+instalación y a un costo accesible. Lleva al sector una capacidad que hasta hoy solo
+tenían los hospitales con sistemas de $500K USD.
+
+---
+
+### 2. Innovación en la integración de IA
+
+> **Tipo de innovación:** de proceso — arquitectura de datos primero, inferencia después
+> **Tipo de creatividad:** exploratoria — profundiza en el dominio para construir la base de datos correcta antes de añadir modelos
+
+La tendencia del mercado es añadir IA sin datos estructurados que la sustenten.
+CareSignal hizo lo contrario: primero los 20 tipos de evento, el motor temporal y la
+bitácora append-only — luego los modelos sobre esa base.
+
+Las funciones de IA planificadas para v0.2, sobre **BigQuery ML / Vertex AI**:
+
+| Función de IA | Tipo | Qué problema resuelve |
+|---|---|---|
+| **Alertas predictivas** | Supervisado | Anticipa riesgo de incidente por residente basado en histórico de rondas |
+| **Detección de anomalías** | No supervisado | Detecta desviaciones del protocolo — registros imposibles según la máquina de estados |
+| **Optimización de asignación** | Optimización | Minimiza tiempos de respuesta distribuyendo carga entre cuidadores disponibles |
+| **Resumen ejecutivo de turno** | Generativa | Genera el reporte de traspaso desde los eventos — sin transcripción manual |
+
+La arquitectura ya está lista para recibirlas. No es especulación — es diseño presente.
+
+---
+
+### 3. Innovación en ciberseguridad
+
+> **Tipo de innovación:** tecnológica — seguridad activa y continua vs. controles pasivos
+> **Tipo de creatividad:** transformacional — convierte la ciberseguridad de un atributo del producto en una capacidad operativa autónoma
+
+La visión de CareSignal incluye un **agente de IA de ciberseguridad** que opera de forma
+continua sobre el entorno de producción:
+
+- **Monitoreo continuo de integridad:** analiza patrones de la bitácora en busca de
+  comportamientos anómalos — accesos fuera de horario, secuencias de eventos imposibles
+  según la máquina de estados, modificaciones inesperadas.
+- **Pruebas de seguridad automatizadas:** verifica periódicamente la configuración de
+  reglas de Firebase, permisos de Cloud Run y exposición de endpoints — y reporta
+  desviaciones antes de que sean explotadas.
+- **Protección de población vulnerable:** los datos de adultos mayores son datos sensibles
+  bajo la LFPDPPP. Un agente que los monitorea activamente eleva el estándar del sector
+  al nivel que hoy solo tienen las instituciones financieras y de salud de primer nivel.
+
+Esto transforma la ciberseguridad de CareSignal de un control pasivo (cifrado) a una
+**capacidad activa, continua y auditable**.
+
+---
+
+### 4. Innovación técnica: arquitectura event-driven modular
+
+> **Tipo de innovación:** tecnológica — adopción de patrones de arquitectura de vanguardia en un sector que opera con software monolítico
+> **Tipo de creatividad:** combinatoria — principios del CNCF, Google Cloud Architecture Framework y AWS Well-Architected aplicados a un MVP de nicho con recursos mínimos
+
+| Capa | Responsabilidad | Ventaja estructural |
+|---|---|---|
+| **Dominio puro** | Tipos, reglas, transiciones — sin dependencias externas | Testeable de forma aislada; portable a cualquier backend |
+| **Motor de eventos** | Genera y registra eventos inmutables por cada acción | Fuente de verdad para auditoría y para los modelos de IA |
+| **Repositorio** | Única capa que toca el almacenamiento | Migrar de localStorage a Firebase es un cambio de una sola capa |
+| **UI** | Consume estado — nunca lo produce ni lo persiste | Componentes intercambiables sin riesgo de corrupción de datos |
+
+En un mercado donde el software de gestión de residencias es monolítico, propietario y
+no auditable, esta arquitectura es una ventaja verificable — cualquier evaluador técnico
+puede confirmarlo leyendo el repositorio.
 
 ---
 
 ## Criterio 9 · Factibilidad técnica y financiera
 
-> _pendiente_
+### Factibilidad técnica — el MVP
+
+El MVP no es una promesa — es código funcionando, verificado y publicado.
+
+| Evidencia técnica | Detalle |
+|---|---|
+| Stack probado | React 18 + TypeScript estricto, Vite, sin dependencias no estándar |
+| Build de producción | ~225 KB JS (~68 KB comprimido) — carga en cualquier conexión |
+| Pruebas automatizadas | 38 pruebas, 0 fallos |
+| Sin deuda técnica bloqueante | 0 hallazgos `blocker`, 1 `high` corregido antes del release |
+| Accesibilidad | WCAG 2.1 AA verificada en QA C8 |
+
+### Arquitectura de producción: eventos asíncronos, modular y en tiempo real
+
+La arquitectura de producción sigue el patrón **monolito modular con eventos asíncronos**
+— recomendado por Google Cloud Architecture Framework y CNCF para sistemas SaaS que
+necesitan escalar sin microservicios prematuros.
+
+```
+┌─────────────────────────────────────────────────────┐
+│  Cliente (React SPA)                                 │
+│  WebSocket ◄──────────────────────────────────────► │
+└────────────────────┬────────────────────────────────┘
+                     │ REST / WebSocket
+┌────────────────────▼────────────────────────────────┐
+│  API Backend — FastAPI (Python) en Cloud Run         │
+│  • REST API: CRUD de rondas, alertas, residentes     │
+│  • WebSocket server: push de eventos en tiempo real  │
+│  • Publica eventos a Pub/Sub al completar cada acción│
+└──────┬────────────────────────┬───────────────────── ┘
+       │ Firestore               │ Pub/Sub (async)
+┌──────▼──────────┐    ┌────────▼──────────────────── ┐
+│ Firebase        │    │ Worker — Cloud Run (job)       │
+│ Firestore       │    │ • Consume eventos de Pub/Sub   │
+│ (estado vivo)   │    │ • Escribe a BigQuery           │
+│ Firebase Auth   │    │ • Dispara alertas automáticas  │
+└─────────────────┘    └────────────────────────────── ┘
+                                │ streaming insert
+                       ┌────────▼──────────────────────┐
+                       │ BigQuery                       │
+                       │ • Histórico de eventos         │
+                       │ • Modelos de IA (v0.2)         │
+                       │ • Reportes y dashboards        │
+                       └───────────────────────────────┘
+```
+
+**Por qué FastAPI:** framework Python asíncrono de alto rendimiento, nativo para APIs
+REST y WebSockets, con tipado fuerte compatible con el modelo de dominio TypeScript del
+frontend. Ideal para Cloud Run por su arranque rápido y bajo footprint.
+
+**Por qué WebSockets:** el dashboard del supervisor necesita actualizaciones en tiempo
+real sin polling — cuando una ronda se retrasa o se genera una alerta, el supervisor lo
+ve en segundos, no en el próximo refresh.
+
+**Por qué Pub/Sub:** desacopla la escritura operativa (Firestore, tiempo crítico) del
+procesamiento analítico (BigQuery, puede tener latencia). El sistema no bloquea una
+acción del cuidador esperando que BigQuery confirme la escritura.
+
+### Estimado de generación de datos
+
+*(Estimados de referencia para una residencia de 50 residentes, 3 turnos diarios)*
+
+| Fuente de datos | Eventos/día | Tamaño estimado/evento | Datos/mes | Datos/año |
+|---|---|---|---|---|
+| Rondas (completas, canceladas, atrasadas) | ~150 | ~500 bytes | ~2.2 MB | ~27 MB |
+| Alertas e incidentes | ~5–15 | ~800 bytes | ~0.3 MB | ~3.5 MB |
+| Eventos de auditoría (todas las acciones) | ~300 | ~400 bytes | ~3.6 MB | ~44 MB |
+| **Total por residencia** | **~465** | — | **~6 MB** | **~75 MB** |
+
+A **33 clientes** (escenario 3% de penetración): ~200 MB/mes · ~2.5 GB/año —
+volumen mínimo para BigQuery, con costo de almacenamiento inferior a $1 USD/mes.
+
+### Estimado de costos de infraestructura Google Cloud
+
+*(Precios públicos GCP, agosto 2026; estimados para 33 clientes activos)*
+
+| Servicio | Uso estimado/mes | Costo estimado USD/mes |
+|---|---|---|
+| Cloud Run (API FastAPI) | ~5M solicitudes, ~0.5 vCPU-seg promedio | ~$15–25 |
+| Cloud Run (Worker Pub/Sub) | Procesamiento de ~200K eventos | ~$5–10 |
+| Firestore | ~6M lecturas · ~2M escrituras por 33 clientes | ~$15–25 |
+| Pub/Sub | ~200K mensajes/mes | ~$1 |
+| BigQuery (almacenamiento) | ~200 MB activos | <$1 |
+| BigQuery (consultas) | ~50 GB procesados/mes | ~$0.25 |
+| Firebase Auth | Hasta 10K usuarios activos/mes | Gratis |
+| **Total estimado** | | **~$37–62 USD/mes** |
+
+A **100 clientes:** ~$110–180 USD/mes. Margen bruto >90% a cualquier escala de este rango.
+
+### Factibilidad financiera
+
+**Modelo de ingresos:** SaaS B2B, suscripción mensual por residencia.
+
+| Plan | Precio | Mercado objetivo |
+|---|---|---|
+| Esencial | $1,490 MXN/mes | Residencias pequeñas (hasta 25 residentes) |
+| Profesional | $3,490 MXN/mes | Residencias medianas (hasta 75 residentes) |
+| Institucional | $6,990 MXN/mes | Cadenas y residencias grandes |
+
+**Escenario conservador — 3% de penetración** (DENUE 2025: ~1,100 residencias privadas):
+
+| Métrica | Valor |
+|---|---|
+| Clientes | ~33 residencias |
+| Ingreso mensual (mix Esencial/Profesional) | ~$80,000 MXN/mes |
+| Ingreso anual | ~$960,000 MXN (~$48,000 USD) |
+| Costo infraestructura Google Cloud | ~$37–62 USD/mes |
+| Margen bruto estimado | **>95%** |
+
+El modelo es rentable desde el primer cliente — Cloud Run escala a cero cuando no hay
+tráfico y no genera costo fijo.
 
 ---
 
