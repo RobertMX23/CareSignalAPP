@@ -136,6 +136,14 @@ el evento de baja probabilidad y consecuencia grave.
 
 ## Criterio 4 · Propuesta de valor
 
+### Propuesta de valor en una línea
+
+> **CareSignal es la única plataforma de trazabilidad operativa diseñada específicamente
+> para residencias de adultos mayores en México: en español, sin instalación, con
+> auditoría inmutable, doble validación documental y lista para Google Cloud Run.**
+
+---
+
 ### Qué compra la residencia
 
 La dirección de una residencia privada no compra software — compra **tres cosas concretas**:
@@ -538,6 +546,16 @@ Inferencia por lotes sobre BigQuery ML / Vertex AI, ejecución cada hora.
 El modelo es rentable desde el primer cliente. Los agentes de IA se facturan por uso
 real — a cero clientes, costo cero. No hay costo fijo de infraestructura.
 
+### Roadmap de versiones — el plan forward
+
+| Versión | Plazo estimado | Qué incluye | Hito clave |
+|---|---|---|---|
+| **v0.1.0** | Agosto 2026 ✅ | MVP demo · localStorage · 8 fases · 38 pruebas · 0 blockers | Concurso WomenCISO/MenCISO |
+| **v1.0** | Q1 2027 | Despliegue en Google Cloud Run + Firebase · auth real · multi-tenant · WebSockets | Primer cliente de pago |
+| **v0.2** | Q3 2027 | Agentes IA (alertas predictivas · anomalías · soporte RAG) · BigQuery ML · agente de ciberseguridad 24/7 | IA en producción con datos reales |
+
+La ruta de v0.1.0 a v1.0 **no requiere rediseñar el dominio ni la UI** — solo activar la capa de infraestructura. El repositorio ya está estructurado para ese paso.
+
 ---
 
 ## Criterio 10 · Valor al usuario y al dueño
@@ -788,8 +806,20 @@ evidencia que puede evitar o defender todos los escenarios anteriores.**
 
 Los datos que CareSignal gestiona — condición física, historial de atención, incidentes,
 identidad de residentes — son **datos sensibles** bajo la LFPDPPP, categoría con
-obligaciones reforzadas. El framework opera en tres capas: diseño, infraestructura y
-monitoreo activo.
+obligaciones reforzadas. El framework de ciberseguridad de CareSignal está alineado con
+el **NIST Cybersecurity Framework (NIST CSF)** y con los controles de **ISO 27001**,
+implementados a través de Google Cloud Platform. Opera en tres capas: diseño,
+infraestructura y monitoreo activo.
+
+### Alineación con NIST CSF — las 5 funciones
+
+| Función NIST CSF | Descripción | Cómo CareSignal la implementa |
+|---|---|---|
+| **Identificar** | Conocer los activos y riesgos | Inventario de datos sensibles · clasificación LFPDPPP · evaluación de riesgo por rol |
+| **Proteger** | Controles de acceso y cifrado | Firebase Security Rules · TLS 1.3 · AES-256 · acceso por rol · datos ficticios en demo |
+| **Detectar** | Monitoreo de anomalías | Agente IA de ciberseguridad · análisis de bitácora cada 5 min · Cloud Audit Logs |
+| **Responder** | Acción ante incidentes | Alertas automáticas al administrador · reporte de seguridad por turno |
+| **Recuperar** | Continuidad y respaldo | Backup digital de todos los registros · sincronización Firestore · historial inmutable |
 
 ---
 
