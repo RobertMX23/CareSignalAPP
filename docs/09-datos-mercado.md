@@ -110,7 +110,38 @@ Cifras verificables sobre el MVP, útiles en presentaciones:
 | Acciones para completar una ronda normal | 3 o menos |
 | Tamaño del paquete de producción | ~225 KB JS (~68 KB comprimido) |
 
-## 6. Lo que NO tenemos
+## 6. Modelo de precios (decisión E1.2, 25 agosto 2026)
+
+Unidad de cobro: **por residencia / mes** (SaaS B2B, sin cobro por plaza).
+No hay datos publicados de disposición a pagar en este segmento; los precios se fijaron
+por referencia a SaaS operativos de salud y cuidados en México.
+
+| Plan | Precio | Residentes | Supervisores | Cuidadores | Notas |
+|---|---|---|---|---|---|
+| **Esencial** | $1,490 MXN/mes | hasta 25 | 1 | hasta 5 | Residencias pequeñas |
+| **Profesional** | $3,490 MXN/mes | hasta 75 | hasta 3 | hasta 15 | Residencias medianas |
+| **Institucional** | $6,990 MXN/mes | sin límite | sin límite | sin límite | Cadenas · soporte prioritario |
+
+> ⚠ Precios de referencia, no validados con clientes. Declarar esto ante jueces.
+
+## 6b. Funciones de IA — roadmap v0.2 (decisión E1.1, 25 agosto 2026)
+
+La arquitectura event-driven del MVP (bitácora de 20 tipos de evento, motor temporal
+determinista) hace que las siguientes funciones sean integrables sin romper el contrato
+actual. Se posicionan como **diferenciadores del roadmap**, no como parte de v0.1.0.
+
+| Función | Dato que consume | Valor operativo |
+|---|---|---|
+| Alertas predictivas | Histórico de tiempos de ronda por residente | Anticipa retrasos antes de que ocurran |
+| Detección de anomalías | Patrones de la bitácora de auditoría | Detecta desviaciones del protocolo |
+| Optimización de asignación | Carga de cuidadores + disponibilidad | Reduce tiempo de respuesta ante alertas |
+| Resumen ejecutivo automático | Eventos del turno | Traspaso de turno sin transcripción manual |
+
+> La ausencia de IA en v0.1.0 se declara como **decisión de privacidad**: ningún dato
+> de residente sale del dispositivo. Eso es una ventaja diferenciadora frente a
+> soluciones cloud-first, no una carencia.
+
+## 7. Lo que NO tenemos
 
 Declarado para que nadie lo invente:
 
@@ -120,7 +151,7 @@ Declarado para que nadie lo invente:
 - **Tasa de informalidad** del sector.
 - **Clientes, pilotos o testimonios.** Cero. La tracción es de producto, no de mercado.
 
-## 7. Fuentes
+## 8. Fuentes
 
 - CONAPO, vía Gaceta UNAM — *México, oficialmente un país envejecido*
 - INEGI — *Los adultos mayores en México: perfil sociodemográfico*

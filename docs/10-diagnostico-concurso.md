@@ -98,7 +98,7 @@ corresponde antes de hacer el fork.
 | Fase | Contenido | Estado |
 |---|---|---|
 | **E0** | Higiene del repositorio | ✅ **Completa** — commit `f9173c6` |
-| **E1** | Decisiones humanas | 🔄 3 de 4 tomadas |
+| **E1** | Decisiones humanas | 🔄 3 de 4 tomadas · 1 pendiente (GitHub) |
 | **E2** | Contenido | ⏭ siguiente |
 | **E3** | Ensamblado | pendiente |
 | **E4** | Semifinal | solo si avanza |
@@ -107,9 +107,9 @@ corresponde antes de hacer el fork.
 
 | # | Decisión | Estado |
 |---|---|---|
-| E1.1 | Eje de ciberseguridad | ✅ Opción A + encadenamiento de hashes |
-| E1.2 | Precios y unidad de cobro | ⏳ **Pendiente** — bloquea el video y la lámina de modelo |
-| E1.3 | Equipo | ✅ Individual, declarado |
+| E1.1 | Eje de IA y ciberseguridad | ✅ IA como funciones integrables en v0.2 (roadmap); arquitectura event-driven ya las soporta; criterio 11 cubierto por hash-chaining en auditoría |
+| E1.2 | Precios y unidad de cobro | ✅ 3 planes por residencia: Esencial $1,490 · Profesional $3,490 · Institucional $6,990 (MXN/mes) |
+| E1.3 | Equipo | ✅ Proyecto individual · Roberto García como Fundador / Product Owner / Arquitecto / UX |
 | E1.4 | Cuenta de GitHub y nombre de carpeta | ⏳ **Pendiente** — bloquea toda la entrega |
 
 ### E2 — tareas de contenido
