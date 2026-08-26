@@ -25,6 +25,21 @@ tiene visibilidad en tiempo real. El supervisor no puede actuar sobre lo que no 
 operativa, en instalaciones que la CNDH supervisó en menos del 4% de los casos durante
 la pandemia (Informe CNDH ISP-12/2020).
 
+### Por qué ahora
+
+El sector no está en equilibrio estable — está en aceleración. Tres fuerzas convergen en
+2026 y crean una ventana de oportunidad que no existía hace dos años:
+
+| Fuerza | Dato | Implicación |
+|---|---|---|
+| Crecimiento del sector | +18% interanual en establecimientos registrados (DENUE 2024→2025) | Más residencias sin herramientas — el mercado se amplía mientras la oferta digital es casi nula |
+| NOM-031-SSA3-2012 vigente sin fiscalización real | Menos del 4% de centros supervisados (CNDH, 2020) | La norma existe, la inspección aumentará — quien llegue digitalizado llega protegido |
+| Envejecimiento acelerado | 17.1 M mayores hoy → 20 M+ en 2030 (CONAPO) | La demanda de cuidado crece más rápido que la capacidad instalada; la presión familiar sobre las residencias también |
+
+La combinación de crecimiento acelerado + marco normativo sin cumplimiento generalizado
+crea el momento exacto para una solución de trazabilidad operativa: antes de que la
+fiscalización se intensifique, no después.
+
 ### La alineación con IA y ciberseguridad
 
 **Ciberseguridad:** Los datos de adultos mayores — su condición física, sus incidentes,
@@ -92,6 +107,20 @@ que una dirección de residencia privada compra. Una residencia de 50 residentes
 3 turnos diarios realiza aproximadamente **450 rondas por semana**. CareSignal convierte
 cada una en un evento auditable con actor, timestamp y resultado: evidencia que protege
 a la residencia ante una inspección, ante una familia inconforme, ante una demanda.
+
+### Por qué esta solución es innovadora
+
+CareSignal no es la primera aplicación web — es la primera diseñada específicamente para
+el dominio operativo de las residencias de adultos mayores en México. La innovación no
+está en la tecnología: está en la especificidad del modelo.
+
+> Ver criterio 8 para la tipología completa de innovación (de producto, de proceso,
+> combinatoria y exploratoria) y su evidencia técnica.
+
+Lo que ningún formulario genérico, hoja de cálculo ni sistema hospitalario hace:
+modelar el ciclo ronda → alerta → escalación → verificación → cierre con una máquina de
+estados que impide registros inválidos, en español, sin instalación, al costo de un
+servicio SaaS operativo.
 
 ---
 
