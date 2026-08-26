@@ -784,4 +784,90 @@ evidencia que puede evitar o defender todos los escenarios anteriores.**
 
 ## Criterio 11 · Framework de ciberseguridad
 
-> _pendiente_
+### El contexto: datos sensibles de población vulnerable
+
+Los datos que CareSignal gestiona — condición física, historial de atención, incidentes,
+identidad de residentes — son **datos sensibles** bajo la LFPDPPP, categoría con
+obligaciones reforzadas. El framework opera en tres capas: diseño, infraestructura y
+monitoreo activo.
+
+---
+
+### Tabla 1 — Las tres capas del framework de ciberseguridad
+
+| Capa | Qué protege | Mecanismo | Estado |
+|---|---|---|---|
+| **Diseño (Privacy by Design)** | Superficie de ataque y exposición de datos | Arquitectura cloud-ready · dominio puro · sin dependencias externas · datos ficticios en demo | v0.1.0 — listo para despliegue en Google Cloud Run |
+| **Infraestructura (Google Cloud)** | Datos en tránsito y en reposo | TLS 1.3 · cifrado en reposo · Firebase Security Rules · acceso por rol · aislamiento por residencia | v1.0 producción |
+| **Monitoreo activo (Agente IA)** | Integridad de la operación 24/7 | Agente de ciberseguridad sobre Vertex AI · análisis continuo de la bitácora | v0.2 roadmap |
+
+---
+
+### Tabla 2 — Privacy by Design: decisiones de arquitectura y su impacto en seguridad
+
+| Decisión de diseño | Por qué se tomó | Impacto en ciberseguridad |
+|---|---|---|
+| **Arquitectura cloud-ready desde v0.1.0** | Diseñado para desplegarse en Google Cloud Run sin cambios de dominio ni UI | La ruta a producción segura no requiere rediseño — solo activar la capa de infraestructura |
+| Capa de repositorio desacoplada | `localStorage` en demo se reemplaza por Firebase en producción con un solo cambio de capa | Ninguna lógica de negocio depende del mecanismo de almacenamiento |
+| Sin APIs externas en demo | Evitar dependencias de terceros en el prototipo | Cero riesgo de fuga hacia analytics, CDNs o telemetría durante la fase de demo |
+| Datos ficticios obligatorios en demo | Contrato §8 — ningún dato real en el MVP | Imposible exponer PII de residentes reales durante demostraciones o pruebas |
+| Auditoría append-only | Trazabilidad inmutable por diseño | El historial no puede borrarse ni editarse desde la UI — en demo ni en producción |
+| Dominio puro sin dependencias externas | Arquitectura limpia y portable | Código de reglas de negocio aislado · testeable · no expuesto a la red |
+
+**El MVP está listo para desplegarse en Google Cloud Run.** La infraestructura de
+seguridad de producción se activa en ese paso — sin rediseñar nada. La ausencia de IA
+en v0.1.0 fue una decisión de privacidad: ningún dato de residente alimenta un modelo
+externo hasta que exista consentimiento informado y arquitectura de anonimización.
+
+---
+
+### Tabla 3 — Infraestructura de producción: controles de seguridad Google Cloud
+
+| Control | Tecnología | Qué ataque mitiga |
+|---|---|---|
+| Cifrado en tránsito | TLS 1.3 (Cloud Run + Firebase) | Intercepción de datos en red (MITM) |
+| Cifrado en reposo | AES-256 (Firestore + BigQuery) | Acceso físico no autorizado al almacenamiento |
+| Acceso por rol | Firebase Security Rules | Un cuidador no puede ver datos de otra residencia |
+| Aislamiento por residencia | Reglas de Firestore por tenant | Filtración de datos entre clientes (data leakage) |
+| Autenticación | Firebase Auth (MFA disponible) | Acceso no autorizado con credenciales robadas |
+| Auditoría de acceso | Cloud Audit Logs | Detecta accesos anómalos a datos de producción |
+| Certificaciones de la plataforma | ISO 27001 · SOC 2 Type II · GDPR | Cumplimiento normativo demostrable ante inspección |
+
+---
+
+### Tabla 4 — Agente de IA de ciberseguridad: monitoreo activo vs. controles pasivos
+
+| Capacidad | Control pasivo tradicional | Agente IA CareSignal (v0.2) |
+|---|---|---|
+| Detección de anomalías en la bitácora | Manual · revisión periódica | Automática · cada 5 minutos · 24/7 |
+| Secuencias de eventos imposibles | No detectadas hasta auditoría | Detectadas en tiempo real vs. máquina de estados |
+| Accesos fuera de horario | Log disponible · nadie lo revisa | Alerta inmediata al administrador |
+| Verificación de configuración de seguridad | Manual · ocasional | Automática · reglas Firebase · permisos Cloud Run |
+| Reporte de seguridad al director | No existe | Generado automáticamente por turno o por semana |
+| Costo a 33 clientes | — | ~$8–10 USD/mes (Gemini Flash) |
+
+---
+
+### Tabla 5 — CareSignal vs. estándar de la industria en residencias (comparativa cruzada)
+
+| Dimensión de seguridad | Residencia típica hoy | CareSignal v0.1.0 | CareSignal producción |
+|---|---|---|---|
+| Protección de datos de residentes | Papel · sin control | Cloud-ready · datos ficticios en demo | Cloud cifrado · aislado por residencia |
+| Trazabilidad de acciones del personal | Sin registro | Bitácora inmutable · 20 tipos de evento | Bitácora + Cloud Audit Logs |
+| Validación documental | Solo firma física | Firma física en impreso | Firma digital + firma física (doble validación) |
+| Cumplimiento LFPDPPP | No verificable | Datos ficticios · sin PII real | Arquitectura de consentimiento + anonimización |
+| Cumplimiento NOM-031-SSA3-2012 | Registros en papel | Registros automáticos imprimibles | Registros digitales + respaldo + firma |
+| Detección de anomalías operativas | Ninguna | Motor temporal detecta retrasos | Agente IA monitorea continuamente |
+| Marco normativo de referencia | — | LFPDPPP | LFPDPPP · ISO 27001 (Google Cloud) · SOC 2 |
+
+---
+
+### El argumento ante los jueces
+
+> CareSignal no añadió seguridad como feature de marketing — la construyó como
+> restricción de diseño. El MVP está listo para Google Cloud Run: activar la capa de
+> infraestructura despliega TLS, cifrado, aislamiento por residencia y auditoría de
+> accesos sin tocar una línea de dominio ni de UI. En v0.2, un agente de IA de
+> ciberseguridad convierte la protección de datos de adultos mayores de un control pasivo
+> en una capacidad activa y continua — el mismo estándar que hoy tienen las instituciones
+> financieras y de salud de primer nivel.
