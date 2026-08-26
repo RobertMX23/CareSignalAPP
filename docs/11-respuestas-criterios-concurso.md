@@ -138,19 +138,51 @@ El segmento comprador es la **dirección de la residencia privada**: una operaci
 presión familiar, riesgo reputacional y obligaciones normativas bajo la NOM-031-SSA3-2012
 — y sin herramientas digitales específicas para su operación.
 
-### El hueco competitivo
+### Análisis de competencia directa — mercado mexicano
 
-Las soluciones existentes caen en una de tres categorías, ninguna resuelve el problema
-completo:
+Investigación realizada en agosto de 2026 sobre soluciones actualmente disponibles en México:
 
-| Categoría | Ejemplos | Limitación |
-|---|---|---|
-| Software de expediente clínico | PointClickCare, MatrixCare | Diseñados para clínicas/hospitales, costosos, en inglés, requieren infraestructura |
-| Hojas de cálculo / papel | — | Sin tiempo real, sin alertas, sin trazabilidad |
-| Apps genéricas de gestión de tareas | Trello, WhatsApp | No modelan el dominio: sin estados de ronda, sin escalación, sin auditoría |
+#### Competidores con presencia en México
 
-**CareSignal es el único MVP que modela el ciclo operativo completo de una residencia
-en español, sin instalación, sin hardware adicional y con auditoría integrada.**
+| Competidor | Origen | Modelo | Enfoque | Presencia MX |
+|---|---|---|---|---|
+| **Cronos Care** | México | Cloud / SaaS | Gestión integral: residentes, medicamentos, personal, pagos, portal familiar | ✅ +50 residencias activas |
+| **GERIGES** | España (localiz. MX) | Cloud / SaaS | Expediente clínico, PAI/PIA, medicación, turnos, app táctil para auxiliares | ✅ Versión `.com/mx/` |
+| **StoriiCare** | EE.UU. | Cloud / SaaS | EHR, eMAR, IA integrada, verificación EVV con GPS | ⚠ Sin presencia confirmada en MX |
+| **Papel / hojas de cálculo** | — | — | Mayoría del sector | ✅ Predominante |
+
+#### Comparativa funcional detallada
+
+| Función | Cronos Care | GERIGES | StoriiCare | **CareSignal** |
+|---|---|---|---|---|
+| Idioma | Español | Español | Español (traducido) | Español nativo |
+| Modelo de precios | Sin publicar | Sin publicar | Sin publicar | ✅ Publicado (3 planes) |
+| Sin instalación | ✅ | ✅ | ✅ | ✅ |
+| Expediente clínico / médico | ✅ | ✅ | ✅ | ❌ (operativo, no médico) |
+| Rondas con máquina de estados | ❌ | ❌ | ❌ | ✅ |
+| Alertas automáticas por retraso | ❌ | ❌ | ❌ | ✅ |
+| Escalación supervisor trazable | ❌ | ❌ | ❌ | ✅ |
+| Auditoría append-only inmutable | ❌ | ❌ | ❌ | ✅ |
+| Doble validación documental | ❌ | ❌ | ❌ | ✅ |
+| IA integrada | ❌ | ❌ | ✅ (EHR) | Roadmap v0.2 |
+| Portal familiar | ✅ | ✅ | ✅ | Roadmap v0.2 |
+| Alineado con NOM-031 operativa | ⚠ Parcial | ⚠ Parcial | ❌ | ✅ |
+
+#### El hueco que ninguno cubre
+
+Cronos Care y GERIGES son los competidores más relevantes en México. Ambos son sistemas de
+**expediente y facturación**: registran al residente, gestionan medicamentos y cobros. Ninguno
+modela el ciclo operativo de la ronda — la secuencia programación → ejecución → retraso →
+alerta → escalación → verificación → cierre — con transiciones de estado formales que
+impidan registros inválidos.
+
+**La diferencia clave no es de funcionalidades, es de dominio modelado:**
+
+- Cronos Care y GERIGES resuelven la **administración de la residencia**
+- CareSignal resuelve la **trazabilidad operativa del turno**
+
+Son complementarios, no idénticos — y el ciclo de ronda es exactamente lo que la
+NOM-031 exige como "programa de trabajo" y que hoy se lleva en papel o no se lleva.
 
 ### La necesidad validada por la norma
 
@@ -170,6 +202,26 @@ el evento de baja probabilidad y consecuencia grave.
 > **CareSignal es la única plataforma de trazabilidad operativa diseñada específicamente
 > para residencias de adultos mayores en México: en español, sin instalación, con
 > auditoría inmutable, doble validación documental y lista para Google Cloud Run.**
+
+### Por qué es única — frente a los competidores reales
+
+Los dos competidores con presencia activa en México son Cronos Care (+50 residencias) y
+GERIGES (versión localizada). Ambos cubren expediente, medicamentos y facturación. Ninguno
+modela el ciclo operativo de la ronda con estados formales, alertas automáticas por
+retraso ni escalación trazable al supervisor.
+
+| Diferenciador | Cronos Care | GERIGES | CareSignal |
+|---|---|---|---|
+| Rondas con máquina de estados | ❌ | ❌ | ✅ |
+| Alerta automática por retraso | ❌ | ❌ | ✅ |
+| Escalación con actor registrado | ❌ | ❌ | ✅ |
+| Auditoría inmutable append-only | ❌ | ❌ | ✅ |
+| Precio publicado | ❌ | ❌ | ✅ |
+| Alineado con NOM-031 operativa | ⚠ Parcial | ⚠ Parcial | ✅ |
+
+CareSignal no compite con ellos en expediente clínico — ese no es el dominio del MVP. Compite
+en el ciclo de turno operativo, que es donde ocurre el riesgo y donde no hay ninguna solución
+específica hoy en el mercado mexicano.
 
 ---
 

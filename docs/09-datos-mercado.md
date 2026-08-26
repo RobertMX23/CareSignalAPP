@@ -141,15 +141,34 @@ actual. Se posicionan como **diferenciadores del roadmap**, no como parte de v0.
 > de residente sale del dispositivo. Eso es una ventaja diferenciadora frente a
 > soluciones cloud-first, no una carencia.
 
-## 7. Lo que NO tenemos
+## 7. Análisis de competencia (E2.2 — agosto 2026)
+
+Investigación de mercado realizada el 26 de agosto de 2026 mediante búsqueda web.
+
+| Competidor | Origen | Presencia MX | Módulos principales | Precio publicado |
+|---|---|---|---|---|
+| **Cronos Care** | México | ✅ +50 residencias activas | Residentes, medicamentos, personal, pagos, portal familiar, incidencias | No |
+| **GERIGES** | España (localiz. MX) | ✅ Versión `.com/mx/` | Expediente, PAI/PIA, medicación, turnos, app táctil auxiliares | No |
+| **StoriiCare** | EE.UU. | ⚠ Sin confirmar MX | EHR, eMAR, IA, EVV GPS, portal familiar | No |
+| **Papel / hoja de cálculo** | — | ✅ Predominante | — | — |
+
+> ⚠ Precios: ningún competidor publica tarifas. CareSignal es el único con precio declarado (3 planes desde $1,490 MXN/mes).
+
+> ⚠ El análisis cubre lo detectable en búsqueda pública. Puede existir software de nicho o soluciones propietarias de cadenas grandes no indexadas.
+
+**Hueco confirmado:** Cronos Care y GERIGES son sistemas de expediente y administración.
+Ninguno modela el ciclo de ronda operativa (programación → retraso → alerta → escalación →
+verificación → cierre) con estados formales. Ese ciclo es el dominio de CareSignal.
+
+## 8. Lo que NO tenemos
 
 Declarado para que nadie lo invente:
 
 - **Disposición a pagar** en ninguno de los dos segmentos.
-- **Análisis de competencia** — tarea E2.2.
 - **Tamaño de mercado en dinero** (solo número de establecimientos).
 - **Tasa de informalidad** del sector.
 - **Clientes, pilotos o testimonios.** Cero. La tracción es de producto, no de mercado.
+- **Precios de competidores** — ninguno los publica; el dato es "consultar".
 
 ## 8. Fuentes
 
