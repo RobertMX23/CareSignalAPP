@@ -183,7 +183,7 @@ async function main() {
           '',
           'En México fallecen más de 700,000 personas mayores cada año.',
           'Muchas de ellas en residencias de cuidado.',
-          'La CNDH solo pudo inspeccionar 58 de más de 1,500 residencias en todo el país.',
+          'La CNDH realizó un muestreo en 58 de más de 1,500 residencias en todo el país.',
           'Y en las que logró visitar documentó condiciones de abandono,',
           'falta de personal y deficiencias operativas.',
           '',
