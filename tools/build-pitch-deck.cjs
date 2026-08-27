@@ -2,46 +2,96 @@
 const PptxGenJS = require('pptxgenjs');
 const path = require('path');
 
-// ── PALETA GLOBAL ─────────────────────────────────────────────────────────────
+// ── PALETA PASTEL ─────────────────────────────────────────────────────────────
 const C = {
-  fondo:       '0A0A0A',
-  azul:        '2563EB',
-  azulClaro:   '3B82F6',
-  rojo:        'DC2626',
-  blanco:      'F8FAFC',
-  gris:        '94A3B8',
-  grisOscuro:  '1E293B',
-  grisMedio:   '334155',
+  fondo:        'FAFAF8',  // blanco cálido
+  tarjeta:      'F0EDE8',  // crema suave
+  azul:         '5B8DB8',  // azul pizarra
+  azulClaro:    'A8C4DC',  // azul muy claro
+  azulOscuro:   '3A6B96',  // azul oscuro
+  verde:        '7BA68A',  // verde salvia
+  terracota:    'C4786A',  // alerta / énfasis
+  grafito:      '2D3748',  // texto principal
+  gris:         '718096',  // texto secundario
+  grisSep:      'E2E8F0',  // separadores
+  blanco:       'FFFFFF',
+};
+
+// ── TIPOGRAFÍA ────────────────────────────────────────────────────────────────
+const T = {
+  portadaTitulo:   { size: 48, bold: true,  color: C.grafito,  fontFace: 'Arial' },
+  portadaTagline:  { size: 18, bold: false, color: C.azul,     fontFace: 'Arial' },
+  slideTitulo:     { size: 28, bold: true,  color: C.grafito,  fontFace: 'Arial' },
+  slideSubtitulo:  { size: 16, bold: true,  color: C.azul,     fontFace: 'Arial' },
+  cuerpo:          { size: 14, bold: false, color: C.grafito,  fontFace: 'Arial' },
+  datoGrande:      { size: 40, bold: true,  color: C.azul,     fontFace: 'Arial' },
+  datoEnfasis:     { size: 40, bold: true,  color: C.terracota,fontFace: 'Arial' },
+  etiqueta:        { size: 10, bold: false, color: C.gris,     fontFace: 'Arial' },
+  nota:            { size:  9, bold: false, color: C.gris,     fontFace: 'Arial' },
 };
 
 // ── HELPERS ───────────────────────────────────────────────────────────────────
 function base(prs) {
-  const slide = prs.addSlide();
-  // fondo negro
-  slide.addShape(prs.ShapeType.rect, {
+  const s = prs.addSlide();
+  s.addShape(prs.ShapeType.rect, {
     x: 0, y: 0, w: '100%', h: '100%',
     fill: { color: C.fondo },
     line: { color: C.fondo },
   });
-  return slide;
+  return s;
 }
 
-function linea(slide, x, y, w) {
-  slide.addShape('line', {
-    x, y, w, h: 0,
-    line: { color: C.azul, width: 1.5 },
+function titulo(s, texto, y = 0.35) {
+  s.addText(texto, {
+    x: 0.5, y, w: 9.16, h: 0.6,
+    ...T.slideTitulo,
   });
 }
 
-function badge(slide, texto, x, y) {
-  slide.addText(texto, {
-    x, y, w: 3.2, h: 0.32,
-    fontSize: 9,
-    bold: true,
-    color: C.blanco,
-    align: 'center',
+function subtitulo(s, texto, y = 1.0) {
+  s.addText(texto, {
+    x: 0.5, y, w: 9.16, h: 0.4,
+    ...T.slideSubtitulo,
+  });
+}
+
+function lineaSep(s, y = 0.95) {
+  s.addShape('line', {
+    x: 0.5, y, w: 9.16, h: 0,
+    line: { color: C.grisSep, width: 1 },
+  });
+}
+
+function accentBar(s) {
+  s.addShape(s.prs ? s.prs.ShapeType.rect : 'rect', {
+    x: 0, y: 0, w: 0.08, h: '100%',
     fill: { color: C.azul },
-    shape: prs => prs.ShapeType.roundRect,
+    line: { color: C.azul },
+  });
+}
+
+function notaPie(s, texto) {
+  s.addText(texto, {
+    x: 0.5, y: 6.9, w: 9.16, h: 0.25,
+    ...T.nota,
+    align: 'right',
+  });
+}
+
+function tarjeta(s, x, y, w, h, color = C.tarjeta) {
+  s.addShape('roundRect', {
+    x, y, w, h,
+    fill: { color },
+    line: { color: C.grisSep, width: 0.5 },
+    rectRadius: 0.08,
+  });
+}
+
+function icono(s, emoji, x, y, size = 28) {
+  s.addText(emoji, {
+    x, y, w: 0.7, h: 0.7,
+    fontSize: size,
+    align: 'center',
   });
 }
 
@@ -49,76 +99,81 @@ function badge(slide, texto, x, y) {
 function slidePortada(prs) {
   const s = base(prs);
 
-  // Barra lateral izquierda azul
+  // Barra superior azul pizarra
   s.addShape(prs.ShapeType.rect, {
-    x: 0, y: 0, w: 0.12, h: '100%',
+    x: 0, y: 0, w: '100%', h: 0.08,
     fill: { color: C.azul },
     line: { color: C.azul },
   });
 
+  // Barra inferior terracota
+  s.addShape(prs.ShapeType.rect, {
+    x: 0, y: 7.12, w: '100%', h: 0.08,
+    fill: { color: C.terracota },
+    line: { color: C.terracota },
+  });
+
+  // Ícono escudo (trazabilidad + seguridad)
+  s.addText('🛡️', {
+    x: 0.5, y: 0.9, w: 1.0, h: 1.0,
+    fontSize: 48,
+    align: 'center',
+  });
+
   // Nombre del producto
   s.addText('CareSignal', {
-    x: 0.4, y: 1.1, w: 9, h: 1.0,
-    fontSize: 54,
-    bold: true,
-    color: C.blanco,
-    fontFace: 'Arial',
+    x: 1.6, y: 0.95, w: 7.8, h: 0.9,
+    ...T.portadaTitulo,
   });
 
   // Tagline
   s.addText('Trazabilidad operativa para residencias de adultos mayores', {
-    x: 0.4, y: 2.1, w: 8.5, h: 0.5,
-    fontSize: 20,
-    color: C.azulClaro,
-    fontFace: 'Arial',
+    x: 1.6, y: 1.85, w: 7.8, h: 0.45,
+    ...T.portadaTagline,
   });
 
   // Línea separadora
-  linea(s, 0.4, 2.75, 8.8);
-
-  // Subtítulo / contexto
-  s.addText('Pitch · 4 minutos · WomenCISO 4 / MenCISO 1', {
-    x: 0.4, y: 2.95, w: 7, h: 0.35,
-    fontSize: 13,
-    color: C.gris,
-    fontFace: 'Arial',
+  s.addShape('line', {
+    x: 0.5, y: 2.5, w: 9.16, h: 0,
+    line: { color: C.grisSep, width: 1.2 },
   });
 
-  // Fecha
-  s.addText('Agosto 2026', {
-    x: 0.4, y: 3.4, w: 4, h: 0.3,
-    fontSize: 12,
-    color: C.gris,
-    fontFace: 'Arial',
+  // Tres pilares en tarjetas
+  const pilares = [
+    { icono: '⏱️', texto: 'Detección\nautomática de\nrondas atrasadas' },
+    { icono: '📋', texto: 'Bitácora\nauditable\ne inmutable' },
+    { icono: '🔔', texto: 'Alertas en\ntiempo real\nal supervisor' },
+  ];
+  pilares.forEach((p, i) => {
+    const x = 0.5 + i * 3.1;
+    tarjeta(s, x, 2.8, 2.85, 2.2);
+    s.addText(p.icono, { x, y: 2.95, w: 2.85, h: 0.6, fontSize: 30, align: 'center' });
+    s.addText(p.texto, {
+      x, y: 3.6, w: 2.85, h: 1.1,
+      fontSize: 13, color: C.grafito, align: 'center', fontFace: 'Arial',
+    });
   });
 
-  // Disclaimers (esquina inferior derecha)
-  s.addText('MVP operacional · No dispositivo médico · Datos ficticios', {
-    x: 2.5, y: 6.85, w: 7.1, h: 0.28,
-    fontSize: 9,
-    color: C.gris,
-    align: 'right',
-    fontFace: 'Arial',
+  // Contexto del pitch
+  s.addText('Pitch · 4 minutos  |  WomenCISO 4 / MenCISO 1  |  Agosto 2026', {
+    x: 0.5, y: 5.35, w: 9.16, h: 0.35,
+    fontSize: 12, color: C.gris, align: 'center', fontFace: 'Arial',
   });
 
-  // Versión
-  s.addText('v0.1.0-workshop', {
-    x: 0.4, y: 6.85, w: 3, h: 0.28,
-    fontSize: 9,
-    color: C.gris,
-    fontFace: 'Arial',
+  // Versión + disclaimers
+  s.addText('v0.1.0-workshop  ·  MVP operacional  ·  No dispositivo médico  ·  Datos ficticios', {
+    x: 0.5, y: 6.75, w: 9.16, h: 0.28,
+    ...T.nota,
+    align: 'center',
   });
 }
 
 // ── MAIN ──────────────────────────────────────────────────────────────────────
 async function main() {
   const prs = new PptxGenJS();
-  prs.layout = 'LAYOUT_WIDE'; // 16:9
+  prs.layout = 'LAYOUT_WIDE'; // 16:9 — 10 × 7.5 pulgadas
 
-  // Fuente y tema por defecto
-  prs.theme = { headFontFace: 'Arial', bodyFontFace: 'Arial' };
-
-  // Slides
+  // Slides activos en este chunk
   slidePortada(prs);
 
   const out = path.join(__dirname, '..', 'business', 'CareSignal_Pitch_Deck.pptx');
