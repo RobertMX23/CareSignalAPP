@@ -41,6 +41,76 @@ function base(prs) {
   return s;
 }
 
+// Elementos decorativos de fondo — sistema de diseño ejecutivo
+function decoFondo(s, prs, variante = 'A') {
+  if (variante === 'A') {
+    // Círculo grande difuminado — esquina inferior derecha
+    s.addShape(prs.ShapeType.ellipse, {
+      x: 7.2, y: 4.8, w: 4.2, h: 4.2,
+      fill: { color: C.azulClaro, transparency: 82 },
+      line: { color: C.azulClaro, transparency: 82 },
+    });
+    // Círculo mediano — esquina superior izquierda
+    s.addShape(prs.ShapeType.ellipse, {
+      x: -1.1, y: -1.2, w: 3.2, h: 3.2,
+      fill: { color: C.terracota, transparency: 88 },
+      line: { color: C.terracota, transparency: 88 },
+    });
+    // Rectángulo accent — borde derecho
+    s.addShape(prs.ShapeType.rect, {
+      x: 9.6, y: 1.8, w: 0.06, h: 2.4,
+      fill: { color: C.azul, transparency: 55 },
+      line: { color: C.azul, transparency: 55 },
+    });
+  }
+  if (variante === 'B') {
+    // Círculo grande — esquina superior derecha
+    s.addShape(prs.ShapeType.ellipse, {
+      x: 7.8, y: -1.5, w: 3.8, h: 3.8,
+      fill: { color: C.verde, transparency: 84 },
+      line: { color: C.verde, transparency: 84 },
+    });
+    // Círculo pequeño — inferior izquierda
+    s.addShape(prs.ShapeType.ellipse, {
+      x: -0.4, y: 5.8, w: 2.2, h: 2.2,
+      fill: { color: C.azulClaro, transparency: 80 },
+      line: { color: C.azulClaro, transparency: 80 },
+    });
+    // Línea diagonal decorativa
+    s.addShape('line', {
+      x: 0.3, y: 6.5, w: 2.5, h: 0,
+      line: { color: C.grisSep, width: 1 },
+      rotate: -18,
+    });
+  }
+  if (variante === 'C') {
+    // Banda lateral derecha tenue
+    s.addShape(prs.ShapeType.rect, {
+      x: 8.9, y: 0, w: 0.76, h: '100%',
+      fill: { color: C.azulClaro, transparency: 88 },
+      line: { color: C.azulClaro, transparency: 88 },
+    });
+    // Círculo inferior centro
+    s.addShape(prs.ShapeType.ellipse, {
+      x: 3.8, y: 5.6, w: 2.6, h: 2.6,
+      fill: { color: C.terracota, transparency: 90 },
+      line: { color: C.terracota, transparency: 90 },
+    });
+  }
+  // Barra superior fina — todas las variantes
+  s.addShape(prs.ShapeType.rect, {
+    x: 0, y: 0, w: '100%', h: 0.06,
+    fill: { color: C.azul },
+    line: { color: C.azul },
+  });
+  // Barra inferior fina — todas las variantes
+  s.addShape(prs.ShapeType.rect, {
+    x: 0, y: 7.14, w: '100%', h: 0.06,
+    fill: { color: C.terracota },
+    line: { color: C.terracota },
+  });
+}
+
 function titulo(s, texto, y = 0.35) {
   s.addText(texto, {
     x: 0.5, y, w: 9.16, h: 0.6,
@@ -98,20 +168,7 @@ function icono(s, emoji, x, y, size = 28) {
 // ── SLIDE 1 — PORTADA ─────────────────────────────────────────────────────────
 function slidePortada(prs) {
   const s = base(prs);
-
-  // Barra superior azul pizarra
-  s.addShape(prs.ShapeType.rect, {
-    x: 0, y: 0, w: '100%', h: 0.08,
-    fill: { color: C.azul },
-    line: { color: C.azul },
-  });
-
-  // Barra inferior terracota
-  s.addShape(prs.ShapeType.rect, {
-    x: 0, y: 7.12, w: '100%', h: 0.08,
-    fill: { color: C.terracota },
-    line: { color: C.terracota },
-  });
+  decoFondo(s, prs, 'A');
 
   // Ícono escudo (trazabilidad + seguridad)
   s.addText('🛡️', {
