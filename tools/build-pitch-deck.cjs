@@ -529,6 +529,114 @@ function slideSolucion(prs) {
   });
 }
 
+// ── SLIDE 8 — MERCADO ─────────────────────────────────────────────────────────
+function slideMercado(prs) {
+  const s = base(prs);
+  decoFondo(s, prs, 'B');
+
+  s.addText('📊  Tamaño de mercado', {
+    x: 0.5, y: 0.25, w: 9.16, h: 0.55,
+    ...T.slideTitulo,
+  });
+  s.addText('México · SaaS B2B · por residencia / mes', {
+    x: 0.5, y: 0.8, w: 9.16, h: 0.35,
+    ...T.slideSubtitulo,
+  });
+  s.addShape('line', { x: 0.5, y: 1.2, w: 9.16, h: 0, line: { color: C.grisSep, width: 1 } });
+
+  // TAM / SAM / SOM — círculos concéntricos simulados con 3 rectángulos redondeados
+  const niveles = [
+    { label: 'TAM', sub: 'Mercado total cuidados\ngeriátricos MX + LatAm', valor: '> USD 25,000 M', color: C.azulClaro, x: 0.5,  y: 1.38, w: 9.16, h: 1.5  },
+    { label: 'SAM', sub: '~1,100–1,300 residencias\nprivadas formales en MX', valor: 'DENUE 2025 · +18 % anual', color: 'D1E8F5',  x: 0.95, y: 2.65, w: 8.26, h: 1.45 },
+    { label: 'SOM', sub: 'Objetivo 3–5 años:\n50–200 residencias piloto', valor: '$175K – $700K MXN/mes', color: C.tarjeta,  x: 1.4,  y: 3.88, w: 7.36, h: 1.45 },
+  ];
+
+  niveles.forEach((n) => {
+    s.addShape('roundRect', {
+      x: n.x, y: n.y, w: n.w, h: n.h,
+      fill: { color: n.color },
+      line: { color: C.grisSep, width: 0.5 },
+      rectRadius: 0.1,
+    });
+    s.addText(n.label, { x: n.x + 0.18, y: n.y + 0.12, w: 1.0, h: 0.42, fontSize: 15, bold: true, color: C.azulOscuro, fontFace: 'Arial' });
+    s.addText(n.sub,   { x: n.x + 1.25, y: n.y + 0.08, w: 4.5, h: 0.75, fontSize: 11, color: C.grafito, fontFace: 'Arial' });
+    s.addText(n.valor, { x: n.x + 5.8,  y: n.y + 0.25, w: 3.0, h: 0.42, fontSize: 13, bold: true, color: C.azulOscuro, fontFace: 'Arial', align: 'right' });
+  });
+
+  // Crecimiento del sector
+  tarjeta(s, 0.5, 5.52, 9.16, 0.65, C.tarjeta);
+  s.addText('📈  El registro del sector creció +18 % en un año (DENUE 2024→2025) — mercado en expansión activa.', {
+    x: 0.7, y: 5.6, w: 8.76, h: 0.48,
+    fontSize: 12, color: C.grafito, fontFace: 'Arial', valign: 'middle',
+  });
+
+  s.addText('Fuentes: DENUE 2025 · IMARC Group · Grand View Research  ·  Precios de referencia, no validados con clientes', {
+    x: 0.5, y: 6.88, w: 9.16, h: 0.22, ...T.nota, align: 'left',
+  });
+}
+
+// ── SLIDE 9 — DIFERENCIADOR ────────────────────────────────────────────────────
+function slideDiferenciador(prs) {
+  const s = base(prs);
+  decoFondo(s, prs, 'A');
+
+  s.addText('🏆  ¿Por qué CareSignal?', {
+    x: 0.5, y: 0.25, w: 9.16, h: 0.55,
+    ...T.slideTitulo,
+  });
+  s.addText('Nadie más modela el ciclo operativo de la ronda', {
+    x: 0.5, y: 0.8, w: 9.16, h: 0.35,
+    ...T.slideSubtitulo,
+  });
+  s.addShape('line', { x: 0.5, y: 1.2, w: 9.16, h: 0, line: { color: C.grisSep, width: 1 } });
+
+  // Encabezados de tabla
+  const cols = [
+    { label: 'Capacidad',           x: 0.5,  w: 3.0  },
+    { label: 'CareSignal',          x: 3.55, w: 1.85, color: C.azul },
+    { label: 'Cronos Care',         x: 5.45, w: 1.85 },
+    { label: 'GERIGES',             x: 7.35, w: 1.85 },
+  ];
+
+  // Fila de encabezado
+  s.addShape('roundRect', {
+    x: 0.5, y: 1.3, w: 9.16, h: 0.5,
+    fill: { color: C.azul }, line: { color: C.azul }, rectRadius: 0.05,
+  });
+  cols.forEach(c => {
+    s.addText(c.label, {
+      x: c.x + 0.1, y: 1.35, w: c.w - 0.1, h: 0.4,
+      fontSize: 12, bold: true, color: C.blanco, fontFace: 'Arial', valign: 'middle',
+    });
+  });
+
+  // Filas de datos
+  const filas = [
+    { cap: 'Detección de ronda atrasada',      cs: '✅', cc: '❌', ge: '❌', bg: C.tarjeta },
+    { cap: 'Alerta automática al supervisor',  cs: '✅', cc: '❌', ge: '❌', bg: C.blanco  },
+    { cap: 'Bitácora de auditoría inmutable',  cs: '✅', cc: '⚠️', ge: '⚠️', bg: C.tarjeta },
+    { cap: 'Ciclo completo alerta→cierre',     cs: '✅', cc: '❌', ge: '❌', bg: C.blanco  },
+    { cap: 'Precio publicado',                 cs: '✅', cc: '❌', ge: '❌', bg: C.tarjeta },
+    { cap: 'Expediente / historial residente', cs: '⚠️',cc: '✅', ge: '✅', bg: C.blanco  },
+  ];
+
+  filas.forEach((f, i) => {
+    const y = 1.8 + i * 0.65;
+    s.addShape('roundRect', {
+      x: 0.5, y, w: 9.16, h: 0.58,
+      fill: { color: f.bg }, line: { color: C.grisSep, width: 0.4 }, rectRadius: 0.04,
+    });
+    s.addText(f.cap, { x: 0.6,  y: y + 0.08, w: 2.85, h: 0.42, fontSize: 11.5, color: C.grafito, fontFace: 'Arial' });
+    s.addText(f.cs,  { x: 3.55, y: y + 0.05, w: 1.85, h: 0.48, fontSize: 18, align: 'center' });
+    s.addText(f.cc,  { x: 5.45, y: y + 0.05, w: 1.85, h: 0.48, fontSize: 18, align: 'center' });
+    s.addText(f.ge,  { x: 7.35, y: y + 0.05, w: 1.85, h: 0.48, fontSize: 18, align: 'center' });
+  });
+
+  s.addText('⚠️ = funcionalidad parcial o no confirmada  ·  Fuente: investigación pública agosto 2026', {
+    x: 0.5, y: 6.88, w: 9.16, h: 0.22, ...T.nota, align: 'left',
+  });
+}
+
 // ── MAIN ──────────────────────────────────────────────────────────────────────
 async function main() {
   const prs = new PptxGenJS();
@@ -542,6 +650,8 @@ async function main() {
   slideFalloAdministrativo(prs);
   slideMarcoLegal(prs);
   slideSolucion(prs);
+  slideMercado(prs);
+  slideDiferenciador(prs);
 
   const out = path.join(__dirname, '..', 'business', 'CareSignal_Pitch_Deck.pptx');
   await prs.writeFile({ fileName: out });
