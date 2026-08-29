@@ -637,6 +637,150 @@ function slideDiferenciador(prs) {
   });
 }
 
+// ── SLIDE 10 — TRACCIÓN ───────────────────────────────────────────────────────
+function slideTraccion(prs) {
+  const s = base(prs);
+  decoFondo(s, prs, 'C');
+
+  s.addText('🏅  Tracción — producto terminado hoy', {
+    x: 0.5, y: 0.25, w: 9.16, h: 0.55,
+    ...T.slideTitulo,
+  });
+  s.addText('8 fases con gate review humano · Auditoría QA: PASS', {
+    x: 0.5, y: 0.8, w: 9.16, h: 0.35,
+    ...T.slideSubtitulo,
+  });
+  s.addShape('line', { x: 0.5, y: 1.2, w: 9.16, h: 0, line: { color: C.grisSep, width: 1 } });
+
+  // Tarjetas métricas — fila superior
+  const metricas = [
+    { emoji: '✅', valor: '8 / 8',  label: 'Fases aprobadas\ncon gate review', color: 'F0FDF4' },
+    { emoji: '🧪', valor: '38',     label: 'Pruebas\nautomatizadas',            color: 'EFF6FF' },
+    { emoji: '📋', valor: '20',     label: 'Aceptación\ndel contrato',           color: 'EFF6FF' },
+    { emoji: '🚫', valor: '0',      label: 'Hallazgos\nbloqueantes',            color: 'FFF7ED' },
+  ];
+
+  metricas.forEach((m, i) => {
+    const x = 0.5 + i * 2.32;
+    tarjeta(s, x, 1.38, 2.0, 2.15, m.color);
+    s.addText(m.emoji, { x, y: 1.5,  w: 2.0, h: 0.55, fontSize: 26, align: 'center' });
+    s.addText(m.valor, { x, y: 2.1,  w: 2.0, h: 0.65, fontSize: 30, bold: true, color: C.azulOscuro, align: 'center', fontFace: 'Arial' });
+    s.addText(m.label, { x, y: 2.75, w: 2.0, h: 0.6,  fontSize: 10.5, color: C.gris, align: 'center', fontFace: 'Arial' });
+  });
+
+  // Segunda fila — detalles adicionales
+  const extras = [
+    { emoji: '📊', valor: '20',    label: 'Tipos de evento\nde auditoría',         color: C.tarjeta },
+    { emoji: '⚙️', valor: '8',     label: 'Políticas del\nmotor temporal',          color: C.tarjeta },
+    { emoji: '👆', valor: '≤ 3',   label: 'Acciones para\ncompletar una ronda',    color: C.tarjeta },
+    { emoji: '📦', valor: '~68 KB',label: 'Bundle comprimido\nde producción',       color: C.tarjeta },
+  ];
+
+  extras.forEach((m, i) => {
+    const x = 0.5 + i * 2.32;
+    tarjeta(s, x, 3.75, 2.0, 1.85, m.color);
+    s.addText(m.emoji, { x, y: 3.85, w: 2.0, h: 0.5,  fontSize: 22, align: 'center' });
+    s.addText(m.valor, { x, y: 4.38, w: 2.0, h: 0.55, fontSize: 24, bold: true, color: C.azul, align: 'center', fontFace: 'Arial' });
+    s.addText(m.label, { x, y: 4.95, w: 2.0, h: 0.5,  fontSize: 10, color: C.gris, align: 'center', fontFace: 'Arial' });
+  });
+
+  s.addText('MVP operacional · No dispositivo médico · Datos ficticios', {
+    x: 0.5, y: 6.88, w: 9.16, h: 0.22, ...T.nota, align: 'center',
+  });
+}
+
+// ── SLIDE 11 — MODELO DE NEGOCIO ──────────────────────────────────────────────
+function slideModelo(prs) {
+  const s = base(prs);
+  decoFondo(s, prs, 'B');
+
+  s.addText('💰  Modelo de negocio', {
+    x: 0.5, y: 0.25, w: 9.16, h: 0.55,
+    ...T.slideTitulo,
+  });
+  s.addText('SaaS B2B · por residencia / mes · margen bruto > 97 %', {
+    x: 0.5, y: 0.8, w: 9.16, h: 0.35,
+    ...T.slideSubtitulo,
+  });
+  s.addShape('line', { x: 0.5, y: 1.2, w: 9.16, h: 0, line: { color: C.grisSep, width: 1 } });
+
+  // Tres planes
+  const planes = [
+    {
+      nombre: 'Esencial',
+      precio: '$1,490',
+      sub: 'MXN / mes',
+      residentes: 'Hasta 25 residentes',
+      supervisores: '1 supervisor',
+      cuidadores: 'Hasta 5 cuidadores',
+      nota: 'Residencias pequeñas',
+      color: C.tarjeta,
+      colorPrecio: C.azul,
+    },
+    {
+      nombre: 'Profesional',
+      precio: '$3,490',
+      sub: 'MXN / mes',
+      residentes: 'Hasta 75 residentes',
+      supervisores: 'Hasta 3 supervisores',
+      cuidadores: 'Hasta 15 cuidadores',
+      nota: 'Residencias medianas',
+      color: 'EFF6FF',
+      colorPrecio: C.azulOscuro,
+      destacado: true,
+    },
+    {
+      nombre: 'Institucional',
+      precio: '$6,990',
+      sub: 'MXN / mes',
+      residentes: 'Sin límite',
+      supervisores: 'Sin límite',
+      cuidadores: 'Sin límite',
+      nota: 'Cadenas · soporte prioritario',
+      color: C.tarjeta,
+      colorPrecio: C.azul,
+    },
+  ];
+
+  planes.forEach((p, i) => {
+    const x = 0.5 + i * 3.08;
+    const bordeColor = p.destacado ? C.azul : C.grisSep;
+    const bordeW = p.destacado ? 1.5 : 0.5;
+    s.addShape('roundRect', {
+      x, y: 1.38, w: 2.88, h: 4.6,
+      fill: { color: p.color },
+      line: { color: bordeColor, width: bordeW },
+      rectRadius: 0.12,
+    });
+
+    if (p.destacado) {
+      s.addShape('roundRect', {
+        x: x + 0.4, y: 1.3, w: 2.05, h: 0.32,
+        fill: { color: C.azul }, line: { color: C.azul }, rectRadius: 0.06,
+      });
+      s.addText('Más popular', { x: x + 0.4, y: 1.3, w: 2.05, h: 0.32, fontSize: 9, bold: true, color: C.blanco, align: 'center', fontFace: 'Arial', valign: 'middle' });
+    }
+
+    s.addText(p.nombre,  { x, y: 1.55, w: 2.88, h: 0.4,  fontSize: 15, bold: true, color: C.grafito, align: 'center', fontFace: 'Arial' });
+    s.addText(p.precio,  { x, y: 2.0,  w: 2.88, h: 0.7,  fontSize: 32, bold: true, color: p.colorPrecio, align: 'center', fontFace: 'Arial' });
+    s.addText(p.sub,     { x, y: 2.72, w: 2.88, h: 0.3,  fontSize: 11, color: C.gris, align: 'center', fontFace: 'Arial' });
+
+    s.addShape('line', { x: x + 0.2, y: 3.1, w: 2.48, h: 0, line: { color: C.grisSep, width: 0.5 } });
+
+    [p.residentes, p.supervisores, p.cuidadores, p.nota].forEach((txt, j) => {
+      const bold = j === 3;
+      s.addText(txt, {
+        x: x + 0.15, y: 3.22 + j * 0.54, w: 2.58, h: 0.46,
+        fontSize: 11.5, bold, color: bold ? C.azul : C.grafito, align: 'center', fontFace: 'Arial',
+      });
+    });
+  });
+
+  s.addText('⚠️ Precios de referencia — no validados con clientes. Declarar ante jueces.', {
+    x: 0.5, y: 6.88, w: 9.16, h: 0.22, ...T.nota, align: 'left',
+  });
+}
+
 // ── MAIN ──────────────────────────────────────────────────────────────────────
 async function main() {
   const prs = new PptxGenJS();
@@ -652,6 +796,8 @@ async function main() {
   slideSolucion(prs);
   slideMercado(prs);
   slideDiferenciador(prs);
+  slideTraccion(prs);
+  slideModelo(prs);
 
   const out = path.join(__dirname, '..', 'business', 'CareSignal_Pitch_Deck.pptx');
   await prs.writeFile({ fileName: out });
