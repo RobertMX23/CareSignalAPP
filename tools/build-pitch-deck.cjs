@@ -448,6 +448,87 @@ function slideMarcoLegal(prs) {
   });
 }
 
+// ── SLIDE 7 — SOLUCIÓN ────────────────────────────────────────────────────────
+function slideSolucion(prs) {
+  const s = base(prs);
+  decoFondo(s, prs, 'C');
+
+  s.addText('✅  CareSignal — la solución', {
+    x: 0.5, y: 0.25, w: 9.16, h: 0.55,
+    ...T.slideTitulo,
+  });
+  s.addText('Un sistema diseñado para resolver los dos fallos', {
+    x: 0.5, y: 0.8, w: 9.16, h: 0.35,
+    ...T.slideSubtitulo,
+  });
+  s.addShape('line', { x: 0.5, y: 1.2, w: 9.16, h: 0, line: { color: C.grisSep, width: 1 } });
+
+  // Columna izquierda — fallo operativo
+  tarjeta(s, 0.5, 1.38, 4.35, 3.8, 'EFF6FF');
+  s.addText('⚠️  Fallo operativo', {
+    x: 0.65, y: 1.5, w: 4.05, h: 0.42,
+    fontSize: 14, bold: true, color: C.terracota, fontFace: 'Arial',
+  });
+  s.addShape('line', { x: 0.65, y: 1.95, w: 4.05, h: 0, line: { color: C.grisSep, width: 0.75 } });
+  s.addText('Ronda no ocurre y nadie lo detecta', {
+    x: 0.65, y: 2.05, w: 4.05, h: 0.38,
+    fontSize: 12, color: C.gris, italic: true, fontFace: 'Arial',
+  });
+  s.addText('⏱️', { x: 0.7, y: 2.55, w: 0.6, h: 0.5, fontSize: 22, align: 'center' });
+  s.addText('Detecta automáticamente\ncuando una ronda no ocurre', {
+    x: 1.35, y: 2.55, w: 3.35, h: 0.65, fontSize: 13, color: C.grafito, fontFace: 'Arial',
+  });
+  s.addText('🔔', { x: 0.7, y: 3.3, w: 0.6, h: 0.5, fontSize: 22, align: 'center' });
+  s.addText('Alerta al supervisor\nen tiempo real', {
+    x: 1.35, y: 3.3, w: 3.35, h: 0.65, fontSize: 13, color: C.grafito, fontFace: 'Arial',
+  });
+  s.addText('👤', { x: 0.7, y: 4.05, w: 0.6, h: 0.5, fontSize: 22, align: 'center' });
+  s.addText('Asignación, escalación\ny seguimiento del cuidador', {
+    x: 1.35, y: 4.05, w: 3.35, h: 0.65, fontSize: 13, color: C.grafito, fontFace: 'Arial',
+  });
+
+  // Columna derecha — fallo administrativo
+  tarjeta(s, 5.3, 1.38, 4.35, 3.8, 'F0FDF4');
+  s.addText('🗂️  Fallo administrativo', {
+    x: 5.45, y: 1.5, w: 4.05, h: 0.42,
+    fontSize: 14, bold: true, color: C.verde, fontFace: 'Arial',
+  });
+  s.addShape('line', { x: 5.45, y: 1.95, w: 4.05, h: 0, line: { color: C.grisSep, width: 0.75 } });
+  s.addText('Sin registro confiable ni evidencia auditable', {
+    x: 5.45, y: 2.05, w: 4.05, h: 0.38,
+    fontSize: 12, color: C.gris, italic: true, fontFace: 'Arial',
+  });
+  s.addText('📋', { x: 5.5, y: 2.55, w: 0.6, h: 0.5, fontSize: 22, align: 'center' });
+  s.addText('Bitácora inmutable:\nquién, cuándo, qué resultado', {
+    x: 6.15, y: 2.55, w: 3.35, h: 0.65, fontSize: 13, color: C.grafito, fontFace: 'Arial',
+  });
+  s.addText('📄', { x: 5.5, y: 3.3, w: 0.6, h: 0.5, fontSize: 22, align: 'center' });
+  s.addText('Sin papel, sin transcripción,\nsin trabajo extra', {
+    x: 6.15, y: 3.3, w: 3.35, h: 0.65, fontSize: 13, color: C.grafito, fontFace: 'Arial',
+  });
+  s.addText('🛡️', { x: 5.5, y: 4.05, w: 0.6, h: 0.5, fontSize: 22, align: 'center' });
+  s.addText('Evidencia lista ante cualquier\ninspección, queja o demanda', {
+    x: 6.15, y: 4.05, w: 3.35, h: 0.65, fontSize: 13, color: C.grafito, fontFace: 'Arial',
+  });
+
+  // Flecha central entre columnas
+  s.addText('→', {
+    x: 4.85, y: 2.9, w: 0.45, h: 0.5,
+    fontSize: 24, bold: true, color: C.azul, align: 'center', fontFace: 'Arial',
+  });
+
+  // Remate
+  tarjeta(s, 0.5, 5.42, 9.16, 0.75, C.tarjeta);
+  s.addText(
+    'El director tiene evidencia lista ante cualquier inspección, queja o demanda — en todo momento.',
+    { x: 0.7, y: 5.5, w: 8.76, h: 0.55, fontSize: 13, bold: true, color: C.grafito, align: 'center', fontFace: 'Arial', valign: 'middle' }
+  );
+
+  s.addText('MVP operacional · No dispositivo médico · Datos ficticios', {
+    x: 0.5, y: 6.88, w: 9.16, h: 0.22, ...T.nota, align: 'center',
+  });
+}
+
 // ── MAIN ──────────────────────────────────────────────────────────────────────
 async function main() {
   const prs = new PptxGenJS();
@@ -460,6 +541,7 @@ async function main() {
   slideFalloOperativo(prs);
   slideFalloAdministrativo(prs);
   slideMarcoLegal(prs);
+  slideSolucion(prs);
 
   const out = path.join(__dirname, '..', 'business', 'CareSignal_Pitch_Deck.pptx');
   await prs.writeFile({ fileName: out });
