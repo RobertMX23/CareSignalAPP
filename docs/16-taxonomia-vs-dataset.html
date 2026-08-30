@@ -1,0 +1,747 @@
+<title>Taxonomía × Dataset — CareSignal</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --bg:       #F2F4F8;
+    --bg-alt:   #E8ECF3;
+    --surface:  #FFFFFF;
+    --border:   #D4DAE8;
+    --text:     #14213D;
+    --muted:    #5A6480;
+    --accent:   #2D6AE0;
+    --navy:     #0D1B35;
+    /* status */
+    --ok-fg:    #15803D; --ok-bg:    #DCFCE7;
+    --warn-fg:  #B45309; --warn-bg:  #FEF9C3;
+    --gap-fg:   #B91C1C; --gap-bg:   #FEE2E2;
+    --new-fg:   #6D28D9; --new-bg:   #EDE9FE;
+    --oos-fg:   #4B5563; --oos-bg:   #F3F4F6;
+    --mono: 'IBM Plex Mono', monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #080D18; --bg-alt: #0F1525; --surface: #131C30;
+      --border: #1E2A45; --text: #E8EDF8; --muted: #8494B8;
+      --accent: #6B9EF5; --navy: #B0C4E8;
+      --ok-fg: #4ADE80; --ok-bg: #14532D;
+      --warn-fg: #FCD34D; --warn-bg: #713F12;
+      --gap-fg: #F87171; --gap-bg: #7F1D1D;
+      --new-fg: #C4B5FD; --new-bg: #4C1D95;
+      --oos-fg: #9CA3AF; --oos-bg: #1F2937;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #080D18; --bg-alt: #0F1525; --surface: #131C30;
+    --border: #1E2A45; --text: #E8EDF8; --muted: #8494B8;
+    --accent: #6B9EF5; --navy: #B0C4E8;
+    --ok-fg: #4ADE80; --ok-bg: #14532D;
+    --warn-fg: #FCD34D; --warn-bg: #713F12;
+    --gap-fg: #F87171; --gap-bg: #7F1D1D;
+    --new-fg: #C4B5FD; --new-bg: #4C1D95;
+    --oos-fg: #9CA3AF; --oos-bg: #1F2937;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'IBM Plex Sans', system-ui, sans-serif; background: var(--bg); color: var(--text); font-size: 13px; line-height: 1.6; }
+
+  /* NAV */
+  nav { position: sticky; top: 0; z-index: 100; background: var(--navy); border-bottom: 2px solid var(--accent); padding: 0 1.25rem; display: flex; align-items: center; gap: 0; overflow-x: auto; scrollbar-width: none; }
+  nav::-webkit-scrollbar { display: none; }
+  .nav-brand { font-family: var(--mono); font-size: 10.5px; font-weight: 600; color: #8BA8D8; white-space: nowrap; padding: 0.6rem 1rem 0.6rem 0; border-right: 1px solid #1E3060; margin-right: .5rem; flex-shrink: 0; }
+  nav a { font-size: 11px; font-weight: 500; color: #6888B8; text-decoration: none; padding: .6rem .6rem; white-space: nowrap; transition: color .15s; flex-shrink: 0; }
+  nav a:hover { color: #B8CCEE; }
+
+  main { max-width: 1200px; margin: 0 auto; padding: 2rem 1.25rem 6rem; }
+
+  /* HEADER */
+  .page-header { margin-bottom: 2rem; }
+  .eyebrow { font-family: var(--mono); font-size: 10px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin-bottom: .5rem; }
+  h1 { font-size: 1.55rem; font-weight: 700; line-height: 1.2; text-wrap: balance; }
+  .header-sub { font-size: 12.5px; color: var(--muted); margin-top: .4rem; }
+  .sources { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .9rem; }
+  .src-chip { font-family: var(--mono); font-size: 10px; font-weight: 600; padding: .2rem .55rem; border-radius: 4px; border: 1px solid var(--border); color: var(--muted); background: var(--surface); }
+
+  /* LEGEND */
+  .legend { display: flex; flex-wrap: wrap; gap: .35rem .9rem; margin-bottom: 1.75rem; padding: .65rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; align-items: center; }
+  .legend-lbl { font-family: var(--mono); font-size: 9.5px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; margin-right: .25rem; }
+  .chip { display: inline-flex; align-items: center; font-family: var(--mono); font-size: 10px; font-weight: 600; padding: .15rem .5rem; border-radius: 100px; white-space: nowrap; }
+  .ok   { color: var(--ok-fg);   background: var(--ok-bg); }
+  .warn { color: var(--warn-fg); background: var(--warn-bg); }
+  .gap  { color: var(--gap-fg);  background: var(--gap-bg); }
+  .new  { color: var(--new-fg);  background: var(--new-bg); }
+  .oos  { color: var(--oos-fg);  background: var(--oos-bg); }
+
+  /* SUMMARY CARDS */
+  .summary { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px,1fr)); gap: .6rem; margin-bottom: 2rem; }
+  .scard { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: .8rem .9rem; text-align: center; }
+  .scard .num { font-family: var(--mono); font-size: 1.8rem; font-weight: 700; line-height: 1; margin-bottom: .2rem; }
+  .scard .lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; font-weight: 500; }
+
+  /* SECTION */
+  .sec { margin-bottom: 2rem; }
+  .sec-head { display: flex; align-items: center; gap: .6rem; padding: .6rem .9rem; background: var(--bg-alt); border: 1px solid var(--border); border-bottom: none; border-radius: 6px 6px 0 0; }
+  .sec-num { font-family: var(--mono); font-size: 9.5px; font-weight: 600; color: var(--accent); padding: .15rem .4rem; border: 1px solid var(--border); border-radius: 3px; background: var(--surface); flex-shrink: 0; }
+  .sec-title { font-size: 12.5px; font-weight: 700; color: var(--text); flex: 1; }
+  .sec-tag { font-family: var(--mono); font-size: 9.5px; color: var(--muted); }
+
+  /* TABLES */
+  .tw { overflow-x: auto; border: 1px solid var(--border); border-radius: 0 0 6px 6px; background: var(--surface); }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { font-family: var(--mono); font-size: 9.5px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; padding: .5rem .8rem; text-align: left; border-bottom: 2px solid var(--border); background: var(--bg-alt); white-space: nowrap; position: sticky; top: 0; }
+  td { padding: .5rem .8rem; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.5; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--bg); }
+  code { font-family: var(--mono); font-size: 10.5px; background: var(--bg-alt); padding: .05rem .28rem; border-radius: 3px; color: var(--text); }
+  .id { font-family: var(--mono); font-size: 11px; font-weight: 600; color: var(--accent); white-space: nowrap; }
+  .fname { font-family: var(--mono); font-size: 10.5px; color: var(--text); }
+  .ftype { font-family: var(--mono); font-size: 10px; color: var(--muted); }
+  .note-cell { font-size: 11.5px; color: var(--muted); line-height: 1.5; }
+  .group-hdr td { background: var(--bg-alt); font-family: var(--mono); font-size: 9.5px; font-weight: 700; color: var(--navy); text-transform: uppercase; letter-spacing: .09em; border-top: 2px solid var(--border); padding: .4rem .8rem; }
+  .detail { font-size: 11px; color: var(--muted); margin-top: .15rem; display: block; }
+  .nom { font-size: 10.5px; color: var(--muted); font-style: italic; }
+
+  /* FLAGS */
+  .flag { display: inline-flex; align-items: center; gap: .2rem; font-family: var(--mono); font-size: 9.5px; font-weight: 600; padding: .1rem .4rem; border-radius: 3px; white-space: nowrap; }
+  .f-ok   { color: var(--ok-fg);   background: var(--ok-bg); }
+  .f-warn { color: var(--warn-fg); background: var(--warn-bg); }
+  .f-gap  { color: var(--gap-fg);  background: var(--gap-bg); }
+  .f-new  { color: var(--new-fg);  background: var(--new-bg); }
+  .f-oos  { color: var(--oos-fg);  background: var(--oos-bg); }
+
+  /* GAP CARDS */
+  .gap-list { display: flex; flex-direction: column; gap: .5rem; padding: .9rem; }
+  .gap-item { border: 1px solid var(--border); border-radius: 6px; overflow: hidden; background: var(--surface); }
+  .gap-head { display: flex; align-items: center; gap: .6rem; padding: .5rem .8rem; border-bottom: 1px solid var(--border); background: var(--bg-alt); }
+  .gap-id { font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--muted); }
+  .gap-title { font-size: 12.5px; font-weight: 600; color: var(--text); flex: 1; }
+  .gap-body { padding: .6rem .8rem; font-size: 12px; color: var(--muted); line-height: 1.6; }
+  .gap-body strong { color: var(--text); }
+  .gap-action { font-size: 11px; margin-top: .35rem; color: var(--accent); font-weight: 500; }
+
+  p { font-size: 12.5px; color: var(--muted); line-height: 1.65; margin-bottom: .5rem; padding: 0 .9rem; }
+  p:first-child { padding-top: .75rem; }
+  p:last-child { padding-bottom: .75rem; margin-bottom: 0; }
+</style>
+
+<nav>
+  <span class="nav-brand">CareSignal · docs/16</span>
+  <a href="#entidades">Entidades</a>
+  <a href="#catalogos">Catálogos</a>
+  <a href="#campos">Campos</a>
+  <a href="#enums">Enums</a>
+  <a href="#gaps">Gaps</a>
+  <a href="#nom031">× NOM-031</a>
+</nav>
+
+<main>
+
+<div class="page-header">
+  <div class="eyebrow">Análisis transversal · v1.0.0</div>
+  <h1>Taxonomía × Dataset — tabla comparativa</h1>
+  <div class="header-sub">Cotejo entre: taxonomía YAML congelada, implementación TypeScript, modelo de datos y NOM-031-SSA3-2012</div>
+  <div class="sources">
+    <span class="src-chip">docs/01-domain-taxonomy.yaml</span>
+    <span class="src-chip">src/domain/taxonomy.ts</span>
+    <span class="src-chip">src/domain/types.ts</span>
+    <span class="src-chip">docs/03-data-model.md</span>
+    <span class="src-chip">docs/15-nom031-cobertura.html</span>
+  </div>
+</div>
+
+<div class="legend">
+  <span class="legend-lbl">Estatus:</span>
+  <span class="chip ok">✅ ALINEADO</span>
+  <span class="chip warn">⚠️ DIVERGENCIA</span>
+  <span class="chip gap">🔴 GAP</span>
+  <span class="chip new">🟣 SOLO EN TS</span>
+  <span class="chip oos">⬜ FUERA ALCANCE</span>
+</div>
+
+<div class="summary">
+  <div class="scard"><div class="num" style="color:var(--ok-fg)">28</div><div class="lbl">✅ Alineados</div></div>
+  <div class="scard"><div class="num" style="color:var(--warn-fg)">7</div><div class="lbl">⚠️ Divergencias</div></div>
+  <div class="scard"><div class="num" style="color:var(--gap-fg)">4</div><div class="lbl">🔴 Gaps</div></div>
+  <div class="scard"><div class="num" style="color:var(--new-fg)">2</div><div class="lbl">🟣 Solo en TS</div></div>
+  <div class="scard"><div class="num" style="color:var(--oos-fg)">5</div><div class="lbl">⬜ Fuera alcance</div></div>
+</div>
+
+<!-- ===== SECCIÓN 1: ENTIDADES ===== -->
+<div class="sec" id="entidades">
+  <div class="sec-head">
+    <span class="sec-num">§1</span>
+    <span class="sec-title">Entidades — comparativa entre las 4 fuentes</span>
+    <span class="sec-tag">6 en YAML · 5 en taxonomy.ts · 6 en types.ts</span>
+  </div>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr>
+          <th>Entidad</th>
+          <th>YAML 01</th>
+          <th>taxonomy.ts ENTITY_TYPES</th>
+          <th>types.ts interfaz</th>
+          <th>docs/03 §8</th>
+          <th>NOM-031 equivalente</th>
+          <th>Estatus</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="id">resident</td>
+          <td><span class="flag f-ok">✅</span> <code>resident</code></td>
+          <td><span class="flag f-ok">✅</span> <code>'resident'</code></td>
+          <td><span class="flag f-ok">✅</span> <code>Resident</code></td>
+          <td><span class="flag f-ok">✅</span> §8.1</td>
+          <td class="nom">usuario / usuaria</td>
+          <td><span class="flag f-ok">✅ ALINEADO</span></td>
+        </tr>
+        <tr>
+          <td class="id">staff_member</td>
+          <td><span class="flag f-ok">✅</span> <code>staff_member</code></td>
+          <td><span class="flag f-ok">✅</span> <code>'staff_member'</code></td>
+          <td><span class="flag f-ok">✅</span> <code>StaffMember</code></td>
+          <td><span class="flag f-ok">✅</span> §8.2</td>
+          <td class="nom">personal de atención directa</td>
+          <td><span class="flag f-ok">✅ ALINEADO</span></td>
+        </tr>
+        <tr>
+          <td class="id">round</td>
+          <td><span class="flag f-ok">✅</span> <code>round</code></td>
+          <td><span class="flag f-ok">✅</span> <code>'round'</code></td>
+          <td><span class="flag f-ok">✅</span> <code>Round</code></td>
+          <td><span class="flag f-ok">✅</span> §8.3</td>
+          <td class="nom">actividad de atención directa / ronda de verificación</td>
+          <td><span class="flag f-ok">✅ ALINEADO</span></td>
+        </tr>
+        <tr>
+          <td class="id">alert</td>
+          <td><span class="flag f-ok">✅</span> <code>alert</code></td>
+          <td><span class="flag f-ok">✅</span> <code>'alert'</code></td>
+          <td><span class="flag f-ok">✅</span> <code>Alert</code></td>
+          <td><span class="flag f-ok">✅</span> §8.4</td>
+          <td class="nom">incidencia / evento que requiere verificación</td>
+          <td><span class="flag f-ok">✅ ALINEADO</span></td>
+        </tr>
+        <tr>
+          <td class="id">incident</td>
+          <td><span class="flag f-ok">✅</span> <code>incident</code></td>
+          <td><span class="flag f-ok">✅</span> <code>'incident'</code></td>
+          <td><span class="flag f-ok">✅</span> <code>Incident</code></td>
+          <td><span class="flag f-ok">✅</span> §8.5</td>
+          <td class="nom">registro de incidentes con seguimiento</td>
+          <td><span class="flag f-ok">✅ ALINEADO</span></td>
+        </tr>
+        <tr style="background: color-mix(in srgb, var(--gap-bg), transparent 70%)">
+          <td class="id">audit_event</td>
+          <td><span class="flag f-ok">✅</span> definido en <code>entities[]</code></td>
+          <td><span class="flag f-gap">🔴 AUSENTE</span><span class="detail">No está en <code>ENTITY_TYPES</code></span></td>
+          <td><span class="flag f-ok">✅</span> <code>AuditEvent</code></td>
+          <td><span class="flag f-ok">✅</span> §8.6</td>
+          <td class="nom">bitácora de servicios prestados (R-01, R-04)</td>
+          <td><span class="flag f-gap">🔴 GAP — taxonomy.ts</span></td>
+        </tr>
+        <tr style="background: color-mix(in srgb, var(--new-bg), transparent 70%)">
+          <td class="id">habitacion</td>
+          <td><span class="flag f-oos">⬜ NO</span> no en YAML</td>
+          <td><span class="flag f-oos">⬜ NO</span></td>
+          <td><span class="flag f-oos">⬜ NO</span> solo <code>room: string</code> en Resident</td>
+          <td><span class="flag f-oos">⬜ NO</span></td>
+          <td class="nom">habitación / espacio físico del residente</td>
+          <td><span class="flag f-warn">⚠️ SOLO ARQUITECTURA</span><span class="detail">El doc de arquitectura modela <code>habitaciones</code> como tabla separada; en el código es un campo <code>string</code></span></td>
+        </tr>
+        <tr style="background: color-mix(in srgb, var(--new-bg), transparent 70%)">
+          <td class="id">residencia</td>
+          <td><span class="flag f-oos">⬜ NO</span></td>
+          <td><span class="flag f-oos">⬜ NO</span></td>
+          <td><span class="flag f-oos">⬜ NO</span></td>
+          <td><span class="flag f-oos">⬜ NO</span></td>
+          <td class="nom">establecimiento de asistencia social</td>
+          <td><span class="flag f-gap">🔴 GAP MULTI-TENANT</span><span class="detail">La arquitectura define <code>residencias</code> como raíz del tenant. No existe en ninguna entidad del dominio TypeScript ni en la taxonomía congelada.</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ===== SECCIÓN 2: CATÁLOGOS / ENUMERACIONES ===== -->
+<div class="sec" id="catalogos">
+  <div class="sec-head">
+    <span class="sec-num">§2</span>
+    <span class="sec-title">Catálogos y enumeraciones — alineación entre YAML, taxonomy.ts y tipos derivados</span>
+    <span class="sec-tag">9 catálogos</span>
+  </div>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr>
+          <th>Catálogo</th>
+          <th>YAML 01 valores</th>
+          <th>taxonomy.ts const</th>
+          <th>Tipo TS derivado</th>
+          <th>Usado en types.ts</th>
+          <th>Estatus</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="id">roles<br><span class="ftype">3 valores</span></td>
+          <td><code>caregiver</code> <code>supervisor</code> <code>demo_admin</code></td>
+          <td><code>ROLES</code></td>
+          <td><code>Role</code></td>
+          <td><code>StaffMember.role</code></td>
+          <td><span class="flag f-ok">✅ ALINEADO</span><br><span class="detail">Los 3 valores coinciden exactamente</span></td>
+        </tr>
+        <tr style="background: color-mix(in srgb, var(--warn-bg), transparent 75%)">
+          <td class="id">roles (faltante)<br><span class="ftype">—</span></td>
+          <td><span class="flag f-oos">⬜</span> no definido</td>
+          <td><span class="flag f-oos">⬜</span> no definido</td>
+          <td><span class="flag f-oos">⬜</span></td>
+          <td><span class="flag f-oos">⬜</span></td>
+          <td><span class="flag f-warn">⚠️ DIVERGENCIA</span><br><span class="detail">El doc de arquitectura y NOM-031 mencionan rol <strong>manager</strong> (gerente/director técnico) con acceso al audit log completo. No está en la taxonomía congelada — es el único rol que exporta bitácoras.</span></td>
+        </tr>
+        <tr>
+          <td class="id">round_types<br><span class="ftype">5 valores</span></td>
+          <td><code>routine_check</code><br><code>hydration_check</code><br><code>mobility_assistance</code><br><code>meal_assistance</code><br><code>custom_operational_check</code></td>
+          <td><code>ROUND_TYPES</code></td>
+          <td><code>RoundType</code></td>
+          <td><code>Round.type</code></td>
+          <td><span class="flag f-ok">✅ ALINEADO</span><br><span class="detail">5/5 valores idénticos en todas las fuentes</span></td>
+        </tr>
+        <tr>
+          <td class="id">round_states<br><span class="ftype">6 valores</span></td>
+          <td><code>scheduled</code> <code>due</code> <code>in_progress</code> <code>completed</code> <code>overdue</code> <code>cancelled</code></td>
+          <td><code>ROUND_STATUSES</code></td>
+          <td><code>RoundStatus</code></td>
+          <td><code>Round.status</code></td>
+          <td><span class="flag f-ok">✅ ALINEADO</span><br><span class="detail">6/6 valores idénticos</span></td>
+        </tr>
+        <tr>
+          <td class="id">alert_states<br><span class="ftype">7 valores</span></td>
+          <td><code>open</code> <code>acknowledged</code> <code>assigned</code> <code>escalated</code> <code>in_verification</code> <code>resolved</code> <code>closed</code></td>
+          <td><code>ALERT_STATUSES</code></td>
+          <td><code>AlertStatus</code></td>
+          <td><code>Alert.status</code></td>
+          <td><span class="flag f-ok">✅ ALINEADO</span><br><span class="detail">7/7 valores idénticos</span></td>
+        </tr>
+        <tr>
+          <td class="id">alert_severity<br><span class="ftype">2 valores</span></td>
+          <td><code>yellow</code> <code>red</code></td>
+          <td><code>ALERT_SEVERITIES</code></td>
+          <td><code>AlertSeverity</code></td>
+          <td><code>Alert.severity</code></td>
+          <td><span class="flag f-ok">✅ ALINEADO</span></td>
+        </tr>
+        <tr>
+          <td class="id">incident_states<br><span class="ftype">4 valores</span></td>
+          <td><code>open</code> <code>verification_in_progress</code> <code>resolved</code> <code>closed</code></td>
+          <td><code>INCIDENT_STATUSES</code></td>
+          <td><code>IncidentStatus</code></td>
+          <td><code>Incident.status</code></td>
+          <td><span class="flag f-ok">✅ ALINEADO</span><br><span class="detail">4/4 — nótese que Incident usa <code>verification_in_progress</code> (con guion bajo) mientras el Alert usa <code>in_verification</code> — nomenclatura diferente para concepto análogo</span></td>
+        </tr>
+        <tr>
+          <td class="id">staff_availability<br><span class="ftype">3 valores</span></td>
+          <td><code>available</code> <code>busy</code> <code>off_shift</code></td>
+          <td><code>STAFF_AVAILABILITIES</code></td>
+          <td><code>StaffAvailability</code></td>
+          <td><code>StaffMember.availability</code></td>
+          <td><span class="flag f-ok">✅ ALINEADO</span></td>
+        </tr>
+        <tr>
+          <td class="id">resident_status_derived<br><span class="ftype">3 valores · computado</span></td>
+          <td><code>green</code> <code>yellow</code> <code>red</code><br><span class="detail">computed: true, persisted: false</span></td>
+          <td><code>RESIDENT_DERIVED_STATUSES</code></td>
+          <td><code>ResidentDerivedStatus</code></td>
+          <td><span class="flag f-oos">⬜</span> no en ninguna interfaz de entidad (correcto — es derivado)</td>
+          <td><span class="flag f-ok">✅ ALINEADO</span><br><span class="detail">Correctamente ausente de interfaces — se calcula puro con <code>deriveResidentStatus()</code></span></td>
+        </tr>
+        <tr style="background: color-mix(in srgb, var(--new-bg), transparent 70%)">
+          <td class="id">verification_outcomes<br><span class="ftype">6 valores · SOLO TS</span></td>
+          <td><span class="flag f-gap">🔴 AUSENTE</span><br><span class="detail">No está en docs/01-domain-taxonomy.yaml</span></td>
+          <td><code>VERIFICATION_OUTCOMES</code><br><span class="detail">6 valores definidos</span></td>
+          <td><code>VerificationOutcome</code></td>
+          <td><code>Alert.verificationOutcome</code><br><code>Incident.outcome</code></td>
+          <td><span class="flag f-new">🟣 SOLO EN TS</span><br><span class="detail">Existe en taxonomy.ts y types.ts pero <strong>no está en el YAML congelado</strong>. El vocabulario maestro YAML v1.0.0 lo incluye en la sección A pero el doc oficial 01 no lo tiene.</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ===== SECCIÓN 3: CAMPOS DE ENTIDAD ===== -->
+<div class="sec" id="campos">
+  <div class="sec-head">
+    <span class="sec-num">§3</span>
+    <span class="sec-title">Campos de cada entidad — docs/03 vs types.ts vs arquitectura vs NOM-031</span>
+    <span class="sec-tag">40 campos totales</span>
+  </div>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr>
+          <th>Campo</th>
+          <th>Tipo TS</th>
+          <th>docs/03 define</th>
+          <th>Arquitectura / NOM-031</th>
+          <th>Estatus</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <!-- RESIDENT -->
+        <tr class="group-hdr"><td colspan="5">RESIDENT — src/domain/types.ts : Resident</td></tr>
+        <tr>
+          <td class="fname">id<br><span class="nom">NOM: identificador único del usuario</span></td>
+          <td class="ftype">ID (string)</td>
+          <td><span class="flag f-ok">✅</span></td>
+          <td>—</td>
+          <td><span class="flag f-ok">✅ ALINEADO</span></td>
+        </tr>
+        <tr>
+          <td class="fname">displayName<br><span class="nom">NOM: datos de identificación del usuario</span></td>
+          <td class="ftype">string</td>
+          <td><span class="flag f-ok">✅</span></td>
+          <td>—</td>
+          <td><span class="flag f-ok">✅ ALINEADO</span></td>
+        </tr>
+        <tr>
+          <td class="fname">room<br><span class="nom">NOM: habitación asignada</span></td>
+          <td class="ftype">string</td>
+          <td><span class="flag f-ok">✅</span></td>
+          <td>Arquitectura modela <code>habitaciones</code> como tabla separada con <code>habitacion_id</code></td>
+          <td><span class="flag f-warn">⚠️ DIVERGENCIA</span><br><span class="detail"><code>room: string</code> en el MVP vs FK a <code>habitaciones</code> en la arquitectura de producción. En MVP es suficiente.</span></td>
+        </tr>
+        <tr style="background: color-mix(in srgb, var(--warn-bg), transparent 75%)">
+          <td class="fname">monitoringFrequency<br><span class="nom">NOM: nivel de dependencia / condición</span></td>
+          <td class="ftype">string <span class="flag f-warn">⚠️ sin enum</span></td>
+          <td><span class="flag f-ok">✅</span> menciona el campo</td>
+          <td>El doc de arquitectura lo modela como <code>nivel_cuidado ENUM('bajo','medio','alto')</code>. NOM-031 requiere clasificación de dependencia funcional.</td>
+          <td><span class="flag f-warn">⚠️ DIVERGENCIA</span><br><span class="detail">El nombre del campo es inconsistente con el vocabulario de la arquitectura y la NOM. <code>monitoringFrequency</code> sugiere frecuencia de monitoreo, no nivel de cuidado. Candidato a renombrarse en v0.2.</span></td>
+        </tr>
+        <tr>
+          <td class="fname">notes?</td>
+          <td class="ftype">string | undefined</td>
+          <td><span class="flag f-ok">✅</span></td>
+          <td>—</td>
+          <td><span class="flag f-ok">✅ ALINEADO</span></td>
+        </tr>
+        <tr>
+          <td class="fname">isActive</td>
+          <td class="ftype">boolean</td>
+          <td><span class="flag f-ok">✅</span></td>
+          <td>—</td>
+          <td><span class="flag f-ok">✅ ALINEADO</span></td>
+        </tr>
+        <tr style="background: color-mix(in srgb, var(--gap-bg), transparent 75%)">
+          <td class="fname">residenciaId <span class="flag f-gap">FALTA</span><br><span class="nom">NOM: aislamiento por establecimiento (R-29)</span></td>
+          <td class="ftype"><span class="flag f-gap">🔴 AUSENTE</span></td>
+          <td><span class="flag f-gap">🔴 NO</span></td>
+          <td>Arquitectura: <code>residencia_id</code> es el tenant isolator en todas las tablas</td>
+          <td><span class="flag f-gap">🔴 GAP MULTI-TENANT</span><br><span class="detail">Ninguna entidad del dominio TypeScript tiene <code>residenciaId</code>. El MVP es single-tenant por diseño (localStorage), pero el campo debería existir para la transición a producción.</span></td>
+        </tr>
+
+        <!-- STAFFMEMBER -->
+        <tr class="group-hdr"><td colspan="5">STAFF_MEMBER — src/domain/types.ts : StaffMember</td></tr>
+        <tr>
+          <td class="fname">id, displayName, isActive</td>
+          <td class="ftype">ID / string / boolean</td>
+          <td><span class="flag f-ok">✅</span></td>
+          <td>—</td>
+          <td><span class="flag f-ok">✅ ALINEADO</span></td>
+        </tr>
+        <tr>
+          <td class="fname">role</td>
+          <td class="ftype">Role (literal union)</td>
+          <td><span class="flag f-ok">✅</span></td>
+          <td>—</td>
+          <td><span class="flag f-ok">✅ ALINEADO</span></td>
+        </tr>
+        <tr style="background: color-mix(in srgb, var(--warn-bg), transparent 75%)">
+          <td class="fname">shift<br><span class="nom">NOM: control de turnos del personal</span></td>
+          <td class="ftype">string <span class="flag f-warn">⚠️ sin enum</span></td>
+          <td><span class="flag f-ok">✅</span> menciona el campo</td>
+          <td>La NOM-031 exige control documentado de turnos. El vocabulario maestro no define los valores permitidos para <code>shift</code>.</td>
+          <td><span class="flag f-warn">⚠️ DIVERGENCIA</span><br><span class="detail"><code>shift: string</code> es flexible pero no controlado. Candidato a <code>ENUM('morning','afternoon','night','on_call')</code> en vocabulario maestro v1.1.</span></td>
+        </tr>
+        <tr>
+          <td class="fname">availability</td>
+          <td class="ftype">StaffAvailability</td>
+          <td><span class="flag f-ok">✅</span></td>
+          <td>—</td>
+          <td><span class="flag f-ok">✅ ALINEADO</span></td>
+        </tr>
+
+        <!-- ROUND -->
+        <tr class="group-hdr"><td colspan="5">ROUND — src/domain/types.ts : Round</td></tr>
+        <tr>
+          <td class="fname">id, residentId, type, status, createdAt, updatedAt</td>
+          <td class="ftype">ID / RoundType / RoundStatus</td>
+          <td><span class="flag f-ok">✅</span></td>
+          <td>—</td>
+          <td><span class="flag f-ok">✅ ALINEADO</span></td>
+        </tr>
+        <tr>
+          <td class="fname">scheduledAt, dueAt<br><span class="nom">NOM: fecha/hora de actividad (R-01, R-05)</span></td>
+          <td class="ftype">ISODateTime</td>
+          <td><span class="flag f-ok">✅</span></td>
+          <td>Clave para el motor temporal <code>due → overdue</code></td>
+          <td><span class="flag f-ok">✅ ALINEADO</span></td>
+        </tr>
+        <tr>
+          <td class="fname">assignedStaffId?</td>
+          <td class="ftype">ID | undefined</td>
+          <td><span class="flag f-ok">✅</span></td>
+          <td>—</td>
+          <td><span class="flag f-ok">✅ ALINEADO</span></td>
+        </tr>
+        <tr>
+          <td class="fname">startedAt?, completedAt?</td>
+          <td class="ftype">ISODateTime | undefined</td>
+          <td><span class="flag f-ok">✅</span></td>
+          <td>—</td>
+          <td><span class="flag f-ok">✅ ALINEADO</span></td>
+        </tr>
+        <tr style="background: color-mix(in srgb, var(--warn-bg), transparent 75%)">
+          <td class="fname">completionNote?<br><span class="nom">NOM: resultado de la actividad de atención</span></td>
+          <td class="ftype">string | undefined</td>
+          <td><span class="flag f-ok">✅</span> solo <code>completionNote</code>, sin <code>completionOutcome</code></td>
+          <td>El vocabulario maestro define 6 <code>VERIFICATION_OUTCOMES</code> pero estos son para alertas/incidentes. La ronda solo tiene nota libre.</td>
+          <td><span class="flag f-warn">⚠️ DIVERGENCIA</span><br><span class="detail">La NOM exige documentar el resultado de cada actividad (R-01). El campo existe (<code>completionNote</code>) pero es texto libre, no un enum controlado. Candidato a <code>roundOutcome</code> en v0.2.</span></td>
+        </tr>
+
+        <!-- ALERT -->
+        <tr class="group-hdr"><td colspan="5">ALERT — src/domain/types.ts : Alert</td></tr>
+        <tr>
+          <td class="fname">id, roundId, residentId, severity, status, createdAt</td>
+          <td class="ftype">ID / AlertSeverity / AlertStatus</td>
+          <td><span class="flag f-ok">✅</span></td>
+          <td>—</td>
+          <td><span class="flag f-ok">✅ ALINEADO</span></td>
+        </tr>
+        <tr>
+          <td class="fname">assignedStaffId?</td>
+          <td class="ftype">ID | undefined</td>
+          <td><span class="flag f-ok">✅</span></td>
+          <td>—</td>
+          <td><span class="flag f-ok">✅ ALINEADO</span></td>
+        </tr>
+        <tr>
+          <td class="fname">acknowledgedAt?, escalatedAt?, resolvedAt?, closedAt?</td>
+          <td class="ftype">ISODateTime | undefined</td>
+          <td><span class="flag f-ok">✅</span></td>
+          <td>Cada timestamp corresponde a una transición de estado en la máquina de estados de alerta</td>
+          <td><span class="flag f-ok">✅ ALINEADO</span></td>
+        </tr>
+        <tr>
+          <td class="fname">verificationOutcome?<br><span class="nom">NOM: resultado de verificación del incidente (R-02)</span></td>
+          <td class="ftype">VerificationOutcome | undefined</td>
+          <td><span class="flag f-ok">✅</span></td>
+          <td>—</td>
+          <td><span class="flag f-ok">✅ ALINEADO</span></td>
+        </tr>
+        <tr>
+          <td class="fname">resolutionNote?</td>
+          <td class="ftype">string | undefined</td>
+          <td><span class="flag f-ok">✅</span></td>
+          <td>—</td>
+          <td><span class="flag f-ok">✅ ALINEADO</span></td>
+        </tr>
+
+        <!-- INCIDENT -->
+        <tr class="group-hdr"><td colspan="5">INCIDENT — src/domain/types.ts : Incident</td></tr>
+        <tr>
+          <td class="fname">id, alertId, residentId, status, openedAt</td>
+          <td class="ftype">ID / IncidentStatus / ISODateTime</td>
+          <td><span class="flag f-ok">✅</span></td>
+          <td>—</td>
+          <td><span class="flag f-ok">✅ ALINEADO</span></td>
+        </tr>
+        <tr>
+          <td class="fname">verificationStartedAt?, resolvedAt?, closedAt?</td>
+          <td class="ftype">ISODateTime | undefined</td>
+          <td><span class="flag f-ok">✅</span></td>
+          <td>—</td>
+          <td><span class="flag f-ok">✅ ALINEADO</span></td>
+        </tr>
+        <tr>
+          <td class="fname">outcome?<br><span class="nom">NOM: resultado del incidente con seguimiento (R-02)</span></td>
+          <td class="ftype">VerificationOutcome | undefined</td>
+          <td><span class="flag f-ok">✅</span></td>
+          <td>Mismo tipo que <code>Alert.verificationOutcome</code> — compartido correctamente</td>
+          <td><span class="flag f-ok">✅ ALINEADO</span></td>
+        </tr>
+        <tr>
+          <td class="fname">notes?</td>
+          <td class="ftype">string | undefined</td>
+          <td><span class="flag f-ok">✅</span></td>
+          <td>—</td>
+          <td><span class="flag f-ok">✅ ALINEADO</span></td>
+        </tr>
+
+        <!-- AUDITEVENT -->
+        <tr class="group-hdr"><td colspan="5">AUDIT_EVENT — src/domain/types.ts : AuditEvent</td></tr>
+        <tr>
+          <td class="fname">id, entityId, actorId, timestamp</td>
+          <td class="ftype">ID / ISODateTime</td>
+          <td><span class="flag f-ok">✅</span></td>
+          <td>—</td>
+          <td><span class="flag f-ok">✅ ALINEADO</span></td>
+        </tr>
+        <tr>
+          <td class="fname">entityType</td>
+          <td class="ftype">EntityType (literal union)</td>
+          <td><span class="flag f-ok">✅</span></td>
+          <td>—</td>
+          <td><span class="flag f-ok">✅ ALINEADO</span><br><span class="detail">Pero nótese el GAP §1: <code>audit_event</code> no está en <code>ENTITY_TYPES</code> — un AuditEvent no puede referirse a sí mismo como entidad.</span></td>
+        </tr>
+        <tr style="background: color-mix(in srgb, var(--warn-bg), transparent 75%)">
+          <td class="fname">action<br><span class="nom">NOM: tipo de actividad registrada (R-03)</span></td>
+          <td class="ftype">string <span class="flag f-warn">⚠️ sin union literal</span></td>
+          <td><span class="flag f-ok">✅</span> menciona el campo</td>
+          <td>El vocabulario maestro define 20 tipos de audit_event (ROUND_*, ALERT_*, INCIDENT_*, SYSTEM). El campo es <code>string</code> libre, no <code>AuditEventAction</code> tipo literal.</td>
+          <td><span class="flag f-warn">⚠️ DIVERGENCIA</span><br><span class="detail"><code>action: string</code> no está controlado por el compilador. Los 20 tipos de evento definidos en el vocabulario maestro son la fuente real — pero no existe el tipo <code>AuditEventAction</code> en taxonomy.ts.</span></td>
+        </tr>
+        <tr>
+          <td class="fname">previousState?, nextState?</td>
+          <td class="ftype">string | undefined</td>
+          <td><span class="flag f-ok">✅</span></td>
+          <td>—</td>
+          <td><span class="flag f-ok">✅ ALINEADO</span></td>
+        </tr>
+        <tr>
+          <td class="fname">metadata?</td>
+          <td class="ftype">Record&lt;string, unknown&gt;</td>
+          <td><span class="flag f-ok">✅</span></td>
+          <td>—</td>
+          <td><span class="flag f-ok">✅ ALINEADO</span></td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ===== SECCIÓN 4: ENUMS SOLO EN TS ===== -->
+<div class="sec" id="enums">
+  <div class="sec-head">
+    <span class="sec-num">§4</span>
+    <span class="sec-title">VerificationOutcome — presente en taxonomy.ts, ausente en YAML y NOM-031</span>
+    <span class="sec-tag">6 valores</span>
+  </div>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Valor</th><th>En taxonomy.ts</th><th>En YAML 01</th><th>NOM-031 equivalente</th><th>Nota</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="id">resident_confirmed_ok</td><td><span class="flag f-ok">✅</span></td><td><span class="flag f-gap">🔴</span></td><td class="nom">verificación sin novedad</td><td class="note-cell">El residente está bien, la ronda se completó sin incidencia</td></tr>
+        <tr><td class="id">assistance_provided</td><td><span class="flag f-ok">✅</span></td><td><span class="flag f-gap">🔴</span></td><td class="nom">actividad de atención prestada</td><td class="note-cell">Se brindó el apoyo requerido</td></tr>
+        <tr><td class="id">caregiver_support_required</td><td><span class="flag f-ok">✅</span></td><td><span class="flag f-gap">🔴</span></td><td class="nom">requiere apoyo adicional del personal</td><td class="note-cell">El cuidador necesita apoyo de un colega</td></tr>
+        <tr><td class="id">supervisor_follow_up_required</td><td><span class="flag f-ok">✅</span></td><td><span class="flag f-gap">🔴</span></td><td class="nom">requiere seguimiento del supervisor</td><td class="note-cell">Escala al supervisor para seguimiento</td></tr>
+        <tr><td class="id">false_alert</td><td><span class="flag f-ok">✅</span></td><td><span class="flag f-gap">🔴</span></td><td class="nom">alerta sin sustento verificado</td><td class="note-cell">La alerta fue generada pero no había incidencia real</td></tr>
+        <tr><td class="id">other_operational_result</td><td><span class="flag f-ok">✅</span></td><td><span class="flag f-gap">🔴</span></td><td class="nom">otro resultado operativo</td><td class="note-cell">Comodín para casos no cubiertos por los 5 anteriores</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ===== SECCIÓN 5: GAPS CONSOLIDADOS ===== -->
+<div class="sec" id="gaps">
+  <div class="sec-head">
+    <span class="sec-num">§5</span>
+    <span class="sec-title">Gaps y divergencias consolidados — prioridad y acción recomendada</span>
+    <span class="sec-tag">4 gaps · 7 divergencias</span>
+  </div>
+  <div class="gap-list">
+
+    <div class="gap-item">
+      <div class="gap-head"><span class="gap-id">GAP-01</span><span class="gap-title"><code>audit_event</code> ausente de <code>ENTITY_TYPES</code> en taxonomy.ts</span><span class="flag f-gap">🔴 GAP</span></div>
+      <div class="gap-body"><strong>Problema:</strong> La entidad <code>audit_event</code> está definida en <code>docs/01-domain-taxonomy.yaml</code> (entities[]) y tiene su interfaz <code>AuditEvent</code> en <code>types.ts</code>, pero NO está en el array <code>ENTITY_TYPES</code> de <code>taxonomy.ts</code>. El tipo <code>EntityType</code> solo cubre 5 entidades (<code>resident | staff_member | round | alert | incident</code>).<br><strong>Impacto:</strong> <code>AuditEvent.entityType</code> no puede tomar el valor <code>'audit_event'</code> si alguna vez se quisiera emitir un evento sobre el propio log. El type guard <code>isEntityType('audit_event')</code> retorna <code>false</code>.<div class="gap-action">→ Acción: agregar <code>'audit_event'</code> a <code>ENTITY_TYPES</code> en taxonomy.ts. Es un addendum menor, no un cambio de contrato.</div></div>
+    </div>
+
+    <div class="gap-item">
+      <div class="gap-head"><span class="gap-id">GAP-02</span><span class="gap-title"><code>VerificationOutcome</code> ausente en <code>docs/01-domain-taxonomy.yaml</code></span><span class="flag f-new">🟣 SOLO EN TS</span></div>
+      <div class="gap-body"><strong>Problema:</strong> Los 6 valores de <code>VERIFICATION_OUTCOMES</code> existen en <code>taxonomy.ts</code> y son usados en <code>Alert.verificationOutcome</code> e <code>Incident.outcome</code>, pero el YAML congelado no los documenta.<br><strong>Impacto:</strong> El vocabulario maestro YAML (docs/14) sí los incluye en la sección A10, pero la fuente canónica oficial (docs/01) tiene un gap documental.<div class="gap-action">→ Acción: agregar <code>verification_outcomes</code> como nueva sección a <code>docs/01-domain-taxonomy.yaml</code> en la próxima versión del documento.</div></div>
+    </div>
+
+    <div class="gap-item">
+      <div class="gap-head"><span class="gap-id">GAP-03</span><span class="gap-title">Multi-tenant: <code>residenciaId</code> ausente en todas las entidades TypeScript</span><span class="flag f-gap">🔴 GAP</span></div>
+      <div class="gap-body"><strong>Problema:</strong> La arquitectura de producción define <code>residencia_id</code> como el tenant isolator en todas las tablas. Ninguna interfaz en <code>types.ts</code> lo tiene. El MVP es single-tenant (localStorage) pero la transición a producción requeriría agregar el campo a todas las entidades.<br><strong>Impacto:</strong> No es un blocker para el MVP demo, pero sí es un gap de diseño entre lo que los documentos de arquitectura dicen y lo que el código implementa.<div class="gap-action">→ Acción: documentar la decisión explícitamente en docs/03-data-model.md y en el vocabulario maestro. Candidato a v0.2 release.</div></div>
+    </div>
+
+    <div class="gap-item">
+      <div class="gap-head"><span class="gap-id">GAP-04</span><span class="gap-title">Rol <code>manager</code> mencionado en arquitectura y NOM-031 pero ausente en la taxonomía</span><span class="flag f-gap">🔴 GAP</span></div>
+      <div class="gap-body"><strong>Problema:</strong> El documento <code>docs/15-nom031-cobertura.html</code> referencia el rol <code>manager</code> como quien accede al audit log completo y exporta bitácoras (R-08, R-30). La arquitectura evento-driven también lo menciona. Pero la taxonomía congelada y <code>taxonomy.ts</code> solo definen 3 roles: <code>caregiver | supervisor | demo_admin</code>.<br><strong>Impacto:</strong> El acceso del "director técnico responsable" (NOM-031) no tiene un rol formal en la taxonomía. El supervisor puede estar haciendo funciones de manager en el MVP actual.<div class="gap-action">→ Acción: Decidir si <code>manager</code> es un alias de <code>supervisor</code> (con permisos extendidos) o un 4to rol. Implica change request al contrato §13 si se agrega. O corregir el lenguaje en los docs de arquitectura y NOM para usar <code>supervisor</code> consistentemente.</div></div>
+    </div>
+
+    <!-- DIVERGENCIAS -->
+    <div class="gap-item">
+      <div class="gap-head"><span class="gap-id">DIV-01</span><span class="gap-title"><code>Resident.monitoringFrequency: string</code> vs <code>nivel_cuidado ENUM</code></span><span class="flag f-warn">⚠️ DIVERGENCIA</span></div>
+      <div class="gap-body"><strong>Problema:</strong> El campo se llama <code>monitoringFrequency</code> en el código pero el vocabulario de la arquitectura, la NOM-031 (dependencia funcional, R-10) y el vocabulario maestro lo llaman <code>nivel_cuidado</code> con valores <code>bajo/medio/alto</code>. Además es <code>string</code> libre, no un enum.<br><div class="gap-action">→ Acción v0.2: renombrar a <code>careLevel</code> o <code>nivelCuidado</code> + definir <code>CARE_LEVELS = ['low','medium','high']</code> en taxonomy.ts.</div></div>
+    </div>
+
+    <div class="gap-item">
+      <div class="gap-head"><span class="gap-id">DIV-02</span><span class="gap-title"><code>StaffMember.shift: string</code> sin enum definido</span><span class="flag f-warn">⚠️ DIVERGENCIA</span></div>
+      <div class="gap-body"><strong>Problema:</strong> El turno del personal es <code>string</code> libre. La NOM-031 exige control documentado de turnos (R-15). No hay constante <code>SHIFTS</code> ni tipo <code>Shift</code> en el vocabulario.<br><div class="gap-action">→ Acción v0.2: definir <code>SHIFTS = ['morning','afternoon','night','on_call']</code> en taxonomy.ts.</div></div>
+    </div>
+
+    <div class="gap-item">
+      <div class="gap-head"><span class="gap-id">DIV-03</span><span class="gap-title"><code>AuditEvent.action: string</code> — los 20 tipos de evento no son un tipo literal</span><span class="flag f-warn">⚠️ DIVERGENCIA</span></div>
+      <div class="gap-body"><strong>Problema:</strong> El vocabulario maestro (docs/14) define 20 tipos de audit_event como catálogo (ROUND_STARTED, ALERT_CREATED, etc.), pero <code>AuditEvent.action</code> en types.ts es <code>string</code> genérico. El compilador no puede verificar que solo se usen los 20 valores definidos.<br><div class="gap-action">→ Acción v0.2: crear <code>AUDIT_EVENT_ACTIONS</code> array + <code>AuditEventAction</code> tipo en taxonomy.ts, cambiar <code>action: string</code> a <code>action: AuditEventAction</code>.</div></div>
+    </div>
+
+    <div class="gap-item">
+      <div class="gap-head"><span class="gap-id">DIV-04</span><span class="gap-title"><code>Round.completionNote?: string</code> — resultado libre vs NOM requiere resultado documentado</span><span class="flag f-warn">⚠️ DIVERGENCIA</span></div>
+      <div class="gap-body"><strong>Problema:</strong> La NOM-031 exige documentar el resultado de cada actividad de atención (R-01, R-19). El campo <code>completionNote</code> es texto libre — no es un enum controlado como <code>VerificationOutcome</code>.<br><div class="gap-action">→ Acción v0.2: agregar <code>completionOutcome?: RoundOutcome</code> con valores definidos (ej. <code>ok, needs_follow_up, no_response, other</code>).</div></div>
+    </div>
+
+    <div class="gap-item">
+      <div class="gap-head"><span class="gap-id">DIV-05</span><span class="gap-title">Inconsistencia de nomenclatura: <code>in_verification</code> (alerta) vs <code>verification_in_progress</code> (incidente)</span><span class="flag f-warn">⚠️ DIVERGENCIA</span></div>
+      <div class="gap-body"><strong>Problema:</strong> El estado equivalente de "verificación en curso" se llama diferente en las dos máquinas de estado: <code>in_verification</code> en alertas y <code>verification_in_progress</code> en incidentes. El concepto es el mismo, la nomenclatura es inconsistente.<br><div class="gap-action">→ Es menor — ambos están en los docs y el código es funcional. Documentarlo en el vocabulario maestro como equivalencia intencional o unificar en v0.2.</div></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== SECCIÓN 6: CRUCE CON NOM-031 ===== -->
+<div class="sec" id="nom031">
+  <div class="sec-head">
+    <span class="sec-num">§6</span>
+    <span class="sec-title">Entidades y campos del dominio × Requisitos NOM-031 que los respaldan</span>
+    <span class="sec-tag">trazabilidad normativa</span>
+  </div>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Elemento del dominio</th><th>Tipo</th><th>Requisitos NOM-031</th><th>Término NOM-031</th><th>Cobertura</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="id">AuditEvent (append-only)</td><td class="ftype">Entidad</td><td><code>R-01 R-03 R-04 R-08</code></td><td class="nom">Bitácora de servicios prestados</td><td><span class="flag f-ok">🟢 CUBRE</span></td></tr>
+        <tr><td class="id">Round (ronda)</td><td class="ftype">Entidad</td><td><code>R-05 R-19 R-20 R-21 R-22 R-23</code></td><td class="nom">Actividad de atención directa / Ronda de verificación</td><td><span class="flag f-ok">🟢 CUBRE</span></td></tr>
+        <tr><td class="id">Alert → Incident (ciclo)</td><td class="ftype">Entidades</td><td><code>R-02 R-17</code></td><td class="nom">Registro de incidencias con seguimiento</td><td><span class="flag f-ok">🟢 CUBRE</span></td></tr>
+        <tr><td class="id">Round.status = overdue → Alert</td><td class="ftype">Transición</td><td><code>R-24</code></td><td class="nom">Detección de omisión / estado de abandono por omisión</td><td><span class="flag f-ok">🟢 CUBRE</span></td></tr>
+        <tr><td class="id">StaffMember.availability</td><td class="ftype">Campo</td><td><code>R-15 R-18</code></td><td class="nom">Control de disponibilidad y turno del personal</td><td><span class="flag f-ok">🟢 CUBRE</span></td></tr>
+        <tr><td class="id">AuditEvent.actorId</td><td class="ftype">Campo</td><td><code>R-03 R-14</code></td><td class="nom">Personal responsable de cada actividad</td><td><span class="flag f-ok">🟢 CUBRE</span></td></tr>
+        <tr><td class="id">RBAC (Role en StaffMember)</td><td class="ftype">Catálogo</td><td><code>R-30</code></td><td class="nom">Control de acceso por función (principio de mínimo privilegio)</td><td><span class="flag f-ok">🟢 CUBRE</span></td></tr>
+        <tr><td class="id">Alert.verificationOutcome (requerido para resolver)</td><td class="ftype">Campo</td><td><code>R-02 R-08</code></td><td class="nom">Resultado documentado de verificación del incidente</td><td><span class="flag f-ok">🟢 CUBRE</span></td></tr>
+        <tr style="background: color-mix(in srgb, var(--warn-bg), transparent 75%)">
+          <td class="id">Resident.monitoringFrequency</td><td class="ftype">Campo</td><td><code>R-10</code></td><td class="nom">Nivel de dependencia funcional del residente</td><td><span class="flag f-warn">⚠️ CONTRIBUYE</span><br><span class="detail">El campo existe pero es string libre, no <code>ENUM(bajo/medio/alto)</code></span></td>
+        </tr>
+        <tr style="background: color-mix(in srgb, var(--warn-bg), transparent 75%)">
+          <td class="id">Resident (datos de identificación)</td><td class="ftype">Entidad parcial</td><td><code>R-09</code></td><td class="nom">Datos de identificación del usuario</td><td><span class="flag f-warn">⚠️ CONTRIBUYE</span><br><span class="detail">Falta CURP, contacto de familiar — candidato a v0.2</span></td>
+        </tr>
+        <tr style="background: color-mix(in srgb, var(--warn-bg), transparent 75%)">
+          <td class="id">StaffMember.shift</td><td class="ftype">Campo</td><td><code>R-15</code></td><td class="nom">Control de turno del personal</td><td><span class="flag f-warn">⚠️ CONTRIBUYE</span><br><span class="detail">Campo existe pero sin enum definido</span></td>
+        </tr>
+        <tr style="background: color-mix(in srgb, var(--gap-bg), transparent 75%)">
+          <td class="id">residenciaId (FALTA)</td><td class="ftype">FK ausente</td><td><code>R-29</code></td><td class="nom">Aislamiento de datos por establecimiento</td><td><span class="flag f-gap">🔴 GAP</span><br><span class="detail">Ausente de todas las entidades en types.ts</span></td>
+        </tr>
+        <tr>
+          <td class="id">Medicamentos / PAI / Visitas familiares</td><td class="ftype">—</td><td><code>R-06 R-07 R-11 R-12</code></td><td class="nom">Registro de visitas / control de medicamentos / consentimiento</td><td><span class="flag f-oos">⬜ FUERA ALCANCE v0.1.0</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</main>
