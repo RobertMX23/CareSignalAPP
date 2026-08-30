@@ -781,6 +781,76 @@ function slideModelo(prs) {
   });
 }
 
+// ── SLIDE 12 — IA + CIBERSEGURIDAD ────────────────────────────────────────────
+function slideIACiberseg(prs) {
+  const s = base(prs);
+  decoFondo(s, prs, 'C');
+
+  s.addText('🔐  IA y Ciberseguridad', {
+    x: 0.5, y: 0.25, w: 9.16, h: 0.55,
+    ...T.slideTitulo,
+  });
+  s.addText('Datos sensibles por ley · arquitectura en GCP · roadmap de IA operativa', {
+    x: 0.5, y: 0.8, w: 9.16, h: 0.35,
+    ...T.slideSubtitulo,
+  });
+  s.addShape('line', { x: 0.5, y: 1.2, w: 9.16, h: 0, line: { color: C.grisSep, width: 1 } });
+
+  // Columna izquierda — Ciberseguridad
+  tarjeta(s, 0.5, 1.38, 4.35, 3.5, 'FFF7ED');
+  s.addText('🛡️  Ciberseguridad', {
+    x: 0.65, y: 1.5, w: 4.05, h: 0.42,
+    fontSize: 14, bold: true, color: C.terracota, fontFace: 'Arial',
+  });
+  s.addShape('line', { x: 0.65, y: 1.95, w: 4.05, h: 0, line: { color: C.grisSep, width: 0.6 } });
+
+  const capas = [
+    { emoji: '📜', txt: 'LFPDPPP — datos de adultos\nmayores son datos sensibles por ley' },
+    { emoji: '☁️',  txt: 'Google Cloud Run + Firebase\ncon cifrado extremo a extremo' },
+    { emoji: '🔒', txt: 'Ningún dato de residente\nsale del dispositivo — privacidad por diseño' },
+    { emoji: '👮', txt: 'Agente de ciberseguridad\nactivo 24 h sobre Gemini API' },
+  ];
+  capas.forEach((c, i) => {
+    s.addText(c.emoji, { x: 0.65, y: 2.1 + i * 0.72, w: 0.6, h: 0.58, fontSize: 20, align: 'center' });
+    s.addText(c.txt,   { x: 1.3,  y: 2.1 + i * 0.72, w: 3.35, h: 0.58, fontSize: 11.5, color: C.grafito, fontFace: 'Arial', valign: 'middle' });
+  });
+
+  // Columna derecha — IA (roadmap)
+  tarjeta(s, 5.3, 1.38, 4.35, 3.5, 'EFF6FF');
+  s.addText('🤖  IA Operativa — roadmap v0.2', {
+    x: 5.45, y: 1.5, w: 4.05, h: 0.42,
+    fontSize: 14, bold: true, color: C.azulOscuro, fontFace: 'Arial',
+  });
+  s.addShape('line', { x: 5.45, y: 1.95, w: 4.05, h: 0, line: { color: C.grisSep, width: 0.6 } });
+
+  const funciones = [
+    { emoji: '📈', txt: 'Alertas predictivas\nsobre histórico de tiempos de ronda' },
+    { emoji: '🔍', txt: 'Detección de anomalías\nen la bitácora de auditoría' },
+    { emoji: '📅', txt: 'Optimización de asignación\nde cuidadores por turno' },
+    { emoji: '📝', txt: 'Resumen ejecutivo automático\ndel turno — sin transcripción manual' },
+  ];
+  funciones.forEach((f, i) => {
+    s.addText(f.emoji, { x: 5.45, y: 2.1 + i * 0.72, w: 0.6, h: 0.58, fontSize: 20, align: 'center' });
+    s.addText(f.txt,   { x: 6.1,  y: 2.1 + i * 0.72, w: 3.4, h: 0.58, fontSize: 11.5, color: C.grafito, fontFace: 'Arial', valign: 'middle' });
+  });
+
+  // Diagrama de arquitectura simplificado — barra central
+  s.addShape('line', { x: 4.85, y: 1.55, w: 0, h: 3.2, line: { color: C.grisSep, width: 1 } });
+  s.addText('→', { x: 4.72, y: 2.85, w: 0.45, h: 0.4, fontSize: 18, color: C.azul, align: 'center', fontFace: 'Arial' });
+
+  // Remate — base de datos de eventos
+  tarjeta(s, 0.5, 5.1, 9.16, 0.82, C.tarjeta);
+  s.addText('📊', { x: 0.62, y: 5.22, w: 0.7, h: 0.6, fontSize: 24, align: 'center' });
+  s.addText(
+    'La bitácora de 20 tipos de evento por turno es el insumo nativo para toda la IA operativa —\nsin integración externa, sin datos sintéticos.',
+    { x: 1.4, y: 5.18, w: 8.1, h: 0.66, fontSize: 12, color: C.grafito, fontFace: 'Arial', valign: 'middle' }
+  );
+
+  s.addText('Criterios 1 y 11 del concurso: IA aplicada · ciberseguridad activa', {
+    x: 0.5, y: 6.88, w: 9.16, h: 0.22, ...T.nota, align: 'left',
+  });
+}
+
 // ── MAIN ──────────────────────────────────────────────────────────────────────
 async function main() {
   const prs = new PptxGenJS();
@@ -798,6 +868,7 @@ async function main() {
   slideDiferenciador(prs);
   slideTraccion(prs);
   slideModelo(prs);
+  slideIACiberseg(prs);
 
   const out = path.join(__dirname, '..', 'business', 'CareSignal_Pitch_Deck.pptx');
   await prs.writeFile({ fileName: out });
