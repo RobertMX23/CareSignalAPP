@@ -757,6 +757,66 @@
       </div>
     </div>
 
+    <h3>Datos que cada rol SÍ puede ver</h3>
+    <div class="table-wrap"><table>
+      <thead>
+        <tr>
+          <th>Dato / Entidad</th>
+          <th>Cuidador</th>
+          <th>Supervisor</th>
+          <th>Gerente</th>
+          <th>Demo Admin</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="background:var(--bg-alt)"><td colspan="5" style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--accent);letter-spacing:.05em;text-transform:uppercase;padding:.5rem 1rem">Residentes</td></tr>
+        <tr><td>Nombre completo del residente asignado a sus rondas</td><td>✅</td><td>✅ todos</td><td>✅ todos</td><td>✅</td></tr>
+        <tr><td>Habitación del residente</td><td>✅ solo asignados</td><td>✅ todos</td><td>✅ todos</td><td>✅</td></tr>
+        <tr><td>Nivel de cuidado del residente</td><td>✅ solo asignados</td><td>✅ todos</td><td>✅ todos</td><td>✅</td></tr>
+        <tr><td>Estado visual derivado (🟢 🟡 🔴)</td><td>✅ solo asignados</td><td>✅ todos</td><td>✅ todos</td><td>✅</td></tr>
+        <tr><td>Notas operativas del residente</td><td>✅ solo asignados</td><td>✅ todos</td><td>✅ todos</td><td>✅</td></tr>
+
+        <tr style="background:var(--bg-alt)"><td colspan="5" style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--accent);letter-spacing:.05em;text-transform:uppercase;padding:.5rem 1rem">Rondas</td></tr>
+        <tr><td>Rondas del turno actual asignadas a él/ella</td><td>✅</td><td>✅ todas</td><td>✅ todas</td><td>✅</td></tr>
+        <tr><td>Estado de cada ronda (scheduled / due / overdue…)</td><td>✅ propias</td><td>✅ todas</td><td>✅ todas</td><td>✅</td></tr>
+        <tr><td>Historial de rondas anteriores del residente</td><td>❌</td><td>✅</td><td>✅</td><td>✅</td></tr>
+        <tr><td>Rondas de otros cuidadores en el turno</td><td>❌</td><td>✅</td><td>✅</td><td>✅</td></tr>
+        <tr><td>Resultado registrado al completar ronda</td><td>✅ propias</td><td>✅ todas</td><td>✅ todas</td><td>✅</td></tr>
+
+        <tr style="background:var(--bg-alt)"><td colspan="5" style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--accent);letter-spacing:.05em;text-transform:uppercase;padding:.5rem 1rem">Alertas</td></tr>
+        <tr><td>Alertas abiertas del turno actual</td><td>❌</td><td>✅</td><td>✅</td><td>✅</td></tr>
+        <tr><td>Alertas de turnos anteriores</td><td>❌</td><td>⚠️ últimas 24h</td><td>✅ historial completo</td><td>✅</td></tr>
+        <tr><td>Severidad de alerta (yellow / red)</td><td>❌</td><td>✅</td><td>✅</td><td>✅</td></tr>
+        <tr><td>Owner actual de la alerta</td><td>❌</td><td>✅</td><td>✅</td><td>✅</td></tr>
+        <tr><td>Historial de reasignaciones de alerta</td><td>❌</td><td>✅</td><td>✅</td><td>✅</td></tr>
+        <tr><td>Resultado de verificación de alerta</td><td>❌</td><td>✅</td><td>✅</td><td>✅</td></tr>
+
+        <tr style="background:var(--bg-alt)"><td colspan="5" style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--accent);letter-spacing:.05em;text-transform:uppercase;padding:.5rem 1rem">Incidentes</td></tr>
+        <tr><td>Incidentes abiertos</td><td>❌</td><td>⚠️ solo los asignados a él</td><td>✅ todos</td><td>✅</td></tr>
+        <tr><td>Resultado operativo del incidente</td><td>❌</td><td>⚠️ solo asignados</td><td>✅</td><td>✅</td></tr>
+        <tr><td>Historial completo de incidentes</td><td>❌</td><td>❌</td><td>✅</td><td>✅</td></tr>
+
+        <tr style="background:var(--bg-alt)"><td colspan="5" style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--accent);letter-spacing:.05em;text-transform:uppercase;padding:.5rem 1rem">Staff</td></tr>
+        <tr><td>Su propio perfil (nombre, rol, disponibilidad)</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr>
+        <tr><td>Lista de cuidadores disponibles en el turno</td><td>❌</td><td>✅</td><td>✅</td><td>✅</td></tr>
+        <tr><td>Disponibilidad de todos los staff</td><td>❌</td><td>✅</td><td>✅</td><td>✅</td></tr>
+        <tr><td>Datos de staff de otra residencia</td><td>❌</td><td>❌</td><td>❌</td><td>❌</td></tr>
+
+        <tr style="background:var(--bg-alt)"><td colspan="5" style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--accent);letter-spacing:.05em;text-transform:uppercase;padding:.5rem 1rem">Auditoría y métricas</td></tr>
+        <tr><td>Sus propios eventos de auditoría (acciones que él hizo)</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr>
+        <tr><td>Audit log del turno completo</td><td>❌</td><td>⚠️ solo del turno activo</td><td>✅ completo</td><td>✅</td></tr>
+        <tr><td>Métricas del turno (rondas completadas, alertas activas)</td><td>⚠️ propias</td><td>✅ turno completo</td><td>✅ histórico</td><td>✅</td></tr>
+        <tr><td>Exportar bitácora de auditoría</td><td>❌</td><td>❌</td><td>✅</td><td>✅</td></tr>
+
+        <tr style="background:var(--bg-alt)"><td colspan="5" style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--accent);letter-spacing:.05em;text-transform:uppercase;padding:.5rem 1rem">Configuración</td></tr>
+        <tr><td>Tipos de ronda disponibles</td><td>✅ lectura</td><td>✅ lectura</td><td>✅ lectura + edición</td><td>✅</td></tr>
+        <tr><td>Configuración de la residencia (plan, datos)</td><td>❌</td><td>❌</td><td>✅</td><td>✅</td></tr>
+        <tr><td>Habitaciones registradas</td><td>✅ lectura</td><td>✅ lectura</td><td>✅ lectura + edición</td><td>✅</td></tr>
+        <tr><td>Estado interno del motor temporal</td><td>❌</td><td>❌</td><td>❌</td><td>✅</td></tr>
+      </tbody>
+    </table></div>
+    <p style="font-size:12px;margin-top:.5rem">⚠️ = acceso parcial con restricción de scope. ❌ = sin acceso. ✅ = acceso completo para esa entidad.</p>
+
     <h3>Datos que cada rol NO puede ver</h3>
     <div class="table-wrap"><table>
       <thead><tr><th>Dato</th><th>Cuidador</th><th>Supervisor</th><th>Gerente</th></tr></thead>
