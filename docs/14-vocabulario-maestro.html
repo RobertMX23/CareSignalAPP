@@ -1,0 +1,574 @@
+<title>CareSignal Vocabulario</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --bg:       #F5F3EE;
+    --bg-alt:   #EAE7E0;
+    --surface:  #FFFFFF;
+    --border:   #D4CFCA;
+    --text:     #1C1710;
+    --muted:    #5E5749;
+    --accent:   #2B5B8A;
+    --accent2:  #5B8DB8;
+    --mono: 'IBM Plex Mono', monospace;
+    /* state colors */
+    --c-sched:  #1D4ED8; --bg-sched:  #DBEAFE;
+    --c-due:    #92400E; --bg-due:    #FEF3C7;
+    --c-prog:   #065F46; --bg-prog:   #D1FAE5;
+    --c-comp:   #166534; --bg-comp:   #DCFCE7;
+    --c-over:   #991B1B; --bg-over:   #FEE2E2;
+    --c-canc:   #4B5563; --bg-canc:   #F3F4F6;
+    --c-open:   #7C3AED; --bg-open:   #EDE9FE;
+    --c-ack:    #0C4A6E; --bg-ack:    #E0F2FE;
+    --c-asgn:   #1D4ED8; --bg-asgn:   #DBEAFE;
+    --c-esc:    #9A3412; --bg-esc:    #FFEDD5;
+    --c-verif:  #92400E; --bg-verif:  #FEF3C7;
+    --c-res:    #065F46; --bg-res:    #D1FAE5;
+    --c-cls:    #374151; --bg-cls:    #E5E7EB;
+    --c-yellow: #92400E; --bg-yellow: #FEF3C7;
+    --c-red:    #991B1B; --bg-red:    #FEE2E2;
+    --c-green:  #166534; --bg-green:  #DCFCE7;
+    --c-avail:  #166534; --bg-avail:  #DCFCE7;
+    --c-busy:   #92400E; --bg-busy:   #FEF3C7;
+    --c-off:    #4B5563; --bg-off:    #F3F4F6;
+    --c-round:  #1D4ED8;
+    --c-alert:  #DC2626;
+    --c-inc:    #7C3AED;
+    --c-sys:    #059669;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0D0B08; --bg-alt: #161410; --surface: #1A1714;
+      --border: #2C2820; --text: #EDE9E0; --muted: #9A9080;
+      --accent: #7EB3D8; --accent2: #A8C4DC;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0D0B08; --bg-alt: #161410; --surface: #1A1714;
+    --border: #2C2820; --text: #EDE9E0; --muted: #9A9080;
+    --accent: #7EB3D8; --accent2: #A8C4DC;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'IBM Plex Sans', system-ui, sans-serif; background: var(--bg); color: var(--text); font-size: 13.5px; line-height: 1.6; }
+
+  /* NAV */
+  nav { position: sticky; top: 0; z-index: 100; background: var(--bg-alt); border-bottom: 1px solid var(--border); padding: 0 1.25rem; display: flex; align-items: center; gap: 0; overflow-x: auto; scrollbar-width: none; }
+  nav::-webkit-scrollbar { display: none; }
+  .nav-brand { font-family: var(--mono); font-size: 11.5px; font-weight: 600; color: var(--accent); white-space: nowrap; padding: 0.65rem 1rem 0.65rem 0; border-right: 1px solid var(--border); margin-right: 0.4rem; flex-shrink: 0; }
+  nav a { font-size: 11px; font-weight: 500; color: var(--muted); text-decoration: none; padding: 0.65rem 0.6rem; white-space: nowrap; transition: color .15s; flex-shrink: 0; }
+  nav a:hover { color: var(--accent); }
+
+  main { max-width: 1080px; margin: 0 auto; padding: 2rem 1.25rem 6rem; }
+
+  .page-header { border-bottom: 3px solid var(--accent); padding-bottom: 1.25rem; margin-bottom: 2.5rem; }
+  .eyebrow { font-family: var(--mono); font-size: 10px; font-weight: 600; color: var(--accent2); letter-spacing: .12em; text-transform: uppercase; margin-bottom: .3rem; }
+  h1 { font-size: 1.65rem; font-weight: 700; line-height: 1.2; text-wrap: balance; }
+  .meta { margin-top: .6rem; font-size: 11.5px; color: var(--muted); display: flex; flex-wrap: wrap; gap: .3rem 1rem; }
+
+  /* SECTIONS */
+  .section { margin-bottom: 2.25rem; }
+  .section-header { display: flex; align-items: center; gap: .75rem; padding: .75rem 1rem; background: var(--bg-alt); border: 1px solid var(--border); border-radius: 8px 8px 0 0; border-bottom: 2px solid var(--accent); }
+  .section-num { font-family: var(--mono); font-size: 10px; font-weight: 600; color: var(--accent); background: var(--surface); border: 1px solid var(--border); padding: .15rem .45rem; border-radius: 4px; }
+  .section-title { font-size: 12.5px; font-weight: 700; color: var(--text); flex: 1; }
+  .section-tag { font-family: var(--mono); font-size: 10px; color: var(--muted); }
+  .section-body { background: var(--surface); border: 1px solid var(--border); border-top: none; border-radius: 0 0 8px 8px; overflow: hidden; }
+
+  /* PILLS / CHIPS */
+  .pill { display: inline-flex; align-items: center; gap: .2rem; font-family: var(--mono); font-size: 11px; font-weight: 600; padding: .2rem .55rem; border-radius: 100px; white-space: nowrap; line-height: 1.3; }
+  .id-pill { font-family: var(--mono); font-size: 11.5px; font-weight: 600; color: var(--accent); background: var(--bg-alt); padding: .15rem .5rem; border-radius: 4px; }
+
+  /* CATALOG GRID */
+  .cat-grid { display: grid; gap: 0; }
+  .cat-row { display: grid; grid-template-columns: minmax(160px,auto) 1fr auto; gap: 0; border-bottom: 1px solid var(--border); padding: .6rem 1rem; align-items: start; }
+  .cat-row:last-child { border-bottom: none; }
+  .cat-row:hover { background: var(--bg); }
+  .cat-row-id { font-family: var(--mono); font-size: 11.5px; font-weight: 600; color: var(--accent); padding-right: 1rem; white-space: nowrap; padding-top: .1rem; }
+  .cat-row-body { display: flex; flex-direction: column; gap: .1rem; }
+  .cat-label { font-weight: 600; font-size: 13px; color: var(--text); }
+  .cat-desc { font-size: 11.5px; color: var(--muted); }
+  .cat-row-meta { font-size: 11px; color: var(--muted); font-family: var(--mono); text-align: right; padding-left: 1rem; white-space: nowrap; }
+
+  /* TABLE */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  th { font-family: var(--mono); font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; padding: .55rem 1rem; text-align: left; border-bottom: 1px solid var(--border); background: var(--bg-alt); white-space: nowrap; }
+  td { padding: .55rem 1rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--bg); }
+  code { font-family: var(--mono); font-size: 11px; background: var(--bg-alt); padding: .05rem .3rem; border-radius: 3px; }
+
+  /* DICT GRID */
+  .dict-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0; }
+  .dict-row { display: flex; justify-content: space-between; align-items: baseline; gap: .5rem; padding: .45rem 1rem; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); }
+  .dict-key { font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--accent); white-space: nowrap; }
+  .dict-val { font-size: 12px; color: var(--text); text-align: right; }
+
+  /* STATE MACHINE TABLE */
+  .sm-valid { color: #166534; font-weight: 600; font-family: var(--mono); font-size: 11px; }
+  .sm-invalid { color: #991B1B; font-weight: 600; font-family: var(--mono); font-size: 11px; }
+  .actor { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+  .event-code { font-family: var(--mono); font-size: 11px; font-weight: 600; }
+  .ev-round { color: var(--c-round); }
+  .ev-alert { color: var(--c-alert); }
+  .ev-inc   { color: var(--c-inc); }
+  .ev-sys   { color: var(--c-sys); }
+
+  /* FORBIDDEN */
+  .forbidden { color: #991B1B; font-family: var(--mono); font-size: 11.5px; text-decoration: line-through; }
+  .allowed   { color: #166534; font-family: var(--mono); font-size: 11.5px; font-weight: 500; }
+
+  /* COLOR SWATCH */
+  .swatch-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: .5rem; padding: 1rem; }
+  .swatch { border-radius: 6px; overflow: hidden; border: 1px solid var(--border); }
+  .swatch-color { height: 36px; }
+  .swatch-label { padding: .3rem .5rem; font-family: var(--mono); font-size: 10px; color: var(--muted); line-height: 1.4; }
+  .swatch-label strong { display: block; font-size: 11px; color: var(--text); }
+
+  /* INTEGRITY RULES */
+  .ir-grid { display: grid; gap: 0; }
+  .ir-row { display: grid; grid-template-columns: 60px 1fr 140px; gap: 0; border-bottom: 1px solid var(--border); padding: .55rem 1rem; align-items: start; }
+  .ir-row:last-child { border-bottom: none; }
+  .ir-id { font-family: var(--mono); font-size: 10px; font-weight: 600; color: var(--accent); }
+  .ir-rule { font-size: 12.5px; color: var(--text); }
+  .ir-file { font-family: var(--mono); font-size: 10.5px; color: var(--muted); text-align: right; }
+
+  /* NOTE BLOCK */
+  .note-block { padding: .6rem 1rem; background: var(--bg-alt); border-top: 1px solid var(--border); font-size: 11.5px; color: var(--muted); font-style: italic; }
+</style>
+
+<nav>
+  <span class="nav-brand">CareSignal · Vocabulario</span>
+  <a href="#roles">Roles</a>
+  <a href="#round-types">Ronda tipos</a>
+  <a href="#round-states">Ronda estados</a>
+  <a href="#alert-states">Alerta estados</a>
+  <a href="#severity">Severidad</a>
+  <a href="#incident">Incidente</a>
+  <a href="#staff">Staff</a>
+  <a href="#resident">Residente</a>
+  <a href="#outcomes">Verificación</a>
+  <a href="#events">Eventos (20)</a>
+  <a href="#sm-ronda">SM Ronda</a>
+  <a href="#sm-alerta">SM Alerta</a>
+  <a href="#integrity">Integridad</a>
+  <a href="#ui-labels">UI Labels</a>
+  <a href="#forbidden">Prohibidos</a>
+  <a href="#design">Diseño</a>
+  <a href="#pages">Páginas</a>
+</nav>
+
+<main>
+
+<div class="page-header">
+  <div class="eyebrow">CareSignal MVP v0.1.0-workshop · docs/14-vocabulario-maestro.yaml</div>
+  <h1>Vocabulario maestro — catálogos, taxonomías, tuplas y diccionarios</h1>
+  <div class="meta">
+    <span>Fuente: contract §5 · docs/01-domain-taxonomy.yaml · src/domain/taxonomy.ts</span>
+    <span>Estado: CONGELADO — no renombrar sin cambio formal de contrato (§13)</span>
+    <span>2026-08-30</span>
+  </div>
+</div>
+
+<!-- ROLES -->
+<div class="section" id="roles">
+  <div class="section-header">
+    <span class="section-num">A1</span>
+    <span class="section-title">Catálogo de roles</span>
+    <span class="section-tag">CATÁLOGO · 4 valores</span>
+  </div>
+  <div class="section-body">
+    <div class="cat-grid">
+      <div class="cat-row"><div class="cat-row-id">caregiver</div><div class="cat-row-body"><span class="cat-label">Cuidador</span><span class="cat-desc">Ejecuta rondas y solicita apoyo operativo</span></div><div class="cat-row-meta">👤 operativo</div></div>
+      <div class="cat-row"><div class="cat-row-id">supervisor</div><div class="cat-row-body"><span class="cat-label">Supervisor</span><span class="cat-desc">Gestiona alertas, asigna, escala y cierra el ciclo de verificación</span></div><div class="cat-row-meta">🔍 gestión de turno</div></div>
+      <div class="cat-row"><div class="cat-row-id">manager</div><div class="cat-row-body"><span class="cat-label">Gerente</span><span class="cat-desc">Vista ejecutiva, historial completo, audit log, configuración</span></div><div class="cat-row-meta">📊 ejecutivo</div></div>
+      <div class="cat-row"><div class="cat-row-id">demo_admin</div><div class="cat-row-body"><span class="cat-label">Admin de Demo</span><span class="cat-desc">Controla reloj simulado, escenarios y reset — no es rol comercial</span></div><div class="cat-row-meta">⚙️ simulación</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ROUND TYPES -->
+<div class="section" id="round-types">
+  <div class="section-header">
+    <span class="section-num">A2</span>
+    <span class="section-title">Catálogo de tipos de ronda</span>
+    <span class="section-tag">CATÁLOGO · 5 valores — operativos y ficticios, NO médicos</span>
+  </div>
+  <div class="section-body">
+    <div class="cat-grid">
+      <div class="cat-row"><div class="cat-row-id">routine_check</div><div class="cat-row-body"><span class="cat-label">Revisión de rutina</span><span class="cat-desc">Verificación operativa general del residente</span></div><div class="cat-row-meta">10 min</div></div>
+      <div class="cat-row"><div class="cat-row-id">hydration_check</div><div class="cat-row-body"><span class="cat-label">Control de hidratación</span><span class="cat-desc">Verificar que el residente recibió hidratación adecuada</span></div><div class="cat-row-meta">5 min</div></div>
+      <div class="cat-row"><div class="cat-row-id">mobility_assistance</div><div class="cat-row-body"><span class="cat-label">Asistencia de movilidad</span><span class="cat-desc">Apoyo en desplazamiento o reposicionamiento</span></div><div class="cat-row-meta">20 min</div></div>
+      <div class="cat-row"><div class="cat-row-id">meal_assistance</div><div class="cat-row-body"><span class="cat-label">Asistencia en comida</span><span class="cat-desc">Apoyo durante la alimentación del residente</span></div><div class="cat-row-meta">30 min</div></div>
+      <div class="cat-row"><div class="cat-row-id">custom_operational_check</div><div class="cat-row-body"><span class="cat-label">Revisión operativa personalizada</span><span class="cat-desc">Tarea operativa definida por la residencia</span></div><div class="cat-row-meta">variable</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ROUND STATES -->
+<div class="section" id="round-states">
+  <div class="section-header">
+    <span class="section-num">A3</span>
+    <span class="section-title">Catálogo de estados de ronda</span>
+    <span class="section-tag">CATÁLOGO · 6 valores</span>
+  </div>
+  <div class="section-body">
+    <div class="table-wrap"><table>
+      <thead><tr><th>id</th><th>Etiqueta ES</th><th>Actor que lo activa</th><th>Terminal</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr><td><span class="pill" style="color:var(--c-sched);background:var(--bg-sched)">scheduled</span></td><td>Programada</td><td class="actor">sistema / supervisor</td><td>—</td><td>La ronda existe pero aún no es su hora</td></tr>
+        <tr><td><span class="pill" style="color:var(--c-due);background:var(--bg-due)">due</span></td><td>Pendiente</td><td class="actor">motor temporal</td><td>—</td><td>Ha llegado la hora — el cuidador debe iniciarla</td></tr>
+        <tr><td><span class="pill" style="color:var(--c-prog);background:var(--bg-prog)">in_progress</span></td><td>En progreso</td><td class="actor">caregiver</td><td>—</td><td>El cuidador inició la ronda y está en curso</td></tr>
+        <tr><td><span class="pill" style="color:var(--c-comp);background:var(--bg-comp)">completed</span></td><td>Completada</td><td class="actor">caregiver</td><td>✅ sí</td><td>Ronda completada con resultado registrado</td></tr>
+        <tr><td><span class="pill" style="color:var(--c-over);background:var(--bg-over)">overdue</span></td><td>Vencida</td><td class="actor">motor temporal</td><td>—</td><td>Pasó el tiempo límite sin iniciarse → puede generar alerta</td></tr>
+        <tr><td><span class="pill" style="color:var(--c-canc);background:var(--bg-canc)">cancelled</span></td><td>Cancelada</td><td class="actor">supervisor</td><td>✅ sí</td><td>Cancelada; no genera alerta</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- ALERT STATES -->
+<div class="section" id="alert-states">
+  <div class="section-header">
+    <span class="section-num">A4</span>
+    <span class="section-title">Catálogo de estados de alerta</span>
+    <span class="section-tag">CATÁLOGO · 7 valores</span>
+  </div>
+  <div class="section-body">
+    <div class="table-wrap"><table>
+      <thead><tr><th>id</th><th>Etiqueta ES</th><th>Actor</th><th>Terminal</th><th>Requiere</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr><td><span class="pill" style="color:var(--c-open);background:var(--bg-open)">open</span></td><td>Abierta</td><td class="actor">motor temporal</td><td>—</td><td>—</td><td>Generada automáticamente, sin atender</td></tr>
+        <tr><td><span class="pill" style="color:var(--c-ack);background:var(--bg-ack)">acknowledged</span></td><td>Reconocida</td><td class="actor">supervisor</td><td>—</td><td>—</td><td>El supervisor vio y registró la alerta</td></tr>
+        <tr><td><span class="pill" style="color:var(--c-asgn);background:var(--bg-asgn)">assigned</span></td><td>Asignada</td><td class="actor">supervisor</td><td>—</td><td>owner_id</td><td>La alerta tiene un responsable activo</td></tr>
+        <tr><td><span class="pill" style="color:var(--c-esc);background:var(--bg-esc)">escalated</span></td><td>Escalada</td><td class="actor">supervisor</td><td>—</td><td>—</td><td>Escalada al gerente para acción adicional</td></tr>
+        <tr><td><span class="pill" style="color:var(--c-verif);background:var(--bg-verif)">in_verification</span></td><td>En verificación</td><td class="actor">supervisor</td><td>—</td><td>incidente_id</td><td>Se está verificando el estado del residente</td></tr>
+        <tr><td><span class="pill" style="color:var(--c-res);background:var(--bg-res)">resolved</span></td><td>Resuelta</td><td class="actor">supervisor</td><td>—</td><td>resultado_verificacion</td><td>Verificación completada con resultado documentado</td></tr>
+        <tr><td><span class="pill" style="color:var(--c-cls);background:var(--bg-cls)">closed</span></td><td>Cerrada</td><td class="actor">manager / supervisor</td><td>✅ sí</td><td>resolved_at</td><td>Ciclo administrativo completo; no editable</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- SEVERITY + RESIDENT STATUS side by side -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:2.25rem">
+  <div class="section" id="severity" style="margin-bottom:0">
+    <div class="section-header">
+      <span class="section-num">A5</span>
+      <span class="section-title">Severidad de alerta</span>
+      <span class="section-tag">LISTA · 2</span>
+    </div>
+    <div class="section-body">
+      <div class="cat-grid">
+        <div class="cat-row"><div class="cat-row-id"><span class="pill" style="color:var(--c-yellow);background:var(--bg-yellow)">yellow</span></div><div class="cat-row-body"><span class="cat-label">Amarilla</span><span class="cat-desc">Atención no urgente</span></div><div class="cat-row-meta">#D97706</div></div>
+        <div class="cat-row"><div class="cat-row-id"><span class="pill" style="color:var(--c-red);background:var(--bg-red)">red</span></div><div class="cat-row-body"><span class="cat-label">Roja</span><span class="cat-desc">Atención inmediata</span></div><div class="cat-row-meta">#DC2626</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="section" id="resident" style="margin-bottom:0">
+    <div class="section-header">
+      <span class="section-num">A8</span>
+      <span class="section-title">Estado visual residente</span>
+      <span class="section-tag">DERIVADO — nunca persiste</span>
+    </div>
+    <div class="section-body">
+      <div class="cat-grid">
+        <div class="cat-row"><div class="cat-row-id"><span class="pill" style="color:var(--c-green);background:var(--bg-green)">green</span></div><div class="cat-row-body"><span class="cat-label">Sin novedad</span><span class="cat-desc">Sin rondas overdue ni alertas activas</span></div><div class="cat-row-meta">🟢</div></div>
+        <div class="cat-row"><div class="cat-row-id"><span class="pill" style="color:var(--c-yellow);background:var(--bg-yellow)">yellow</span></div><div class="cat-row-body"><span class="cat-label">Atención</span><span class="cat-desc">Ronda due sin atender o alerta yellow</span></div><div class="cat-row-meta">🟡</div></div>
+        <div class="cat-row"><div class="cat-row-id"><span class="pill" style="color:var(--c-red);background:var(--bg-red)">red</span></div><div class="cat-row-body"><span class="cat-label">Urgente</span><span class="cat-desc">Ronda overdue o alerta red activa</span></div><div class="cat-row-meta">🔴</div></div>
+      </div>
+      <div class="note-block">Calculado por <code>deriveResidentStatus()</code> — función pura</div>
+    </div>
+  </div>
+</div>
+
+<!-- INCIDENT STATES + STAFF AVAILABILITY side by side -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:2.25rem">
+  <div class="section" id="incident" style="margin-bottom:0">
+    <div class="section-header">
+      <span class="section-num">A6</span>
+      <span class="section-title">Estados de incidente</span>
+      <span class="section-tag">LISTA · 4</span>
+    </div>
+    <div class="section-body">
+      <div class="cat-grid">
+        <div class="cat-row"><div class="cat-row-id">open</div><div class="cat-row-body"><span class="cat-label">Abierto</span><span class="cat-desc">Creado al iniciar verificación</span></div></div>
+        <div class="cat-row"><div class="cat-row-id">verification_in_progress</div><div class="cat-row-body"><span class="cat-label">En verificación</span><span class="cat-desc">Proceso activo en sitio</span></div></div>
+        <div class="cat-row"><div class="cat-row-id">resolved</div><div class="cat-row-body"><span class="cat-label">Resuelto</span><span class="cat-desc">Resultado operativo documentado</span></div></div>
+        <div class="cat-row"><div class="cat-row-id">closed</div><div class="cat-row-body"><span class="cat-label">Cerrado ✅ terminal</span><span class="cat-desc">Ciclo formal completo</span></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="section" id="staff" style="margin-bottom:0">
+    <div class="section-header">
+      <span class="section-num">A7</span>
+      <span class="section-title">Disponibilidad del personal</span>
+      <span class="section-tag">LISTA · 3</span>
+    </div>
+    <div class="section-body">
+      <div class="cat-grid">
+        <div class="cat-row"><div class="cat-row-id"><span class="pill" style="color:var(--c-avail);background:var(--bg-avail)">available</span></div><div class="cat-row-body"><span class="cat-label">Disponible</span><span class="cat-desc">Puede recibir asignaciones</span></div></div>
+        <div class="cat-row"><div class="cat-row-id"><span class="pill" style="color:var(--c-busy);background:var(--bg-busy)">busy</span></div><div class="cat-row-body"><span class="cat-label">Ocupado</span><span class="cat-desc">En tarea; asignable con aviso</span></div></div>
+        <div class="cat-row"><div class="cat-row-id"><span class="pill" style="color:var(--c-off);background:var(--bg-off)">off_shift</span></div><div class="cat-row-body"><span class="cat-label">Fuera de turno</span><span class="cat-desc">No recibe asignaciones</span></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- VERIFICATION OUTCOMES -->
+<div class="section" id="outcomes">
+  <div class="section-header">
+    <span class="section-num">A9</span>
+    <span class="section-title">Resultados de verificación</span>
+    <span class="section-tag">CATÁLOGO · 6 valores — vocabulario operacional, NO clínico</span>
+  </div>
+  <div class="section-body">
+    <div class="cat-grid">
+      <div class="cat-row"><div class="cat-row-id">resident_confirmed_ok</div><div class="cat-row-body"><span class="cat-label">Residente confirmado sin novedad</span></div></div>
+      <div class="cat-row"><div class="cat-row-id">assistance_provided</div><div class="cat-row-body"><span class="cat-label">Asistencia brindada en sitio</span></div></div>
+      <div class="cat-row"><div class="cat-row-id">caregiver_support_required</div><div class="cat-row-body"><span class="cat-label">Se requirió apoyo adicional del cuidador</span></div></div>
+      <div class="cat-row"><div class="cat-row-id">supervisor_follow_up_required</div><div class="cat-row-body"><span class="cat-label">El supervisor debe dar seguimiento</span></div></div>
+      <div class="cat-row"><div class="cat-row-id">false_alert</div><div class="cat-row-body"><span class="cat-label">Alerta sin incidencia real</span><span class="cat-desc">Falsa alarma operativa</span></div></div>
+      <div class="cat-row"><div class="cat-row-id">other_operational_result</div><div class="cat-row-body"><span class="cat-label">Otro resultado operativo</span><span class="cat-desc">Detallar en notas</span></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- AUDIT EVENTS -->
+<div class="section" id="events">
+  <div class="section-header">
+    <span class="section-num">A10</span>
+    <span class="section-title">Catálogo de tipos de evento — audit_events</span>
+    <span class="section-tag">CATÁLOGO · 20 tipos — append-only, nunca UPDATE ni DELETE</span>
+  </div>
+  <div class="section-body">
+    <div class="table-wrap"><table>
+      <thead><tr><th>Evento</th><th>Familia</th><th>Etiqueta ES</th><th>Actor</th><th>Campos principales del payload</th></tr></thead>
+      <tbody>
+        <tr><td><span class="event-code ev-round">ROUND_SCHEDULED</span></td><td style="color:var(--c-round)">Ronda</td><td>Ronda programada</td><td class="actor">supervisor / sistema</td><td><code>ronda_id, residente_id, tipo_id, programada_at, cuidador_id?</code></td></tr>
+        <tr><td><span class="event-code ev-round">ROUND_DUE</span></td><td style="color:var(--c-round)">Ronda</td><td>Ronda en tiempo — pendiente</td><td class="actor">motor temporal</td><td><code>ronda_id, residente_id</code></td></tr>
+        <tr><td><span class="event-code ev-round">ROUND_STARTED</span></td><td style="color:var(--c-round)">Ronda</td><td>Ronda iniciada</td><td class="actor">caregiver</td><td><code>ronda_id, residente_id, iniciada_at</code></td></tr>
+        <tr><td><span class="event-code ev-round">ROUND_COMPLETED</span></td><td style="color:var(--c-round)">Ronda</td><td>Ronda completada</td><td class="actor">caregiver</td><td><code>ronda_id, completada_at, resultado?</code></td></tr>
+        <tr><td><span class="event-code ev-round">ROUND_OVERDUE</span></td><td style="color:var(--c-round)">Ronda</td><td>Ronda vencida</td><td class="actor">motor temporal</td><td><code>ronda_id, residente_id, tiempo_excedido_min</code></td></tr>
+        <tr><td><span class="event-code ev-round">ROUND_CANCELLED</span></td><td style="color:var(--c-round)">Ronda</td><td>Ronda cancelada</td><td class="actor">supervisor</td><td><code>ronda_id, motivo?</code></td></tr>
+        <tr><td><span class="event-code ev-round">ROUND_REASSIGNED</span></td><td style="color:var(--c-round)">Ronda</td><td>Ronda reasignada</td><td class="actor">supervisor</td><td><code>ronda_id, prev_cuidador_id?, new_cuidador_id</code></td></tr>
+        <tr><td><span class="event-code ev-alert">ALERT_CREATED</span></td><td style="color:var(--c-alert)">Alerta</td><td>Alerta creada automáticamente</td><td class="actor">motor temporal</td><td><code>alerta_id, ronda_id, residente_id, severidad</code></td></tr>
+        <tr><td><span class="event-code ev-alert">ALERT_ACKNOWLEDGED</span></td><td style="color:var(--c-alert)">Alerta</td><td>Alerta reconocida</td><td class="actor">supervisor</td><td><code>alerta_id</code></td></tr>
+        <tr><td><span class="event-code ev-alert">ALERT_ASSIGNED</span></td><td style="color:var(--c-alert)">Alerta</td><td>Alerta asignada</td><td class="actor">supervisor</td><td><code>alerta_id, owner_id</code></td></tr>
+        <tr><td><span class="event-code ev-alert">ALERT_REASSIGNED</span></td><td style="color:var(--c-alert)">Alerta</td><td>Alerta reasignada</td><td class="actor">supervisor</td><td><code>alerta_id, prev_owner_id, new_owner_id, motivo?</code></td></tr>
+        <tr><td><span class="event-code ev-alert">ALERT_ESCALATED</span></td><td style="color:var(--c-alert)">Alerta</td><td>Alerta escalada al gerente</td><td class="actor">supervisor</td><td><code>alerta_id, motivo?</code></td></tr>
+        <tr><td><span class="event-code ev-alert">ALERT_VERIFICATION_STARTED</span></td><td style="color:var(--c-alert)">Alerta</td><td>Verificación iniciada</td><td class="actor">supervisor</td><td><code>alerta_id, incidente_id</code></td></tr>
+        <tr><td><span class="event-code ev-alert">ALERT_RESOLVED</span></td><td style="color:var(--c-alert)">Alerta</td><td>Alerta resuelta con resultado</td><td class="actor">supervisor</td><td><code>alerta_id, resultado_verificacion, outcome_id</code></td></tr>
+        <tr><td><span class="event-code ev-alert">ALERT_CLOSED</span></td><td style="color:var(--c-alert)">Alerta</td><td>Alerta cerrada</td><td class="actor">manager / supervisor</td><td><code>alerta_id</code></td></tr>
+        <tr><td><span class="event-code ev-inc">INCIDENT_CREATED</span></td><td style="color:var(--c-inc)">Incidente</td><td>Incidente formal creado</td><td class="actor">supervisor</td><td><code>incidente_id, alerta_id, residente_id, descripcion</code></td></tr>
+        <tr><td><span class="event-code ev-inc">INCIDENT_UPDATED</span></td><td style="color:var(--c-inc)">Incidente</td><td>Incidente actualizado</td><td class="actor">supervisor / manager</td><td><code>incidente_id, campo, valor_anterior, valor_nuevo</code></td></tr>
+        <tr><td><span class="event-code ev-inc">INCIDENT_CLOSED</span></td><td style="color:var(--c-inc)">Incidente</td><td>Incidente cerrado</td><td class="actor">manager</td><td><code>incidente_id, resultado_operativo</code></td></tr>
+        <tr><td><span class="event-code ev-sys">DEMO_RESET</span></td><td style="color:var(--c-sys)">Sistema</td><td>Demo reiniciada al seed</td><td class="actor">demo_admin</td><td><code>seed_version, timestamp</code></td></tr>
+        <tr><td><span class="event-code ev-sys">CLOCK_ADVANCED</span></td><td style="color:var(--c-sys)">Sistema</td><td>Reloj simulado avanzado</td><td class="actor">demo_admin</td><td><code>delta_min, nuevo_tiempo</code></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- STATE MACHINE RONDA -->
+<div class="section" id="sm-ronda">
+  <div class="section-header">
+    <span class="section-num">C1</span>
+    <span class="section-title">Máquina de estados — Ronda</span>
+    <span class="section-tag">TUPLAS (from, to, actor, condición, evento)</span>
+  </div>
+  <div class="section-body">
+    <div class="table-wrap"><table>
+      <thead><tr><th>Desde</th><th>Hacia</th><th>Actor</th><th>Condición</th><th>Evento emitido</th><th>¿Válida?</th></tr></thead>
+      <tbody>
+        <tr><td><span class="pill" style="color:var(--c-sched);background:var(--bg-sched)">scheduled</span></td><td><span class="pill" style="color:var(--c-due);background:var(--bg-due)">due</span></td><td class="actor">motor temporal</td><td>ahora ≥ programada_at</td><td><span class="event-code ev-round">ROUND_DUE</span></td><td class="sm-valid">✅ válida</td></tr>
+        <tr><td><span class="pill" style="color:var(--c-due);background:var(--bg-due)">due</span></td><td><span class="pill" style="color:var(--c-prog);background:var(--bg-prog)">in_progress</span></td><td class="actor">caregiver</td><td>—</td><td><span class="event-code ev-round">ROUND_STARTED</span></td><td class="sm-valid">✅ válida</td></tr>
+        <tr><td><span class="pill" style="color:var(--c-prog);background:var(--bg-prog)">in_progress</span></td><td><span class="pill" style="color:var(--c-comp);background:var(--bg-comp)">completed</span></td><td class="actor">caregiver</td><td>—</td><td><span class="event-code ev-round">ROUND_COMPLETED</span></td><td class="sm-valid">✅ válida</td></tr>
+        <tr><td><span class="pill" style="color:var(--c-due);background:var(--bg-due)">due</span></td><td><span class="pill" style="color:var(--c-over);background:var(--bg-over)">overdue</span></td><td class="actor">motor temporal</td><td>ahora &gt; due_at + tolerancia</td><td><span class="event-code ev-round">ROUND_OVERDUE</span></td><td class="sm-valid">✅ válida</td></tr>
+        <tr><td><span class="pill" style="color:var(--c-over);background:var(--bg-over)">overdue</span></td><td>—</td><td class="actor">motor temporal</td><td>—</td><td><span class="event-code ev-alert">ALERT_CREATED</span></td><td class="sm-valid">✅ válida</td></tr>
+        <tr><td><span class="pill" style="color:var(--c-sched);background:var(--bg-sched)">scheduled</span></td><td><span class="pill" style="color:var(--c-canc);background:var(--bg-canc)">cancelled</span></td><td class="actor">supervisor</td><td>—</td><td><span class="event-code ev-round">ROUND_CANCELLED</span></td><td class="sm-valid">✅ válida</td></tr>
+        <tr style="opacity:.6"><td><span class="pill" style="color:var(--c-comp);background:var(--bg-comp)">completed</span></td><td><span class="pill" style="color:var(--c-over);background:var(--bg-over)">overdue</span></td><td class="actor">cualquiera</td><td>—</td><td>—</td><td class="sm-invalid">❌ inválida</td></tr>
+        <tr style="opacity:.6"><td><span class="pill" style="color:var(--c-canc);background:var(--bg-canc)">cancelled</span></td><td>cualquiera</td><td class="actor">cualquiera</td><td>—</td><td>—</td><td class="sm-invalid">❌ inválida</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- STATE MACHINE ALERTA -->
+<div class="section" id="sm-alerta">
+  <div class="section-header">
+    <span class="section-num">C2</span>
+    <span class="section-title">Máquina de estados — Alerta</span>
+    <span class="section-tag">TUPLAS (from, to, actor, condición, evento)</span>
+  </div>
+  <div class="section-body">
+    <div class="table-wrap"><table>
+      <thead><tr><th>Desde</th><th>Hacia</th><th>Actor</th><th>Condición</th><th>Evento emitido</th><th>¿Válida?</th></tr></thead>
+      <tbody>
+        <tr><td><span class="pill" style="color:var(--c-open);background:var(--bg-open)">open</span></td><td><span class="pill" style="color:var(--c-ack);background:var(--bg-ack)">acknowledged</span></td><td class="actor">supervisor</td><td>—</td><td><span class="event-code ev-alert">ALERT_ACKNOWLEDGED</span></td><td class="sm-valid">✅</td></tr>
+        <tr><td><span class="pill" style="color:var(--c-ack);background:var(--bg-ack)">acknowledged</span></td><td><span class="pill" style="color:var(--c-asgn);background:var(--bg-asgn)">assigned</span></td><td class="actor">supervisor</td><td>owner_id provisto</td><td><span class="event-code ev-alert">ALERT_ASSIGNED</span></td><td class="sm-valid">✅</td></tr>
+        <tr><td><span class="pill" style="color:var(--c-open);background:var(--bg-open)">open</span></td><td><span class="pill" style="color:var(--c-asgn);background:var(--bg-asgn)">assigned</span></td><td class="actor">supervisor</td><td>owner_id provisto</td><td><span class="event-code ev-alert">ALERT_ASSIGNED</span></td><td class="sm-valid">✅</td></tr>
+        <tr><td><span class="pill" style="color:var(--c-asgn);background:var(--bg-asgn)">assigned</span></td><td><span class="pill" style="color:var(--c-esc);background:var(--bg-esc)">escalated</span></td><td class="actor">supervisor</td><td>—</td><td><span class="event-code ev-alert">ALERT_ESCALATED</span></td><td class="sm-valid">✅</td></tr>
+        <tr><td><span class="pill" style="color:var(--c-asgn);background:var(--bg-asgn)">assigned</span></td><td><span class="pill" style="color:var(--c-verif);background:var(--bg-verif)">in_verification</span></td><td class="actor">supervisor</td><td>incidente creado</td><td><span class="event-code ev-alert">ALERT_VERIFICATION_STARTED</span></td><td class="sm-valid">✅</td></tr>
+        <tr><td><span class="pill" style="color:var(--c-esc);background:var(--bg-esc)">escalated</span></td><td><span class="pill" style="color:var(--c-verif);background:var(--bg-verif)">in_verification</span></td><td class="actor">supervisor</td><td>incidente creado</td><td><span class="event-code ev-alert">ALERT_VERIFICATION_STARTED</span></td><td class="sm-valid">✅</td></tr>
+        <tr><td><span class="pill" style="color:var(--c-asgn);background:var(--bg-asgn)">assigned</span></td><td><span class="pill" style="color:var(--c-asgn);background:var(--bg-asgn)">assigned</span></td><td class="actor">supervisor</td><td>nuevo owner_id</td><td><span class="event-code ev-alert">ALERT_REASSIGNED</span></td><td class="sm-valid">✅</td></tr>
+        <tr><td><span class="pill" style="color:var(--c-verif);background:var(--bg-verif)">in_verification</span></td><td><span class="pill" style="color:var(--c-res);background:var(--bg-res)">resolved</span></td><td class="actor">supervisor</td><td>resultado_verificacion provisto</td><td><span class="event-code ev-alert">ALERT_RESOLVED</span></td><td class="sm-valid">✅</td></tr>
+        <tr><td><span class="pill" style="color:var(--c-res);background:var(--bg-res)">resolved</span></td><td><span class="pill" style="color:var(--c-cls);background:var(--bg-cls)">closed</span></td><td class="actor">manager</td><td>resolved_at existe</td><td><span class="event-code ev-alert">ALERT_CLOSED</span></td><td class="sm-valid">✅</td></tr>
+        <tr style="opacity:.6"><td><span class="pill" style="color:var(--c-open);background:var(--bg-open)">open</span></td><td><span class="pill" style="color:var(--c-cls);background:var(--bg-cls)">closed</span></td><td class="actor">cualquiera</td><td>—</td><td>—</td><td class="sm-invalid">❌ debe resolverse antes</td></tr>
+        <tr style="opacity:.6"><td><span class="pill" style="color:var(--c-cls);background:var(--bg-cls)">closed</span></td><td>cualquiera</td><td class="actor">cualquiera</td><td>—</td><td>—</td><td class="sm-invalid">❌ terminal</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- INTEGRITY RULES -->
+<div class="section" id="integrity">
+  <div class="section-header">
+    <span class="section-num">C4</span>
+    <span class="section-title">Reglas de integridad del dominio</span>
+    <span class="section-tag">TUPLAS · 10 invariantes</span>
+  </div>
+  <div class="section-body">
+    <div class="ir-grid">
+      <div class="ir-row"><div class="ir-id">IR-01</div><div class="ir-rule">Una ronda pertenece a exactamente un residente</div><div class="ir-file">domain/types.ts</div></div>
+      <div class="ir-row"><div class="ir-id">IR-02</div><div class="ir-rule">Una ronda tiene 0 o 1 cuidador asignado</div><div class="ir-file">domain/types.ts</div></div>
+      <div class="ir-row"><div class="ir-id">IR-03</div><div class="ir-rule">Una ronda overdue puede generar como máximo una alerta activa</div><div class="ir-file">domain/rules.ts</div></div>
+      <div class="ir-row"><div class="ir-id">IR-04</div><div class="ir-rule">Una alerta tiene 0 o 1 owner activo en todo momento</div><div class="ir-file">domain/rules.ts</div></div>
+      <div class="ir-row"><div class="ir-id">IR-05</div><div class="ir-rule">Una alerta tiene 0 o 1 incidente vinculado</div><div class="ir-file">domain/types.ts</div></div>
+      <div class="ir-row"><div class="ir-id">IR-06</div><div class="ir-rule">Toda transición emite un AuditEvent con actor + timestamp</div><div class="ir-file">data/repository.ts</div></div>
+      <div class="ir-row"><div class="ir-id">IR-07</div><div class="ir-rule">Una alerta resuelta requiere resultado_verificacion no vacío</div><div class="ir-file">domain/rules.ts</div></div>
+      <div class="ir-row"><div class="ir-id">IR-08</div><div class="ir-rule">Una alerta cerrada requiere haber sido resuelta (resolved_at existe)</div><div class="ir-file">domain/transitions.ts</div></div>
+      <div class="ir-row"><div class="ir-id">IR-09</div><div class="ir-rule"><code>estado_visual</code> del residente no se persiste — derivado por <code>deriveResidentStatus()</code></div><div class="ir-file">domain/rules.ts</div></div>
+      <div class="ir-row"><div class="ir-id">IR-10</div><div class="ir-rule"><code>audit_events</code> solo acepta INSERT; nunca UPDATE ni DELETE</div><div class="ir-file">data/repository.ts</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- UI LABELS -->
+<div class="section" id="ui-labels">
+  <div class="section-header">
+    <span class="section-num">D1</span>
+    <span class="section-title">Diccionario de etiquetas UI (id → español)</span>
+    <span class="section-tag">DICCIONARIO · 38 entradas</span>
+  </div>
+  <div class="section-body">
+    <div class="dict-grid">
+      <div class="dict-row"><span class="dict-key">caregiver</span><span class="dict-val">Cuidador</span></div>
+      <div class="dict-row"><span class="dict-key">supervisor</span><span class="dict-val">Supervisor</span></div>
+      <div class="dict-row"><span class="dict-key">manager</span><span class="dict-val">Gerente</span></div>
+      <div class="dict-row"><span class="dict-key">demo_admin</span><span class="dict-val">Admin de Demo</span></div>
+      <div class="dict-row"><span class="dict-key">scheduled</span><span class="dict-val">Programada</span></div>
+      <div class="dict-row"><span class="dict-key">due</span><span class="dict-val">Pendiente</span></div>
+      <div class="dict-row"><span class="dict-key">in_progress</span><span class="dict-val">En progreso</span></div>
+      <div class="dict-row"><span class="dict-key">completed</span><span class="dict-val">Completada</span></div>
+      <div class="dict-row"><span class="dict-key">overdue</span><span class="dict-val">Vencida</span></div>
+      <div class="dict-row"><span class="dict-key">cancelled</span><span class="dict-val">Cancelada</span></div>
+      <div class="dict-row"><span class="dict-key">open</span><span class="dict-val">Abierta</span></div>
+      <div class="dict-row"><span class="dict-key">acknowledged</span><span class="dict-val">Reconocida</span></div>
+      <div class="dict-row"><span class="dict-key">assigned</span><span class="dict-val">Asignada</span></div>
+      <div class="dict-row"><span class="dict-key">escalated</span><span class="dict-val">Escalada</span></div>
+      <div class="dict-row"><span class="dict-key">in_verification</span><span class="dict-val">En verificación</span></div>
+      <div class="dict-row"><span class="dict-key">resolved</span><span class="dict-val">Resuelta</span></div>
+      <div class="dict-row"><span class="dict-key">closed</span><span class="dict-val">Cerrada</span></div>
+      <div class="dict-row"><span class="dict-key">yellow</span><span class="dict-val">Amarilla</span></div>
+      <div class="dict-row"><span class="dict-key">red</span><span class="dict-val">Roja</span></div>
+      <div class="dict-row"><span class="dict-key">available</span><span class="dict-val">Disponible</span></div>
+      <div class="dict-row"><span class="dict-key">busy</span><span class="dict-val">Ocupado</span></div>
+      <div class="dict-row"><span class="dict-key">off_shift</span><span class="dict-val">Fuera de turno</span></div>
+      <div class="dict-row"><span class="dict-key">green</span><span class="dict-val">Sin novedad</span></div>
+      <div class="dict-row"><span class="dict-key">routine_check</span><span class="dict-val">Revisión de rutina</span></div>
+      <div class="dict-row"><span class="dict-key">hydration_check</span><span class="dict-val">Control de hidratación</span></div>
+      <div class="dict-row"><span class="dict-key">mobility_assistance</span><span class="dict-val">Asistencia de movilidad</span></div>
+      <div class="dict-row"><span class="dict-key">meal_assistance</span><span class="dict-val">Asistencia en comida</span></div>
+      <div class="dict-row"><span class="dict-key">custom_operational_check</span><span class="dict-val">Revisión operativa personalizada</span></div>
+      <div class="dict-row"><span class="dict-key">resident_confirmed_ok</span><span class="dict-val">Residente confirmado sin novedad</span></div>
+      <div class="dict-row"><span class="dict-key">assistance_provided</span><span class="dict-val">Asistencia brindada en sitio</span></div>
+      <div class="dict-row"><span class="dict-key">caregiver_support_required</span><span class="dict-val">Se requirió apoyo adicional</span></div>
+      <div class="dict-row"><span class="dict-key">false_alert</span><span class="dict-val">Alerta sin incidencia real</span></div>
+      <div class="dict-row"><span class="dict-key">other_operational_result</span><span class="dict-val">Otro resultado operativo</span></div>
+      <div class="dict-row"><span class="dict-key">esencial</span><span class="dict-val">Esencial</span></div>
+      <div class="dict-row"><span class="dict-key">profesional</span><span class="dict-val">Profesional</span></div>
+      <div class="dict-row"><span class="dict-key">institucional</span><span class="dict-val">Institucional</span></div>
+      <div class="dict-row"><span class="dict-key">bajo / medio / alto</span><span class="dict-val">Bajo / Medio / Alto</span></div>
+      <div class="dict-row"><span class="dict-key">individual / compartida</span><span class="dict-val">Individual / Compartida</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- FORBIDDEN -->
+<div class="section" id="forbidden">
+  <div class="section-header">
+    <span class="section-num">D2</span>
+    <span class="section-title">Diccionario de vocabulario prohibido</span>
+    <span class="section-tag">DICCIONARIO — no usar en código, estados, entidades ni UI</span>
+  </div>
+  <div class="section-body">
+    <div class="table-wrap"><table>
+      <thead><tr><th>Término prohibido</th><th>Alternativa permitida</th><th>Razón</th></tr></thead>
+      <tbody>
+        <tr><td><span class="forbidden">paciente</span></td><td><span class="allowed">residente</span></td><td>No es un contexto médico formal</td></tr>
+        <tr><td><span class="forbidden">emergencia médica</span></td><td><span class="allowed">alerta roja / evento que requiere verificación</span></td><td>No detecta emergencias reales</td></tr>
+        <tr><td><span class="forbidden">diagnóstico</span></td><td><span class="allowed">resultado de verificación (operativo)</span></td><td>Sin alcance clínico</td></tr>
+        <tr><td><span class="forbidden">evento clínico</span></td><td><span class="allowed">evento que requiere verificación</span></td><td>Lenguaje médico prohibido</td></tr>
+        <tr><td><span class="forbidden">visita médica</span></td><td><span class="allowed">ronda</span></td><td>No es una visita médica</td></tr>
+        <tr><td><span class="forbidden">muerte detectada</span></td><td><span class="allowed">[fuera de alcance del MVP]</span></td><td>El sistema no detecta estados de salud</td></tr>
+        <tr><td><span class="forbidden">monitor cardíaco</span></td><td><span class="allowed">[fuera de alcance del MVP]</span></td><td>Sin sensores ni biométrica</td></tr>
+        <tr><td><span class="forbidden">expediente</span></td><td><span class="allowed">bitácora de auditoría / registro de rondas</span></td><td>Sin expediente médico</td></tr>
+        <tr><td><span class="forbidden">alarma finalizada</span></td><td><span class="allowed">alerta cerrada / alerta resuelta</span></td><td>Terminología del dominio</td></tr>
+        <tr><td><span class="forbidden">enfermera / enfermería</span></td><td><span class="allowed">cuidador / ronda de cuidado</span></td><td>Rol operativo, no médico</td></tr>
+        <tr><td><span class="forbidden">síntomas / medicamentos / tratamiento</span></td><td><span class="allowed">[fuera de alcance del MVP]</span></td><td>Sin alcance clínico</td></tr>
+      </tbody>
+    </table></div>
+    <div class="note-block">Frase UI permitida para alertas: <strong>"evento que requiere verificación"</strong></div>
+  </div>
+</div>
+
+<!-- DESIGN TOKENS -->
+<div class="section" id="design">
+  <div class="section-header">
+    <span class="section-num">D3</span>
+    <span class="section-title">Tokens de diseño — paleta pitch + arquitectura</span>
+    <span class="section-tag">DICCIONARIO</span>
+  </div>
+  <div class="section-body">
+    <div style="padding:.75rem 1rem .25rem;font-family:var(--mono);font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">Pitch deck — paleta pastel ejecutiva</div>
+    <div class="swatch-grid">
+      <div class="swatch"><div class="swatch-color" style="background:#FAFAF8"></div><div class="swatch-label"><strong>pitch_fondo</strong>#FAFAF8</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#F0EDE8"></div><div class="swatch-label"><strong>pitch_tarjeta</strong>#F0EDE8</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#5B8DB8"></div><div class="swatch-label"><strong>pitch_azul</strong>#5B8DB8</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#A8C4DC"></div><div class="swatch-label"><strong>pitch_azulClaro</strong>#A8C4DC</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#3A6B96"></div><div class="swatch-label"><strong>pitch_azulOscuro</strong>#3A6B96</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#7BA68A"></div><div class="swatch-label"><strong>pitch_verde</strong>#7BA68A</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#C4786A"></div><div class="swatch-label"><strong>pitch_terracota</strong>#C4786A</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#2D3748"></div><div class="swatch-label"><strong>pitch_grafito</strong>#2D3748</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#718096"></div><div class="swatch-label"><strong>pitch_gris</strong>#718096</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#D97706"></div><div class="swatch-label"><strong>alerta yellow</strong>#D97706</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#DC2626"></div><div class="swatch-label"><strong>alerta red</strong>#DC2626</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#16A34A"></div><div class="swatch-label"><strong>status green</strong>#16A34A</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGES -->
+<div class="section" id="pages">
+  <div class="section-header">
+    <span class="section-num">D4</span>
+    <span class="section-title">Páginas de la aplicación (contrato §9)</span>
+    <span class="section-tag">DICCIONARIO · 5 páginas fijas — no añadir sin cambio formal</span>
+  </div>
+  <div class="section-body">
+    <div class="table-wrap"><table>
+      <thead><tr><th>Componente</th><th>Ruta</th><th>Etiqueta</th><th>Rol</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr><td><code>CaregiverRoundsPage</code></td><td><code>/rounds</code></td><td>Mis rondas</td><td>caregiver</td><td>Rondas del turno con acciones iniciar/completar</td></tr>
+        <tr><td><code>SupervisorDashboardPage</code></td><td><code>/dashboard</code></td><td>Dashboard del supervisor</td><td>supervisor</td><td>Residentes, alertas activas, rondas overdue del turno</td></tr>
+        <tr><td><code>AlertManagementPage</code></td><td><code>/alerts</code></td><td>Gestión de alertas</td><td>supervisor</td><td>Ciclo completo: asignar, escalar, verificar, resolver, cerrar</td></tr>
+        <tr><td><code>ManagerDashboardPage</code></td><td><code>/manager</code></td><td>Dashboard ejecutivo</td><td>manager</td><td>Incidentes, audit log completo, config, exportar bitácora</td></tr>
+        <tr><td><code>DemoControlPage</code></td><td><code>/demo</code></td><td>Control de demo</td><td>demo_admin</td><td>Reloj simulado, escenarios, reset del seed</td></tr>
+      </tbody>
+    </table></div>
+    <div class="note-block">Aviso obligatorio en todas las páginas: <strong>"MVP operacional, no dispositivo médico"</strong> + <strong>"Datos ficticios"</strong></div>
+  </div>
+</div>
+
+</main>

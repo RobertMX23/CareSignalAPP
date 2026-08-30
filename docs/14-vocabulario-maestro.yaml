@@ -1,0 +1,766 @@
+# 14 — Vocabulario maestro (CONGELADO) — CareSignal MVP
+#
+# Este archivo es la ÚNICA fuente de verdad para todos los términos del proyecto:
+# identificadores en código, etiquetas de UI, taxonomías, tuplas de transición,
+# tokens de diseño y restricciones de vocabulario.
+#
+# Relación con otros documentos:
+#   Autoridad superior: contract/CareSignal_MVP_..._FROZEN.md (§5)
+#   Este archivo EXTIENDE docs/01-domain-taxonomy.yaml (no lo reemplaza).
+#   docs/01-domain-taxonomy.yaml sigue siendo la fuente de los identificadores
+#   canónicos y las reglas mínimas. Este archivo añade etiquetas, colores,
+#   transiciones, payloads y tokens que 01 no cubre.
+#
+# Secciones:
+#   A. Catálogos    — listas con metadatos (id + etiqueta + descripción + atributos)
+#   B. Taxonomías   — clasificaciones jerárquicas (permisos por rol, árbol de entidades)
+#   C. Tuplas       — máquinas de estado como registros fijos (from, to, actor, evento)
+#   D. Diccionarios — mapas clave→valor (UI labels, tokens, sinónimos prohibidos)
+
+meta:
+  baseline: "0.1.0-workshop-frozen"
+  status: "FROZEN"
+  version: "1.0.0"
+  language: "es-MX"
+  authority_rank: 2.5   # entre 02-state-machine.md (rank 4) y 01-domain-taxonomy.yaml (rank 3)
+  note: "MVP operacional, no dispositivo médico. Datos ficticios."
+  sources:
+    - "contract/CareSignal_MVP_Proyecto_Ejecutivo_Contrato_v0.1.0_FROZEN.md"
+    - "docs/01-domain-taxonomy.yaml"
+    - "docs/02-state-machine.md"
+    - "src/domain/taxonomy.ts"
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# A. CATÁLOGOS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# A1. Roles
+# ─────────
+catalog_roles:
+  - id: caregiver
+    es: "Cuidador"
+    es_description: "Ejecuta rondas y solicita apoyo operativo"
+    color_token: "role-caregiver"   # azul operativo
+    icon: "👤"
+    scope: "operativo"
+  - id: supervisor
+    es: "Supervisor"
+    es_description: "Gestiona alertas, asigna, escala y cierra el ciclo de verificación"
+    color_token: "role-supervisor"  # naranja supervisión
+    icon: "🔍"
+    scope: "gestión de turno"
+  - id: manager
+    es: "Gerente"
+    es_description: "Vista ejecutiva, historial completo, audit log, configuración"
+    color_token: "role-manager"     # verde ejecutivo
+    icon: "📊"
+    scope: "ejecutivo / configuración"
+  - id: demo_admin
+    es: "Admin de Demo"
+    es_description: "Controla reloj simulado, escenarios y reset. No es rol comercial real."
+    color_token: "role-demo"        # gris neutro
+    icon: "⚙️"
+    scope: "demo / simulación"
+    note: "No aparece en planes de producción"
+
+# A2. Tipos de ronda
+# ──────────────────
+catalog_round_types:
+  - id: routine_check
+    es: "Revisión de rutina"
+    es_description: "Verificación operativa general del residente"
+    duration_min: 10
+    category: "operativo"
+  - id: hydration_check
+    es: "Control de hidratación"
+    es_description: "Verificar que el residente recibió hidratación adecuada"
+    duration_min: 5
+    category: "operativo"
+  - id: mobility_assistance
+    es: "Asistencia de movilidad"
+    es_description: "Apoyo en desplazamiento o reposicionamiento del residente"
+    duration_min: 20
+    category: "asistencia"
+  - id: meal_assistance
+    es: "Asistencia en comida"
+    es_description: "Apoyo durante la alimentación del residente"
+    duration_min: 30
+    category: "asistencia"
+  - id: custom_operational_check
+    es: "Revisión operativa personalizada"
+    es_description: "Tarea operativa definida por la residencia según sus protocolos"
+    duration_min: ~      # variable
+    category: "personalizado"
+  note: "Todas las categorías son operativas y ficticias. NO son indicaciones médicas."
+
+# A3. Estados de ronda
+# ────────────────────
+catalog_round_states:
+  - id: scheduled
+    es: "Programada"
+    es_description: "La ronda existe pero aún no es su hora"
+    actor: "sistema / supervisor"
+    terminal: false
+    color_token: "state-scheduled"   # azul suave
+  - id: due
+    es: "Pendiente"
+    es_description: "Ha llegado la hora — el cuidador debe iniciarla"
+    actor: "motor temporal"
+    terminal: false
+    color_token: "state-due"         # amarillo advertencia
+  - id: in_progress
+    es: "En progreso"
+    es_description: "El cuidador inició la ronda y está en curso"
+    actor: "caregiver"
+    terminal: false
+    color_token: "state-progress"    # azul activo
+  - id: completed
+    es: "Completada"
+    es_description: "La ronda fue completada con resultado registrado"
+    actor: "caregiver"
+    terminal: true
+    color_token: "state-completed"   # verde completado
+  - id: overdue
+    es: "Vencida"
+    es_description: "La ronda pasó su tiempo límite sin iniciarse — puede generar alerta"
+    actor: "motor temporal"
+    terminal: false
+    color_token: "state-overdue"     # rojo urgente
+  - id: cancelled
+    es: "Cancelada"
+    es_description: "La ronda fue cancelada; no genera alerta"
+    actor: "supervisor"
+    terminal: true
+    color_token: "state-cancelled"   # gris neutro
+
+# A4. Estados de alerta
+# ─────────────────────
+catalog_alert_states:
+  - id: open
+    es: "Abierta"
+    es_description: "Alerta generada automáticamente, sin atender"
+    actor: "motor temporal"
+    terminal: false
+    severity_applies: true
+    color_token: "alert-open"
+  - id: acknowledged
+    es: "Reconocida"
+    es_description: "El supervisor vio la alerta y la registró como atendida"
+    actor: "supervisor"
+    terminal: false
+    severity_applies: true
+    color_token: "alert-acknowledged"
+  - id: assigned
+    es: "Asignada"
+    es_description: "La alerta tiene un responsable activo"
+    actor: "supervisor"
+    terminal: false
+    severity_applies: true
+    color_token: "alert-assigned"
+  - id: escalated
+    es: "Escalada"
+    es_description: "La alerta fue escalada al gerente para acción adicional"
+    actor: "supervisor"
+    terminal: false
+    severity_applies: true
+    color_token: "alert-escalated"
+  - id: in_verification
+    es: "En verificación"
+    es_description: "Se está verificando el estado del residente en sitio"
+    actor: "supervisor / caregiver"
+    terminal: false
+    severity_applies: true
+    color_token: "alert-verification"
+  - id: resolved
+    es: "Resuelta"
+    es_description: "La verificación se completó con un resultado documentado"
+    actor: "supervisor"
+    terminal: false
+    requires: "resultado_verificacion"
+    color_token: "alert-resolved"
+  - id: closed
+    es: "Cerrada"
+    es_description: "El ciclo administrativo terminó; requiere haber sido resuelta primero"
+    actor: "manager / supervisor"
+    terminal: true
+    requires: "resolved_at"
+    color_token: "alert-closed"
+
+# A5. Severidad de alerta
+# ───────────────────────
+catalog_alert_severity:
+  - id: yellow
+    es: "Amarilla"
+    es_description: "Retraso inicial o condición que requiere atención no urgente"
+    urgency: 1
+    color_hex: "#D97706"
+    color_bg_hex: "#FEF3C7"
+  - id: red
+    es: "Roja"
+    es_description: "Vencimiento crítico o condición que requiere atención inmediata"
+    urgency: 2
+    color_hex: "#DC2626"
+    color_bg_hex: "#FEE2E2"
+
+# A6. Estados de incidente
+# ────────────────────────
+catalog_incident_states:
+  - id: open
+    es: "Abierto"
+    es_description: "Incidente creado al iniciar verificación formal"
+    actor: "supervisor"
+    terminal: false
+  - id: verification_in_progress
+    es: "En verificación"
+    es_description: "El proceso de verificación en sitio está activo"
+    actor: "supervisor / caregiver"
+    terminal: false
+  - id: resolved
+    es: "Resuelto"
+    es_description: "La verificación concluyó con un resultado operativo documentado"
+    actor: "supervisor"
+    terminal: false
+    requires: "resultado_operativo"
+  - id: closed
+    es: "Cerrado"
+    es_description: "El ciclo administrativo formal del incidente terminó"
+    actor: "manager"
+    terminal: true
+
+# A7. Disponibilidad del personal
+# ────────────────────────────────
+catalog_staff_availability:
+  - id: available
+    es: "Disponible"
+    es_description: "El miembro del personal puede recibir asignaciones"
+    assignable: true
+    color_token: "avail-available"
+  - id: busy
+    es: "Ocupado"
+    es_description: "Actualmente ejecutando una tarea; puede asignarse con aviso"
+    assignable: true
+    color_token: "avail-busy"
+  - id: off_shift
+    es: "Fuera de turno"
+    es_description: "No disponible; no debe recibir asignaciones activas"
+    assignable: false
+    color_token: "avail-offshift"
+
+# A8. Estado visual derivado del residente
+# ─────────────────────────────────────────
+catalog_resident_status_derived:
+  computed: true
+  persisted: false
+  function: "deriveResidentStatus()"
+  note: "No es diagnóstico. Solo refleja el estado operativo de las rondas y alertas."
+  values:
+    - id: green
+      es: "Sin novedad"
+      color_hex: "#16A34A"
+      color_bg_hex: "#DCFCE7"
+      rule: "No hay rondas overdue ni alertas activas relevantes para este residente"
+    - id: yellow
+      es: "Atención"
+      color_hex: "#D97706"
+      color_bg_hex: "#FEF3C7"
+      rule: "Hay al menos una ronda due sin atender o una alerta yellow activa"
+    - id: red
+      es: "Urgente"
+      color_hex: "#DC2626"
+      color_bg_hex: "#FEE2E2"
+      rule: "Hay una ronda overdue crítica o una alerta red sin resolver"
+
+# A9. Resultados de verificación
+# ───────────────────────────────
+catalog_verification_outcomes:
+  note: "Vocabulario operacional, NO clínico. Solo para campo resultado_verificacion."
+  values:
+    - id: resident_confirmed_ok
+      es: "Residente confirmado sin novedad"
+    - id: assistance_provided
+      es: "Asistencia brindada en sitio"
+    - id: caregiver_support_required
+      es: "Se requirió apoyo adicional del cuidador"
+    - id: supervisor_follow_up_required
+      es: "El supervisor debe dar seguimiento"
+    - id: false_alert
+      es: "Alerta sin incidencia real (falsa alarma operativa)"
+    - id: other_operational_result
+      es: "Otro resultado operativo — detallar en notas"
+
+# A10. Tipos de evento de auditoría (20 tipos)
+# ─────────────────────────────────────────────
+catalog_audit_event_types:
+  invariant: "Solo INSERT. Nunca UPDATE ni DELETE en audit_events."
+  families:
+    - id: ROUND
+      es: "Eventos de ronda"
+      color_hex: "#2563EB"
+    - id: ALERT
+      es: "Eventos de alerta"
+      color_hex: "#DC2626"
+    - id: INCIDENT
+      es: "Eventos de incidente"
+      color_hex: "#7C3AED"
+    - id: SYSTEM
+      es: "Eventos del sistema"
+      color_hex: "#059669"
+  events:
+    - id: ROUND_SCHEDULED
+      family: ROUND
+      es: "Ronda programada"
+      actor: "supervisor / sistema"
+      payload: { ronda_id: "uuid", residente_id: "uuid", tipo_id: "string", programada_at: "ISO8601", cuidador_id: "uuid|null" }
+    - id: ROUND_DUE
+      family: ROUND
+      es: "Ronda en tiempo — pendiente de inicio"
+      actor: "motor temporal"
+      payload: { ronda_id: "uuid", residente_id: "uuid" }
+    - id: ROUND_STARTED
+      family: ROUND
+      es: "Ronda iniciada por el cuidador"
+      actor: "caregiver"
+      payload: { ronda_id: "uuid", residente_id: "uuid", iniciada_at: "ISO8601" }
+    - id: ROUND_COMPLETED
+      family: ROUND
+      es: "Ronda completada con resultado"
+      actor: "caregiver"
+      payload: { ronda_id: "uuid", residente_id: "uuid", completada_at: "ISO8601", resultado: "string|null" }
+    - id: ROUND_OVERDUE
+      family: ROUND
+      es: "Ronda vencida sin iniciar"
+      actor: "motor temporal"
+      payload: { ronda_id: "uuid", residente_id: "uuid", tiempo_excedido_min: "int" }
+    - id: ROUND_CANCELLED
+      family: ROUND
+      es: "Ronda cancelada"
+      actor: "supervisor"
+      payload: { ronda_id: "uuid", residente_id: "uuid", motivo: "string|null" }
+    - id: ROUND_REASSIGNED
+      family: ROUND
+      es: "Ronda reasignada a otro cuidador"
+      actor: "supervisor"
+      payload: { ronda_id: "uuid", prev_cuidador_id: "uuid|null", new_cuidador_id: "uuid" }
+    - id: ALERT_CREATED
+      family: ALERT
+      es: "Alerta creada automáticamente"
+      actor: "motor temporal"
+      payload: { alerta_id: "uuid", ronda_id: "uuid", residente_id: "uuid", severidad: "yellow|red" }
+    - id: ALERT_ACKNOWLEDGED
+      family: ALERT
+      es: "Alerta reconocida por el supervisor"
+      actor: "supervisor"
+      payload: { alerta_id: "uuid" }
+    - id: ALERT_ASSIGNED
+      family: ALERT
+      es: "Alerta asignada a un responsable"
+      actor: "supervisor"
+      payload: { alerta_id: "uuid", owner_id: "uuid" }
+    - id: ALERT_REASSIGNED
+      family: ALERT
+      es: "Alerta reasignada — responsable anterior conservado en auditoría"
+      actor: "supervisor"
+      payload: { alerta_id: "uuid", prev_owner_id: "uuid", new_owner_id: "uuid", motivo: "string|null" }
+    - id: ALERT_ESCALATED
+      family: ALERT
+      es: "Alerta escalada al gerente"
+      actor: "supervisor"
+      payload: { alerta_id: "uuid", motivo: "string|null" }
+    - id: ALERT_VERIFICATION_STARTED
+      family: ALERT
+      es: "Verificación en sitio iniciada"
+      actor: "supervisor"
+      payload: { alerta_id: "uuid", incidente_id: "uuid" }
+    - id: ALERT_RESOLVED
+      family: ALERT
+      es: "Alerta resuelta con resultado documentado"
+      actor: "supervisor"
+      payload: { alerta_id: "uuid", resultado_verificacion: "string", outcome_id: "VerificationOutcome" }
+    - id: ALERT_CLOSED
+      family: ALERT
+      es: "Alerta cerrada — ciclo administrativo completo"
+      actor: "manager / supervisor"
+      payload: { alerta_id: "uuid" }
+    - id: INCIDENT_CREATED
+      family: INCIDENT
+      es: "Incidente formal creado"
+      actor: "supervisor"
+      payload: { incidente_id: "uuid", alerta_id: "uuid", residente_id: "uuid", descripcion: "string" }
+    - id: INCIDENT_UPDATED
+      family: INCIDENT
+      es: "Incidente actualizado con nueva información"
+      actor: "supervisor / manager"
+      payload: { incidente_id: "uuid", campo: "string", valor_anterior: "any", valor_nuevo: "any" }
+    - id: INCIDENT_CLOSED
+      family: INCIDENT
+      es: "Incidente cerrado con resultado operativo"
+      actor: "manager"
+      payload: { incidente_id: "uuid", resultado_operativo: "string" }
+    - id: DEMO_RESET
+      family: SYSTEM
+      es: "Demo reiniciada al estado inicial del seed"
+      actor: "demo_admin"
+      payload: { seed_version: "string", timestamp: "ISO8601" }
+    - id: CLOCK_ADVANCED
+      family: SYSTEM
+      es: "Reloj simulado avanzado manualmente"
+      actor: "demo_admin"
+      payload: { delta_min: "int", nuevo_tiempo: "ISO8601" }
+
+# A11. Planes de suscripción
+# ───────────────────────────
+catalog_plans:
+  note: "Campo en tabla residencias. Feature gating en v0.2."
+  values:
+    - id: esencial
+      es: "Esencial"
+      es_description: "Residencias pequeñas, funciones básicas de rondas y alertas"
+      max_residentes: 30
+    - id: profesional
+      es: "Profesional"
+      es_description: "Residencias medianas, módulo de reportes y configuración avanzada"
+      max_residentes: 100
+    - id: institucional
+      es: "Institucional"
+      es_description: "Grupos multi-residencia, API, soporte dedicado, SLA"
+      max_residentes: ~    # ilimitado
+
+# A12. Tipos de habitación
+# ─────────────────────────
+catalog_room_types:
+  - id: individual
+    es: "Individual"
+    es_description: "Habitación para un solo residente"
+  - id: compartida
+    es: "Compartida"
+    es_description: "Habitación para dos o más residentes"
+
+# A13. Niveles de cuidado del residente
+# ──────────────────────────────────────
+catalog_care_levels:
+  note: "Determina la frecuencia y tipo de rondas recomendadas. No es diagnóstico."
+  - id: bajo
+    es: "Bajo"
+    es_description: "Residente con alta autonomía; rondas de verificación de rutina"
+    priority: 1
+  - id: medio
+    es: "Medio"
+    es_description: "Residente con autonomía parcial; requiere asistencia en algunas actividades"
+    priority: 2
+  - id: alto
+    es: "Alto"
+    es_description: "Residente con dependencia significativa; rondas frecuentes y asistencia activa"
+    priority: 3
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# B. TAXONOMÍAS (clasificaciones jerárquicas)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# B1. Permisos por rol
+# ────────────────────
+taxonomy_role_permissions:
+  note: "Acceso de lectura/escritura por entidad y rol. UI y repositorio lo enforzan."
+  - role: caregiver
+    can_read:    [my_rounds, my_residents, my_profile]
+    can_write:   [round_start, round_complete, round_result]
+    cannot_read: [all_rounds, alerts, incidents, audit_log, staff_list, config]
+    cannot_write: [alerts, incidents, audit_log, config, staff]
+  - role: supervisor
+    can_read:    [all_rounds, all_residents, all_alerts, assigned_incidents, staff_availability, partial_audit_log]
+    can_write:   [alert_acknowledge, alert_assign, alert_reassign, alert_escalate, alert_verify, alert_resolve, alert_close, incident_create, incident_update, round_cancel, round_reassign]
+    cannot_read: [full_audit_history, all_incidents, config, plans]
+    cannot_write: [incident_close, config, staff_create]
+  - role: manager
+    can_read:    [everything_in_residencia]
+    can_write:   [incident_close, config_rounds, export_audit]
+    cannot_read: [other_residencia_data]
+    cannot_write: [other_residencia_data, demo_controls]
+  - role: demo_admin
+    can_read:    [everything]
+    can_write:   [demo_reset, clock_advance, scenario_trigger]
+    note:        "Rol de simulación. No existe en producción."
+
+# B2. Árbol de entidades
+# ──────────────────────
+taxonomy_entity_tree:
+  residencia:
+    children:
+      - habitaciones
+      - residentes
+      - staff_members
+      - ronda_tipos
+      - rondas:
+          children: [alertas]
+          triggers: [audit_events]
+      - alertas:
+          children: [incidentes]
+          triggers: [audit_events]
+      - incidentes:
+          triggers: [audit_events]
+      - audit_events:
+          append_only: true
+
+# B3. Familias de eventos por entidad
+# ─────────────────────────────────────
+taxonomy_event_families:
+  - entity: ronda
+    events: [ROUND_SCHEDULED, ROUND_DUE, ROUND_STARTED, ROUND_COMPLETED, ROUND_OVERDUE, ROUND_CANCELLED, ROUND_REASSIGNED]
+  - entity: alerta
+    events: [ALERT_CREATED, ALERT_ACKNOWLEDGED, ALERT_ASSIGNED, ALERT_REASSIGNED, ALERT_ESCALATED, ALERT_VERIFICATION_STARTED, ALERT_RESOLVED, ALERT_CLOSED]
+  - entity: incidente
+    events: [INCIDENT_CREATED, INCIDENT_UPDATED, INCIDENT_CLOSED]
+  - entity: sistema
+    events: [DEMO_RESET, CLOCK_ADVANCED]
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# C. TUPLAS (máquinas de estado como registros fijos)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# C1. Máquina de estados — Ronda
+# ────────────────────────────────
+state_machine_ronda:
+  note: "Tuplas (from, to, actor, condition, event_emitted, valid)"
+  transitions:
+    - from: scheduled   to: due          actor: motor_temporal  condition: "ahora >= programada_at"             event: ROUND_DUE              valid: true
+    - from: due         to: in_progress  actor: caregiver       condition: "—"                                  event: ROUND_STARTED           valid: true
+    - from: in_progress to: completed    actor: caregiver       condition: "—"                                  event: ROUND_COMPLETED         valid: true
+    - from: due         to: overdue      actor: motor_temporal  condition: "ahora > programada_at + tolerancia"  event: ROUND_OVERDUE           valid: true
+    - from: overdue     to: ~            actor: motor_temporal  condition: "—"                                  event: ALERT_CREATED           valid: true
+    - from: scheduled   to: cancelled    actor: supervisor      condition: "—"                                  event: ROUND_CANCELLED         valid: true
+    - from: completed   to: overdue      actor: cualquiera      condition: "—"                                  event: "—"                     valid: false   reason: "completed es terminal"
+    - from: cancelled   to: cualquiera   actor: cualquiera      condition: "—"                                  event: "—"                     valid: false   reason: "cancelled es terminal"
+
+# C2. Máquina de estados — Alerta
+# ─────────────────────────────────
+state_machine_alerta:
+  note: "Tuplas (from, to, actor, condition, event_emitted, valid)"
+  transitions:
+    - from: open          to: acknowledged    actor: supervisor   condition: "—"                                 event: ALERT_ACKNOWLEDGED         valid: true
+    - from: acknowledged  to: assigned        actor: supervisor   condition: "owner_id provisto"                 event: ALERT_ASSIGNED             valid: true
+    - from: open          to: assigned        actor: supervisor   condition: "owner_id provisto"                 event: ALERT_ASSIGNED             valid: true
+    - from: assigned      to: escalated       actor: supervisor   condition: "—"                                 event: ALERT_ESCALATED            valid: true
+    - from: assigned      to: in_verification actor: supervisor   condition: "incidente creado"                  event: ALERT_VERIFICATION_STARTED valid: true
+    - from: escalated     to: in_verification actor: supervisor   condition: "incidente creado"                  event: ALERT_VERIFICATION_STARTED valid: true
+    - from: assigned      to: assigned        actor: supervisor   condition: "nuevo owner_id"                    event: ALERT_REASSIGNED           valid: true
+    - from: in_verification to: resolved      actor: supervisor   condition: "resultado_verificacion provisto"   event: ALERT_RESOLVED             valid: true
+    - from: resolved      to: closed          actor: manager      condition: "resolved_at existe"                event: ALERT_CLOSED               valid: true
+    - from: open          to: closed          actor: cualquiera   condition: "—"                                 event: "—"                        valid: false  reason: "debe resolverse antes de cerrarse"
+    - from: closed        to: cualquiera      actor: cualquiera   condition: "—"                                 event: "—"                        valid: false  reason: "closed es terminal"
+
+# C3. Máquina de estados — Incidente
+# ───────────────────────────────────
+state_machine_incidente:
+  transitions:
+    - from: open                    to: verification_in_progress  actor: supervisor  event: INCIDENT_UPDATED  valid: true
+    - from: verification_in_progress to: resolved                 actor: supervisor  condition: "resultado_operativo provisto"  event: INCIDENT_UPDATED  valid: true
+    - from: resolved                to: closed                    actor: manager     event: INCIDENT_CLOSED   valid: true
+    - from: closed                  to: cualquiera                actor: cualquiera  event: "—"               valid: false  reason: "closed es terminal"
+
+# C4. Reglas de integridad como tuplas
+# ──────────────────────────────────────
+integrity_rules:
+  - id: IR-01
+    rule: "Una ronda pertenece a exactamente un residente"
+    entity: ronda  cardinality: "N:1"  enforced_in: domain/types.ts
+  - id: IR-02
+    rule: "Una ronda tiene 0 o 1 cuidador asignado"
+    entity: ronda  cardinality: "0..1"  enforced_in: domain/types.ts
+  - id: IR-03
+    rule: "Una ronda overdue puede generar como máximo una alerta activa"
+    entity: ronda  cardinality: "0..1"  enforced_in: domain/rules.ts
+  - id: IR-04
+    rule: "Una alerta tiene 0 o 1 owner activo"
+    entity: alerta  cardinality: "0..1"  enforced_in: domain/rules.ts
+  - id: IR-05
+    rule: "Una alerta tiene 0 o 1 incidente vinculado"
+    entity: alerta  cardinality: "0..1"  enforced_in: domain/types.ts
+  - id: IR-06
+    rule: "Toda transición emite un AuditEvent con actor + timestamp"
+    entity: audit_events  cardinality: "1:N"  enforced_in: data/repository.ts
+  - id: IR-07
+    rule: "Una alerta resuelta requiere resultado_verificacion no vacío"
+    entity: alerta  enforced_in: domain/rules.ts
+  - id: IR-08
+    rule: "Una alerta cerrada requiere haber sido resuelta (resolved_at existe)"
+    entity: alerta  enforced_in: domain/transitions.ts
+  - id: IR-09
+    rule: "estado_visual del residente no se persiste; es derivado por deriveResidentStatus()"
+    entity: residente  enforced_in: domain/rules.ts
+  - id: IR-10
+    rule: "audit_events solo acepta INSERT; nunca UPDATE ni DELETE"
+    entity: audit_events  enforced_in: data/repository.ts
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# D. DICCIONARIOS (mapas clave→valor)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# D1. Etiquetas de UI — español para cada identificador de código
+# ───────────────────────────────────────────────────────────────
+dict_ui_labels:
+  # Roles
+  caregiver:                "Cuidador"
+  supervisor:               "Supervisor"
+  manager:                  "Gerente"
+  demo_admin:               "Admin de Demo"
+  # Round states
+  scheduled:                "Programada"
+  due:                      "Pendiente"
+  in_progress:              "En progreso"
+  completed:                "Completada"
+  overdue:                  "Vencida"
+  cancelled:                "Cancelada"
+  # Alert states
+  open:                     "Abierta"
+  acknowledged:             "Reconocida"
+  assigned:                 "Asignada"
+  escalated:                "Escalada"
+  in_verification:          "En verificación"
+  resolved:                 "Resuelta"
+  closed:                   "Cerrada"
+  # Alert severity
+  yellow:                   "Amarilla"
+  red:                      "Roja"
+  # Staff availability
+  available:                "Disponible"
+  busy:                     "Ocupado"
+  off_shift:                "Fuera de turno"
+  # Resident status
+  green:                    "Sin novedad"
+  # yellow already mapped above
+  # red already mapped above
+  # Round types
+  routine_check:            "Revisión de rutina"
+  hydration_check:          "Control de hidratación"
+  mobility_assistance:      "Asistencia de movilidad"
+  meal_assistance:          "Asistencia en comida"
+  custom_operational_check: "Revisión operativa personalizada"
+  # Verification outcomes
+  resident_confirmed_ok:         "Residente confirmado sin novedad"
+  assistance_provided:           "Asistencia brindada en sitio"
+  caregiver_support_required:    "Se requirió apoyo adicional del cuidador"
+  supervisor_follow_up_required: "El supervisor debe dar seguimiento"
+  false_alert:                   "Alerta sin incidencia real"
+  other_operational_result:      "Otro resultado operativo"
+  # Plans
+  esencial:                 "Esencial"
+  profesional:              "Profesional"
+  institucional:            "Institucional"
+  # Care levels
+  bajo:                     "Bajo"
+  medio:                    "Medio"
+  alto:                     "Alto"
+  # Room types
+  individual:               "Individual"
+  compartida:               "Compartida"
+  # Entities
+  resident:                 "Residente"
+  staff_member:             "Personal"
+  round:                    "Ronda"
+  alert:                    "Alerta"
+  incident:                 "Incidente"
+  audit_event:              "Evento de auditoría"
+
+# D2. Vocabulario prohibido → alternativa permitida
+# ──────────────────────────────────────────────────
+dict_forbidden_vocabulary:
+  note: "No usar en código, estados, entidades ni UI. La frase UI permitida para alertas es 'evento que requiere verificación'."
+  paciente:            → "residente"
+  "emergencia médica": → "alerta roja / evento que requiere verificación"
+  diagnóstico:         → "resultado de verificación (operativo)"
+  "evento clínico":    → "evento que requiere verificación"
+  "visita médica":     → "ronda"
+  "muerte detectada":  → "[fuera de alcance del MVP]"
+  "monitor cardíaco":  → "[fuera de alcance del MVP]"
+  expediente:          → "bitácora de auditoría / registro de rondas"
+  "alarma finalizada": → "alerta cerrada / alerta resuelta"
+  "emergencia":        → "alerta / evento que requiere verificación"
+  "pacientes":         → "residentes"
+  "enfermera":         → "cuidador / miembro del personal"
+  "enfermería":        → "ronda de cuidado"
+  "síntomas":          → "[fuera de alcance del MVP]"
+  "medicamentos":      → "[fuera de alcance del MVP]"
+  "tratamiento":       → "[fuera de alcance del MVP]"
+
+# D3. Tokens de diseño del sistema visual
+# ────────────────────────────────────────
+dict_design_tokens:
+  note: "Paleta pastel ejecutiva definida en build-pitch-deck.cjs. Sistema visual del pitch y del documento de arquitectura."
+  # Pitch deck palette
+  pitch_fondo:       "#FAFAF8"   # fondo warm white
+  pitch_tarjeta:     "#F0EDE8"   # tarjeta/superficie
+  pitch_azul:        "#5B8DB8"   # azul pizarra — acento principal
+  pitch_azulClaro:   "#A8C4DC"   # azul claro — soporte
+  pitch_azulOscuro:  "#3A6B96"   # azul oscuro — énfasis
+  pitch_verde:       "#7BA68A"   # verde suave — éxito / completado
+  pitch_terracota:   "#C4786A"   # terracota — urgencia / alerta
+  pitch_grafito:     "#2D3748"   # grafito — texto principal
+  pitch_gris:        "#718096"   # gris — texto secundario
+  pitch_grisSep:     "#E2E8F0"   # gris separador
+  pitch_blanco:      "#FFFFFF"   # blanco puro
+  # Architecture doc palette (light)
+  arch_bg:           "#F6F8FB"
+  arch_bg_alt:       "#EDF1F7"
+  arch_surface:      "#FFFFFF"
+  arch_border:       "#D1D9E6"
+  arch_accent:       "#2563EB"
+  arch_accent2:      "#0EA5E9"
+  # Alert color mapping
+  color_alert_yellow:     "#D97706"
+  color_alert_yellow_bg:  "#FEF3C7"
+  color_alert_red:        "#DC2626"
+  color_alert_red_bg:     "#FEE2E2"
+  color_status_green:     "#16A34A"
+  color_status_green_bg:  "#DCFCE7"
+  # Typography scale
+  font_display:    "'IBM Plex Sans', 'Inter', system-ui"
+  font_mono:       "'IBM Plex Mono', 'JetBrains Mono', monospace"
+  font_size_xs:    "10px"
+  font_size_sm:    "12px"
+  font_size_base:  "14px"
+  font_size_md:    "16px"
+  font_size_lg:    "20px"
+  font_size_xl:    "28px"
+  font_size_2xl:   "36px"
+
+# D4. Páginas de la aplicación
+# ─────────────────────────────
+dict_app_pages:
+  note: "5 páginas del contrato §9. No añadir sin cambio formal."
+  - id: CaregiverRoundsPage
+    route: "/rounds"
+    es: "Mis rondas"
+    role: caregiver
+    description: "Lista de rondas del turno actual del cuidador con acciones iniciar/completar"
+  - id: SupervisorDashboardPage
+    route: "/dashboard"
+    es: "Dashboard del supervisor"
+    role: supervisor
+    description: "Visión del turno: residentes, alertas activas, rondas overdue"
+  - id: AlertManagementPage
+    route: "/alerts"
+    es: "Gestión de alertas"
+    role: supervisor
+    description: "Lista de alertas con ciclo completo: asignar, escalar, verificar, resolver, cerrar"
+  - id: ManagerDashboardPage
+    route: "/manager"
+    es: "Dashboard ejecutivo"
+    role: manager
+    description: "Vista histórica: incidentes, audit log, configuración, exportar bitácora"
+  - id: DemoControlPage
+    route: "/demo"
+    es: "Control de demo"
+    role: demo_admin
+    description: "Reloj simulado, escenarios, reset del seed"
+
+# D5. Aviso legal obligatorio
+# ────────────────────────────
+dict_legal_notices:
+  mvp_disclaimer:     "MVP operacional, no dispositivo médico"
+  datos_ficticios:    "Datos ficticios"
+  allowed_ui_phrase:  "evento que requiere verificación"
+  out_of_scope:
+    - "No detecta emergencias médicas reales"
+    - "No reemplaza al personal de salud"
+    - "No emite diagnósticos"
+    - "No conecta con servicios de emergencia (911, SMS, WhatsApp)"
+    - "No almacena datos biométricos ni de salud real"
