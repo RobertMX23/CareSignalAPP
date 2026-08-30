@@ -1,0 +1,621 @@
+# 17 — Contrato de correcciones y ajustes transversales — CareSignal MVP
+#
+# Generado a partir del análisis docs/16-taxonomia-vs-dataset.html
+# Fuente: cotejo entre docs/01-domain-taxonomy.yaml, src/domain/taxonomy.ts,
+#         src/domain/types.ts, docs/03-data-model.md, docs/15-nom031-cobertura.html
+#
+# Reglas de este contrato:
+#   1. Ejecutar en orden de nivel (1 antes que 2, 2 antes que 3, 3 antes que 4).
+#   2. Una tarea a la vez — no avanzar sin cerrar la anterior.
+#   3. Cada tarea cambia status: pending → in_progress → done.
+#   4. Las tareas de nivel 4 requieren gate humano antes de ejecutar.
+#   5. Ninguna tarea amplía alcance del contrato MVP congelado sin change request §13.
+#   6. Este archivo se actualiza al completar cada tarea (status + completed_at).
+#
+# Estado del documento: ACTIVO — versión 1.0.0
+
+meta:
+  version: "1.0.0"
+  status: "ACTIVO"
+  created: "2026-08-30"
+  source_analysis: "docs/16-taxonomia-vs-dataset.html"
+  authority_rank: 2.8   # Entre vocabulario maestro (2.5) y código (5)
+  total_tasks: 14
+  total_subtasks: 57
+  levels:
+    1: "Correcciones menores — sin cambio de contrato, sin romper código"
+    2: "Ajustes de diseño — decisiones de vocabulario, sin renombrar código existente"
+    3: "Actualización de documentos de análisis — docs de referencia"
+    4: "Cambios mayores — requieren change request §13 o impactan codebase amplio"
+
+# ─────────────────────────────────────────────────────────────
+# NIVEL 1 — Correcciones menores
+# ─────────────────────────────────────────────────────────────
+
+tasks:
+
+  - id: T1
+    level: 1
+    title: "Agregar audit_event a ENTITY_TYPES en taxonomy.ts"
+    gap_ref: "GAP-01"
+    status: pending           # pending | in_progress | done | blocked
+    completed_at: ~
+    complexity: trivial       # trivial | low | medium | high
+    contract_change: false
+    depends_on: []
+    acceptance_criteria:
+      - "El array ENTITY_TYPES en src/domain/taxonomy.ts contiene 'audit_event'"
+      - "El tipo EntityType derivado incluye la cadena literal 'audit_event'"
+      - "isEntityType('audit_event') retorna true"
+      - "npm run typecheck pasa sin errores"
+      - "npm test pasa sin errores"
+    files_affected:
+      - src/domain/taxonomy.ts
+    subtasks:
+      - id: T1.1
+        desc: "Abrir src/domain/taxonomy.ts línea 17 — array ENTITY_TYPES"
+        status: pending
+      - id: T1.2
+        desc: "Agregar 'audit_event' al array ENTITY_TYPES después de 'incident'"
+        status: pending
+      - id: T1.3
+        desc: "Verificar que EntityType derivado ahora incluye 'audit_event'"
+        status: pending
+      - id: T1.4
+        desc: "Ejecutar npm run typecheck y npm test — confirmar sin errores"
+        status: pending
+
+  - id: T2
+    level: 1
+    title: "Agregar verification_outcomes al YAML congelado docs/01"
+    gap_ref: "GAP-02"
+    status: pending
+    completed_at: ~
+    complexity: low
+    contract_change: false
+    depends_on: []
+    acceptance_criteria:
+      - "docs/01-domain-taxonomy.yaml contiene sección verification_outcomes con 6 valores"
+      - "Los 6 valores son idénticos a VERIFICATION_OUTCOMES en taxonomy.ts"
+      - "La sección incluye nota: 'Vocabulario operacional, no clínico'"
+      - "authority_rank del YAML sigue siendo 3"
+    files_affected:
+      - docs/01-domain-taxonomy.yaml
+    subtasks:
+      - id: T2.1
+        desc: "Abrir docs/01-domain-taxonomy.yaml"
+        status: pending
+      - id: T2.2
+        desc: "Agregar sección verification_outcomes con los 6 valores de taxonomy.ts: resident_confirmed_ok, assistance_provided, caregiver_support_required, supervisor_follow_up_required, false_alert, other_operational_result"
+        status: pending
+      - id: T2.3
+        desc: "Agregar note: 'Vocabulario operacional, no clínico. Referenciado por Alert.verificationOutcome e Incident.outcome'"
+        status: pending
+      - id: T2.4
+        desc: "Verificar que los 6 valores son idénticos a VERIFICATION_OUTCOMES en taxonomy.ts — sin divergencia"
+        status: pending
+
+  - id: T3
+    level: 1
+    title: "Documentar inconsistencia in_verification vs verification_in_progress (DIV-05)"
+    gap_ref: "DIV-05"
+    status: pending
+    completed_at: ~
+    complexity: low
+    contract_change: false
+    depends_on: []
+    acceptance_criteria:
+      - "docs/14-vocabulario-maestro.yaml documenta la equivalencia funcional entre ambos términos"
+      - "La nota aclara que la diferencia es intencional (estados de entidades distintas)"
+      - "docs/14-vocabulario-maestro.html muestra la nota visible en ambas secciones"
+    files_affected:
+      - docs/14-vocabulario-maestro.yaml
+      - docs/14-vocabulario-maestro.html
+    subtasks:
+      - id: T3.1
+        desc: "En vocabulario maestro YAML, sección state_machine_alerta: agregar nota en estado in_verification — 'equivalente funcional de verification_in_progress en incidentes; nomenclatura intencional distinta por entidad'"
+        status: pending
+      - id: T3.2
+        desc: "En vocabulario maestro YAML, sección state_machine_incidente: agregar nota cruzada equivalente"
+        status: pending
+      - id: T3.3
+        desc: "Actualizar HTML del vocabulario maestro con la nota visible en ambas secciones de máquina de estados"
+        status: pending
+      - id: T3.4
+        desc: "Republicar artefacto HTML del vocabulario maestro"
+        status: pending
+
+  - id: T4
+    level: 1
+    title: "Bump del vocabulario maestro a v1.1.0"
+    gap_ref: ~
+    status: pending
+    completed_at: ~
+    complexity: trivial
+    contract_change: false
+    depends_on: [T2, T3]
+    acceptance_criteria:
+      - "docs/14-vocabulario-maestro.yaml tiene version: 1.1.0"
+      - "El YAML incluye entrada de changelog describiendo los cambios de 1.1.0"
+      - "El HTML muestra la versión 1.1.0 en el encabezado"
+    files_affected:
+      - docs/14-vocabulario-maestro.yaml
+      - docs/14-vocabulario-maestro.html
+    subtasks:
+      - id: T4.1
+        desc: "Cambiar version: 1.0.0 a 1.1.0 en el frontmatter del YAML"
+        status: pending
+      - id: T4.2
+        desc: "Agregar sección changelog en el YAML: v1.1.0 — agregado verification_outcomes, notas de equivalencia in_verification/verification_in_progress"
+        status: pending
+      - id: T4.3
+        desc: "Actualizar número de versión visible en el HTML del vocabulario"
+        status: pending
+
+# ─────────────────────────────────────────────────────────────
+# NIVEL 2 — Ajustes de diseño
+# ─────────────────────────────────────────────────────────────
+
+  - id: T5
+    level: 2
+    title: "Definir SHIFTS enum para StaffMember.shift (DIV-02)"
+    gap_ref: "DIV-02"
+    status: pending
+    completed_at: ~
+    complexity: low
+    contract_change: false
+    depends_on: [T1]
+    acceptance_criteria:
+      - "SHIFTS = ['morning','afternoon','night','on_call'] definido en taxonomy.ts"
+      - "Tipo Shift derivado correctamente"
+      - "isShift() type guard existe y funciona"
+      - "StaffMember.shift es de tipo Shift (no string genérico)"
+      - "Los datos seed usan valores del enum"
+      - "docs/01-domain-taxonomy.yaml tiene sección staff_shifts"
+      - "npm run typecheck pasa"
+    files_affected:
+      - src/domain/taxonomy.ts
+      - src/domain/types.ts
+      - src/data/seed.ts
+      - docs/01-domain-taxonomy.yaml
+      - docs/14-vocabulario-maestro.yaml
+    subtasks:
+      - id: T5.1
+        desc: "Confirmar valores del enum: morning, afternoon, night, on_call — verificar contra datos seed actuales"
+        status: pending
+      - id: T5.2
+        desc: "Agregar SHIFTS array as const y tipo Shift en taxonomy.ts"
+        status: pending
+      - id: T5.3
+        desc: "Agregar isShift() type guard en taxonomy.ts"
+        status: pending
+      - id: T5.4
+        desc: "Cambiar StaffMember.shift: string → StaffMember.shift: Shift en types.ts"
+        status: pending
+      - id: T5.5
+        desc: "Actualizar datos seed para usar valores del enum"
+        status: pending
+      - id: T5.6
+        desc: "Agregar sección staff_shifts a docs/01-domain-taxonomy.yaml"
+        status: pending
+      - id: T5.7
+        desc: "Agregar catálogo SHIFTS al vocabulario maestro YAML sección A"
+        status: pending
+      - id: T5.8
+        desc: "Ejecutar npm run typecheck y npm test"
+        status: pending
+
+  - id: T6
+    level: 2
+    title: "Definir AUDIT_EVENT_ACTIONS tipo literal — AuditEvent.action deja de ser string (DIV-03)"
+    gap_ref: "DIV-03"
+    status: pending
+    completed_at: ~
+    complexity: medium
+    contract_change: false
+    depends_on: [T1, T5]
+    acceptance_criteria:
+      - "AUDIT_EVENT_ACTIONS array as const en taxonomy.ts con los 20 tipos"
+      - "Tipo AuditEventAction derivado correctamente"
+      - "isAuditEventAction() type guard existe"
+      - "AuditEvent.action es de tipo AuditEventAction (no string)"
+      - "Todos los lugares en el código que emiten AuditEvent usan valores del enum"
+      - "npm run typecheck pasa sin errores"
+      - "npm test pasa"
+    files_affected:
+      - src/domain/taxonomy.ts
+      - src/domain/types.ts
+      - src/domain/transitions.ts
+      - src/data/seed.ts
+      - docs/14-vocabulario-maestro.yaml
+    subtasks:
+      - id: T6.1
+        desc: "Listar los 20 tipos de evento del vocabulario maestro: ROUND_SCHEDULED, ROUND_STARTED, ROUND_COMPLETED, ROUND_OVERDUE, ROUND_CANCELLED, ROUND_REASSIGNED, ROUND_NOTED, ALERT_CREATED, ALERT_ACKNOWLEDGED, ALERT_ASSIGNED, ALERT_ESCALATED, ALERT_VERIFICATION_STARTED, ALERT_RESOLVED, ALERT_CLOSED, ALERT_REASSIGNED, INCIDENT_OPENED, INCIDENT_RESOLVED, INCIDENT_CLOSED, SYSTEM_CLOCK_ADVANCED, SYSTEM_DEMO_RESET"
+        status: pending
+      - id: T6.2
+        desc: "Hacer grep de todos los literales de acción usados actualmente en el código para verificar que coinciden con los 20 del vocabulario"
+        status: pending
+      - id: T6.3
+        desc: "Crear AUDIT_EVENT_ACTIONS array as const en taxonomy.ts"
+        status: pending
+      - id: T6.4
+        desc: "Crear tipo AuditEventAction y guard isAuditEventAction()"
+        status: pending
+      - id: T6.5
+        desc: "Cambiar AuditEvent.action: string → AuditEvent.action: AuditEventAction en types.ts"
+        status: pending
+      - id: T6.6
+        desc: "Corregir todos los archivos que emiten AuditEvent para usar el literal correcto del enum"
+        status: pending
+      - id: T6.7
+        desc: "Actualizar vocabulario maestro YAML: la sección A de audit_event_types referencia el nuevo tipo TS"
+        status: pending
+      - id: T6.8
+        desc: "Ejecutar npm run typecheck y npm test"
+        status: pending
+
+  - id: T7
+    level: 2
+    title: "Resolver decisión sobre rol manager — supervisor o 4to rol (GAP-04)"
+    gap_ref: "GAP-04"
+    status: pending
+    completed_at: ~
+    complexity: medium
+    contract_change: "condicional — solo si se elige Opción B (4to rol)"
+    depends_on: []
+    acceptance_criteria:
+      - "Existe una decisión explícita documentada: Opción A (supervisor cubre manager) u Opción B (4to rol)"
+      - "Todos los documentos que mencionan manager son consistentes con la decisión"
+      - "Si Opción A: los docs NOM-031, arquitectura y vocabulario usan supervisor en lugar de manager"
+      - "Si Opción B: se abre change request formal §13 antes de tocar el código"
+    files_affected:
+      - docs/01-domain-taxonomy.yaml             # si Opción B
+      - src/domain/taxonomy.ts                   # si Opción B
+      - docs/12-arquitectura-evento-driven.html
+      - docs/14-vocabulario-maestro.yaml
+      - docs/15-nom031-cobertura.html
+    subtasks:
+      - id: T7.1
+        desc: "Leer src/features/dashboard para identificar qué funciones tiene actualmente el rol supervisor en el código"
+        status: pending
+      - id: T7.2
+        desc: "Grep de la palabra 'manager' en todo el codebase para saber si ya se usa en algún lugar"
+        status: pending
+      - id: T7.3
+        desc: "GATE HUMANO — Roberto decide: Opción A (supervisor = manager en MVP) o Opción B (agregar rol manager con change request §13)"
+        status: pending
+        gate: true
+      - id: T7.4a
+        desc: "[Si Opción A] Actualizar docs NOM-031, arquitectura y vocabulario maestro para usar supervisor consistentemente donde decía manager"
+        status: pending
+      - id: T7.4b
+        desc: "[Si Opción B] Abrir change request formal según contrato §13 — nueva versión del contrato antes de tocar código"
+        status: pending
+
+  - id: T8
+    level: 2
+    title: "Documentar decisión habitacion como string vs entidad separada"
+    gap_ref: "DIV-habitacion"
+    status: pending
+    completed_at: ~
+    complexity: low
+    contract_change: false
+    depends_on: []
+    acceptance_criteria:
+      - "docs/03-data-model.md §4 contiene nota explícita sobre la decisión"
+      - "La nota dice: room es string en v0.1.0 por simplicidad del MVP; habitacion es candidata a entidad en v0.2"
+      - "El vocabulario maestro YAML documenta la misma nota"
+    files_affected:
+      - docs/03-data-model.md
+      - docs/14-vocabulario-maestro.yaml
+    subtasks:
+      - id: T8.1
+        desc: "Agregar nota en docs/03-data-model.md §4 Decisiones de modelado: 'room: string en lugar de FK a habitaciones — decisión de simplicidad para MVP single-tenant; candidata a entidad en v0.2'"
+        status: pending
+      - id: T8.2
+        desc: "Agregar entrada en vocabulario maestro YAML con la misma nota y estado: candidato_v02"
+        status: pending
+
+# ─────────────────────────────────────────────────────────────
+# NIVEL 3 — Actualización de documentos de análisis
+# ─────────────────────────────────────────────────────────────
+
+  - id: T9
+    level: 3
+    title: "Agregar §11 NOM-031 a docs/12-arquitectura-evento-driven.html"
+    gap_ref: ~
+    status: pending
+    completed_at: ~
+    complexity: medium
+    contract_change: false
+    depends_on: [T7]
+    acceptance_criteria:
+      - "El documento tiene sección §11 con ancla #nom031"
+      - "El nav bar incluye el enlace a #nom031"
+      - "La sección contiene mini-scorecard 12/7/5/8 de cobertura"
+      - "La sección incluye tabla: componente de arquitectura → requisitos NOM-031 cubiertos"
+      - "El artefacto está republicado con la nueva sección"
+    files_affected:
+      - docs/12-arquitectura-evento-driven.html
+    subtasks:
+      - id: T9.1
+        desc: "Agregar ancla #nom031 al nav bar sticky del documento"
+        status: pending
+      - id: T9.2
+        desc: "Escribir sección §11 con mini-scorecard 12 CUBRE / 7 CONTRIBUYE / 5 INFRAESTRUCTURA / 8 FUERA"
+        status: pending
+      - id: T9.3
+        desc: "Agregar tabla de mapa: audit_events→R-01/02/03/04, rondas→R-05/19-23, alerta-incidente→R-02/17, overdue→R-24, RBAC→R-30, dashboard supervisor→R-18, asignación staff→R-14/15"
+        status: pending
+      - id: T9.4
+        desc: "Republicar artefacto en https://claude.ai/code/artifact/8a94bbf8-8fd9-4ab6-9a1c-1b21e5a70e1e"
+        status: pending
+
+  - id: T10
+    level: 3
+    title: "Actualizar docs/13-assessment-arquitectura-mvp.html — Cat 11 + tabla cruzada"
+    gap_ref: ~
+    status: pending
+    completed_at: ~
+    complexity: medium
+    contract_change: false
+    depends_on: [T9]
+    acceptance_criteria:
+      - "El documento tiene Categoría 11: Cumplimiento Normativo con 6 puntos"
+      - "El scorecard resumen refleja 66 puntos totales con totales correctos por status"
+      - "Existe tabla cruzada Cat 01–11 × Requisitos NOM-031 relevantes"
+      - "La lista de tareas pendientes consolidadas incluye los pendientes normativos"
+      - "El artefacto está republicado"
+    files_affected:
+      - docs/13-assessment-arquitectura-mvp.html
+    subtasks:
+      - id: T10.1
+        desc: "Escribir Cat 11 con 6 puntos: cobertura R-series bitácoras (✅), cobertura personal/escalación (✅), cobertura 5 tipos ronda (✅), expediente parcial sin CURP (⚠️ BRECHA), residenciaId ausente (⚠️ BRECHA), audit log exportable (🔨 PENDIENTE)"
+        status: pending
+      - id: T10.2
+        desc: "Actualizar scorecard: recalcular totales de 60 a 66 puntos con los 6 nuevos"
+        status: pending
+      - id: T10.3
+        desc: "Agregar tabla cruzada Cat 01–11 × Requisitos NOM cubiertos por cada categoría"
+        status: pending
+      - id: T10.4
+        desc: "Actualizar tabla de tareas pendientes consolidadas con: agregar campos CURP/familia (R-09), agregar residenciaId (R-29), verificar exportar bitácora (R-08)"
+        status: pending
+      - id: T10.5
+        desc: "Republicar artefacto en https://claude.ai/code/artifact/94b2b580-18f6-4474-a3db-e0a27b365873"
+        status: pending
+
+  - id: T11
+    level: 3
+    title: "Actualizar docs/14-vocabulario-maestro.html — sección NOM-031 y correcciones"
+    gap_ref: ~
+    status: pending
+    completed_at: ~
+    complexity: medium
+    contract_change: false
+    depends_on: [T3, T4]
+    acceptance_criteria:
+      - "El HTML tiene nueva sección §E: equivalencias NOM-031 ↔ CareSignal"
+      - "La sección muestra tabla con chips de cobertura (🟢/🟡/🔵/⬜)"
+      - "La sección de verification_outcomes es visible con sus 6 valores"
+      - "Las notas de in_verification/verification_in_progress están visibles"
+      - "La versión 1.1.0 es visible en el encabezado"
+      - "El artefacto está republicado"
+    files_affected:
+      - docs/14-vocabulario-maestro.html
+    subtasks:
+      - id: T11.1
+        desc: "Agregar ancla #nom031 al nav bar del vocabulario maestro"
+        status: pending
+      - id: T11.2
+        desc: "Escribir sección §E con tabla de 15 equivalencias NOM-031 ↔ término CareSignal ↔ nivel de cobertura"
+        status: pending
+      - id: T11.3
+        desc: "Agregar subsección con los 6 verification_outcomes y su equivalente normativo"
+        status: pending
+      - id: T11.4
+        desc: "Agregar nota visible de equivalencia in_verification / verification_in_progress en las secciones de máquinas de estado"
+        status: pending
+      - id: T11.5
+        desc: "Republicar artefacto en https://claude.ai/code/artifact/c8d1dda1-6607-435c-8e40-d3c2476cdf5a"
+        status: pending
+
+# ─────────────────────────────────────────────────────────────
+# NIVEL 4 — Cambios mayores (gate humano requerido antes de ejecutar)
+# ─────────────────────────────────────────────────────────────
+
+  - id: T12
+    level: 4
+    title: "Renombrar monitoringFrequency → careLevel + definir enum CARE_LEVELS (DIV-01)"
+    gap_ref: "DIV-01"
+    status: pending
+    completed_at: ~
+    complexity: high
+    contract_change: true
+    contract_version_required: "0.1.1"
+    depends_on: [T5, T6, T7]
+    gate_required: true
+    gate_description: "Renombrar un campo rompe el contrato congelado §8.1. Requiere aprobación explícita y bump de versión del contrato a 0.1.1 antes de tocar código."
+    acceptance_criteria:
+      - "Existe versión 0.1.1 del contrato aprobada con el cambio de campo"
+      - "CARE_LEVELS = ['low','medium','high'] en taxonomy.ts"
+      - "Tipo CareLevel e isCareLevel() existen"
+      - "Resident.careLevel: CareLevel reemplaza Resident.monitoringFrequency"
+      - "Ninguna ocurrencia de monitoringFrequency queda en el codebase"
+      - "Datos seed actualizados con los valores del enum"
+      - "Todos los documentos actualizados"
+      - "npm run typecheck y npm test pasan"
+    files_affected:
+      - src/domain/taxonomy.ts
+      - src/domain/types.ts
+      - src/data/seed.ts
+      - src/features/rounds/
+      - src/features/dashboard/
+      - src/components/
+      - docs/01-domain-taxonomy.yaml
+      - docs/03-data-model.md
+      - docs/14-vocabulario-maestro.yaml
+    subtasks:
+      - id: T12.1
+        desc: "GATE — Roberto aprueba el renombre y el bump de versión de contrato a 0.1.1"
+        status: pending
+        gate: true
+      - id: T12.2
+        desc: "Crear versión 0.1.1 del contrato con el cambio documentado"
+        status: pending
+      - id: T12.3
+        desc: "Definir CARE_LEVELS, CareLevel e isCareLevel() en taxonomy.ts"
+        status: pending
+      - id: T12.4
+        desc: "Cambiar Resident.monitoringFrequency → Resident.careLevel: CareLevel en types.ts"
+        status: pending
+      - id: T12.5
+        desc: "Hacer grep de 'monitoringFrequency' en todo el codebase — listar todos los archivos afectados"
+        status: pending
+      - id: T12.6
+        desc: "Actualizar cada archivo afectado uno a uno"
+        status: pending
+      - id: T12.7
+        desc: "Actualizar datos seed con valores del enum (low/medium/high)"
+        status: pending
+      - id: T12.8
+        desc: "Actualizar docs/01, docs/03 y vocabulario maestro"
+        status: pending
+      - id: T12.9
+        desc: "Ejecutar npm run typecheck y npm test — confirmar cero errores"
+        status: pending
+
+  - id: T13
+    level: 4
+    title: "Agregar Round.completionOutcome enum (DIV-04)"
+    gap_ref: "DIV-04"
+    status: pending
+    completed_at: ~
+    complexity: high
+    contract_change: true
+    contract_version_required: "0.1.1 o posterior"
+    depends_on: [T12]
+    gate_required: true
+    gate_description: "Agregar un campo nuevo a Round modifica el contrato §8.3. Requiere aprobación y versión de contrato antes de tocar código."
+    acceptance_criteria:
+      - "ROUND_OUTCOMES definido en taxonomy.ts"
+      - "Round.completionOutcome?: RoundOutcome existe en types.ts"
+      - "La transición ROUND_COMPLETED captura el outcome"
+      - "La UI del flujo caregiver muestra el selector de outcome al completar"
+      - "npm run typecheck y npm test pasan"
+    files_affected:
+      - src/domain/taxonomy.ts
+      - src/domain/types.ts
+      - src/domain/transitions.ts
+      - src/features/rounds/
+    subtasks:
+      - id: T13.1
+        desc: "GATE — Roberto aprueba el cambio y confirma los valores del enum: ok, needs_follow_up, no_response, other"
+        status: pending
+        gate: true
+      - id: T13.2
+        desc: "Definir ROUND_OUTCOMES, RoundOutcome e isRoundOutcome() en taxonomy.ts"
+        status: pending
+      - id: T13.3
+        desc: "Agregar completionOutcome?: RoundOutcome a la interfaz Round en types.ts"
+        status: pending
+      - id: T13.4
+        desc: "Actualizar la transición completeRound() para aceptar y persistir el outcome"
+        status: pending
+      - id: T13.5
+        desc: "Actualizar la UI del flujo caregiver para mostrar y capturar el outcome"
+        status: pending
+      - id: T13.6
+        desc: "Ejecutar npm run typecheck y npm test"
+        status: pending
+
+  - id: T14
+    level: 4
+    title: "Agregar residenciaId a todas las entidades — preparación multi-tenant (GAP-03)"
+    gap_ref: "GAP-03"
+    status: pending
+    completed_at: ~
+    complexity: high
+    contract_change: true
+    contract_version_required: "0.2.0"
+    depends_on: [T12, T13]
+    gate_required: true
+    gate_description: "Agregar residenciaId a las 6 interfaces rompe el contrato §8 completo. Este es un cambio de versión mayor (0.2.0). Solo ejecutar cuando se inicie la fase de producción."
+    acceptance_criteria:
+      - "Contrato versión 0.2.0 aprobado con el cambio documentado"
+      - "Resident, StaffMember, Round, Alert, Incident y AuditEvent tienen residenciaId: ID"
+      - "El repositorio localStorage maneja el campo"
+      - "Los datos seed usan un residenciaId fijo de demo ('residencia-demo-01')"
+      - "Los docs/01, docs/03, vocabulario maestro y arquitectura están actualizados"
+      - "npm run typecheck y npm test pasan"
+    files_affected:
+      - src/domain/types.ts
+      - src/data/seed.ts
+      - src/data/repository.ts
+      - docs/01-domain-taxonomy.yaml
+      - docs/03-data-model.md
+      - docs/14-vocabulario-maestro.yaml
+      - docs/12-arquitectura-evento-driven.html
+    subtasks:
+      - id: T14.1
+        desc: "GATE — Roberto aprueba el cambio como parte del inicio de v0.2.0"
+        status: pending
+        gate: true
+      - id: T14.2
+        desc: "Crear versión 0.2.0 del contrato con el cambio multi-tenant documentado"
+        status: pending
+      - id: T14.3
+        desc: "Agregar residenciaId: ID a las 6 interfaces en types.ts"
+        status: pending
+      - id: T14.4
+        desc: "Actualizar repositorio localStorage para manejar el campo"
+        status: pending
+      - id: T14.5
+        desc: "Actualizar datos seed con residenciaId: 'residencia-demo-01' en todos los registros"
+        status: pending
+      - id: T14.6
+        desc: "Actualizar docs/01, docs/03, vocabulario maestro y arquitectura"
+        status: pending
+      - id: T14.7
+        desc: "Ejecutar npm run typecheck y npm test"
+        status: pending
+
+# ─────────────────────────────────────────────────────────────
+# RESUMEN DE EJECUCIÓN
+# ─────────────────────────────────────────────────────────────
+
+execution_order:
+  - phase: "Nivel 1 — correcciones menores (ejecutar en orden)"
+    tasks: [T1, T2, T3, T4]
+    can_parallelize: false
+    estimated_sessions: 1
+
+  - phase: "Nivel 2 — ajustes de diseño (T5 y T8 pueden ir juntos; T7 requiere gate)"
+    tasks: [T5, T6, T7, T8]
+    can_parallelize: "T5 y T8 son independientes; T6 depende de T1; T7 requiere gate humano"
+    estimated_sessions: 2
+
+  - phase: "Nivel 3 — documentos de análisis (ejecutar después de T7 resuelto)"
+    tasks: [T9, T10, T11]
+    can_parallelize: "T11 es independiente; T9 antes de T10"
+    estimated_sessions: 2
+
+  - phase: "Nivel 4 — cambios mayores (cada uno con gate humano)"
+    tasks: [T12, T13, T14]
+    can_parallelize: false
+    estimated_sessions: "3-4 (uno por sesión con gate)"
+    note: "T14 es candidato a v0.2.0 — puede quedar pendiente indefinidamente en v0.1.x"
+
+gates:
+  - task: T7.3
+    description: "Decisión: supervisor cubre manager (Opción A) o 4to rol manager (Opción B)"
+    blocker_for: [T9, T10, T11]
+  - task: T12.1
+    description: "Aprobación del renombre monitoringFrequency → careLevel y bump a v0.1.1"
+    blocker_for: [T12.2, T12.3, T12.4, T12.5, T12.6, T12.7, T12.8, T12.9]
+  - task: T13.1
+    description: "Aprobación del nuevo campo Round.completionOutcome y valores del enum"
+    blocker_for: [T13.2, T13.3, T13.4, T13.5, T13.6]
+  - task: T14.1
+    description: "Aprobación del cambio multi-tenant como inicio de v0.2.0"
+    blocker_for: [T14.2, T14.3, T14.4, T14.5, T14.6, T14.7]
