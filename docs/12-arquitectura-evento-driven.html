@@ -367,6 +367,7 @@
   <a href="#api">API layer</a>
   <a href="#repo">Repo público/privado</a>
   <a href="#ciberseguridad">Ciberseguridad</a>
+  <a href="#ia-assessment">IA / ML / Chatbots</a>
 </nav>
 
 <main>
@@ -919,6 +920,148 @@ node_modules/
     </table></div>
 
     <p style="font-size:12px;margin-top:1rem">Marco: LFPDPPP · NOM-031-SSA3-2012 · LGS Art. 419 · OWASP Top 10 · GCP Security Baseline</p>
+  </section>
+
+  <!-- 10. IA / ML / CHATBOTS — ASSESSMENT -->
+  <section id="ia-assessment">
+    <h2><span class="sec-num">10</span> Assessment — IA, Machine Learning y Chatbots</h2>
+    <p>Esta sección evalúa la <strong>aplicabilidad real</strong> de tres familias de tecnología de IA para CareSignal. El criterio no es si la tecnología existe, sino si resuelve un problema real del usuario a un costo y complejidad justificados, dado el volumen de datos y el contexto operativo actual.</p>
+
+    <div class="table-wrap" style="margin-bottom:1.5rem"><table>
+      <thead><tr><th>Veredicto</th><th>Significado</th></tr></thead>
+      <tbody>
+        <tr><td><span style="color:#166534;font-weight:700">✅ APLICABLE</span></td><td>Resuelve un problema real hoy. Implementable en v0.2 con los datos y arquitectura disponibles.</td></tr>
+        <tr><td><span style="color:#92400E;font-weight:700">⏳ DIFERIR</span></td><td>Válido en el futuro, pero requiere datos reales que aún no existen. Implementar ahora es construir sin cimiento.</td></tr>
+        <tr><td><span style="color:#991B1B;font-weight:700">❌ SOBREDIMENSIONADO</span></td><td>La tecnología existe pero el problema ya tiene una solución más simple, más barata y más confiable.</td></tr>
+        <tr><td><span style="color:#5B21B6;font-weight:700">🔬 PREMATURO</span></td><td>Requiere validación con usuarios reales antes de diseñar. Riesgo de construir la función equivocada.</td></tr>
+      </tbody>
+    </table></div>
+
+    <!-- MACHINE LEARNING -->
+    <h3>A. Machine Learning</h3>
+    <p>ML supervisado requiere <strong>datos históricos etiquetados</strong> — al menos 6–12 meses de operación real con outcomes conocidos. En v0.1.0 los datos son ficticios; en v0.2 los primeros pilotos generarán datos reales pero insuficientes para entrenar modelos. Las reglas deterministas del motor temporal (8 políticas) superan a cualquier modelo ML cuando el volumen de datos es bajo.</p>
+
+    <div class="table-wrap"><table>
+      <thead><tr><th>Función ML</th><th>Problema que resuelve</th><th>Datos necesarios</th><th>Disponibilidad</th><th>Veredicto</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Alertas predictivas de ronda</strong></td>
+          <td>Predecir qué rondas van a retrasarse antes de que ocurra el retraso</td>
+          <td>Histórico de tiempos por cuidador, residente, turno y tipo de ronda — mínimo 3 meses de operación real</td>
+          <td>❌ No existe en v0.1.0 ni en los primeros pilotos</td>
+          <td><span style="color:#92400E;font-weight:700">⏳ DIFERIR v0.3+</span></td>
+        </tr>
+        <tr>
+          <td><strong>Detección de anomalías en audit log</strong></td>
+          <td>Identificar patrones de operación fuera de lo normal (accesos raros, escalaciones inusuales)</td>
+          <td>Baseline de comportamiento normal — requiere semanas de datos reales etiquetados</td>
+          <td>❌ Sin baseline no hay anomalía detectable</td>
+          <td><span style="color:#92400E;font-weight:700">⏳ DIFERIR v0.3+</span></td>
+        </tr>
+        <tr>
+          <td><strong>Optimización de asignación de cuidadores</strong></td>
+          <td>Asignar cuidadores a rondas minimizando tiempo de respuesta y carga de trabajo</td>
+          <td>Datos de disponibilidad, carga histórica, preferencias — requiere múltiples residencias para generalizar</td>
+          <td>❌ Un solo piloto no tiene señal suficiente</td>
+          <td><span style="color:#92400E;font-weight:700">⏳ DIFERIR v0.3+</span></td>
+        </tr>
+      </tbody>
+    </table></div>
+    <p><strong>Conclusión ML:</strong> Ninguna función de ML es aplicable en v0.2. La arquitectura event-driven (<code class="mono">audit_events</code> con 20 tipos) está diseñada para ser el <em>insumo futuro</em> de estos modelos — pero los modelos necesitan datos reales primero. El motor temporal determinista es la solución correcta para v0.2.</p>
+
+    <!-- AGENTES DE IA -->
+    <h3>B. Agentes de IA (3 tipos)</h3>
+    <p>Un agente de IA es un sistema que percibe contexto, decide una acción y la ejecuta — opcionalmente en bucle. Para CareSignal, los agentes más relevantes son los que actúan sobre el <strong>flujo de eventos</strong> sin necesidad de datos históricos de entrenamiento.</p>
+
+    <div class="table-wrap"><table>
+      <thead><tr><th>#</th><th>Agente</th><th>Función</th><th>Input</th><th>Output</th><th>Tecnología</th><th>Veredicto</th></tr></thead>
+      <tbody>
+        <tr>
+          <td style="font-weight:700;color:var(--accent)">A1</td>
+          <td><strong>Agente operativo</strong></td>
+          <td>Monitorea estados de rondas, aplica políticas automáticas, genera alertas cuando una ronda pasa a <code class="mono">overdue</code></td>
+          <td>Estado actual de rondas + reloj</td>
+          <td>Transiciones de estado + <code class="mono">audit_events</code></td>
+          <td>Motor temporal determinista (ya existe en <code class="mono">temporalEngine.ts</code>)</td>
+          <td><span style="color:#991B1B;font-weight:700">❌ SOBREDIMENSIONADO</span><br><span style="font-size:11px;color:var(--muted)">El motor de reglas es más predecible, más barato y más auditable que un LLM para este caso</span></td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;color:var(--accent)">A2</td>
+          <td><strong>Agente de ciberseguridad</strong></td>
+          <td>Detecta patrones anómalos en el <code class="mono">audit_log</code>: accesos fuera de turno, cambios en masa, escalaciones inusuales, secuencias sospechosas de eventos</td>
+          <td>Stream de <code class="mono">audit_events</code> — metadatos solamente (sin PII)</td>
+          <td>Alerta interna al gerente con descripción del patrón detectado</td>
+          <td>Gemini API — clasificación de secuencias de eventos en lenguaje natural</td>
+          <td><span style="color:#166534;font-weight:700">✅ APLICABLE v0.2</span><br><span style="font-size:11px;color:var(--muted)">LLMs son buenos en detección de patrones semánticos en secuencias — exactamente este caso</span></td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;color:var(--accent)">A3</td>
+          <td><strong>Agente de análisis ejecutivo</strong></td>
+          <td>Al cierre de turno, genera un resumen ejecutivo en lenguaje natural: rondas completadas, alertas activas, incidentes abiertos, tendencias vs. turno anterior</td>
+          <td>Eventos del turno actual desde <code class="mono">audit_events</code></td>
+          <td>Documento de traspaso de turno — texto + métricas clave</td>
+          <td>Gemini API — generación de texto sobre datos estructurados</td>
+          <td><span style="color:#166534;font-weight:700">✅ APLICABLE v0.2</span><br><span style="font-size:11px;color:var(--muted)">Elimina trabajo manual del supervisor al cerrar turno — alto valor, bajo riesgo</span></td>
+        </tr>
+      </tbody>
+    </table></div>
+    <p><strong>Conclusión agentes:</strong> El agente operativo ya está resuelto por reglas deterministas — no necesita IA. Los agentes A2 y A3 son los candidatos reales para v0.2: operan sobre metadatos de eventos ya existentes, no requieren datos históricos de entrenamiento y tienen valor directo para supervisores y gerentes.</p>
+
+    <!-- CHATBOTS -->
+    <h3>C. Chatbots (3 tipos)</h3>
+    <p>Un chatbot agrega valor cuando el usuario necesita <strong>consultar información no estructurada</strong> o cuando la UI alternativa sería un formulario complejo. Para CareSignal, la pregunta es si un cuidador o supervisor prefiere escribir una pregunta o tocar un botón en pantalla — en operaciones de cuidado urgente, la respuesta casi siempre es el botón.</p>
+
+    <div class="table-wrap"><table>
+      <thead><tr><th>#</th><th>Chatbot</th><th>Usuario</th><th>Caso de uso</th><th>Problema real</th><th>Alternativa más simple</th><th>Veredicto</th></tr></thead>
+      <tbody>
+        <tr>
+          <td style="font-weight:700;color:var(--accent)">C1</td>
+          <td><strong>Chatbot operativo para cuidadores</strong></td>
+          <td>Caregiver</td>
+          <td>"¿Qué rondas tengo pendientes?" / "¿A qué habitación voy ahora?"</td>
+          <td>El cuidador ya tiene la pantalla de rondas del turno con toda esta información visible de inmediato</td>
+          <td>Página <code class="mono">CaregiverRoundsPage</code> — ya existe y es más rápida que escribir</td>
+          <td><span style="color:#991B1B;font-weight:700">❌ SOBREDIMENSIONADO</span><br><span style="font-size:11px;color:var(--muted)">En cuidado urgente, un chatbot añade fricción. La UI directa es superior.</span></td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;color:var(--accent)">C2</td>
+          <td><strong>Chatbot para familias</strong></td>
+          <td>Familiar del residente</td>
+          <td>"¿Cómo está mi mamá hoy?" / "¿Cuándo fue la última revisión?"</td>
+          <td>Las familias quieren tranquilidad — información del estado de su familiar en tiempo real</td>
+          <td>Portal familiar con dashboard de rondas completadas — sin chatbot</td>
+          <td><span style="color:#5B21B6;font-weight:700">🔬 PREMATURO</span><br><span style="font-size:11px;color:var(--muted)">Requiere consentimiento explícito del residente, control de acceso familiar, validación legal LFPDPPP. Diseñar sin validar es riesgo alto.</span></td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;color:var(--accent)">C3</td>
+          <td><strong>Chatbot ejecutivo para gerentes</strong></td>
+          <td>Manager</td>
+          <td>"¿Cuántas alertas hubo esta semana?" / "¿Qué cuidador tuvo más rondas overdue?"</td>
+          <td>El gerente necesita análisis sobre el audit log sin construir consultas manualmente</td>
+          <td>Dashboard con filtros — cubre el 80% de las consultas sin lenguaje natural</td>
+          <td><span style="color:#92400E;font-weight:700">⏳ DIFERIR v0.3+</span><br><span style="font-size:11px;color:var(--muted)">Válido como feature premium cuando haya datos reales de múltiples turnos. Priorizar el dashboard primero.</span></td>
+        </tr>
+      </tbody>
+    </table></div>
+    <p><strong>Conclusión chatbots:</strong> Ningún chatbot es prioritario para v0.2. C1 compite contra la UI y pierde. C2 es prematuro sin validación legal y de privacidad. C3 es válido en el futuro pero el dashboard lo cubre antes y mejor.</p>
+
+    <!-- RESUMEN EJECUTIVO -->
+    <h3>Resumen ejecutivo del assessment</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Tecnología</th><th>Función</th><th>Veredicto</th><th>Versión objetivo</th></tr></thead>
+      <tbody>
+        <tr><td>Machine Learning</td><td>Alertas predictivas</td><td><span style="color:#92400E;font-weight:700">⏳ DIFERIR</span></td><td>v0.3+ — requiere 6+ meses datos reales</td></tr>
+        <tr><td>Machine Learning</td><td>Detección de anomalías</td><td><span style="color:#92400E;font-weight:700">⏳ DIFERIR</span></td><td>v0.3+ — requiere baseline</td></tr>
+        <tr><td>Machine Learning</td><td>Optimización de asignación</td><td><span style="color:#92400E;font-weight:700">⏳ DIFERIR</span></td><td>v0.3+ — requiere múltiples residencias</td></tr>
+        <tr style="background:var(--success-bg)"><td>Agente IA</td><td>A2 — Ciberseguridad (Gemini API)</td><td><span style="color:#166534;font-weight:700">✅ APLICABLE</span></td><td>v0.2 — sobre metadatos de eventos</td></tr>
+        <tr style="background:var(--success-bg)"><td>Agente IA</td><td>A3 — Análisis ejecutivo de turno (Gemini API)</td><td><span style="color:#166534;font-weight:700">✅ APLICABLE</span></td><td>v0.2 — generación de resumen al cierre</td></tr>
+        <tr><td>Agente IA</td><td>A1 — Operativo (motor de rondas)</td><td><span style="color:#991B1B;font-weight:700">❌ SOBREDIMENSIONADO</span></td><td>Ya resuelto por motor determinista</td></tr>
+        <tr><td>Chatbot</td><td>C1 — Cuidadores</td><td><span style="color:#991B1B;font-weight:700">❌ SOBREDIMENSIONADO</span></td><td>UI directa es superior en contexto urgente</td></tr>
+        <tr><td>Chatbot</td><td>C2 — Familias</td><td><span style="color:#5B21B6;font-weight:700">🔬 PREMATURO</span></td><td>v0.3+ — requiere validación legal LFPDPPP</td></tr>
+        <tr><td>Chatbot</td><td>C3 — Gerentes (NL sobre audit)</td><td><span style="color:#92400E;font-weight:700">⏳ DIFERIR</span></td><td>v0.3+ — dashboard primero</td></tr>
+      </tbody>
+    </table></div>
+    <p style="font-size:12px;margin-top:1rem">Principio aplicado: <em>"La solución más simple que resuelve el problema real es la correcta."</em> Las reglas deterministas ganan a ML cuando los datos son escasos. Los agentes LLM ganan cuando el problema es semántico y no estructurado. Los chatbots pierden cuando la UI directa es más rápida.</p>
   </section>
 
 </main>
