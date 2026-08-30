@@ -1,0 +1,549 @@
+<title>NOM-031 × CareSignal</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --bg:        #F8F4EC;
+    --bg-alt:    #EEE8DB;
+    --surface:   #FFFFFF;
+    --border:    #D5CCBA;
+    --text:      #0F1E30;
+    --muted:     #5A5347;
+    --accent:    #2455A4;
+    --accent2:   #5B88D4;
+    --navy:      #0F2240;
+    /* coverage levels */
+    --c-full:    #1A6B40; --bg-full:    #D1FAE5;
+    --c-part:    #B76A00; --bg-part:    #FEF3C7;
+    --c-infra:   #2455A4; --bg-infra:   #DBEAFE;
+    --c-oos:     #5A5347; --bg-oos:     #F3F0EA;
+    --c-req:     #7C2D12; --bg-req:     #FEF3C7;
+    --mono: 'IBM Plex Mono', monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0C0A07; --bg-alt: #131109; --surface: #17140F;
+      --border: #28231A; --text: #EDE8DC; --muted: #9A9080;
+      --accent: #7AAAE8; --accent2: #9BBFEE; --navy: #C8D8F0;
+      --c-full: #86EFAC; --bg-full: #14532D;
+      --c-part: #FCD34D; --bg-part: #78350F;
+      --c-infra: #93C5FD; --bg-infra: #1E3A5F;
+      --c-oos: #9A9080; --bg-oos: #1F1C16;
+      --c-req: #FCA5A5; --bg-req: #7F1D1D;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0C0A07; --bg-alt: #131109; --surface: #17140F;
+    --border: #28231A; --text: #EDE8DC; --muted: #9A9080;
+    --accent: #7AAAE8; --accent2: #9BBFEE; --navy: #C8D8F0;
+    --c-full: #86EFAC; --bg-full: #14532D;
+    --c-part: #FCD34D; --bg-part: #78350F;
+    --c-infra: #93C5FD; --bg-infra: #1E3A5F;
+    --c-oos: #9A9080; --bg-oos: #1F1C16;
+    --c-req: #FCA5A5; --bg-req: #7F1D1D;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'IBM Plex Sans', system-ui, sans-serif; background: var(--bg); color: var(--text); font-size: 13.5px; line-height: 1.65; }
+
+  /* NAV */
+  nav { position: sticky; top: 0; z-index: 100; background: var(--navy); border-bottom: 2px solid var(--accent); padding: 0 1.25rem; display: flex; align-items: center; gap: 0; overflow-x: auto; scrollbar-width: none; }
+  nav::-webkit-scrollbar { display: none; }
+  .nav-brand { font-family: var(--mono); font-size: 11px; font-weight: 600; color: #CBD5E8; white-space: nowrap; padding: 0.65rem 1rem 0.65rem 0; border-right: 1px solid #2A3F60; margin-right: 0.5rem; flex-shrink: 0; }
+  nav a { font-size: 11px; font-weight: 500; color: #8BA4C8; text-decoration: none; padding: 0.65rem 0.65rem; white-space: nowrap; transition: color .15s; flex-shrink: 0; }
+  nav a:hover { color: #CBD5E8; }
+
+  main { max-width: 1080px; margin: 0 auto; padding: 2rem 1.25rem 6rem; }
+
+  /* PAGE HEADER */
+  .page-header { margin-bottom: 2.5rem; }
+  .norm-badge { display: inline-flex; align-items: center; gap: .5rem; font-family: var(--mono); font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--surface); background: var(--navy); padding: .3rem .75rem; border-radius: 4px; margin-bottom: .75rem; }
+  h1 { font-size: 1.7rem; font-weight: 700; line-height: 1.2; text-wrap: balance; color: var(--text); }
+  .header-sub { font-size: 13px; color: var(--muted); margin-top: .5rem; font-style: italic; }
+  .header-meta { display: flex; flex-wrap: wrap; gap: .3rem 1.25rem; margin-top: .75rem; font-size: 11.5px; color: var(--muted); border-top: 1px solid var(--border); padding-top: .75rem; }
+
+  /* LEGEND */
+  .legend { display: flex; flex-wrap: wrap; gap: .4rem .75rem; margin-bottom: 2rem; padding: .75rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; align-items: center; }
+  .legend strong { font-family: var(--mono); font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-right: .25rem; }
+  .chip { display: inline-flex; align-items: center; gap: .2rem; font-family: var(--mono); font-size: 10.5px; font-weight: 600; padding: .2rem .6rem; border-radius: 100px; white-space: nowrap; }
+  .chip-full  { color: var(--c-full);  background: var(--bg-full); }
+  .chip-part  { color: var(--c-part);  background: var(--bg-part); }
+  .chip-infra { color: var(--c-infra); background: var(--bg-infra); }
+  .chip-oos   { color: var(--c-oos);   background: var(--bg-oos); }
+
+  /* SCORECARD */
+  .scorecard { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: .75rem; margin-bottom: 2.5rem; }
+  .score-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: .9rem 1rem; text-align: center; }
+  .score-card .big { font-family: var(--mono); font-size: 2rem; font-weight: 700; line-height: 1; margin-bottom: .3rem; }
+  .score-card .lbl { font-size: 10.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; font-weight: 500; }
+
+  /* SECTIONS */
+  .sec { margin-bottom: 2.25rem; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: var(--surface); }
+  .sec-head { display: flex; align-items: center; gap: .75rem; padding: .75rem 1.1rem; background: var(--bg-alt); border-bottom: 2px solid var(--accent); }
+  .sec-num { font-family: var(--mono); font-size: 10px; font-weight: 600; color: var(--accent); background: var(--surface); border: 1px solid var(--border); padding: .15rem .45rem; border-radius: 4px; flex-shrink: 0; }
+  .sec-title { font-size: 13px; font-weight: 700; color: var(--text); flex: 1; }
+  .sec-tag { font-family: var(--mono); font-size: 10px; color: var(--muted); white-space: nowrap; }
+  .sec-body { padding: 1.1rem; }
+
+  /* TABLES */
+  .tw { overflow-x: auto; margin: 0; border-radius: 4px; border: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  th { font-family: var(--mono); font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; padding: .55rem .9rem; text-align: left; border-bottom: 1px solid var(--border); background: var(--bg-alt); white-space: nowrap; }
+  td { padding: .55rem .9rem; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.55; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--bg); }
+  code { font-family: var(--mono); font-size: 11px; background: var(--bg-alt); padding: .05rem .3rem; border-radius: 3px; }
+
+  /* GLOSSARY */
+  .gloss-grid { display: grid; grid-template-columns: minmax(180px,220px) 1fr; }
+  .gloss-row { display: contents; }
+  .gloss-term { font-family: var(--mono); font-size: 11.5px; font-weight: 600; color: var(--accent); padding: .6rem .9rem; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); background: var(--bg-alt); vertical-align: top; }
+  .gloss-def { padding: .6rem .9rem; border-bottom: 1px solid var(--border); font-size: 12.5px; color: var(--text); }
+  .gloss-row:last-child .gloss-term,
+  .gloss-row:last-child .gloss-def { border-bottom: none; }
+  .vs { font-size: 11px; color: var(--muted); font-style: italic; display: block; margin-top: .15rem; }
+
+  /* COVERAGE TABLE cells */
+  .req-id { font-family: var(--mono); font-size: 10px; font-weight: 600; color: var(--muted); white-space: nowrap; }
+  .req-text { font-weight: 500; color: var(--text); margin-bottom: .2rem; font-size: 13px; }
+  .req-detail { font-size: 11.5px; color: var(--muted); line-height: 1.5; }
+  .coverage-how { font-size: 12px; color: var(--text); line-height: 1.55; }
+  .coverage-how code { font-size: 10.5px; }
+  .coverage-blank { font-size: 11.5px; color: var(--muted); font-style: italic; }
+
+  /* GROUP HEADER in table */
+  .group-hdr td { background: var(--bg-alt); font-family: var(--mono); font-size: 10px; font-weight: 600; color: var(--navy); text-transform: uppercase; letter-spacing: .08em; padding: .45rem .9rem; border-top: 2px solid var(--border); }
+
+  /* VALUE CARDS */
+  .value-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: .9rem; }
+  .value-card { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .value-card-head { padding: .65rem 1rem; display: flex; align-items: center; gap: .6rem; font-weight: 700; font-size: 13px; color: var(--surface); }
+  .value-card-body { padding: .75rem 1rem; font-size: 12.5px; color: var(--muted); line-height: 1.6; background: var(--surface); }
+  .value-card-body strong { color: var(--text); }
+
+  /* NOTE */
+  .note { padding: .6rem 1rem; background: var(--bg-alt); border-top: 1px solid var(--border); font-size: 11.5px; color: var(--muted); font-style: italic; }
+  p { color: var(--muted); font-size: 12.5px; line-height: 1.65; margin-bottom: .6rem; }
+  p:last-child { margin-bottom: 0; }
+  strong { color: var(--text); }
+  h3 { font-size: 12.5px; font-weight: 700; color: var(--text); margin: 1rem 0 .5rem; }
+</style>
+
+<nav>
+  <span class="nav-brand">CareSignal × NOM-031-SSA3-2012</span>
+  <a href="#sobre">La norma</a>
+  <a href="#glosario">Glosario</a>
+  <a href="#requisitos">Requisitos</a>
+  <a href="#cobertura">Cobertura</a>
+  <a href="#valor">Valor agregado</a>
+  <a href="#argumento">Argumento comercial</a>
+</nav>
+
+<main>
+
+<div class="page-header">
+  <div class="norm-badge">📋 NOM-031-SSA3-2012 · Vigente · DOF 13-sep-2012</div>
+  <h1>Requisitos de la norma y cobertura CareSignal</h1>
+  <div class="header-sub">Asistencia social. Prestación de servicios a adultos y adultos mayores en situación de riesgo y vulnerabilidad.</div>
+  <div class="header-meta">
+    <span>Norma aplicable a: residencias privadas de cuidados continuos · casas hogar · asilos</span>
+    <span>Estado normativo: vigente sin reemplazo (confirmación PLATIICA, ago. 2021)</span>
+    <span>Marco complementario: LGS Art. 419 · LFPDPPP</span>
+    <span>Generado: 2026-08-30</span>
+  </div>
+</div>
+
+<!-- LEYENDA -->
+<div class="legend">
+  <strong>Cobertura:</strong>
+  <span class="chip chip-full">🟢 CUBRE</span><span style="font-size:11.5px;color:var(--muted)">CareSignal implementa este requisito directamente</span>
+  <span class="chip chip-part" style="margin-left:.5rem">🟡 CONTRIBUYE</span><span style="font-size:11.5px;color:var(--muted)">Facilita el cumplimiento; el director completa el proceso</span>
+  <span class="chip chip-infra" style="margin-left:.5rem">🔵 INFRAESTRUCTURA</span><span style="font-size:11.5px;color:var(--muted)">Provee la base técnica; la residencia define la política</span>
+  <span class="chip chip-oos" style="margin-left:.5rem">⚪ FUERA DE ALCANCE</span><span style="font-size:11.5px;color:var(--muted)">No aplica al módulo operativo digital v0.1.0</span>
+</div>
+
+<!-- SCORECARD -->
+<div class="scorecard">
+  <div class="score-card"><div class="big" style="color:var(--c-full)">12</div><div class="lbl">🟢 Cubre directo</div></div>
+  <div class="score-card"><div class="big" style="color:var(--c-part)">7</div><div class="lbl">🟡 Contribuye</div></div>
+  <div class="score-card"><div class="big" style="color:var(--c-infra)">5</div><div class="lbl">🔵 Infraestructura</div></div>
+  <div class="score-card"><div class="big" style="color:var(--c-oos)">8</div><div class="lbl">⚪ Fuera de alcance</div></div>
+  <div class="score-card"><div class="big" style="color:var(--accent)">32</div><div class="lbl">Total requisitos</div></div>
+</div>
+
+<!-- SOBRE LA NORMA -->
+<div class="sec" id="sobre">
+  <div class="sec-head"><span class="sec-num">§ META</span><span class="sec-title">Sobre la NOM-031-SSA3-2012</span></div>
+  <div class="sec-body">
+    <p><strong>Qué regula:</strong> Los servicios de asistencia social a adultos mayores en establecimientos residenciales (asilos, casas hogar, residencias privadas de cuidados continuos). Define los requisitos mínimos para la prestación de servicios, el personal, la infraestructura, los registros y la atención al usuario.</p>
+    <p><strong>A quién aplica:</strong> Toda persona física o moral que preste servicios de alojamiento, alimentación, atención médica o asistencia social a adultos mayores, independientemente de su régimen jurídico — privado, público o de beneficencia.</p>
+    <p><strong>Por qué importa para CareSignal:</strong> La norma exige bitácoras permanentes de atención, registro de incidentes, control de actividades por residente y expediente administrativo individual. Estos son exactamente los registros que CareSignal genera de forma automática, sin papel, con trazabilidad completa.</p>
+    <p><strong>Contexto de fiscalización:</strong> La norma casi no se fiscaliza activamente — durante la pandemia solo se supervisaron 58 de ~1,500 establecimientos (CNDH, 2020). El riesgo real no es la inspección rutinaria sino <strong>el reclamo de una familia o una demanda</strong>. Una residencia sin bitácoras no puede defenderse. CareSignal es ese respaldo.</p>
+    <div class="note">Proyecto de actualización PROY-NOM-031-SSA3-2018 a consulta en 2019; revisión sistemática 2021 con resultado «Confirmación» — la norma actual sigue vigente sin modificaciones.</div>
+  </div>
+</div>
+
+<!-- GLOSARIO DE LA NORMA -->
+<div class="sec" id="glosario">
+  <div class="sec-head"><span class="sec-num">§ GLOSARIO</span><span class="sec-title">Vocabulario de la norma → equivalente en CareSignal</span><span class="sec-tag">DICCIONARIO</span></div>
+  <div class="sec-body" style="padding:0">
+    <div class="tw" style="border:none;border-radius:0">
+      <div class="gloss-grid">
+        <div class="gloss-row">
+          <div class="gloss-term">Usuario / usuaria</div>
+          <div class="gloss-def">Persona que recibe los servicios de asistencia social en el establecimiento.<span class="vs">CareSignal: <code>residente</code> — mismo concepto, terminología operativa no médica</span></div>
+        </div>
+        <div class="gloss-row">
+          <div class="gloss-term">Establecimiento de asistencia social</div>
+          <div class="gloss-def">Lugar donde se prestan los servicios de alojamiento, alimentación, atención y cuidado.<span class="vs">CareSignal: <code>residencia</code> — raíz del tenant en el modelo de datos</span></div>
+        </div>
+        <div class="gloss-row">
+          <div class="gloss-term">Personal de atención directa</div>
+          <div class="gloss-def">Trabajadores que tienen contacto directo con los usuarios en su cuidado cotidiano.<span class="vs">CareSignal: <code>caregiver</code> — rol que ejecuta rondas y registra resultados</span></div>
+        </div>
+        <div class="gloss-row">
+          <div class="gloss-term">Director técnico responsable</div>
+          <div class="gloss-def">Profesional con perfil académico que asume la responsabilidad técnica y legal del establecimiento.<span class="vs">CareSignal: <code>manager</code> — vista ejecutiva, audit log completo, cierre de incidentes</span></div>
+        </div>
+        <div class="gloss-row">
+          <div class="gloss-term">Expediente individual del usuario</div>
+          <div class="gloss-def">Conjunto de documentos que registran los datos de identificación, condición social, contratos y consentimientos de cada residente.<span class="vs">CareSignal: entidad <code>residente</code> con datos operativos + <code>audit_events</code> asociados — sin datos clínicos ni diagnóstico (fuera de alcance)</span></div>
+        </div>
+        <div class="gloss-row">
+          <div class="gloss-term">Plan de atención individual (PAI)</div>
+          <div class="gloss-def">Documento que define los objetivos, actividades y responsables del cuidado de cada residente según su condición.<span class="vs">CareSignal: <strong>fuera de alcance v0.1.0</strong> — el sistema ejecuta rondas (las actividades), pero no almacena el PAI formal</span></div>
+        </div>
+        <div class="gloss-row">
+          <div class="gloss-term">Bitácora de servicios prestados</div>
+          <div class="gloss-def">Registro continuo y permanente de las actividades de atención realizadas a los usuarios, con fecha, hora y personal responsable.<span class="vs">CareSignal: <code>audit_events</code> — append-only, 20 tipos, actor + timestamp + payload por cada acción</span></div>
+        </div>
+        <div class="gloss-row">
+          <div class="gloss-term">Actividad de atención directa</div>
+          <div class="gloss-def">Cualquier acción de cuidado realizada al usuario: higiene, alimentación, movilidad, revisión de rutina.<span class="vs">CareSignal: <code>ronda</code> — 5 tipos operativos: revisión de rutina, hidratación, movilidad, alimentación, personalizada</span></div>
+        </div>
+        <div class="gloss-row">
+          <div class="gloss-term">Registro de incidencias / incidentes</div>
+          <div class="gloss-def">Documentación de eventos fuera de la rutina que afectan al usuario o al establecimiento, con su seguimiento y resolución.<span class="vs">CareSignal: ciclo <code>alerta → incidente → resultado_operativo → cerrado</code> — con audit trail completo e inmutable</span></div>
+        </div>
+        <div class="gloss-row">
+          <div class="gloss-term">Supervisión de turno</div>
+          <div class="gloss-def">Control y seguimiento de las actividades del personal de atención durante un turno de trabajo.<span class="vs">CareSignal: <code>supervisor</code> — dashboard en tiempo real, alertas activas, rondas overdue, asignación y escalación</span></div>
+        </div>
+        <div class="gloss-row">
+          <div class="gloss-term">Estado de vulnerabilidad / riesgo</div>
+          <div class="gloss-def">Condición del residente que implica mayor necesidad de atención y protección ante situaciones de abandono, soledad o dependencia.<span class="vs">CareSignal: <code>nivel_cuidado</code> (bajo/medio/alto) + <code>estado_visual derivado</code> (🟢🟡🔴) — indicador operativo de urgencia</span></div>
+        </div>
+        <div class="gloss-row">
+          <div class="gloss-term">Dependencia funcional</div>
+          <div class="gloss-def">Necesidad del residente de apoyo de terceros para realizar actividades de la vida diaria (AVD).<span class="vs">CareSignal: tipos de ronda <code>mobility_assistance</code> y <code>meal_assistance</code> documentan el apoyo prestado en AVD</span></div>
+        </div>
+        <div class="gloss-row">
+          <div class="gloss-term">Maltrato / estado de abandono</div>
+          <div class="gloss-def">Términos definidos explícitamente por la norma: toda acción u omisión que cause daño al residente, incluyendo la negligencia en la atención.<span class="vs">CareSignal: una ronda <code>overdue</code> sin atender es evidencia de omisión documentada — la alerta generada es el registro de la situación</span></div>
+        </div>
+        <div class="gloss-row">
+          <div class="gloss-term">Programa de trabajo anual</div>
+          <div class="gloss-def">Documento institucional con los objetivos, actividades y metas del establecimiento para el año en curso.<span class="vs">CareSignal: <strong>fuera de alcance</strong> — el sistema no genera documentos institucionales, solo registra la operación diaria</span></div>
+        </div>
+        <div class="gloss-row">
+          <div class="gloss-term">Consentimiento informado</div>
+          <div class="gloss-def">Documento firmado por el residente o su representante legal que autoriza la prestación de servicios.<span class="vs">CareSignal: <strong>fuera de alcance</strong> — proceso de onboarding y admisión, no módulo digital del MVP</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MATRIZ DE COBERTURA -->
+<div class="sec" id="cobertura">
+  <div class="sec-head"><span class="sec-num">§ COBERTURA</span><span class="sec-title">Requisitos de la norma × CareSignal — matriz completa</span><span class="sec-tag">32 REQUISITOS</span></div>
+  <div class="sec-body" style="padding:0">
+    <div class="tw" style="border:none;border-radius:0">
+      <table>
+        <thead><tr><th>Req.</th><th>Requisito NOM-031</th><th style="width:130px">Cobertura</th><th>Cómo lo cubre CareSignal</th></tr></thead>
+        <tbody>
+
+          <!-- REGISTROS Y BITÁCORAS -->
+          <tr class="group-hdr"><td colspan="4">§8 REGISTROS Y BITÁCORAS — Documentación permanente de la operación</td></tr>
+          <tr>
+            <td class="req-id">R-01</td>
+            <td><div class="req-text">Bitácora permanente de actividades de atención por residente</div><div class="req-detail">Registro continuo con fecha, hora y personal responsable de cada actividad realizada</div></td>
+            <td><span class="chip chip-full">🟢 CUBRE</span></td>
+            <td class="coverage-how"><code>audit_events</code> — append-only. Cada ronda completada emite <code>ROUND_COMPLETED</code> con <code>actor_id</code> + <code>timestamp</code> + <code>resultado</code>. Inmutable por diseño — NOM compliant.</td>
+          </tr>
+          <tr>
+            <td class="req-id">R-02</td>
+            <td><div class="req-text">Registro de incidencias con seguimiento y resolución</div><div class="req-detail">Documentar eventos fuera de rutina, las acciones tomadas y el resultado final</div></td>
+            <td><span class="chip chip-full">🟢 CUBRE</span></td>
+            <td class="coverage-how">Ciclo completo: <code>alerta open → assigned → in_verification → resolved → closed</code>. El campo <code>resultado_verificacion</code> es obligatorio para cerrar. <code>INCIDENT_CLOSED</code> lleva <code>resultado_operativo</code>.</td>
+          </tr>
+          <tr>
+            <td class="req-id">R-03</td>
+            <td><div class="req-text">Registro de personal de atención en cada turno</div><div class="req-detail">Qué personal estuvo en turno, qué actividades realizó, con qué residentes</div></td>
+            <td><span class="chip chip-full">🟢 CUBRE</span></td>
+            <td class="coverage-how">Cada <code>audit_event</code> lleva <code>actor_id</code> (staff_member). Filtrar el audit log por <code>actor_id</code> produce el registro completo de actividades de cualquier cuidador en cualquier turno.</td>
+          </tr>
+          <tr>
+            <td class="req-id">R-04</td>
+            <td><div class="req-text">Registro inmutable — sin edición posterior a los registros operativos</div><div class="req-detail">Los registros de atención no pueden modificarse retroactivamente para evitar manipulación de la evidencia</div></td>
+            <td><span class="chip chip-full">🟢 CUBRE</span></td>
+            <td class="coverage-how"><code>audit_events</code>: solo <code>INSERT</code>. Nunca <code>UPDATE</code> ni <code>DELETE</code>. La UI no expone ninguna función de edición del log. Regla de integridad IR-10 del dominio.</td>
+          </tr>
+          <tr>
+            <td class="req-id">R-05</td>
+            <td><div class="req-text">Registro de rondas o visitas de verificación a cada residente</div><div class="req-detail">Cada actividad de verificación del estado del residente debe quedar documentada con hora y responsable</div></td>
+            <td><span class="chip chip-full">🟢 CUBRE</span></td>
+            <td class="coverage-how">Entidad <code>ronda</code> con <code>programada_at</code>, <code>iniciada_at</code>, <code>completada_at</code>, <code>cuidador_id</code>, <code>resultado</code>. 5 tipos operativos. Historial completo por residente visible para supervisor y gerente.</td>
+          </tr>
+          <tr>
+            <td class="req-id">R-06</td>
+            <td><div class="req-text">Registro de visitas de familiares o representantes</div><div class="req-detail">Control de acceso de personas externas que visitan a los residentes</div></td>
+            <td><span class="chip chip-oos">⚪ FUERA</span></td>
+            <td class="coverage-blank">No implementado en v0.1.0. El MVP cubre el ciclo operativo interno — no incluye módulo de acceso externo.</td>
+          </tr>
+          <tr>
+            <td class="req-id">R-07</td>
+            <td><div class="req-text">Control de administración de medicamentos</div><div class="req-detail">Registro de qué medicamento, dosis, hora y quien administró a cada residente</div></td>
+            <td><span class="chip chip-oos">⚪ FUERA</span></td>
+            <td class="coverage-blank">Explícitamente fuera de alcance del contrato §5. Sin lenguaje médico ni prescripciones en el MVP.</td>
+          </tr>
+          <tr>
+            <td class="req-id">R-08</td>
+            <td><div class="req-text">Exportación y consulta del historial para auditoría e inspección</div><div class="req-detail">El director debe poder presentar el historial de atención ante una inspección de la SSA o ante una demanda</div></td>
+            <td><span class="chip chip-full">🟢 CUBRE</span></td>
+            <td class="coverage-how">El rol <code>manager</code> tiene acceso al audit log completo con filtros por entidad, fecha y tipo de evento. Función de exportar bitácora disponible para el gerente.</td>
+          </tr>
+
+          <!-- EXPEDIENTE DEL USUARIO -->
+          <tr class="group-hdr"><td colspan="4">§7 EXPEDIENTE INDIVIDUAL DEL USUARIO — Datos por residente</td></tr>
+          <tr>
+            <td class="req-id">R-09</td>
+            <td><div class="req-text">Datos de identificación del residente</div><div class="req-detail">Nombre, fecha de nacimiento, CURP, datos de contacto de familiar responsable</div></td>
+            <td><span class="chip chip-part">🟡 CONTRIBUYE</span></td>
+            <td class="coverage-how">Entidad <code>residente</code>: <code>nombre_completo</code>, <code>fecha_nacimiento</code>, <code>habitacion_id</code>, <code>notas_operativas</code>. Sin CURP, sin datos de familia — campos disponibles para v0.2.</td>
+          </tr>
+          <tr>
+            <td class="req-id">R-10</td>
+            <td><div class="req-text">Nivel de dependencia / condición del residente</div><div class="req-detail">Clasificación de la dependencia funcional para definir el tipo e intensidad de atención requerida</div></td>
+            <td><span class="chip chip-full">🟢 CUBRE</span></td>
+            <td class="coverage-how">Campo <code>nivel_cuidado ENUM('bajo','medio','alto')</code> en residente. Es el insumo para definir frecuencia y tipos de ronda asignadas.</td>
+          </tr>
+          <tr>
+            <td class="req-id">R-11</td>
+            <td><div class="req-text">Contrato de prestación de servicios y consentimiento informado</div><div class="req-detail">Documento firmado que formaliza el ingreso y autoriza la atención</div></td>
+            <td><span class="chip chip-oos">⚪ FUERA</span></td>
+            <td class="coverage-blank">Proceso de admisión fuera del alcance del módulo operativo digital.</td>
+          </tr>
+          <tr>
+            <td class="req-id">R-12</td>
+            <td><div class="req-text">Plan de atención individual (PAI / PIA)</div><div class="req-detail">Documento que define objetivos de atención, actividades específicas y responsables por residente</div></td>
+            <td><span class="chip chip-part">🟡 CONTRIBUYE</span></td>
+            <td class="coverage-how">CareSignal ejecuta las actividades del PAI (las rondas) y las registra. El PAI mismo —como documento formal de objetivos— es fuera de alcance v0.1.0. Candidato a v0.2 como módulo de configuración de rondas por residente.</td>
+          </tr>
+          <tr>
+            <td class="req-id">R-13</td>
+            <td><div class="req-text">Historial de atención por residente — consultable en orden cronológico</div><div class="req-detail">Toda la secuencia de actividades, incidencias y verificaciones que ha recibido el residente</div></td>
+            <td><span class="chip chip-full">🟢 CUBRE</span></td>
+            <td class="coverage-how">Consulta <code>audit_events</code> filtrada por <code>residente_id</code> devuelve el historial completo en orden cronológico. Cada evento lleva actor, timestamp y payload.</td>
+          </tr>
+
+          <!-- PERSONAL -->
+          <tr class="group-hdr"><td colspan="4">§6 PERSONAL — Gestión del equipo de atención</td></tr>
+          <tr>
+            <td class="req-id">R-14</td>
+            <td><div class="req-text">Asignación documentada de personal a cada residente / turno</div><div class="req-detail">Registro de qué cuidador es responsable de qué residente en cada turno</div></td>
+            <td><span class="chip chip-full">🟢 CUBRE</span></td>
+            <td class="coverage-how">Campo <code>cuidador_id</code> en <code>ronda</code>. <code>ROUND_SCHEDULED</code> registra la asignación inicial. <code>ROUND_REASSIGNED</code> documenta cambios de responsable con el <code>prev_cuidador_id</code> conservado en audit.</td>
+          </tr>
+          <tr>
+            <td class="req-id">R-15</td>
+            <td><div class="req-text">Control de disponibilidad y turno del personal</div><div class="req-detail">Saber en todo momento qué personal está en turno, disponible o fuera</div></td>
+            <td><span class="chip chip-full">🟢 CUBRE</span></td>
+            <td class="coverage-how">Campo <code>disponibilidad ENUM('available','busy','off_shift')</code> en <code>staff_member</code>. El supervisor ve la disponibilidad en tiempo real para asignar alertas.</td>
+          </tr>
+          <tr>
+            <td class="req-id">R-16</td>
+            <td><div class="req-text">Registro de capacitación y calificaciones del personal</div><div class="req-detail">Credenciales, cursos y certificaciones del personal de atención directa</div></td>
+            <td><span class="chip chip-oos">⚪ FUERA</span></td>
+            <td class="coverage-blank">Gestión de RRHH / capacitación fuera del alcance operativo del MVP.</td>
+          </tr>
+          <tr>
+            <td class="req-id">R-17</td>
+            <td><div class="req-text">Escalación y supervisión jerárquica documentada</div><div class="req-detail">Cuando un cuidador no puede resolver una situación, debe escalarla al supervisor con registro de la cadena de mando</div></td>
+            <td><span class="chip chip-full">🟢 CUBRE</span></td>
+            <td class="coverage-how">Flujo de alerta: <code>open → assigned → escalated</code>. <code>ALERT_ESCALATED</code> registra quién escaló, a quién y cuándo. <code>ALERT_REASSIGNED</code> conserva el responsable anterior en audit. Cadena de mando completa.</td>
+          </tr>
+          <tr>
+            <td class="req-id">R-18</td>
+            <td><div class="req-text">Supervisor con acceso en tiempo real al estado de la atención</div><div class="req-detail">El responsable del turno debe poder conocer el estado de todos los residentes y las actividades pendientes sin depender de reporte verbal</div></td>
+            <td><span class="chip chip-full">🟢 CUBRE</span></td>
+            <td class="coverage-how">Dashboard del supervisor: estado visual de todos los residentes (🟢🟡🔴), rondas overdue del turno, alertas activas con severidad y owner. Sin necesidad de radiofrecuencia ni papel.</td>
+          </tr>
+
+          <!-- ATENCIÓN AL USUARIO -->
+          <tr class="group-hdr"><td colspan="4">§10 ATENCIÓN — Servicios prestados al residente</td></tr>
+          <tr>
+            <td class="req-id">R-19</td>
+            <td><div class="req-text">Atención de revisión y verificación del estado del residente</div><div class="req-detail">Verificaciones periódicas documentadas del estado general del residente durante el turno</div></td>
+            <td><span class="chip chip-full">🟢 CUBRE</span></td>
+            <td class="coverage-how">Tipo de ronda <code>routine_check</code> — revisión operativa general. Programable, con estado <code>scheduled → due → in_progress → completed</code> y resultado registrado.</td>
+          </tr>
+          <tr>
+            <td class="req-id">R-20</td>
+            <td><div class="req-text">Atención en actividades de la vida diaria (AVD) — hidratación</div><div class="req-detail">Registro de que el residente recibió hidratación adecuada durante el turno</div></td>
+            <td><span class="chip chip-full">🟢 CUBRE</span></td>
+            <td class="coverage-how">Tipo de ronda <code>hydration_check</code> — específico para control de hidratación. Duración estimada 5 min. Resultado documentado al completar.</td>
+          </tr>
+          <tr>
+            <td class="req-id">R-21</td>
+            <td><div class="req-text">Atención en actividades de la vida diaria (AVD) — movilidad</div><div class="req-detail">Apoyo en desplazamiento y cambios de posición para prevenir úlceras por presión y mantener funcionalidad</div></td>
+            <td><span class="chip chip-full">🟢 CUBRE</span></td>
+            <td class="coverage-how">Tipo de ronda <code>mobility_assistance</code> — asistencia de movilidad, 20 min estimados. Cada asistencia queda registrada con actor y hora.</td>
+          </tr>
+          <tr>
+            <td class="req-id">R-22</td>
+            <td><div class="req-text">Atención en actividades de la vida diaria (AVD) — alimentación</div><div class="req-detail">Apoyo durante la ingesta de alimentos para residentes con dependencia funcional</div></td>
+            <td><span class="chip chip-full">🟢 CUBRE</span></td>
+            <td class="coverage-how">Tipo de ronda <code>meal_assistance</code> — asistencia en comida, 30 min estimados. Registro completo con resultado.</td>
+          </tr>
+          <tr>
+            <td class="req-id">R-23</td>
+            <td><div class="req-text">Actividades personalizadas según condición del residente</div><div class="req-detail">Actividades específicas definidas por el director o el plan de atención del residente</div></td>
+            <td><span class="chip chip-full">🟢 CUBRE</span></td>
+            <td class="coverage-how">Tipo de ronda <code>custom_operational_check</code> — duración variable, etiqueta personalizable. Cubre cualquier actividad no comprendida en los 4 tipos base.</td>
+          </tr>
+          <tr>
+            <td class="req-id">R-24</td>
+            <td><div class="req-text">Detección y respuesta ante retrasos en la atención</div><div class="req-detail">Mecanismo para identificar y responder cuando un residente no ha recibido atención en el tiempo esperado</div></td>
+            <td><span class="chip chip-full">🟢 CUBRE</span></td>
+            <td class="coverage-how">Motor temporal: <code>due → overdue → ALERT_CREATED</code> automático. El supervisor recibe la alerta inmediatamente, sin esperar reporte verbal del cuidador. Tiempo de respuesta documentado.</td>
+          </tr>
+          <tr>
+            <td class="req-id">R-25</td>
+            <td><div class="req-text">Atención médica y de rehabilitación</div><div class="req-detail">Servicios clínicos: consulta médica, fisioterapia, enfermería profesional</div></td>
+            <td><span class="chip chip-oos">⚪ FUERA</span></td>
+            <td class="coverage-blank">Explícitamente fuera de alcance. CareSignal no es un sistema médico ni de expediente clínico.</td>
+          </tr>
+          <tr>
+            <td class="req-id">R-26</td>
+            <td><div class="req-text">Actividades recreativas, culturales y psicológicas</div><div class="req-detail">Programas de estimulación cognitiva, actividades grupales, atención psicológica</div></td>
+            <td><span class="chip chip-oos">⚪ FUERA</span></td>
+            <td class="coverage-blank">Fuera del módulo operativo de rondas del MVP v0.1.0.</td>
+          </tr>
+
+          <!-- ORGANIZACIÓN -->
+          <tr class="group-hdr"><td colspan="4">§5 ORGANIZACIÓN — Estructura y gestión del establecimiento</td></tr>
+          <tr>
+            <td class="req-id">R-27</td>
+            <td><div class="req-text">Reglamento interno y manuales técnico-administrativos</div><div class="req-detail">Documentos que definen las reglas de operación del establecimiento</div></td>
+            <td><span class="chip chip-oos">⚪ FUERA</span></td>
+            <td class="coverage-blank">Documentos institucionales fuera del alcance digital operativo.</td>
+          </tr>
+          <tr>
+            <td class="req-id">R-28</td>
+            <td><div class="req-text">Programa de trabajo anual con objetivos y metas</div><div class="req-detail">Plan anual documentado de los servicios que prestará el establecimiento</div></td>
+            <td><span class="chip chip-oos">⚪ FUERA</span></td>
+            <td class="coverage-blank">Planificación institucional fuera del alcance del MVP.</td>
+          </tr>
+          <tr>
+            <td class="req-id">R-29</td>
+            <td><div class="req-text">Aislamiento de datos por establecimiento — confidencialidad</div><div class="req-detail">Los datos de una residencia no deben ser accesibles por otras instituciones o personas no autorizadas</div></td>
+            <td><span class="chip chip-full">🟢 CUBRE</span></td>
+            <td class="coverage-how">Diseño multi-tenant: cada consulta lleva <code>residencia_id</code>. Ningún dato cruza entre residencias. En MVP: localStorage por sesión. En producción: Row-Level Security en PostgreSQL.</td>
+          </tr>
+          <tr>
+            <td class="req-id">R-30</td>
+            <td><div class="req-text">Control de acceso por rol dentro del establecimiento</div><div class="req-detail">El personal solo debe acceder a la información necesaria para su función (principio de mínimo privilegio)</div></td>
+            <td><span class="chip chip-full">🟢 CUBRE</span></td>
+            <td class="coverage-how">RBAC completo: caregiver solo ve sus rondas y residentes asignados. Supervisor accede a alertas e historial del turno. Gerente tiene acceso al audit log completo. Enforced en repositorio, no solo en UI.</td>
+          </tr>
+          <tr>
+            <td class="req-id">R-31</td>
+            <td><div class="req-text">Registro en el Directorio Nacional del DIF</div><div class="req-detail">Toda institución de asistencia social debe estar registrada ante el DIF</div></td>
+            <td><span class="chip chip-oos">⚪ FUERA</span></td>
+            <td class="coverage-blank">Trámite administrativo legal fuera del alcance del software operativo.</td>
+          </tr>
+          <tr>
+            <td class="req-id">R-32</td>
+            <td><div class="req-text">Programa interno de protección civil</div><div class="req-detail">Plan de evacuación, contingencias y mantenimiento de instalaciones seguras</div></td>
+            <td><span class="chip chip-oos">⚪ FUERA</span></td>
+            <td class="coverage-blank">Protocolo físico fuera del alcance del módulo operativo digital.</td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- VALOR AGREGADO -->
+<div class="sec" id="valor">
+  <div class="sec-head"><span class="sec-num">§ VALOR</span><span class="sec-title">Cómo CareSignal convierte el cumplimiento normativo en ventaja operativa</span></div>
+  <div class="sec-body">
+    <div class="value-grid">
+      <div class="value-card">
+        <div class="value-card-head" style="background:#1A6B40">📋 Bitácora siempre actualizada — sin papel</div>
+        <div class="value-card-body">La NOM exige bitácoras permanentes (R-01, R-03, R-05). CareSignal genera <strong>el registro automáticamente</strong> con cada ronda completada. El director no necesita pedir reportes: el log está al instante, filtrable por residente, cuidador o fecha. <strong>Sin papel. Sin transcripción. Sin error humano.</strong></div>
+      </div>
+      <div class="value-card">
+        <div class="value-card-head" style="background:#1A6B40">⚖️ Evidencia legal ante inspección o demanda</div>
+        <div class="value-card-body">La NOM exige registros que demuestren la atención prestada (R-08). El audit log inmutable de CareSignal es <strong>evidencia confiable</strong>: no se puede editar retroactivamente. Si una familia presenta una queja o la SSA inspecciona, el director puede mostrar exactamente qué se hizo, cuándo y quién lo hizo.</div>
+      </div>
+      <div class="value-card">
+        <div class="value-card-head" style="background:#1A6B40">🚨 Detección automática de omisiones de atención</div>
+        <div class="value-card-body">La NOM define el abandono como omisión de atención (vocabulario de la norma). CareSignal detecta automáticamente cuando un residente no recibe atención en el tiempo esperado: <strong>ronda overdue → alerta automática → supervisor notificado</strong>. La omisión ya no depende de que alguien la reporte.</div>
+      </div>
+      <div class="value-card">
+        <div class="value-card-head" style="background:#2455A4">📁 Expediente operativo del residente</div>
+        <div class="value-card-body">La NOM pide expediente individual por residente (R-09 a R-13). CareSignal cubre los datos operativos: identificación, nivel de cuidado, historial de rondas e incidentes. <strong>Es el núcleo del expediente</strong>: lo que ocurre en el día a día. Los datos clínicos y contratos son complemento que se agrega en v0.2.</div>
+      </div>
+      <div class="value-card">
+        <div class="value-card-head" style="background:#2455A4">👥 Trazabilidad completa del personal</div>
+        <div class="value-card-body">La NOM exige saber quién atendió a quién y cuándo (R-14, R-15, R-17). Cada acción en CareSignal lleva el <code>actor_id</code>. Si un cuidador no completó sus rondas, el sistema lo muestra. Si hubo reasignación, el historial conserva tanto al responsable anterior como al nuevo. <strong>Rendición de cuentas sin fricciones.</strong></div>
+      </div>
+      <div class="value-card">
+        <div class="value-card-head" style="background:#2455A4">🔒 Privacidad de datos sensibles por diseño</div>
+        <div class="value-card-body">La LFPDPPP obliga a proteger datos sensibles de adultos mayores. En v0.1.0, <strong>ningún dato sale del dispositivo</strong>. En producción: cifrado AES-256, TLS 1.3, Row-Level Security por residencia. <strong>La arquitectura de privacidad está diseñada desde el inicio, no como parche.</strong></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ARGUMENTO COMERCIAL -->
+<div class="sec" id="argumento">
+  <div class="sec-head"><span class="sec-num">§ PITCH</span><span class="sec-title">El argumento comercial que sale de esta norma</span></div>
+  <div class="sec-body">
+    <h3>Por qué el director compra — el motor real no es la inspección</h3>
+    <p>La norma casi no se fiscaliza activamente (menos del 4% de establecimientos supervisados por la CNDH durante la pandemia). El director con años de operación sin visitas lo sabe. <strong>El motor real de compra es el reclamo de una familia o una demanda civil.</strong></p>
+    <p>Una familia que denuncia negligencia necesita que el director demuestre qué atención se dio. Sin registro: el director no puede defenderse. Con CareSignal: el director abre el audit log, filtra por residente y fecha, y muestra cada ronda completada, cada alerta atendida, cada incidente cerrado con resultado. <strong>El log es su defensa.</strong></p>
+
+    <h3 style="margin-top:1.25rem">Tres frases para el pitch</h3>
+    <div class="tw" style="margin-top:.5rem">
+      <table>
+        <thead><tr><th>Contexto</th><th>Frase</th><th>Requisito que respalda</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Al director ante inspección</td>
+            <td><em>"Cada ronda que completó su cuidador ya es la bitácora que exige la NOM-031."</em></td>
+            <td>R-01, R-03, R-05, R-08</td>
+          </tr>
+          <tr>
+            <td>Al director ante una queja familiar</td>
+            <td><em>"Puedo mostrarle exactamente qué atención recibió su familiar, quién la dio y a qué hora — en 30 segundos."</em></td>
+            <td>R-13, R-04, R-08</td>
+          </tr>
+          <tr>
+            <td>Al director ante el riesgo de omisión</td>
+            <td><em>"El sistema detecta cuando un residente no ha sido atendido en el tiempo esperado y alerta al supervisor automáticamente — antes de que sea una negligencia."</em></td>
+            <td>R-24, R-18, R-02</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="margin-top:1.25rem">Lo que CareSignal no cubre de la NOM — declarar con honestidad</h3>
+    <p>CareSignal cubre el <strong>ciclo operativo de atención diaria</strong>. No cubre: medicamentos, atención médica clínica, contratos de admisión, programas anuales ni actividades recreativas. Estos módulos son el roadmap de v0.2. <strong>Con este buyer, los límites declarados construyen credibilidad.</strong></p>
+    <div class="note">Fuente normativa: DOF 13-sep-2012 · NOM-031-SSA3-2012. Vigente sin reemplazo (PLATIICA, ago. 2021). Complementada con LGS Art. 419 y LFPDPPP.</div>
+  </div>
+</div>
+
+</main>
