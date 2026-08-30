@@ -851,6 +851,125 @@ function slideIACiberseg(prs) {
   });
 }
 
+// ── SLIDE 13 — CIERRE ─────────────────────────────────────────────────────────
+function slideCierre(prs) {
+  const s = base(prs);
+  decoFondo(s, prs, 'A');
+
+  s.addText('🚀  La oportunidad', {
+    x: 0.5, y: 0.25, w: 9.16, h: 0.55,
+    ...T.slideTitulo,
+  });
+  s.addShape('line', { x: 0.5, y: 0.88, w: 9.16, h: 0, line: { color: C.grisSep, width: 1 } });
+
+  // Tres afirmaciones — pilares del cierre
+  const afirmaciones = [
+    { emoji: '📈', texto: 'El sector crece al\n18 % anual',          sub: 'DENUE 2024→2025', color: C.tarjeta },
+    { emoji: '📜', texto: 'La ley ya exige\nlos registros',           sub: 'NOM-031-SSA3-2012 · vigente', color: 'EFF6FF' },
+    { emoji: '❌', texto: 'Los competidores\nno los generan',         sub: 'Cronos Care · GERIGES', color: 'FFF7ED' },
+  ];
+
+  afirmaciones.forEach((a, i) => {
+    const x = 0.5 + i * 3.08;
+    s.addShape('roundRect', {
+      x, y: 1.05, w: 2.88, h: 2.55,
+      fill: { color: a.color },
+      line: { color: C.grisSep, width: 0.5 },
+      rectRadius: 0.12,
+    });
+    s.addText(a.emoji, { x, y: 1.18, w: 2.88, h: 0.7, fontSize: 32, align: 'center' });
+    s.addText(a.texto, { x, y: 1.92, w: 2.88, h: 0.88, fontSize: 15, bold: true, color: C.grafito, align: 'center', fontFace: 'Arial' });
+    s.addText(a.sub,   { x, y: 2.82, w: 2.88, h: 0.3,  fontSize: 9.5, color: C.gris, align: 'center', fontFace: 'Arial' });
+  });
+
+  // Flecha de conclusión
+  s.addText('↓', {
+    x: 4.5, y: 3.72, w: 0.72, h: 0.55,
+    fontSize: 28, bold: true, color: C.azul, align: 'center', fontFace: 'Arial',
+  });
+
+  // Tesis de posicionamiento
+  tarjeta(s, 0.5, 4.35, 9.16, 0.95, 'EFF6FF');
+  s.addText(
+    'El primero que llegue con trazabilidad operativa real\nse convierte en el estándar del sector.',
+    {
+      x: 0.7, y: 4.42, w: 8.76, h: 0.82,
+      fontSize: 17, bold: true, color: C.azulOscuro, align: 'center', fontFace: 'Arial', valign: 'middle',
+    }
+  );
+
+  // Llamada a la acción
+  tarjeta(s, 1.8, 5.5, 6.06, 0.82, C.tarjeta);
+  s.addText('🤝  Buscamos 2–3 residencias piloto · Primer trimestre 2027', {
+    x: 1.8, y: 5.57, w: 6.06, h: 0.65,
+    fontSize: 14, bold: true, color: C.azul, align: 'center', fontFace: 'Arial', valign: 'middle',
+  });
+
+  s.addText('Gracias.', {
+    x: 0.5, y: 6.45, w: 9.16, h: 0.4,
+    fontSize: 18, bold: true, color: C.grafito, align: 'center', fontFace: 'Arial',
+  });
+
+  s.addText('MVP operacional · No dispositivo médico · Datos ficticios · v0.1.0-workshop', {
+    x: 0.5, y: 6.88, w: 9.16, h: 0.22, ...T.nota, align: 'center',
+  });
+}
+
+// ── SLIDE 14 — Q&A BACKUP ─────────────────────────────────────────────────────
+function slideQA(prs) {
+  const s = base(prs);
+  decoFondo(s, prs, 'B');
+
+  s.addText('❓  Preguntas frecuentes — respuestas preparadas', {
+    x: 0.5, y: 0.25, w: 9.16, h: 0.55,
+    ...T.slideTitulo,
+  });
+  s.addText('Solo para uso interno durante la sesión de Q&A', {
+    x: 0.5, y: 0.8, w: 9.16, h: 0.35,
+    ...T.slideSubtitulo,
+  });
+  s.addShape('line', { x: 0.5, y: 1.2, w: 9.16, h: 0, line: { color: C.grisSep, width: 1 } });
+
+  const preguntas = [
+    {
+      q:  '¿Tienen clientes?',
+      a:  'Cero clientes hoy. La tracción es de producto. Buscamos los primeros pilotos con este pitch.',
+      color: C.tarjeta,
+    },
+    {
+      q:  '¿Por qué no hay IA en el producto actual?',
+      a:  'Decisión de privacidad: ningún dato de residente sale del dispositivo. La IA entra en v0.2 cuando tengamos datos reales con consentimiento.',
+      color: 'EFF6FF',
+    },
+    {
+      q:  '¿Cómo se comparan con Cronos Care?',
+      a:  'Cronos Care tiene +50 residencias en México. Somos complementarios en expediente clínico, directamente superiores en ciclo operativo de ronda.',
+      color: C.tarjeta,
+    },
+    {
+      q:  '¿Quién es el equipo?',
+      a:  'Proyecto individual — 5 roles, 8 fases con gate review en cada una. El método es la evidencia de colaboración estructurada.',
+      color: 'EFF6FF',
+    },
+  ];
+
+  preguntas.forEach((p, i) => {
+    const y = 1.35 + i * 1.28;
+    s.addShape('roundRect', {
+      x: 0.5, y, w: 9.16, h: 1.15,
+      fill: { color: p.color },
+      line: { color: C.grisSep, width: 0.5 },
+      rectRadius: 0.1,
+    });
+    s.addText(`P: ${p.q}`, { x: 0.7, y: y + 0.1,  w: 8.76, h: 0.36, fontSize: 12, bold: true,  color: C.azulOscuro, fontFace: 'Arial' });
+    s.addText(`R: ${p.a}`, { x: 0.7, y: y + 0.48, w: 8.76, h: 0.58, fontSize: 12, bold: false, color: C.grafito,    fontFace: 'Arial' });
+  });
+
+  s.addText('MVP operacional · No dispositivo médico · Datos ficticios', {
+    x: 0.5, y: 6.88, w: 9.16, h: 0.22, ...T.nota, align: 'center',
+  });
+}
+
 // ── MAIN ──────────────────────────────────────────────────────────────────────
 async function main() {
   const prs = new PptxGenJS();
@@ -869,6 +988,8 @@ async function main() {
   slideTraccion(prs);
   slideModelo(prs);
   slideIACiberseg(prs);
+  slideCierre(prs);
+  slideQA(prs);
 
   const out = path.join(__dirname, '..', 'business', 'CareSignal_Pitch_Deck.pptx');
   await prs.writeFile({ fileName: out });
