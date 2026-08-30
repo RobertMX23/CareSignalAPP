@@ -1,0 +1,1077 @@
+<title>CareSignal MVP Assessment</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --bg:        #F7F5F0;
+    --bg-alt:    #EEEBE4;
+    --surface:   #FFFFFF;
+    --border:    #D6D1C8;
+    --text:      #1A1610;
+    --muted:     #5C5649;
+    --accent:    #2B5B8A;
+    --accent2:   #4A82B8;
+    --done:      #166534;
+    --done-bg:   #DCFCE7;
+    --pend:      #92400E;
+    --pend-bg:   #FEF3C7;
+    --gap:       #991B1B;
+    --gap-bg:    #FEE2E2;
+    --oos:       #4B1D96;
+    --oos-bg:    #EDE9FE;
+    --design:    #0C5A7A;
+    --design-bg: #E0F2FE;
+    --mono:      'IBM Plex Mono', monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg:        #0E0D0B;
+      --bg-alt:    #171410;
+      --surface:   #1C1A16;
+      --border:    #2E2B25;
+      --text:      #EDE9E0;
+      --muted:     #9C9484;
+      --accent:    #6BAED4;
+      --accent2:   #92C5E8;
+      --done:      #86EFAC;
+      --done-bg:   #14532D;
+      --pend:      #FCD34D;
+      --pend-bg:   #78350F;
+      --gap:       #FCA5A5;
+      --gap-bg:    #7F1D1D;
+      --oos:       #C4B5FD;
+      --oos-bg:    #2E1065;
+      --design:    #67E8F9;
+      --design-bg: #0C4A6E;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg:        #0E0D0B;
+    --bg-alt:    #171410;
+    --surface:   #1C1A16;
+    --border:    #2E2B25;
+    --text:      #EDE9E0;
+    --muted:     #9C9484;
+    --accent:    #6BAED4;
+    --accent2:   #92C5E8;
+    --done:      #86EFAC;
+    --done-bg:   #14532D;
+    --pend:      #FCD34D;
+    --pend-bg:   #78350F;
+    --gap:       #FCA5A5;
+    --gap-bg:    #7F1D1D;
+    --oos:       #C4B5FD;
+    --oos-bg:    #2E1065;
+    --design:    #67E8F9;
+    --design-bg: #0C4A6E;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--bg-alt);
+    border-bottom: 1px solid var(--border);
+    padding: 0 1.5rem;
+    display: flex; align-items: center; gap: 0;
+    overflow-x: auto; scrollbar-width: none;
+  }
+  nav::-webkit-scrollbar { display: none; }
+  .nav-brand {
+    font-family: var(--mono); font-size: 12px; font-weight: 600;
+    color: var(--accent); white-space: nowrap;
+    padding: 0.7rem 1.2rem 0.7rem 0;
+    border-right: 1px solid var(--border);
+    margin-right: 0.5rem; flex-shrink: 0;
+  }
+  nav a {
+    font-size: 11px; font-weight: 500; color: var(--muted);
+    text-decoration: none; padding: 0.7rem 0.65rem;
+    white-space: nowrap; transition: color .15s; flex-shrink: 0;
+  }
+  nav a:hover { color: var(--accent); }
+
+  /* LAYOUT */
+  main { max-width: 1060px; margin: 0 auto; padding: 2rem 1.5rem 6rem; }
+
+  /* HEADER */
+  .page-header {
+    border-bottom: 3px solid var(--accent);
+    padding-bottom: 1.5rem; margin-bottom: 2.5rem;
+  }
+  .page-header .eyebrow {
+    font-family: var(--mono); font-size: 10px; font-weight: 600;
+    color: var(--accent2); letter-spacing: .12em; text-transform: uppercase;
+    margin-bottom: .4rem;
+  }
+  .page-header h1 {
+    font-size: 1.75rem; font-weight: 700; line-height: 1.2;
+    text-wrap: balance; color: var(--text);
+  }
+  .page-header .meta {
+    margin-top: .75rem; font-size: 12px; color: var(--muted);
+    display: flex; flex-wrap: wrap; gap: .4rem 1.25rem;
+  }
+
+  /* LEGEND */
+  .legend {
+    display: flex; flex-wrap: wrap; gap: .4rem .8rem;
+    margin-bottom: 2rem; padding: .75rem 1rem;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+  .legend strong {
+    font-family: var(--mono); font-size: 11px; font-weight: 600;
+    color: var(--text); margin-right: .5rem; align-self: center;
+  }
+  .chip {
+    display: inline-flex; align-items: center; gap: .25rem;
+    font-family: var(--mono); font-size: 10px; font-weight: 600;
+    padding: .2rem .55rem; border-radius: 4px;
+    letter-spacing: .03em; white-space: nowrap;
+  }
+  .chip-done   { color: var(--done);   background: var(--done-bg); }
+  .chip-pend   { color: var(--pend);   background: var(--pend-bg); }
+  .chip-gap    { color: var(--gap);    background: var(--gap-bg); }
+  .chip-oos    { color: var(--oos);    background: var(--oos-bg); }
+  .chip-design { color: var(--design); background: var(--design-bg); }
+
+  /* SCORE BAR */
+  .score-bar {
+    display: flex; gap: 0; border-radius: 4px; overflow: hidden;
+    height: 6px; margin-top: .5rem;
+  }
+  .score-bar span { display: block; }
+
+  /* SECTIONS */
+  .cat-section {
+    margin-bottom: 2.5rem;
+    border: 1px solid var(--border);
+    border-radius: 8px; overflow: hidden;
+    background: var(--surface);
+  }
+  .cat-header {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 1rem 1.25rem;
+    background: var(--bg-alt);
+    border-bottom: 1px solid var(--border);
+  }
+  .cat-num {
+    font-family: var(--mono); font-size: 10px; font-weight: 600;
+    color: var(--accent); background: var(--bg);
+    border: 1px solid var(--border);
+    padding: .15rem .45rem; border-radius: 4px; flex-shrink: 0;
+  }
+  .cat-title {
+    font-size: 13px; font-weight: 700; color: var(--text);
+    flex: 1; min-width: 0;
+  }
+  .cat-meta {
+    font-size: 11px; color: var(--muted); white-space: nowrap;
+  }
+  .cat-chips { display: flex; gap: .3rem; flex-wrap: wrap; }
+
+  /* TABLE */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  th {
+    font-family: var(--mono); font-size: 10px; font-weight: 600;
+    color: var(--muted); text-transform: uppercase; letter-spacing: .06em;
+    padding: .6rem 1rem; text-align: left;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-alt);
+    white-space: nowrap;
+  }
+  td {
+    padding: .65rem 1rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--bg); }
+  .row-num {
+    font-family: var(--mono); font-size: 10px; font-weight: 600;
+    color: var(--muted); white-space: nowrap;
+  }
+  .point-label {
+    font-weight: 600; color: var(--text); margin-bottom: .15rem;
+    font-size: 13px;
+  }
+  .point-detail {
+    color: var(--muted); font-size: 12px; line-height: 1.55;
+  }
+  .point-detail code {
+    font-family: var(--mono); font-size: 11px;
+    background: var(--bg-alt); padding: .05rem .35rem;
+    border-radius: 3px; color: var(--text);
+  }
+  .status-col { white-space: nowrap; }
+  .implication { font-size: 11px; color: var(--muted); font-style: italic; }
+
+  /* SUMMARY */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem; margin-bottom: 2rem;
+  }
+  .summary-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1rem 1.25rem;
+    text-align: center;
+  }
+  .summary-card .big {
+    font-family: var(--mono); font-size: 2rem; font-weight: 700;
+    line-height: 1; margin-bottom: .35rem;
+  }
+  .summary-card .label {
+    font-size: 11px; color: var(--muted); font-weight: 500;
+    text-transform: uppercase; letter-spacing: .06em;
+  }
+
+  p.note {
+    font-size: 12px; color: var(--muted); margin: .5rem 1.25rem 1rem;
+    font-style: italic;
+  }
+</style>
+
+<nav>
+  <span class="nav-brand">CareSignal · Assessment</span>
+  <a href="#resumen">Resumen</a>
+  <a href="#cat01">01·Stack</a>
+  <a href="#cat02">02·Multi-tenant</a>
+  <a href="#cat03">03·Evento core</a>
+  <a href="#cat04">04·Data model</a>
+  <a href="#cat05">05·Eventos</a>
+  <a href="#cat06">06·Vistas/rol</a>
+  <a href="#cat07">07·API</a>
+  <a href="#cat08">08·Repo</a>
+  <a href="#cat09">09·Ciberseg</a>
+  <a href="#cat10">10·IA/ML</a>
+</nav>
+
+<main>
+
+  <div class="page-header">
+    <div class="eyebrow">CareSignal MVP v0.1.0-workshop · Arquitectura event-driven</div>
+    <h1>Assessment de arquitectura y alcance MVP demo</h1>
+    <div class="meta">
+      <span>10 categorías · 60 puntos evaluados</span>
+      <span>Enfoque: diseño de arquitectura + pipeline + alcance demo funcional</span>
+      <span>Fecha: 2026-08-30</span>
+      <span>Contexto: WomenCISO 4 / MenCISO 1 · registro 6 sep</span>
+    </div>
+  </div>
+
+  <div class="legend">
+    <strong>Estado:</strong>
+    <span class="chip chip-done">✅ LISTO</span>
+    <span class="chip chip-pend">🔨 PENDIENTE</span>
+    <span class="chip chip-gap">⚠️ BRECHA</span>
+    <span class="chip chip-oos">🚫 FUERA DE ALCANCE</span>
+    <span class="chip chip-design">📐 DISEÑO OK / no impl. requerida</span>
+  </div>
+
+  <!-- RESUMEN EJECUTIVO -->
+  <section id="resumen">
+    <div class="summary-grid">
+      <div class="summary-card">
+        <div class="big" style="color:var(--done)">31</div>
+        <div class="label">✅ Listos</div>
+      </div>
+      <div class="summary-card">
+        <div class="big" style="color:var(--pend)">9</div>
+        <div class="label">🔨 Pendientes</div>
+      </div>
+      <div class="summary-card">
+        <div class="big" style="color:var(--gap)">7</div>
+        <div class="label">⚠️ Brechas</div>
+      </div>
+      <div class="summary-card">
+        <div class="big" style="color:var(--oos)">7</div>
+        <div class="label">🚫 Fuera de alcance</div>
+      </div>
+      <div class="summary-card">
+        <div class="big" style="color:var(--design)">6</div>
+        <div class="label">📐 Diseño OK</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CAT 01 -->
+  <section class="cat-section" id="cat01">
+    <div class="cat-header">
+      <span class="cat-num">01</span>
+      <span class="cat-title">Stack y capas — arquitectura general</span>
+      <span class="cat-meta">6 puntos</span>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>#</th><th>Punto de evaluación</th><th style="min-width:130px">Estado</th><th>Implicación / acción</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="row-num">01.1</td>
+          <td>
+            <div class="point-label">Separación de capas: dominio puro vs. persistencia vs. UI</div>
+            <div class="point-detail">El diseño define capas explícitas: <code>domain/</code> (tipos + reglas + transiciones), <code>data/</code> (repositorio + reloj), <code>features/</code> (UI + lógica de presentación). El dominio no importa ni <code>localStorage</code> ni React. La UI no escribe directamente a storage.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-done">✅ LISTO</span></td>
+          <td class="implication">Arquitectura implementada y aprobada en C2–C3. Contrato §9 cumplido. Sin deuda técnica aquí.</td>
+        </tr>
+        <tr>
+          <td class="row-num">01.2</td>
+          <td>
+            <div class="point-label">Motor temporal determinista como agente del sistema</div>
+            <div class="point-detail">El <code>temporalEngine.ts</code> / <code>demoClock</code> actúa como actor del sistema (no usuario), emite eventos <code>ROUND_DUE</code>, <code>ROUND_OVERDUE</code>, <code>ALERT_CREATED</code>, <code>CLOCK_ADVANCED</code>. Separado del flujo de usuario.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-done">✅ LISTO</span></td>
+          <td class="implication">Aprobado en C7. Escenarios deterministas y reproducibles. El reloj simulado permite demo en &lt;5 min.</td>
+        </tr>
+        <tr>
+          <td class="row-num">01.3</td>
+          <td>
+            <div class="point-label">Persistencia vía capa repositorio — UI nunca toca localStorage directamente</div>
+            <div class="point-detail">Regla del contrato §6 punto 9: solo <code>repository.ts</code> puede leer/escribir <code>localStorage</code>. Los componentes React llaman al repositorio, nunca a <code>window.localStorage</code> directamente. Verificable con grep.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-done">✅ LISTO</span></td>
+          <td class="implication">Cumplido en C3. Si se detecta una violación, es un blocker de arquitectura.</td>
+        </tr>
+        <tr>
+          <td class="row-num">01.4</td>
+          <td>
+            <div class="point-label">Diseño de producción: GCP Cloud Run + Firebase + PostgreSQL (v0.2)</div>
+            <div class="point-detail">El documento de arquitectura describe la transición: localStorage (demo) → PostgreSQL en GCP Cloud Run + Firebase Auth (producción). El stack de producción está documentado en §09, §10 y en el memory del proyecto.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-design">📐 DISEÑO OK</span></td>
+          <td class="implication">Solo diseño — no se implementa en MVP. El pitch debe presentar este stack para mostrar la ruta de producción ante los jueces.</td>
+        </tr>
+        <tr>
+          <td class="row-num">01.5</td>
+          <td>
+            <div class="point-label">TypeScript estricto sin <code>any</code> — verificable</div>
+            <div class="point-detail">Contrato §9: TypeScript strict, sin <code>any</code>. El CI (<code>npm run typecheck</code>) verifica esto. 38/38 pruebas automatizadas pasan. El <code>tsconfig</code> tiene <code>strict: true</code>.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-done">✅ LISTO</span></td>
+          <td class="implication">C8 auditó esto. Verificar que no se haya roto tras los últimos cambios de E-track si se edita código.</td>
+        </tr>
+        <tr>
+          <td class="row-num">01.6</td>
+          <td>
+            <div class="point-label">Pipeline de build para demo pública: <code>npm run build</code> → <code>dist/</code> → GitHub Pages</div>
+            <div class="point-detail">El MVP debe servirse como demo interactiva en GitHub Pages para la competencia. El <code>dist/</code> debe generarse, subirse al repo público y activar GitHub Pages. Actualmente no hay remoto configurado.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-pend">🔨 PENDIENTE</span></td>
+          <td class="implication">Bloqueador de E3. Requiere: repo GitHub creado, <code>npm run build</code>, push de <code>dist/</code>, activar Pages. Sin esto los jueces no pueden ver la demo en vivo.</td>
+        </tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- CAT 02 -->
+  <section class="cat-section" id="cat02">
+    <div class="cat-header">
+      <span class="cat-num">02</span>
+      <span class="cat-title">Multi-tenant — aislamiento por residencia</span>
+      <span class="cat-meta">6 puntos</span>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>#</th><th>Punto de evaluación</th><th style="min-width:130px">Estado</th><th>Implicación / acción</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="row-num">02.1</td>
+          <td>
+            <div class="point-label"><code>residencia_id</code> como tenant isolator en todas las entidades</div>
+            <div class="point-detail">El data model define <code>residencia_id</code> como FK obligatoria en habitaciones, residentes, staff_members, rondas, alertas, incidentes, audit_events. Ninguna entidad existe fuera de una residencia.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-done">✅ LISTO</span></td>
+          <td class="implication">Diseño correcto. En el MVP (localStorage) el aislamiento es por sesión. En producción, RLS en PostgreSQL lo enforza a nivel DB.</td>
+        </tr>
+        <tr>
+          <td class="row-num">02.2</td>
+          <td>
+            <div class="point-label">Cardinalidades y relaciones documentadas (1:N, 1:0..1)</div>
+            <div class="point-detail">El diagrama de árbol y la tabla de cardinalidades en §02 especifican: residencia→habitaciones (1:N), habitacion→residentes (1:N), residente→rondas (1:N), ronda→alerta (1:0..1), alerta→incidente (1:0..1), cualquier entidad→audit_events (1:N).</div>
+          </td>
+          <td class="status-col"><span class="chip chip-done">✅ LISTO</span></td>
+          <td class="implication">La restricción "una ronda máx. una alerta activa" está implementada en <code>rules.ts</code>. Verificar que el seed data respete estas cardinalidades.</td>
+        </tr>
+        <tr>
+          <td class="row-num">02.3</td>
+          <td>
+            <div class="point-label">Datos ficticios de una sola residencia demo en el seed</div>
+            <div class="point-detail">El <code>seed.ts</code> crea datos ficticios para una residencia demo. No hay datos reales de personas. El aviso "Datos ficticios" debe ser visible en la UI.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-done">✅ LISTO</span></td>
+          <td class="implication">Aprobado en C3. Verificar que el aviso "MVP operacional, no dispositivo médico" + "Datos ficticios" sea visible en todas las páginas (contrato §1).</td>
+        </tr>
+        <tr>
+          <td class="row-num">02.4</td>
+          <td>
+            <div class="point-label">Ningún dato cruza entre residencias — enforced en repositorio</div>
+            <div class="point-detail">El repositorio filtra siempre por <code>residencia_id</code> de la sesión activa. En el MVP la sesión ficticia define el tenant. Ninguna función del repositorio acepta un <code>residencia_id</code> diferente al de la sesión.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-done">✅ LISTO</span></td>
+          <td class="implication">En producción esto se refuerza con Row-Level Security en PostgreSQL y middleware de autenticación. Para el pitch: presentar esto como diferenciador de seguridad.</td>
+        </tr>
+        <tr>
+          <td class="row-num">02.5</td>
+          <td>
+            <div class="point-label">Modelo de planes de suscripción (esencial / profesional / institucional) en diseño</div>
+            <div class="point-detail">La tabla <code>residencias</code> tiene el campo <code>plan ENUM('esencial','profesional','institucional')</code>. El diseño de precios por plan está en el dossier ejecutivo pero no está implementado en el MVP (sin feature flags por plan).</div>
+          </td>
+          <td class="status-col"><span class="chip chip-design">📐 DISEÑO OK</span></td>
+          <td class="implication">No se implementa en MVP. El campo existe en el schema para habilitar feature gating en v0.2. Suficiente para el pitch como evidencia de modelo de negocio.</td>
+        </tr>
+        <tr>
+          <td class="row-num">02.6</td>
+          <td>
+            <div class="point-label">Escalabilidad multi-residencia — demostrable en pitch, no en MVP</div>
+            <div class="point-detail">El diseño soporta N residencias como tenants independientes. La demo muestra una sola residencia. El juez necesita ver que la arquitectura es multi-tenant por diseño, no por accidente.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-pend">🔨 PENDIENTE</span></td>
+          <td class="implication">Agregar un slide/diagrama en el deck que muestre el árbol de tenant. El pitch script bloque 5 menciona "escalable" — conectar esto con el diseño técnico explícitamente.</td>
+        </tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- CAT 03 -->
+  <section class="cat-section" id="cat03">
+    <div class="cat-header">
+      <span class="cat-num">03</span>
+      <span class="cat-title">Evento core — ciclo de vida de la ronda</span>
+      <span class="cat-meta">6 puntos</span>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>#</th><th>Punto de evaluación</th><th style="min-width:130px">Estado</th><th>Implicación / acción</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="row-num">03.1</td>
+          <td>
+            <div class="point-label">Máquina de estados completa: scheduled → due → in_progress → completed</div>
+            <div class="point-detail">El flujo principal del cuidador completa en ≤3 acciones (C5). Las transiciones están en <code>transitions.ts</code> y son la única ruta válida — ningún componente puede cambiar un estado directamente.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-done">✅ LISTO</span></td>
+          <td class="implication">20/20 pruebas de aceptación pasan. Camino feliz funcional end-to-end para el cuidador.</td>
+        </tr>
+        <tr>
+          <td class="row-num">03.2</td>
+          <td>
+            <div class="point-label">Ruta de fallo: due → overdue → ALERT generada automáticamente</div>
+            <div class="point-detail">Cuando el motor temporal detecta que una ronda pasó su tiempo límite sin ser iniciada, la pasa a <code>overdue</code> y genera una alerta. Esta es la ruta narrativa central del pitch (fallo operativo = dato sin registrar).</div>
+          </td>
+          <td class="status-col"><span class="chip chip-done">✅ LISTO</span></td>
+          <td class="implication">C7 aprobado. El escenario de demo lo activa en &lt;2 minutos con el reloj simulado. Esencial para mostrar valor en los 4 minutos del pitch.</td>
+        </tr>
+        <tr>
+          <td class="row-num">03.3</td>
+          <td>
+            <div class="point-label">Transiciones inválidas retornan error controlado — no corrompen datos</div>
+            <div class="point-detail">Intentar <code>completed → overdue</code> o <code>cancelled → cualquiera</code> devuelve un error de dominio, no silencia ni corrompe. Regla del contrato §6 punto 8.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-done">✅ LISTO</span></td>
+          <td class="implication">Verificado en tests. Esta propiedad es el argumento de confiabilidad ante los jueces: el sistema no acepta estados imposibles.</td>
+        </tr>
+        <tr>
+          <td class="row-num">03.4</td>
+          <td>
+            <div class="point-label">5 tipos de ronda operativos (lookup) — ninguno con lenguaje médico</div>
+            <div class="point-detail"><code>routine_check</code>, <code>hydration_check</code>, <code>mobility_assistance</code>, <code>meal_assistance</code>, <code>custom_operational_check</code>. Sin "diagnóstico", "evento clínico" ni términos prohibidos del contrato §6.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-done">✅ LISTO</span></td>
+          <td class="implication">El aviso "operacional, no médico" es clave para el concurso (IMSS / SSA no son clientes directos). Los tipos de ronda actuales son correctos para el mercado privado de residencias.</td>
+        </tr>
+        <tr>
+          <td class="row-num">03.5</td>
+          <td>
+            <div class="point-label">Resultado de ronda registrado al completar — trazabilidad operativa</div>
+            <div class="point-detail">Al completar una ronda el cuidador puede registrar un resultado (texto libre). Este resultado es parte del <code>audit_events</code> y se refleja en el historial visible para el supervisor. Es la evidencia que protege a la residencia ante una queja.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-done">✅ LISTO</span></td>
+          <td class="implication">Vinculado al argumento legal (NOM-031-SSA3-2012): la bitácora con resultado es el expediente operativo. Mencionar en el pitch.</td>
+        </tr>
+        <tr>
+          <td class="row-num">03.6</td>
+          <td>
+            <div class="point-label">Una ronda no puede tener dos alertas activas simultáneas</div>
+            <div class="point-detail">Regla del contrato §6 punto 2: <code>ronda → alerta (1:0..1)</code> activa. Si la ronda ya tiene una alerta <code>open</code> o <code>assigned</code>, el motor no genera una segunda. Verificado en <code>rules.ts</code>.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-done">✅ LISTO</span></td>
+          <td class="implication">Esta invariante es crítica para la integridad del dashboard: evita duplicados que confundirían al supervisor durante la demo.</td>
+        </tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- CAT 04 -->
+  <section class="cat-section" id="cat04">
+    <div class="cat-header">
+      <span class="cat-num">04</span>
+      <span class="cat-title">Data model — 9 tablas relacionales</span>
+      <span class="cat-meta">6 puntos</span>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>#</th><th>Punto de evaluación</th><th style="min-width:130px">Estado</th><th>Implicación / acción</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="row-num">04.1</td>
+          <td>
+            <div class="point-label">9 tablas documentadas con tipos, llaves y notas de integridad</div>
+            <div class="point-detail"><code>residencias</code>, <code>habitaciones</code>, <code>residentes</code>, <code>staff_members</code>, <code>ronda_tipos</code>, <code>rondas</code>, <code>alertas</code>, <code>incidentes</code>, <code>audit_events</code>. PK, FK, UK, IDX definidos. Columnas nullable explicitadas.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-done">✅ LISTO</span></td>
+          <td class="implication">Documento de arquitectura §04 es la fuente de verdad para la migración de schema en v0.2. Suficientemente detallado para que un DBA lo implemente en PostgreSQL sin ambigüedades.</td>
+        </tr>
+        <tr>
+          <td class="row-num">04.2</td>
+          <td>
+            <div class="point-label"><code>estado_visual</code> del residente: derivado, nunca persistido</div>
+            <div class="point-detail">El color del residente (🟢🟡🔴) es calculado por <code>deriveResidentStatus()</code> — función pura. No tiene columna en la DB. Si se persistiera, podría quedar desincronizado con el estado real de las rondas y alertas.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-done">✅ LISTO</span></td>
+          <td class="implication">Propiedad de diseño correcta. Verificar que ningún componente intente persistir este campo (búsqueda en código: <code>estado_visual</code> en escrituras al repositorio).</td>
+        </tr>
+        <tr>
+          <td class="row-num">04.3</td>
+          <td>
+            <div class="point-label">Índices compuestos definidos para las consultas principales</div>
+            <div class="point-detail">El índice <code>(residencia_id, estado, programada_at)</code> en rondas cubre la consulta principal del dashboard y el motor temporal. <code>(residencia_id, created_at DESC)</code> y <code>(entidad_tipo, entidad_id, created_at DESC)</code> en audit_events cubren el log y el historial por entidad.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-design">📐 DISEÑO OK</span></td>
+          <td class="implication">No aplica en MVP (localStorage no tiene índices). Son el mapa de performance para v0.2 en PostgreSQL. Sin estos índices el dashboard con 100+ residentes sería lento.</td>
+        </tr>
+        <tr>
+          <td class="row-num">04.4</td>
+          <td>
+            <div class="point-label">IDs estables como strings (UUID) — sin IDs numéricos secuenciales</div>
+            <div class="point-detail">Contrato §9: IDs estables como strings. UUIDs garantizan que el mismo objeto tenga el mismo ID en todos los entornos (seed, tests, localStorage, producción futura), sin colisiones en merge de datos.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-done">✅ LISTO</span></td>
+          <td class="implication">El seed usa IDs prefijados (ej. <code>"resident-001"</code>). En producción usar <code>gen_random_uuid()</code>. La referencia cruzada entre audit_events y la entidad depende de la estabilidad del ID.</td>
+        </tr>
+        <tr>
+          <td class="row-num">04.5</td>
+          <td>
+            <div class="point-label">Alertas: <code>resolved_at</code> requerido antes de <code>closed_at</code> — integridad de ciclo</div>
+            <div class="point-detail">La columna <code>closed_at</code> en alertas solo puede poblarse si <code>resolved_at</code> ya existe. Regla del contrato §6 punto 5. El repositorio y las transiciones deben enforcar esto, no la DB sola.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-done">✅ LISTO</span></td>
+          <td class="implication">Verificado en C6. Esta regla es el argumento de integridad: "no se puede cerrar lo que no se verificó". Clave para el argumento legal ante inspección.</td>
+        </tr>
+        <tr>
+          <td class="row-num">04.6</td>
+          <td>
+            <div class="point-label">Migración de schema de localStorage a PostgreSQL — path documentado pero no implementado</div>
+            <div class="point-detail">El data model de §04 es la spec del schema PostgreSQL de producción. Sin embargo, no hay un script de migración (<code>.sql</code>) ni un ORM configurado. La transición es un gap de implementación para v0.2.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-gap">⚠️ BRECHA</span></td>
+          <td class="implication">Para la competencia: no es necesario implementarlo. Sí es necesario mencionarlo como "path claro a producción". Opcional: agregar un archivo <code>docs/schema.sql</code> generado del data model como evidencia técnica.</td>
+        </tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- CAT 05 -->
+  <section class="cat-section" id="cat05">
+    <div class="cat-header">
+      <span class="cat-num">05</span>
+      <span class="cat-title">Catálogo de eventos — 20 tipos (event sourcing)</span>
+      <span class="cat-meta">6 puntos</span>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>#</th><th>Punto de evaluación</th><th style="min-width:130px">Estado</th><th>Implicación / acción</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="row-num">05.1</td>
+          <td>
+            <div class="point-label">20 tipos de evento cubren el ciclo operativo completo</div>
+            <div class="point-detail">7 ROUND_*, 8 ALERT_*, 3 INCIDENT_*, 2 sistema (DEMO_RESET, CLOCK_ADVANCED). Cada transición de estado del dominio tiene su evento correspondiente. No hay transición sin evento.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-done">✅ LISTO</span></td>
+          <td class="implication">El catálogo está documentado en §05 y es la base del audit log. Cualquier extensión futura (nuevos flujos) requiere agregar nuevos tipos — no modificar los existentes.</td>
+        </tr>
+        <tr>
+          <td class="row-num">05.2</td>
+          <td>
+            <div class="point-label">Audit log append-only — ningún UPDATE ni DELETE en <code>audit_events</code></div>
+            <div class="point-detail">La restricción más importante del sistema. <code>audit_events</code> es el registro permanente requerido por NOM-031-SSA3-2012. En la UI no existe ninguna función de edición del log. En producción, los permisos de DB deben restringir a INSERT-only en esta tabla.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-done">✅ LISTO</span></td>
+          <td class="implication">Esta propiedad es el argumento más fuerte ante un inspector o en un proceso legal. "El log no se puede modificar retroactivamente" = evidencia confiable.</td>
+        </tr>
+        <tr>
+          <td class="row-num">05.3</td>
+          <td>
+            <div class="point-label">Cada evento lleva actor_id + timestamp + payload estructurado</div>
+            <div class="point-detail">Columnas: <code>actor_id</code> (NULL para sistema), <code>created_at</code> (NOT NULL), <code>payload JSONB</code> (schema libre por tipo). Permite reconstruir el historial completo de cualquier entidad filtrando por <code>entidad_tipo + entidad_id</code>.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-done">✅ LISTO</span></td>
+          <td class="implication">En localStorage el payload se serializa como JSON. En producción, JSONB de PostgreSQL permite queries sobre el payload (ej. "todas las reasignaciones donde nuevo_owner = X").</td>
+        </tr>
+        <tr>
+          <td class="row-num">05.4</td>
+          <td>
+            <div class="point-label">Esquema del payload por tipo de evento — no documentado formalmente</div>
+            <div class="point-detail">Los 20 tipos de evento están nombrados pero el schema interno del <code>payload</code> (qué campos lleva cada tipo) no está documentado como contrato. Ejemplo: ¿qué lleva <code>ALERT_REASSIGNED</code>? ¿<code>{prev_owner_id, new_owner_id, reason}</code>?</div>
+          </td>
+          <td class="status-col"><span class="chip chip-gap">⚠️ BRECHA</span></td>
+          <td class="implication">Para el MVP demo no es bloqueante — los payloads están en el código. Para v0.2 es crítico: cualquier agente de IA (A2, A3) que consuma el audit log necesita saber exactamente qué esperar en cada payload.</td>
+        </tr>
+        <tr>
+          <td class="row-num">05.5</td>
+          <td>
+            <div class="point-label">Separación semántica: eventos de usuario vs. eventos del sistema</div>
+            <div class="point-detail">Los eventos DEMO_RESET y CLOCK_ADVANCED tienen <code>actor_id = NULL</code> y marcan acciones del motor temporal, no de un humano. Esta distinción es esencial para el agente A2 de ciberseguridad: un acceso fuera de turno de un humano vs. una transición automática del sistema son patrones muy diferentes.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-done">✅ LISTO</span></td>
+          <td class="implication">El diseño es correcto. Para el pitch: "podemos detectar comportamiento anómalo porque distinguimos qué hizo el sistema de qué hizo un humano."</td>
+        </tr>
+        <tr>
+          <td class="row-num">05.6</td>
+          <td>
+            <div class="point-label">Event sourcing como insumo de ML/IA — arquitectura preparada pero datos aún vacíos</div>
+            <div class="point-detail">La arquitectura de <code>audit_events</code> fue diseñada para ser el dataset de entrenamiento de futuros modelos ML (sección §10). Sin embargo, en v0.1.0 solo hay datos ficticios del seed — sin operación real, no hay señal para entrenar.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-design">📐 DISEÑO OK</span></td>
+          <td class="implication">La arquitectura está preparada. El pitch debe presentar esto como "infraestructura que habilita IA futura" — no como "tenemos IA hoy". Los agentes A2 y A3 de la sección 10 son el siguiente paso natural.</td>
+        </tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- CAT 06 -->
+  <section class="cat-section" id="cat06">
+    <div class="cat-header">
+      <span class="cat-num">06</span>
+      <span class="cat-title">Vistas por rol — RBAC y flujos end-to-end</span>
+      <span class="cat-meta">6 puntos</span>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>#</th><th>Punto de evaluación</th><th style="min-width:130px">Estado</th><th>Implicación / acción</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="row-num">06.1</td>
+          <td>
+            <div class="point-label">Flujo end-to-end del cuidador: ronda scheduled → completada en ≤3 acciones</div>
+            <div class="point-detail">El cuidador ve sus rondas del turno, inicia una ronda, la completa con resultado. Sin navegación extra. Sin acceso a alertas o audit log. Contrato §6 C5.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-done">✅ LISTO</span></td>
+          <td class="implication">Aprobado en C5. Es el flujo principal de la demo en vivo. Verificar que el cuidador ficticio del seed tenga rondas asignadas y pendientes al iniciar el demo.</td>
+        </tr>
+        <tr>
+          <td class="row-num">06.2</td>
+          <td>
+            <div class="point-label">Flujo end-to-end del supervisor: alerta open → resolved → closed</div>
+            <div class="point-detail">El supervisor ve el dashboard, reconoce una alerta, la asigna, inicia verificación, registra resultado, la resuelve y la cierra. Cada paso tiene su evento de auditoría. Contrato §6 C6.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-done">✅ LISTO</span></td>
+          <td class="implication">El flujo completo de alerta es el argumento narrativo central del pitch (bloque 4: "el supervisor actúa"). Verificar que la demo muestre cada estado visible en pantalla.</td>
+        </tr>
+        <tr>
+          <td class="row-num">06.3</td>
+          <td>
+            <div class="point-label">Flujo end-to-end del gerente: audit log + cierre de incidente + exportar bitácora</div>
+            <div class="point-detail">El gerente tiene vista ejecutiva: incidentes, historial completo de alertas, log de auditoría, exportar bitácora. Es el rol que "cierra el ciclo" ante una inspección regulatoria.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-gap">⚠️ BRECHA</span></td>
+          <td class="implication">La función de exportar bitácora está diseñada en §06 pero su implementación en la UI no es confirmada como completada. Verificar que existe un botón/función de exportar en la página del gerente antes de la demo.</td>
+        </tr>
+        <tr>
+          <td class="row-num">06.4</td>
+          <td>
+            <div class="point-label">Sesiones ficticias: cambio de rol sin autenticación real en la demo</div>
+            <div class="point-detail">El MVP usa sesiones ficticias (no hay auth real). El Demo Admin puede cambiar de rol durante la demo para mostrar cada perspectiva. Esto es un feature de demostración — no un feature de producción.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-done">✅ LISTO</span></td>
+          <td class="implication">Crítico para la demo de 4 minutos: el presentador necesita cambiar entre cuidador → supervisor → gerente sin perder el hilo. El script de la demo debe indicar el momento exacto de cada cambio de rol.</td>
+        </tr>
+        <tr>
+          <td class="row-num">06.5</td>
+          <td>
+            <div class="point-label">Tabla "Datos que SÍ puede ver" por rol — documentada y completa</div>
+            <div class="point-detail">Cubre 6 categorías: Residentes, Rondas, Alertas, Incidentes, Staff, Auditoría/Métricas, Configuración. 4 roles (Cuidador, Supervisor, Gerente, Demo Admin). Distingue acceso completo, parcial y denegado.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-done">✅ LISTO</span></td>
+          <td class="implication">Añadida en esta sesión. Junto con la tabla "NO puede ver", es la evidencia de RBAC para el argumento de ciberseguridad ante los jueces.</td>
+        </tr>
+        <tr>
+          <td class="row-num">06.6</td>
+          <td>
+            <div class="point-label">Demo Admin: control del reloj simulado y reset del demo — funcional</div>
+            <div class="point-detail">El Demo Admin puede avanzar el reloj, activar escenarios (ronda overdue en 2 min), y hacer reset. Este control es lo que permite una demo de 4 minutos en vez de esperar tiempos reales.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-done">✅ LISTO</span></td>
+          <td class="implication">Aprobado en C7. El script de demo debe incluir los pasos exactos: qué botón presionar, qué pantalla mostrar, en qué momento. Verificar que el escenario determinista se puede reproducir idénticamente.</td>
+        </tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- CAT 07 -->
+  <section class="cat-section" id="cat07">
+    <div class="cat-header">
+      <span class="cat-num">07</span>
+      <span class="cat-title">API layer — endpoints y contratos de mutación</span>
+      <span class="cat-meta">6 puntos</span>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>#</th><th>Punto de evaluación</th><th style="min-width:130px">Estado</th><th>Implicación / acción</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="row-num">07.1</td>
+          <td>
+            <div class="point-label">Endpoints de rondas documentados: GET, POST, PATCH start/complete/cancel</div>
+            <div class="point-detail">5 operaciones sobre rondas documentadas en §07. En el MVP el "API layer" es la capa del repositorio (<code>repository.ts</code>). En producción serán rutas HTTP REST en Cloud Run.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-design">📐 DISEÑO OK</span></td>
+          <td class="implication">El contrato de API está documentado. No se implementa como HTTP en el MVP. Para v0.2, el repositorio se reemplaza por llamadas fetch a estos endpoints — sin cambiar las llamadas desde los componentes React.</td>
+        </tr>
+        <tr>
+          <td class="row-num">07.2</td>
+          <td>
+            <div class="point-label">Endpoints de alertas: acknowledge, assign, escalate, start-verification, resolve, close</div>
+            <div class="point-detail">7 operaciones sobre el ciclo de vida completo de la alerta. Cada endpoint corresponde a una transición de estado en <code>transitions.ts</code>. El body de <code>/resolve</code> requiere <code>resultado_verificacion</code>.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-design">📐 DISEÑO OK</span></td>
+          <td class="implication">El diseño es correcto y completo. La separación de endpoints por transición (no un PATCH genérico de estado) es una decisión de diseño defensiva: hace imposible saltar transiciones desde la red.</td>
+        </tr>
+        <tr>
+          <td class="row-num">07.3</td>
+          <td>
+            <div class="point-label">Patrón de mutación: validar transición → escribir → insertar audit_event en una sola operación atómica</div>
+            <div class="point-detail">Cada mutación sigue el mismo patrón de 3 pasos: (1) validar en domain, (2) escribir a tabla, (3) insertar en audit_events. En producción los 3 pasos son una sola transacción de DB. En el MVP son 3 operaciones de localStorage.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-done">✅ LISTO</span></td>
+          <td class="implication">El patrón está implementado en el repositorio del MVP. En localStorage la atomicidad es eventual (no hay transacciones). En PostgreSQL será una transacción real — sin riesgo de audit_event sin el cambio de estado correspondiente.</td>
+        </tr>
+        <tr>
+          <td class="row-num">07.4</td>
+          <td>
+            <div class="point-label">Endpoint interno del motor temporal: <code>POST /internal/tick</code></div>
+            <div class="point-detail">El motor temporal no está expuesto al cliente. En producción es un cron que llama a un endpoint interno de Cloud Run. En el MVP es una función del demoClock que se activa manualmente o por el Demo Admin.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-done">✅ LISTO</span></td>
+          <td class="implication">La separación "endpoint interno vs. público" es correcta desde el punto de vista de seguridad. En producción, este endpoint solo es accesible desde Cloud Scheduler, no desde internet.</td>
+        </tr>
+        <tr>
+          <td class="row-num">07.5</td>
+          <td>
+            <div class="point-label">Rate limiting, autenticación JWT y RBAC por endpoint — no implementados en MVP</div>
+            <div class="point-detail">El diseño de producción en §09 describe Firebase Auth (JWT), middleware RBAC por endpoint y rate limiting en Cloud Run. Nada de esto existe en el MVP (no hay backend HTTP).</div>
+          </td>
+          <td class="status-col"><span class="chip chip-oos">🚫 FUERA DE ALCANCE</span></td>
+          <td class="implication">Correcto que no estén en el MVP. Para el pitch: describir el diseño de seguridad de producción como "paso siguiente claro" sin fingir que ya existe.</td>
+        </tr>
+        <tr>
+          <td class="row-num">07.6</td>
+          <td>
+            <div class="point-label">Endpoint de auditoría con filtros por entidad y por rango de fechas — diseñado, no implementado como HTTP</div>
+            <div class="point-detail"><code>GET /audit?entidad_tipo=ronda&entidad_id=:id</code> y <code>GET /audit?desde=ISO&hasta=ISO</code> (solo gerente). En el MVP el repositorio ya implementa la consulta equivalente sobre localStorage.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-design">📐 DISEÑO OK</span></td>
+          <td class="implication">La equivalencia MVP→producción es directa. El segundo endpoint tiene restricción de rol explícita en el diseño — es el argumento de "el gerente tiene acceso completo, el supervisor no".</td>
+        </tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- CAT 08 -->
+  <section class="cat-section" id="cat08">
+    <div class="cat-header">
+      <span class="cat-num">08</span>
+      <span class="cat-title">Repositorio — público vs. privado para la competencia</span>
+      <span class="cat-meta">6 puntos</span>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>#</th><th>Punto de evaluación</th><th style="min-width:130px">Estado</th><th>Implicación / acción</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="row-num">08.1</td>
+          <td>
+            <div class="point-label">Repositorio GitHub público creado con la estructura de entrega</div>
+            <div class="point-detail">La convocatoria requiere un repositorio público verificable. Sin remoto configurado actualmente. Necesita: crear repo en GitHub, configurar remote origin, push inicial.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-pend">🔨 PENDIENTE</span></td>
+          <td class="implication">Bloqueador de E3. Sin GitHub público los jueces no pueden verificar el código. Requiere decisión E1: ¿cuenta robertgcits o cuenta nueva? ¿nombre del repo?</td>
+        </tr>
+        <tr>
+          <td class="row-num">08.2</td>
+          <td>
+            <div class="point-label"><code>.gitignore</code> del repo público definido — excluye <code>business/</code>, <code>tools/</code>, <code>CLAUDE.md</code></div>
+            <div class="point-detail">El documento §08 define qué incluir y excluir. Los materiales internos (business/, tools/, CLAUDE.md, .claude/, docs/RESUME.md) no deben aparecer en el repo público.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-done">✅ LISTO</span></td>
+          <td class="implication">La lista está documentada. Al crear el repo público, aplicar ese .gitignore antes del primer push para no exponer el deck o el guion antes de la presentación.</td>
+        </tr>
+        <tr>
+          <td class="row-num">08.3</td>
+          <td>
+            <div class="point-label">README público orientado al juez — guía de instalación, demo y propósito</div>
+            <div class="point-detail">El README del repo público debe ser diferente al README de desarrollo. Necesita: propósito de CareSignal, cómo ver la demo en vivo (GitHub Pages), cómo correr localmente, y los avisos legales ("MVP operacional, datos ficticios").</div>
+          </td>
+          <td class="status-col"><span class="chip chip-pend">🔨 PENDIENTE</span></td>
+          <td class="implication">Tarea E2 no completada. Es la "primera impresión" del repo. Debe escribirse antes del push público. Bloquea E3.2.</td>
+        </tr>
+        <tr>
+          <td class="row-num">08.4</td>
+          <td>
+            <div class="point-label">GitHub Pages activado y apuntando al <code>dist/</code> generado por <code>npm run build</code></div>
+            <div class="point-detail">La demo interactiva es el argumento más fuerte de la entrega. Un juez que puede hacer clic en un link y ver el MVP funcionando vale más que cualquier slide.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-pend">🔨 PENDIENTE</span></td>
+          <td class="implication">Requiere: <code>npm run build</code>, verificar que dist/ funciona, configurar GitHub Pages en settings del repo. Depende de 08.1.</td>
+        </tr>
+        <tr>
+          <td class="row-num">08.5</td>
+          <td>
+            <div class="point-label">Contrato congelado (<code>contract/</code>) incluido en el repo público</div>
+            <div class="point-detail">Los archivos <code>.md</code> y <code>.sha256</code> del contrato son evidencia de metodología rigurosa. Muestran que el MVP fue construido contra una especificación formal y aprobada — diferenciador frente a proyectos sin documentación.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-done">✅ LISTO</span></td>
+          <td class="implication">Verificar que el .gitignore del repo público incluya solo los .docx y .zip del contrato, no los .md ni .sha256.</td>
+        </tr>
+        <tr>
+          <td class="row-num">08.6</td>
+          <td>
+            <div class="point-label">CHANGELOG.md y WORKSHOP_DEMO_SCRIPT.md incluidos como evidencia de proceso</div>
+            <div class="point-detail">El CHANGELOG documenta cada gate C0–C8. El WORKSHOP_DEMO_SCRIPT es el guion del demo técnico. Ambos son evidencia de trabajo estructurado ante los jueces.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-done">✅ LISTO</span></td>
+          <td class="implication">Ya existen en el repo. Verificar que el CHANGELOG esté actualizado con los commits del track E antes del push público.</td>
+        </tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- CAT 09 -->
+  <section class="cat-section" id="cat09">
+    <div class="cat-header">
+      <span class="cat-num">09</span>
+      <span class="cat-title">Ciberseguridad — diseño, RBAC y marco legal</span>
+      <span class="cat-meta">6 puntos</span>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>#</th><th>Punto de evaluación</th><th style="min-width:130px">Estado</th><th>Implicación / acción</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="row-num">09.1</td>
+          <td>
+            <div class="point-label">Privacidad por diseño en v0.1.0: datos nunca salen del dispositivo</div>
+            <div class="point-detail">No hay API externa, no hay sincronización, no hay telemetría. El dato más seguro es el que nunca viaja. Esta decisión arquitectónica es la mejor defensa posible para un MVP sin infraestructura de seguridad.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-done">✅ LISTO</span></td>
+          <td class="implication">Argumento de seguridad paradójico pero correcto: "la superficie de ataque de la red es cero porque no hay red." Diferenciador ante jueces de ciberseguridad — no es debilidad, es decisión de diseño declarada.</td>
+        </tr>
+        <tr>
+          <td class="row-num">09.2</td>
+          <td>
+            <div class="point-label">RBAC documentado: qué puede y no puede ver/hacer cada rol</div>
+            <div class="point-detail">Las tablas "SÍ puede ver" y "NO puede ver" en §06 cubren las 6 categorías de datos. Las restricciones están implementadas en el repositorio (no solo en la UI). Un cuidador no puede llamar a <code>getAuditLog()</code> aunque intente hacerlo desde la consola.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-done">✅ LISTO</span></td>
+          <td class="implication">Para el concurso de ciberseguridad: mostrar el RBAC como feature, no como implementación interna. "Cada rol ve exactamente lo que necesita y nada más" es el principio de mínimo privilegio en acción.</td>
+        </tr>
+        <tr>
+          <td class="row-num">09.3</td>
+          <td>
+            <div class="point-label">Marco legal documentado: LFPDPPP + NOM-031-SSA3-2012 + LGS Art. 419</div>
+            <div class="point-detail">Tres normas aplicables con su obligación concreta y cómo CareSignal la cumple. El audit log append-only cumple el expediente operativo permanente de NOM-031. La bitácora es la evidencia ante LGS Art. 419.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-done">✅ LISTO</span></td>
+          <td class="implication">Este es el diferenciador de credibilidad ante compradores institucionales. El pitch menciona la carga administrativa — conectar explícitamente con estas normas en el slide de marco legal.</td>
+        </tr>
+        <tr>
+          <td class="row-num">09.4</td>
+          <td>
+            <div class="point-label">Arquitectura de seguridad de producción: TLS + Firebase Auth + RLS documentada</div>
+            <div class="point-detail">El diagrama de capas en §09 describe: perímetro (TLS, JWT, RBAC middleware), datos en reposo (AES-256 GCP), datos en tránsito (TLS 1.3), RLS por residencia_id en PostgreSQL.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-design">📐 DISEÑO OK</span></td>
+          <td class="implication">No implementado (no hay backend). El diseño es suficientemente detallado para presentarlo a jueces técnicos. Incluir el diagrama de capas en el deck o en el dossier.</td>
+        </tr>
+        <tr>
+          <td class="row-num">09.5</td>
+          <td>
+            <div class="point-label">Sin secretos en el código — verificable en el repo público</div>
+            <div class="point-detail">El MVP no tiene API keys, tokens ni credenciales hardcodeadas. No hay <code>.env</code> con valores reales. El repo público puede inspeccionarse sin exponer ningún secreto.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-done">✅ LISTO</span></td>
+          <td class="implication">Verificar con <code>git log --all -- '*.env'</code> antes del push público para confirmar que ningún commit pasado incluye un .env con valores. Punto sensible ante un juez de ciberseguridad.</td>
+        </tr>
+        <tr>
+          <td class="row-num">09.6</td>
+          <td>
+            <div class="point-label">Argumento de ciberseguridad para el concurso — posicionamiento formal faltante</div>
+            <div class="point-detail">El concurso evalúa IA y ciberseguridad como criterios explícitos. CareSignal tiene ciberseguridad por diseño (privacidad, RBAC, audit inmutable, marco legal) pero no tiene un "slide de ciberseguridad" que lo argumente directamente.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-gap">⚠️ BRECHA</span></td>
+          <td class="implication">Tarea pendiente de E2: escribir el eje de ciberseguridad del pitch. ¿Slide dedicado en el deck? ¿Sección en el dossier? El deck actual tiene slide 12 (IA y ciberseg) — verificar que cubre este argumento de forma explícita.</td>
+        </tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- CAT 10 -->
+  <section class="cat-section" id="cat10">
+    <div class="cat-header">
+      <span class="cat-num">10</span>
+      <span class="cat-title">Assessment IA / ML / Chatbots — aplicabilidad y roadmap</span>
+      <span class="cat-meta">6 puntos</span>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>#</th><th>Punto de evaluación</th><th style="min-width:130px">Estado</th><th>Implicación / acción</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="row-num">10.1</td>
+          <td>
+            <div class="point-label">Assessment honesto de ML: todos los modelos diferidos a v0.3+ por falta de datos reales</div>
+            <div class="point-detail">Alertas predictivas, detección de anomalías y optimización de asignación requieren mínimo 3–6 meses de operación real. El MVP tiene datos ficticios del seed — sin señal para entrenar. El motor determinista es la solución correcta para v0.2.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-done">✅ LISTO</span></td>
+          <td class="implication">Este honestidad es un diferenciador de credibilidad ante jueces técnicos. "No añadimos ML porque los datos no lo justifican" es más sólido que "tenemos ML" sin respaldo.</td>
+        </tr>
+        <tr>
+          <td class="row-num">10.2</td>
+          <td>
+            <div class="point-label">Agente A2 (ciberseguridad vía Gemini API) — aplicable en v0.2, diseñado</div>
+            <div class="point-detail">Detecta patrones anómalos en el stream de <code>audit_events</code> (metadatos, sin PII). Input: secuencias de eventos. Output: alerta interna al gerente. Gemini API es apropiado para clasificación semántica de secuencias.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-design">📐 DISEÑO OK</span></td>
+          <td class="implication">Conecta directamente con el criterio "IA" del concurso. Presentar como "el siguiente paso técnico concreto" con nombre, función y tecnología. No como feature del MVP actual.</td>
+        </tr>
+        <tr>
+          <td class="row-num">10.3</td>
+          <td>
+            <div class="point-label">Agente A3 (análisis ejecutivo de turno vía Gemini API) — aplicable en v0.2, diseñado</div>
+            <div class="point-detail">Al cierre de turno genera un resumen en lenguaje natural: rondas completadas, alertas activas, tendencias vs. turno anterior. Elimina trabajo manual del supervisor. Alto valor, bajo riesgo técnico.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-design">📐 DISEÑO OK</span></td>
+          <td class="implication">Argumento de producto para el pitch: "el supervisor recibe el traspaso de turno escrito por el sistema, no de memoria." Verificar que el deck slide 12 menciona A3 explícitamente.</td>
+        </tr>
+        <tr>
+          <td class="row-num">10.4</td>
+          <td>
+            <div class="point-label">Chatbot C1 (cuidadores) y C2 (familias) descartados por razones correctas</div>
+            <div class="point-detail">C1: la UI directa es superior en contexto operativo urgente — un chatbot añade fricción. C2: requiere consentimiento explícito del residente, validación legal LFPDPPP, diseño de acceso familiar — prematuro sin validación de usuarios.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-done">✅ LISTO</span></td>
+          <td class="implication">El assessment de C1 y C2 es correcto. Documentado como decisión explícita, no como omisión. En el pitch: "no añadimos un chatbot donde un botón es más rápido."</td>
+        </tr>
+        <tr>
+          <td class="row-num">10.5</td>
+          <td>
+            <div class="point-label">Conexión explícita entre event sourcing y el insumo de IA futura</div>
+            <div class="point-detail">La arquitectura de <code>audit_events</code> fue diseñada intencionalmente para ser el dataset de los agentes A2 y A3. Esta conexión es el argumento arquitectónico del concurso: "construimos la infraestructura de datos para la IA antes de la IA misma."</div>
+          </td>
+          <td class="status-col"><span class="chip chip-done">✅ LISTO</span></td>
+          <td class="implication">Este argumento debe aparecer en el pitch explícitamente: la tabla de 20 tipos de eventos es el dataset estructurado sobre el que operan los agentes. Sin event sourcing, los agentes no tendrían señal.</td>
+        </tr>
+        <tr>
+          <td class="row-num">10.6</td>
+          <td>
+            <div class="point-label">Roadmap de IA en el deck — v0.1 (motor determinista) → v0.2 (agentes A2, A3) → v0.3 (ML)</div>
+            <div class="point-detail">El slide 12 del deck (IA y ciberseg) existe pero se necesita verificar que presenta el roadmap de 3 versiones con claridad: qué existe hoy, qué viene en v0.2, qué requiere más datos en v0.3.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-gap">⚠️ BRECHA</span></td>
+          <td class="implication">Revisar slide 12 del deck. Si no tiene el roadmap en 3 etapas, actualizarlo antes de la entrega. Es el argumento de "innovación con IA" que el concurso evalúa directamente.</td>
+        </tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- RESUMEN DE TAREAS PENDIENTES -->
+  <section id="resumen-tareas" style="margin-top:3rem">
+    <h2 style="font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:1.25rem;padding-top:2rem;border-top:2px solid var(--accent)">
+      Tareas pendientes consolidadas — ordenadas por urgencia
+    </h2>
+    <div class="table-wrap" style="border:1px solid var(--border);border-radius:8px;overflow:hidden;background:var(--surface)">
+      <table>
+        <thead><tr><th>Prioridad</th><th>Tarea</th><th>Puntos que resuelve</th><th>Track E</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="chip chip-gap">🔴 BLOQUEADOR</span></td>
+            <td><strong>Crear repo GitHub público</strong> — definir cuenta (robertgcits?), nombre del repo, configurar remote, primer push con .gitignore correcto</td>
+            <td>08.1, 08.4, 01.6</td>
+            <td>E1 → E3.2</td>
+          </tr>
+          <tr>
+            <td><span class="chip chip-gap">🔴 BLOQUEADOR</span></td>
+            <td><strong>Construir y publicar demo en GitHub Pages</strong> — <code>npm run build</code>, push dist/, activar Pages</td>
+            <td>01.6, 08.4</td>
+            <td>E3.2</td>
+          </tr>
+          <tr>
+            <td><span class="chip chip-pend">🟡 ALTA</span></td>
+            <td><strong>Escribir README público orientado al juez</strong> — propósito, link demo, instrucciones locales, avisos MVP</td>
+            <td>08.3</td>
+            <td>E2 → E3.2</td>
+          </tr>
+          <tr>
+            <td><span class="chip chip-pend">🟡 ALTA</span></td>
+            <td><strong>Verificar función "Exportar bitácora" del gerente</strong> — confirmar que existe botón y funciona en la UI antes de la demo</td>
+            <td>06.3</td>
+            <td>QA previo a E3</td>
+          </tr>
+          <tr>
+            <td><span class="chip chip-pend">🟡 ALTA</span></td>
+            <td><strong>Revisar slide 12 del deck (IA y ciberseg)</strong> — confirmar que incluye roadmap v0.1 → v0.2 → v0.3 con agentes A2 y A3</td>
+            <td>10.6, 09.6</td>
+            <td>E3.1</td>
+          </tr>
+          <tr>
+            <td><span class="chip chip-pend">🟡 ALTA</span></td>
+            <td><strong>Grabar video de 4 minutos</strong> — seguir el guion de 7 bloques, demo con reloj simulado, cambio de rol visible</td>
+            <td>06.4, 06.6, 03.2</td>
+            <td>E3.3</td>
+          </tr>
+          <tr>
+            <td><span class="chip chip-pend">🟡 MEDIA</span></td>
+            <td><strong>Agregar diagrama multi-tenant al deck</strong> — árbol de tenant visible para el juez técnico</td>
+            <td>02.6</td>
+            <td>E3.1</td>
+          </tr>
+          <tr>
+            <td><span class="chip chip-pend">🟡 MEDIA</span></td>
+            <td><strong>Documentar schema de payload por tipo de evento</strong> — qué campos lleva cada uno de los 20 tipos</td>
+            <td>05.4</td>
+            <td>E2 / doc técnica</td>
+          </tr>
+          <tr>
+            <td><span class="chip chip-pend">🟡 MEDIA</span></td>
+            <td><strong>Generar schema.sql de producción</strong> desde el data model de §04 — evidencia técnica opcional para jueces</td>
+            <td>04.6</td>
+            <td>E2 / opcional</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- FUERA DE ALCANCE -->
+  <section id="fuera-alcance" style="margin-top:2rem">
+    <h2 style="font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:1rem">
+      Confirmado fuera de alcance del MVP demo
+    </h2>
+    <div class="table-wrap" style="border:1px solid var(--border);border-radius:8px;overflow:hidden;background:var(--surface)">
+      <table>
+        <thead><tr><th>Ítem</th><th>Por qué está fuera</th><th>Versión objetivo</th></tr></thead>
+        <tbody>
+          <tr><td>Backend HTTP real (Cloud Run)</td><td>Sin infraestructura de backend en MVP. localStorage es suficiente para la demo.</td><td>v0.2</td></tr>
+          <tr><td>Firebase Auth / JWT / RBAC en endpoints</td><td>Sin auth real en MVP — sesiones ficticias para demo.</td><td>v0.2</td></tr>
+          <tr><td>PostgreSQL en producción + RLS</td><td>Sin DB real. Schema documentado pero no implementado.</td><td>v0.2</td></tr>
+          <tr><td>Machine Learning (alertas predictivas, anomalías, optimización)</td><td>Sin datos reales de operación. Motor determinista supera a ML con datos escasos.</td><td>v0.3+</td></tr>
+          <tr><td>Chatbot para cuidadores (C1)</td><td>La UI directa supera al chatbot en contexto operativo urgente.</td><td>Descartado</td></tr>
+          <tr><td>Portal familiar / chatbot C2</td><td>Requiere validación legal LFPDPPP + consentimiento de residente.</td><td>v0.3+</td></tr>
+          <tr><td>Notificaciones push / SMS / WhatsApp</td><td>Explícitamente fuera de alcance en contrato §5.</td><td>Backlog v0.2</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
