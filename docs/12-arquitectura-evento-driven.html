@@ -1,0 +1,924 @@
+<title>CareSignal Architecture</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --bg:         #F6F8FB;
+    --bg-alt:     #EDF1F7;
+    --bg-code:    #E8EDF5;
+    --surface:    #FFFFFF;
+    --border:     #D1D9E6;
+    --text:       #0F1B2D;
+    --muted:      #5A6A82;
+    --accent:     #2563EB;
+    --accent2:    #0EA5E9;
+    --success:    #166534;
+    --warn:       #92400E;
+    --danger:     #991B1B;
+    --success-bg: #DCFCE7;
+    --warn-bg:    #FEF3C7;
+    --danger-bg:  #FEE2E2;
+    --pk:         #7C3AED;
+    --fk:         #0891B2;
+    --uk:         #D97706;
+    --idx:        #059669;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg:         #0A1220;
+      --bg-alt:     #0F1B2D;
+      --bg-code:    #141E30;
+      --surface:    #162032;
+      --border:     #1E3050;
+      --text:       #E2E8F0;
+      --muted:      #7D90AA;
+      --accent:     #60A5FA;
+      --accent2:    #38BDF8;
+      --success:    #86EFAC;
+      --warn:       #FCD34D;
+      --danger:     #FCA5A5;
+      --success-bg: #14532D;
+      --warn-bg:    #78350F;
+      --danger-bg:  #7F1D1D;
+      --pk:         #C4B5FD;
+      --fk:         #67E8F9;
+      --uk:         #FCD34D;
+      --idx:        #6EE7B7;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg:         #0A1220;
+    --bg-alt:     #0F1B2D;
+    --bg-code:    #141E30;
+    --surface:    #162032;
+    --border:     #1E3050;
+    --text:       #E2E8F0;
+    --muted:      #7D90AA;
+    --accent:     #60A5FA;
+    --accent2:    #38BDF8;
+    --success:    #86EFAC;
+    --warn:       #FCD34D;
+    --danger:     #FCA5A5;
+    --success-bg: #14532D;
+    --warn-bg:    #78350F;
+    --danger-bg:  #7F1D1D;
+    --pk:         #C4B5FD;
+    --fk:         #67E8F9;
+    --uk:         #FCD34D;
+    --idx:        #6EE7B7;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--bg-alt);
+    border-bottom: 1px solid var(--border);
+    padding: 0 1.5rem;
+    display: flex; align-items: center; gap: 0; overflow-x: auto;
+    scrollbar-width: none;
+  }
+  nav::-webkit-scrollbar { display: none; }
+  .nav-brand {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; font-weight: 600;
+    color: var(--accent);
+    white-space: nowrap;
+    padding: 0.75rem 1.5rem 0.75rem 0;
+    border-right: 1px solid var(--border);
+    margin-right: 0.5rem;
+    flex-shrink: 0;
+  }
+  nav a {
+    font-size: 12px; font-weight: 500;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 0.75rem 0.75rem;
+    white-space: nowrap;
+    transition: color .15s;
+    flex-shrink: 0;
+  }
+  nav a:hover { color: var(--accent); }
+
+  /* LAYOUT */
+  main {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 6rem;
+  }
+
+  /* PAGE HEADER */
+  .page-header {
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 1.5rem;
+    margin-bottom: 3rem;
+  }
+  .page-header .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 600;
+    color: var(--accent2);
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    margin-bottom: .5rem;
+  }
+  .page-header h1 {
+    font-size: 2rem; font-weight: 700;
+    line-height: 1.2;
+    color: var(--text);
+    text-wrap: balance;
+  }
+  .page-header .meta {
+    margin-top: .75rem;
+    font-size: 13px;
+    color: var(--muted);
+    display: flex; flex-wrap: wrap; gap: .5rem 1.5rem;
+  }
+  .page-header .meta span { display: flex; align-items: center; gap: .35rem; }
+
+  /* SECTIONS */
+  section { margin-bottom: 3.5rem; }
+  section + section { border-top: 1px solid var(--border); padding-top: 3rem; }
+
+  h2 {
+    font-size: 1.2rem; font-weight: 700;
+    color: var(--text);
+    margin-bottom: 1.25rem;
+    display: flex; align-items: center; gap: .6rem;
+  }
+  h2 .sec-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 600;
+    color: var(--accent);
+    background: var(--bg-code);
+    border: 1px solid var(--border);
+    padding: .1rem .45rem;
+    border-radius: 4px;
+  }
+  h3 {
+    font-size: 1rem; font-weight: 600;
+    color: var(--text);
+    margin: 1.75rem 0 .75rem;
+  }
+  p { color: var(--muted); line-height: 1.7; margin-bottom: .75rem; }
+  p:last-child { margin-bottom: 0; }
+  strong { color: var(--text); font-weight: 600; }
+
+  /* TABLES */
+  .table-wrap { overflow-x: auto; margin: 1rem 0; border-radius: 8px; border: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead tr { background: var(--bg-alt); }
+  th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 600;
+    color: var(--muted);
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    padding: .65rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  td {
+    padding: .55rem 1rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--bg-alt); }
+  .mono { font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+
+  /* KEY BADGES */
+  .key {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; font-weight: 600;
+    padding: .1rem .35rem;
+    border-radius: 3px;
+    white-space: nowrap;
+    display: inline-block;
+    margin-right: 3px;
+  }
+  .key-pk  { background: #EDE9FE; color: var(--pk); border: 1px solid #DDD6FE; }
+  .key-fk  { background: #E0F2FE; color: var(--fk); border: 1px solid #BAE6FD; }
+  .key-uk  { background: #FEF3C7; color: var(--uk); border: 1px solid #FDE68A; }
+  .key-idx { background: #DCFCE7; color: var(--idx); border: 1px solid #BBF7D0; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .key-pk { background: #2E1065; border-color: #4C1D95; } .key-fk { background: #0C4A6E; border-color: #075985; } .key-uk { background: #451A03; border-color: #78350F; } .key-idx { background: #052E16; border-color: #14532D; } }
+
+  /* TYPE CHIPS */
+  .type {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent2);
+    background: var(--bg-code);
+    padding: .1rem .4rem;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  .nullable { color: var(--muted); font-size: 11px; }
+
+  /* CODE BLOCK */
+  pre {
+    background: var(--bg-code);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: var(--text);
+    margin: 1rem 0;
+  }
+  .c { color: var(--muted); }
+  .kw { color: var(--accent); font-weight: 600; }
+  .str { color: #059669; }
+  .num { color: #D97706; }
+
+  /* FLOW DIAGRAM */
+  .flow {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    overflow-x: auto;
+  }
+  .flow-states {
+    display: flex; flex-wrap: wrap; gap: .5rem;
+    align-items: center;
+  }
+  .state {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; font-weight: 600;
+    padding: .35rem .8rem;
+    border-radius: 20px;
+    border: 2px solid;
+    white-space: nowrap;
+  }
+  .s-scheduled { border-color: #93C5FD; color: #1D4ED8; background: #EFF6FF; }
+  .s-due       { border-color: #FCD34D; color: #92400E; background: #FFFBEB; }
+  .s-progress  { border-color: #6EE7B7; color: #065F46; background: #ECFDF5; }
+  .s-completed { border-color: #A7F3D0; color: #064E3B; background: #F0FDF4; }
+  .s-overdue   { border-color: #FCA5A5; color: #991B1B; background: #FEF2F2; }
+  .s-cancelled { border-color: #D1D5DB; color: #4B5563; background: #F9FAFB; }
+  .arrow { color: var(--muted); font-size: 14px; font-weight: 700; }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .s-scheduled { border-color: #1D4ED8; color: #93C5FD; background: #1E3A5F; }
+    :root:not([data-theme="light"]) .s-due       { border-color: #92400E; color: #FCD34D; background: #3D2A00; }
+    :root:not([data-theme="light"]) .s-progress  { border-color: #065F46; color: #6EE7B7; background: #042F23; }
+    :root:not([data-theme="light"]) .s-completed { border-color: #064E3B; color: #A7F3D0; background: #032018; }
+    :root:not([data-theme="light"]) .s-overdue   { border-color: #991B1B; color: #FCA5A5; background: #3F0F0F; }
+    :root:not([data-theme="light"]) .s-cancelled { border-color: #374151; color: #9CA3AF; background: #1F2937; }
+  }
+  :root[data-theme="dark"] .s-scheduled { border-color: #1D4ED8; color: #93C5FD; background: #1E3A5F; }
+  :root[data-theme="dark"] .s-due       { border-color: #92400E; color: #FCD34D; background: #3D2A00; }
+  :root[data-theme="dark"] .s-progress  { border-color: #065F46; color: #6EE7B7; background: #042F23; }
+  :root[data-theme="dark"] .s-completed { border-color: #064E3B; color: #A7F3D0; background: #032018; }
+  :root[data-theme="dark"] .s-overdue   { border-color: #991B1B; color: #FCA5A5; background: #3F0F0F; }
+  :root[data-theme="dark"] .s-cancelled { border-color: #374151; color: #9CA3AF; background: #1F2937; }
+
+  /* ROLE CARDS */
+  .role-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+  .role-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.1rem 1.25rem;
+    border-top: 3px solid var(--accent);
+  }
+  .role-card.supervisor { border-top-color: #0EA5E9; }
+  .role-card.manager    { border-top-color: #7C3AED; }
+  .role-card.resident   { border-top-color: #059669; }
+  .role-card h4 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; font-weight: 600;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    margin-bottom: .6rem;
+  }
+  .role-card.supervisor h4 { color: #0EA5E9; }
+  .role-card.manager h4    { color: #7C3AED; }
+  .role-card.resident h4   { color: #059669; }
+  .role-card ul {
+    list-style: none;
+    font-size: 12.5px;
+    color: var(--muted);
+    display: flex; flex-direction: column; gap: .3rem;
+  }
+  .role-card li::before { content: "→ "; color: var(--border); }
+
+  /* REPO TABLE */
+  .check { color: #059669; font-weight: 700; }
+  .cross  { color: #DC2626; font-weight: 700; }
+
+  /* EVENT PILLS */
+  .event-grid {
+    display: flex; flex-wrap: wrap; gap: .45rem;
+    margin: .75rem 0;
+  }
+  .event-pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 500;
+    padding: .25rem .65rem;
+    border-radius: 5px;
+    background: var(--bg-code);
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+  .event-pill.round  { border-left: 3px solid #2563EB; }
+  .event-pill.alert  { border-left: 3px solid #DC2626; }
+  .event-pill.admin  { border-left: 3px solid #7C3AED; }
+  .event-pill.system { border-left: 3px solid #059669; }
+
+  /* LEGEND */
+  .legend {
+    display: flex; flex-wrap: wrap; gap: .75rem 1.5rem;
+    font-size: 12px; color: var(--muted);
+    margin: .75rem 0 1.25rem;
+    align-items: center;
+  }
+  .legend-item { display: flex; align-items: center; gap: .4rem; }
+  .dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+</style>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">CareSignal · Arch v0.2</div>
+  <a href="#arquitectura">Arquitectura</a>
+  <a href="#tenant">Multi-tenant</a>
+  <a href="#evento-core">Evento core</a>
+  <a href="#datamodel">Data model</a>
+  <a href="#eventos">Catálogo eventos</a>
+  <a href="#vistas">Vistas / roles</a>
+  <a href="#api">API layer</a>
+  <a href="#repo">Repo público/privado</a>
+  <a href="#ciberseguridad">Ciberseguridad</a>
+</nav>
+
+<main>
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <div class="eyebrow">Diseño técnico · Event-driven architecture</div>
+    <h1>CareSignal — Data Model & Arquitectura</h1>
+    <div class="meta">
+      <span>📋 v0.2 — producción</span>
+      <span>🏗️ Event-driven · Multi-tenant · SaaS B2B</span>
+      <span>🗓️ Agosto 2026</span>
+      <span>⚠️ MVP v0.1.0 usa localStorage — este doc define producción</span>
+    </div>
+  </div>
+
+  <!-- 1. ARQUITECTURA -->
+  <section id="arquitectura">
+    <h2><span class="sec-num">01</span> Arquitectura event-driven</h2>
+    <p>El sistema es <strong>event-driven con event sourcing parcial</strong>: cada acción significativa emite un <code class="mono">audit_event</code> inmutable. El estado actual de cualquier entidad se puede reconstruir reproduciendo su secuencia de eventos. El núcleo del negocio es la <strong>visita de cuidado (ronda)</strong> — cada cambio de estado de una ronda puede disparar alertas, escalar incidentes y registrar trazabilidad.</p>
+
+    <pre><span class="c">── Capas del sistema ────────────────────────────────────</span>
+
+<span class="kw">Frontend</span>  React + TypeScript
+          └── 5 páginas por rol (caregiver / supervisor / manager)
+          └── Estado local + suscripción a repositorio
+          └── NO toca base de datos directamente
+
+<span class="kw">API</span>       REST o tRPC
+          └── Autenticación por residencia (tenant)
+          └── Validación de transiciones (domain/transitions.ts)
+          └── Emisión de audit_events en cada mutación
+
+<span class="kw">Dominio</span>   Puro TypeScript — sin dependencias de infraestructura
+          └── types.ts · taxonomy.ts · rules.ts · transitions.ts
+
+<span class="kw">Base de datos</span>  PostgreSQL (producción) / localStorage (MVP demo)
+          └── 9 tablas relacionales
+          └── audit_events: append-only, nunca se edita
+
+<span class="kw">Motor temporal</span>  Cron / worker
+          └── Evalúa rondas cada N minutos
+          └── Aplica 8 políticas automáticas (overdue, alertas)
+          └── Emite eventos del sistema (no del usuario)</pre>
+  </section>
+
+  <!-- 2. MULTI-TENANT -->
+  <section id="tenant">
+    <h2><span class="sec-num">02</span> Raíz multi-tenant — <span class="mono">residencia</span></h2>
+    <p>Cada residencia es un <strong>tenant aislado</strong>. Todas las entidades llevan <code class="mono">residencia_id</code> como clave de aislamiento. Ninguna consulta cruza datos entre residencias.</p>
+
+    <pre><span class="kw">residencia</span>  (raíz del tenant)
+    │
+    ├── <span class="kw">habitaciones</span>   (infraestructura física)
+    ├── <span class="kw">residentes</span>     (habitantes — asignados a habitación)
+    ├── <span class="kw">staff_members</span>  (todos los usuarios: cuidador/supervisor/gerente)
+    │
+    ├── <span class="kw">rondas</span>         ← EVENTO CORE (visita de cuidado)
+    │       └── pertenece a residente
+    │       └── asignada a cuidador (0 o 1)
+    │       └── tipo de ronda (lookup)
+    │
+    ├── <span class="kw">alertas</span>        (disparadas por rondas overdue)
+    │       └── pertenece a residente
+    │       └── owner: staff_member (0 o 1)
+    │
+    ├── <span class="kw">incidentes</span>     (registro formal de verificación)
+    │       └── vinculado a alerta
+    │
+    └── <span class="kw">audit_events</span>   (log inmutable — append only)</pre>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Entidad</th><th>Cardinalidad</th><th>Notas</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">residencia → habitaciones</td><td>1 : N</td><td>Una residencia tiene muchas habitaciones</td></tr>
+          <tr><td class="mono">habitacion → residentes</td><td>1 : N</td><td>Una habitación puede tener 1–N residentes según capacidad</td></tr>
+          <tr><td class="mono">residente → rondas</td><td>1 : N</td><td>Un residente tiene muchas rondas a lo largo del tiempo</td></tr>
+          <tr><td class="mono">staff_member → rondas</td><td>1 : N</td><td>Un cuidador puede tener 0–N rondas asignadas</td></tr>
+          <tr><td class="mono">ronda → alerta</td><td>1 : 0..1</td><td>Una ronda overdue puede generar una alerta (máx. una activa)</td></tr>
+          <tr><td class="mono">alerta → incidente</td><td>1 : 0..1</td><td>Una alerta puede derivar en un incidente formal</td></tr>
+          <tr><td class="mono">cualquier entidad → audit_events</td><td>1 : N</td><td>Toda acción emite un evento; el log es append-only</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 3. EVENTO CORE -->
+  <section id="evento-core">
+    <h2><span class="sec-num">03</span> Evento core — la visita de cuidado (<span class="mono">ronda</span>)</h2>
+    <p>La <strong>ronda</strong> es el hecho central del sistema. Cada ronda es una visita programada de un cuidador a un residente. Su ciclo de vida completo define si el cuidado ocurrió, cuándo y con qué resultado — y es la única fuente de verdad para la trazabilidad operativa.</p>
+
+    <h3>Máquina de estados</h3>
+    <div class="flow">
+      <div class="flow-states">
+        <span class="state s-scheduled">scheduled</span>
+        <span class="arrow">→</span>
+        <span class="state s-due">due</span>
+        <span class="arrow">→</span>
+        <span class="state s-progress">in_progress</span>
+        <span class="arrow">→</span>
+        <span class="state s-completed">completed</span>
+      </div>
+      <div class="flow-states" style="margin-top:.6rem">
+        <span class="state s-due">due</span>
+        <span class="arrow">→</span>
+        <span class="state s-overdue">overdue</span>
+        <span class="arrow">→</span>
+        <span style="font-size:12px;color:var(--danger);font-family:'JetBrains Mono',monospace;">🔔 ALERTA</span>
+      </div>
+      <div class="flow-states" style="margin-top:.6rem">
+        <span class="state s-scheduled">scheduled</span>
+        <span class="arrow">→</span>
+        <span class="state s-cancelled">cancelled</span>
+        <span style="font-size:12px;color:var(--muted);font-family:'JetBrains Mono',monospace;margin-left:.5rem">— no genera alerta</span>
+      </div>
+    </div>
+
+    <h3>Transiciones válidas e inválidas</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>De</th><th>A</th><th>Actor</th><th>Condición</th><th>¿Emite evento?</th></tr></thead>
+        <tbody>
+          <tr><td class="mono s-scheduled" style="color:#1D4ED8">scheduled</td><td class="mono">due</td><td>motor temporal</td><td>hora programada ≤ reloj</td><td class="mono">ROUND_DUE</td></tr>
+          <tr><td class="mono" style="color:#92400E">due</td><td class="mono">in_progress</td><td>cuidador</td><td>—</td><td class="mono">ROUND_STARTED</td></tr>
+          <tr><td class="mono" style="color:#065F46">in_progress</td><td class="mono">completed</td><td>cuidador</td><td>—</td><td class="mono">ROUND_COMPLETED</td></tr>
+          <tr><td class="mono" style="color:#92400E">due</td><td class="mono">overdue</td><td>motor temporal</td><td>tiempo límite superado</td><td class="mono">ROUND_OVERDUE</td></tr>
+          <tr><td class="mono" style="color:#991B1B">overdue</td><td class="mono">—</td><td>motor temporal</td><td>—</td><td class="mono">ALERT_CREATED</td></tr>
+          <tr><td class="mono" style="color:#1D4ED8">scheduled</td><td class="mono">cancelled</td><td>supervisor</td><td>—</td><td class="mono">ROUND_CANCELLED</td></tr>
+          <tr><td class="mono" style="color:#064E3B">completed</td><td class="mono">overdue</td><td>—</td><td colspan="2">❌ INVÁLIDO — completed es estado final</td></tr>
+          <tr><td class="mono" style="color:#4B5563">cancelled</td><td class="mono">cualquiera</td><td>—</td><td colspan="2">❌ INVÁLIDO — cancelled no genera alerta</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Tipos de ronda (lookup)</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>id (slug)</th><th>Etiqueta</th><th>Duración est.</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">routine_check</td><td>Revisión de rutina</td><td>10 min</td></tr>
+          <tr><td class="mono">hydration_check</td><td>Control de hidratación</td><td>5 min</td></tr>
+          <tr><td class="mono">mobility_assistance</td><td>Asistencia de movilidad</td><td>20 min</td></tr>
+          <tr><td class="mono">meal_assistance</td><td>Asistencia en comida</td><td>30 min</td></tr>
+          <tr><td class="mono">custom_operational_check</td><td>Revisión operativa personalizada</td><td>variable</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 4. DATA MODEL -->
+  <section id="datamodel">
+    <h2><span class="sec-num">04</span> Data model — tablas completas</h2>
+
+    <div class="legend">
+      <span class="legend-item"><span class="key key-pk">PK</span> Llave primaria</span>
+      <span class="legend-item"><span class="key key-fk">FK</span> Llave foránea</span>
+      <span class="legend-item"><span class="key key-uk">UK</span> Unique</span>
+      <span class="legend-item"><span class="key key-idx">IDX</span> Índice secundario</span>
+    </div>
+
+    <!-- residencias -->
+    <h3>residencias</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Columna</th><th>Tipo</th><th>Llaves</th><th>Notas</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">id</td><td><span class="type">UUID</span></td><td><span class="key key-pk">PK</span></td><td>gen_random_uuid()</td></tr>
+        <tr><td class="mono">nombre</td><td><span class="type">TEXT</span></td><td></td><td>NOT NULL</td></tr>
+        <tr><td class="mono">slug</td><td><span class="type">TEXT</span></td><td><span class="key key-uk">UK</span></td><td>URL-safe, ej. "residencia-los-pinos"</td></tr>
+        <tr><td class="mono">direccion</td><td><span class="type">TEXT</span></td><td></td><td><span class="nullable">NULLABLE</span></td></tr>
+        <tr><td class="mono">telefono</td><td><span class="type">TEXT</span></td><td></td><td><span class="nullable">NULLABLE</span></td></tr>
+        <tr><td class="mono">plan</td><td><span class="type">ENUM</span></td><td></td><td>'esencial' | 'profesional' | 'institucional'</td></tr>
+        <tr><td class="mono">activa</td><td><span class="type">BOOLEAN</span></td><td></td><td>DEFAULT true</td></tr>
+        <tr><td class="mono">created_at</td><td><span class="type">TIMESTAMPTZ</span></td><td></td><td>DEFAULT now()</td></tr>
+      </tbody>
+    </table></div>
+
+    <!-- habitaciones -->
+    <h3>habitaciones</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Columna</th><th>Tipo</th><th>Llaves</th><th>Notas</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">id</td><td><span class="type">UUID</span></td><td><span class="key key-pk">PK</span></td><td></td></tr>
+        <tr><td class="mono">residencia_id</td><td><span class="type">UUID</span></td><td><span class="key key-fk">FK</span> → residencias.id</td><td>NOT NULL · ON DELETE CASCADE</td></tr>
+        <tr><td class="mono">numero</td><td><span class="type">TEXT</span></td><td></td><td>ej. "101-A"</td></tr>
+        <tr><td class="mono">piso</td><td><span class="type">INT</span></td><td></td><td>DEFAULT 1</td></tr>
+        <tr><td class="mono">tipo</td><td><span class="type">ENUM</span></td><td></td><td>'individual' | 'compartida'</td></tr>
+        <tr><td class="mono">capacidad</td><td><span class="type">INT</span></td><td></td><td>DEFAULT 1</td></tr>
+      </tbody>
+    </table></div>
+
+    <!-- residentes -->
+    <h3>residentes</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Columna</th><th>Tipo</th><th>Llaves</th><th>Notas</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">id</td><td><span class="type">UUID</span></td><td><span class="key key-pk">PK</span></td><td></td></tr>
+        <tr><td class="mono">residencia_id</td><td><span class="type">UUID</span></td><td><span class="key key-fk">FK</span> → residencias.id</td><td>NOT NULL</td></tr>
+        <tr><td class="mono">habitacion_id</td><td><span class="type">UUID</span></td><td><span class="key key-fk">FK</span> → habitaciones.id</td><td><span class="nullable">NULLABLE</span></td></tr>
+        <tr><td class="mono">nombre_completo</td><td><span class="type">TEXT</span></td><td></td><td>NOT NULL</td></tr>
+        <tr><td class="mono">fecha_nacimiento</td><td><span class="type">DATE</span></td><td></td><td>ISO 8601</td></tr>
+        <tr><td class="mono">nivel_cuidado</td><td><span class="type">ENUM</span></td><td></td><td>'bajo' | 'medio' | 'alto'</td></tr>
+        <tr><td class="mono">estado_visual</td><td>—</td><td></td><td>⚠️ DERIVADO — no persiste. Calculado por deriveResidentStatus()</td></tr>
+        <tr><td class="mono">activo</td><td><span class="type">BOOLEAN</span></td><td></td><td>DEFAULT true</td></tr>
+        <tr><td class="mono">ingreso_at</td><td><span class="type">TIMESTAMPTZ</span></td><td></td><td></td></tr>
+        <tr><td class="mono">notas_operativas</td><td><span class="type">TEXT</span></td><td></td><td><span class="nullable">NULLABLE</span></td></tr>
+      </tbody>
+    </table></div>
+
+    <!-- staff_members -->
+    <h3>staff_members</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Columna</th><th>Tipo</th><th>Llaves</th><th>Notas</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">id</td><td><span class="type">UUID</span></td><td><span class="key key-pk">PK</span></td><td></td></tr>
+        <tr><td class="mono">residencia_id</td><td><span class="type">UUID</span></td><td><span class="key key-fk">FK</span> → residencias.id</td><td>NOT NULL</td></tr>
+        <tr><td class="mono">nombre_completo</td><td><span class="type">TEXT</span></td><td></td><td>NOT NULL</td></tr>
+        <tr><td class="mono">email</td><td><span class="type">TEXT</span></td><td><span class="key key-uk">UK</span></td><td>NOT NULL</td></tr>
+        <tr><td class="mono">rol</td><td><span class="type">ENUM</span></td><td></td><td>'caregiver' | 'supervisor' | 'manager' | 'demo_admin'</td></tr>
+        <tr><td class="mono">disponibilidad</td><td><span class="type">ENUM</span></td><td></td><td>'available' | 'busy' | 'off_shift'</td></tr>
+        <tr><td class="mono">activo</td><td><span class="type">BOOLEAN</span></td><td></td><td>DEFAULT true</td></tr>
+        <tr><td class="mono">created_at</td><td><span class="type">TIMESTAMPTZ</span></td><td></td><td>DEFAULT now()</td></tr>
+      </tbody>
+    </table></div>
+
+    <!-- rondas -->
+    <h3>rondas — tabla central (evento core)</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Columna</th><th>Tipo</th><th>Llaves</th><th>Notas</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">id</td><td><span class="type">UUID</span></td><td><span class="key key-pk">PK</span></td><td></td></tr>
+        <tr><td class="mono">residencia_id</td><td><span class="type">UUID</span></td><td><span class="key key-fk">FK</span> → residencias.id <span class="key key-idx">IDX</span></td><td>Aislamiento tenant</td></tr>
+        <tr><td class="mono">residente_id</td><td><span class="type">UUID</span></td><td><span class="key key-fk">FK</span> → residentes.id <span class="key key-idx">IDX</span></td><td>NOT NULL</td></tr>
+        <tr><td class="mono">tipo_id</td><td><span class="type">TEXT</span></td><td><span class="key key-fk">FK</span> → ronda_tipos.id</td><td>NOT NULL</td></tr>
+        <tr><td class="mono">cuidador_id</td><td><span class="type">UUID</span></td><td><span class="key key-fk">FK</span> → staff_members.id</td><td><span class="nullable">NULLABLE</span> — 0 o 1 cuidador</td></tr>
+        <tr><td class="mono">estado</td><td><span class="type">ENUM</span></td><td><span class="key key-idx">IDX</span></td><td>'scheduled'|'due'|'in_progress'|'completed'|'overdue'|'cancelled'</td></tr>
+        <tr><td class="mono">programada_at</td><td><span class="type">TIMESTAMPTZ</span></td><td><span class="key key-idx">IDX</span></td><td>NOT NULL · ISO 8601</td></tr>
+        <tr><td class="mono">iniciada_at</td><td><span class="type">TIMESTAMPTZ</span></td><td></td><td><span class="nullable">NULLABLE</span></td></tr>
+        <tr><td class="mono">completada_at</td><td><span class="type">TIMESTAMPTZ</span></td><td></td><td><span class="nullable">NULLABLE</span></td></tr>
+        <tr><td class="mono">notas</td><td><span class="type">TEXT</span></td><td></td><td><span class="nullable">NULLABLE</span></td></tr>
+        <tr><td class="mono">resultado</td><td><span class="type">TEXT</span></td><td></td><td><span class="nullable">NULLABLE</span> — registrado al completar</td></tr>
+        <tr><td class="mono">created_by</td><td><span class="type">UUID</span></td><td><span class="key key-fk">FK</span> → staff_members.id</td><td>Quien programó la ronda</td></tr>
+        <tr><td class="mono">created_at</td><td><span class="type">TIMESTAMPTZ</span></td><td></td><td>DEFAULT now()</td></tr>
+      </tbody>
+    </table></div>
+    <p style="font-size:12px">Índice compuesto: <code class="mono">(residencia_id, estado, programada_at)</code> — consulta principal del dashboard y motor temporal.</p>
+
+    <!-- alertas -->
+    <h3>alertas</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Columna</th><th>Tipo</th><th>Llaves</th><th>Notas</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">id</td><td><span class="type">UUID</span></td><td><span class="key key-pk">PK</span></td><td></td></tr>
+        <tr><td class="mono">residencia_id</td><td><span class="type">UUID</span></td><td><span class="key key-fk">FK</span> <span class="key key-idx">IDX</span></td><td></td></tr>
+        <tr><td class="mono">ronda_id</td><td><span class="type">UUID</span></td><td><span class="key key-fk">FK</span> → rondas.id</td><td><span class="nullable">NULLABLE</span></td></tr>
+        <tr><td class="mono">residente_id</td><td><span class="type">UUID</span></td><td><span class="key key-fk">FK</span> → residentes.id</td><td>NOT NULL</td></tr>
+        <tr><td class="mono">severidad</td><td><span class="type">ENUM</span></td><td></td><td>'yellow' | 'red'</td></tr>
+        <tr><td class="mono">estado</td><td><span class="type">ENUM</span></td><td><span class="key key-idx">IDX</span></td><td>'open'|'acknowledged'|'assigned'|'escalated'|'in_verification'|'resolved'|'closed'</td></tr>
+        <tr><td class="mono">owner_id</td><td><span class="type">UUID</span></td><td><span class="key key-fk">FK</span> → staff_members.id</td><td><span class="nullable">NULLABLE</span> — 0 o 1 dueño activo</td></tr>
+        <tr><td class="mono">descripcion</td><td><span class="type">TEXT</span></td><td></td><td>NOT NULL</td></tr>
+        <tr><td class="mono">resultado_verificacion</td><td><span class="type">TEXT</span></td><td></td><td><span class="nullable">NULLABLE</span> — requerido para resolved</td></tr>
+        <tr><td class="mono">created_at</td><td><span class="type">TIMESTAMPTZ</span></td><td></td><td></td></tr>
+        <tr><td class="mono">resolved_at</td><td><span class="type">TIMESTAMPTZ</span></td><td></td><td><span class="nullable">NULLABLE</span></td></tr>
+        <tr><td class="mono">closed_at</td><td><span class="type">TIMESTAMPTZ</span></td><td></td><td><span class="nullable">NULLABLE</span> — solo si resolved_at existe</td></tr>
+      </tbody>
+    </table></div>
+
+    <!-- incidentes -->
+    <h3>incidentes</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Columna</th><th>Tipo</th><th>Llaves</th><th>Notas</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">id</td><td><span class="type">UUID</span></td><td><span class="key key-pk">PK</span></td><td></td></tr>
+        <tr><td class="mono">residencia_id</td><td><span class="type">UUID</span></td><td><span class="key key-fk">FK</span> <span class="key key-idx">IDX</span></td><td></td></tr>
+        <tr><td class="mono">alerta_id</td><td><span class="type">UUID</span></td><td><span class="key key-fk">FK</span> → alertas.id</td><td>NOT NULL</td></tr>
+        <tr><td class="mono">residente_id</td><td><span class="type">UUID</span></td><td><span class="key key-fk">FK</span> → residentes.id</td><td>NOT NULL</td></tr>
+        <tr><td class="mono">estado</td><td><span class="type">ENUM</span></td><td></td><td>'open'|'verification_in_progress'|'resolved'|'closed'</td></tr>
+        <tr><td class="mono">descripcion</td><td><span class="type">TEXT</span></td><td></td><td>NOT NULL</td></tr>
+        <tr><td class="mono">resultado_operativo</td><td><span class="type">TEXT</span></td><td></td><td><span class="nullable">NULLABLE</span> — requerido para closed</td></tr>
+        <tr><td class="mono">created_by</td><td><span class="type">UUID</span></td><td><span class="key key-fk">FK</span> → staff_members.id</td><td></td></tr>
+        <tr><td class="mono">created_at</td><td><span class="type">TIMESTAMPTZ</span></td><td></td><td></td></tr>
+      </tbody>
+    </table></div>
+
+    <!-- audit_events -->
+    <h3>audit_events — log inmutable (append-only)</h3>
+    <p><strong>Regla absoluta:</strong> ningún UPDATE ni DELETE en esta tabla. Solo INSERT. La UI no puede editar el audit.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Columna</th><th>Tipo</th><th>Llaves</th><th>Notas</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">id</td><td><span class="type">UUID</span></td><td><span class="key key-pk">PK</span></td><td></td></tr>
+        <tr><td class="mono">residencia_id</td><td><span class="type">UUID</span></td><td><span class="key key-fk">FK</span> <span class="key key-idx">IDX</span></td><td>NOT NULL</td></tr>
+        <tr><td class="mono">tipo</td><td><span class="type">ENUM</span></td><td><span class="key key-idx">IDX</span></td><td>Ver catálogo §05</td></tr>
+        <tr><td class="mono">actor_id</td><td><span class="type">UUID</span></td><td><span class="key key-fk">FK</span> → staff_members.id</td><td><span class="nullable">NULLABLE</span> — NULL para eventos del sistema</td></tr>
+        <tr><td class="mono">entidad_tipo</td><td><span class="type">TEXT</span></td><td><span class="key key-idx">IDX</span></td><td>'ronda'|'alerta'|'incidente'|'residente'|'staff'</td></tr>
+        <tr><td class="mono">entidad_id</td><td><span class="type">UUID</span></td><td><span class="key key-idx">IDX</span></td><td>ID de la entidad afectada</td></tr>
+        <tr><td class="mono">payload</td><td><span class="type">JSONB</span></td><td></td><td>Datos del evento — schema libre por tipo</td></tr>
+        <tr><td class="mono">created_at</td><td><span class="type">TIMESTAMPTZ</span></td><td><span class="key key-idx">IDX</span></td><td>NOT NULL · DEFAULT now()</td></tr>
+      </tbody>
+    </table></div>
+    <p style="font-size:12px">Índice compuesto: <code class="mono">(residencia_id, created_at DESC)</code> y <code class="mono">(entidad_tipo, entidad_id, created_at DESC)</code></p>
+  </section>
+
+  <!-- 5. CATÁLOGO EVENTOS -->
+  <section id="eventos">
+    <h2><span class="sec-num">05</span> Catálogo de eventos (20 tipos)</h2>
+    <div class="legend">
+      <span class="legend-item"><span class="dot" style="background:#2563EB"></span> Ronda</span>
+      <span class="legend-item"><span class="dot" style="background:#DC2626"></span> Alerta</span>
+      <span class="legend-item"><span class="dot" style="background:#7C3AED"></span> Administrativo</span>
+      <span class="legend-item"><span class="dot" style="background:#059669"></span> Sistema</span>
+    </div>
+    <div class="event-grid">
+      <span class="event-pill round">ROUND_SCHEDULED</span>
+      <span class="event-pill round">ROUND_DUE</span>
+      <span class="event-pill round">ROUND_STARTED</span>
+      <span class="event-pill round">ROUND_COMPLETED</span>
+      <span class="event-pill round">ROUND_OVERDUE</span>
+      <span class="event-pill round">ROUND_CANCELLED</span>
+      <span class="event-pill round">ROUND_REASSIGNED</span>
+      <span class="event-pill alert">ALERT_CREATED</span>
+      <span class="event-pill alert">ALERT_ACKNOWLEDGED</span>
+      <span class="event-pill alert">ALERT_ASSIGNED</span>
+      <span class="event-pill alert">ALERT_REASSIGNED</span>
+      <span class="event-pill alert">ALERT_ESCALATED</span>
+      <span class="event-pill alert">ALERT_VERIFICATION_STARTED</span>
+      <span class="event-pill alert">ALERT_RESOLVED</span>
+      <span class="event-pill alert">ALERT_CLOSED</span>
+      <span class="event-pill admin">INCIDENT_CREATED</span>
+      <span class="event-pill admin">INCIDENT_UPDATED</span>
+      <span class="event-pill admin">INCIDENT_CLOSED</span>
+      <span class="event-pill system">DEMO_RESET</span>
+      <span class="event-pill system">CLOCK_ADVANCED</span>
+    </div>
+  </section>
+
+  <!-- 6. VISTAS POR ROL -->
+  <section id="vistas">
+    <h2><span class="sec-num">06</span> Vistas por rol — qué ve cada usuario</h2>
+
+    <div class="role-grid">
+      <div class="role-card">
+        <h4>Cuidador</h4>
+        <ul>
+          <li>Mis rondas del turno</li>
+          <li>Estado de cada ronda</li>
+          <li>Iniciar / completar ronda</li>
+          <li>Registrar resultado</li>
+          <li>Solicitar apoyo</li>
+          <li>Ver residente asignado</li>
+        </ul>
+      </div>
+      <div class="role-card supervisor">
+        <h4>Supervisor</h4>
+        <ul>
+          <li>Dashboard: alertas activas</li>
+          <li>Rondas overdue del turno</li>
+          <li>Estado visual residentes</li>
+          <li>Asignar / reasignar alerta</li>
+          <li>Escalar a gerente</li>
+          <li>Iniciar verificación</li>
+          <li>Resolver alerta</li>
+          <li>Métricas del turno</li>
+        </ul>
+      </div>
+      <div class="role-card manager">
+        <h4>Gerente</h4>
+        <ul>
+          <li>Dashboard ejecutivo</li>
+          <li>Alertas escaladas</li>
+          <li>Historial de incidentes</li>
+          <li>Log de auditoría completo</li>
+          <li>Cerrar incidentes</li>
+          <li>Configurar rondas</li>
+          <li>Ver staff + disponibilidad</li>
+          <li>Exportar bitácora</li>
+        </ul>
+      </div>
+      <div class="role-card resident">
+        <h4>Demo Admin</h4>
+        <ul>
+          <li>Controlar reloj simulado</li>
+          <li>Avanzar escenarios</li>
+          <li>Reset del demo</li>
+          <li>Ver estado interno</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Datos que cada rol NO puede ver</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Dato</th><th>Cuidador</th><th>Supervisor</th><th>Gerente</th></tr></thead>
+      <tbody>
+        <tr><td>Audit log completo</td><td>❌</td><td>⚠️ parcial</td><td>✅</td></tr>
+        <tr><td>Alertas de otros turnos</td><td>❌</td><td>✅</td><td>✅</td></tr>
+        <tr><td>Configuración de planes / facturación</td><td>❌</td><td>❌</td><td>✅</td></tr>
+        <tr><td>Staff de otra residencia</td><td>❌</td><td>❌</td><td>❌</td></tr>
+        <tr><td>Datos de residente de otra residencia</td><td>❌</td><td>❌</td><td>❌</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- 7. API LAYER -->
+  <section id="api">
+    <h2><span class="sec-num">07</span> API layer — endpoints principales</h2>
+    <p>Todas las rutas requieren <code class="mono">residencia_id</code> en contexto de sesión. Ningún endpoint acepta datos de otra residencia.</p>
+    <pre><span class="c">── Rondas ────────────────────────────────────</span>
+<span class="kw">GET</span>    /rondas?estado=due,overdue&turno=actual
+<span class="kw">POST</span>   /rondas                          <span class="c">← programar nueva ronda</span>
+<span class="kw">PATCH</span>  /rondas/:id/start                <span class="c">← caregiver inicia</span>
+<span class="kw">PATCH</span>  /rondas/:id/complete             <span class="c">← caregiver completa + resultado</span>
+<span class="kw">PATCH</span>  /rondas/:id/cancel
+
+<span class="c">── Alertas ───────────────────────────────────</span>
+<span class="kw">GET</span>    /alertas?estado=open,assigned
+<span class="kw">PATCH</span>  /alertas/:id/acknowledge
+<span class="kw">PATCH</span>  /alertas/:id/assign              <span class="c">← body: { owner_id }</span>
+<span class="kw">PATCH</span>  /alertas/:id/escalate
+<span class="kw">PATCH</span>  /alertas/:id/start-verification
+<span class="kw">PATCH</span>  /alertas/:id/resolve             <span class="c">← body: { resultado_verificacion }</span>
+<span class="kw">PATCH</span>  /alertas/:id/close
+
+<span class="c">── Residentes ────────────────────────────────</span>
+<span class="kw">GET</span>    /residentes                       <span class="c">← incluye estado_visual derivado</span>
+<span class="kw">GET</span>    /residentes/:id                   <span class="c">← detalle + últimas rondas</span>
+
+<span class="c">── Auditoría ─────────────────────────────────</span>
+<span class="kw">GET</span>    /audit?entidad_tipo=ronda&entidad_id=:id
+<span class="kw">GET</span>    /audit?desde=ISO&hasta=ISO         <span class="c">← solo gerente</span>
+
+<span class="c">── Motor temporal (interno, no expuesto al cliente) ──</span>
+<span class="kw">POST</span>   /internal/tick                    <span class="c">← cron cada N min</span></pre>
+
+    <p>Cada mutación: (1) valida transición en <code class="mono">domain/transitions.ts</code>, (2) escribe a la tabla, (3) inserta en <code class="mono">audit_events</code> — todo en una transacción.</p>
+  </section>
+
+  <!-- 8. REPO PÚBLICO VS PRIVADO -->
+  <section id="repo">
+    <h2><span class="sec-num">08</span> Repositorio — público vs. privado</h2>
+    <p>Para la competencia se mantienen dos repos: <strong>demo público</strong> (lo que ven los jueces) y <strong>privado completo</strong> (todo el proyecto).</p>
+
+    <div class="table-wrap"><table>
+      <thead><tr><th>Carpeta / archivo</th><th>Repo público</th><th>Repo privado</th><th>Razón</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">src/</td><td class="check">✅</td><td class="check">✅</td><td>Código del MVP — transparencia</td></tr>
+        <tr><td class="mono">tests/</td><td class="check">✅</td><td class="check">✅</td><td>Evidencia de calidad</td></tr>
+        <tr><td class="mono">docs/</td><td class="check">✅</td><td class="check">✅</td><td>Documentación del producto</td></tr>
+        <tr><td class="mono">dist/</td><td class="check">✅</td><td class="check">✅</td><td>GitHub Pages — demo interactiva</td></tr>
+        <tr><td class="mono">contract/*.md / *.sha256</td><td class="check">✅</td><td class="check">✅</td><td>Contrato congelado — credibilidad</td></tr>
+        <tr><td class="mono">contract/*.docx / *.zip</td><td class="cross">❌</td><td class="check">✅</td><td>Formato interno</td></tr>
+        <tr><td class="mono">README.md</td><td class="check">✅ versión pública</td><td class="check">✅</td><td>README público = guía del juez</td></tr>
+        <tr><td class="mono">WORKSHOP_DEMO_SCRIPT.md</td><td class="check">✅</td><td class="check">✅</td><td>Script del demo</td></tr>
+        <tr><td class="mono">CHANGELOG.md</td><td class="check">✅</td><td class="check">✅</td><td>Historial visible</td></tr>
+        <tr><td class="mono">business/*.pptx / *.docx</td><td class="cross">❌</td><td class="check">✅</td><td>No revelar pitch antes de presentar</td></tr>
+        <tr><td class="mono">tools/</td><td class="cross">❌</td><td class="check">✅</td><td>Generadores internos — no relevante para jueces</td></tr>
+        <tr><td class="mono">CLAUDE.md</td><td class="cross">❌</td><td class="check">✅</td><td>Instrucciones internas AI</td></tr>
+        <tr><td class="mono">.claude/</td><td class="cross">❌</td><td class="check">✅</td><td>Config de sesión AI</td></tr>
+        <tr><td class="mono">docs/09-datos-mercado.md</td><td class="check">✅</td><td class="check">✅</td><td>Fuentes verificadas — transparencia</td></tr>
+        <tr><td class="mono">docs/RESUME.md</td><td class="cross">❌</td><td class="check">✅</td><td>Estado interno del track E</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>.gitignore para el repo público</h3>
+    <pre><span class="c"># Materiales internos</span>
+business/
+tools/
+CLAUDE.md
+.claude/
+contract/*.docx
+contract/*.zip
+docs/RESUME.md
+docs/08-entregables.md
+docs/10-diagnostico-concurso.md
+docs/11-respuestas-criterios-concurso.md
+
+<span class="c"># Standard</span>
+node_modules/
+*.tsbuildinfo</pre>
+  </section>
+
+  <!-- 9. CIBERSEGURIDAD -->
+  <section id="ciberseguridad">
+    <h2><span class="sec-num">09</span> Ciberseguridad</h2>
+    <p>Los datos de adultos mayores son <strong>datos sensibles por ley</strong> bajo la LFPDPPP (Ley Federal de Protección de Datos Personales en Posesión de los Particulares). El diseño de seguridad es <em>privacidad por diseño</em>: el dato más seguro es el que nunca sale del dispositivo — decisión mantenida en v0.1.0 y aplicada como ventaja diferenciadora frente a soluciones cloud-first.</p>
+
+    <h3>Principios de diseño de seguridad</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Principio</th><th>Implementación</th><th>Conexión con sección</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Aislamiento de tenant</strong></td><td>Cada query lleva <code class="mono">residencia_id</code>. Ningún dato cruza entre residencias — enforced en API layer.</td><td>§02 Multi-tenant, §07 API</td></tr>
+        <tr><td><strong>Control de acceso basado en roles (RBAC)</strong></td><td>Cada endpoint valida el rol del actor. Caregiver no puede cerrar alertas; supervisor no puede ver auditoría completa; gerente no ve otra residencia.</td><td>§06 Vistas / roles</td></tr>
+        <tr><td><strong>Audit log inmutable</strong></td><td><code class="mono">audit_events</code>: solo INSERT, nunca UPDATE ni DELETE. Toda acción con actor, timestamp, payload. Es evidencia legal ante inspección.</td><td>§04 Data model, §05 Eventos</td></tr>
+        <tr><td><strong>Privacidad por diseño (v0.1.0)</strong></td><td>En el MVP, ningún dato sale del dispositivo (localStorage). No hay API externa, no hay sincronización. La ausencia de red es la mejor defensa.</td><td>§08 Repo público</td></tr>
+        <tr><td><strong>Cifrado en tránsito (v0.2)</strong></td><td>HTTPS/TLS en toda comunicación. Google Cloud Run fuerza TLS. Firebase usa cifrado en tránsito por defecto.</td><td>§07 API layer</td></tr>
+        <tr><td><strong>Cifrado en reposo (v0.2)</strong></td><td>GCP cifra datos en reposo por defecto (AES-256). Firebase Storage y Firestore cifran en reposo sin configuración adicional.</td><td>§04 Data model</td></tr>
+        <tr><td><strong>Minimización de datos</strong></td><td>El MVP usa datos ficticios. En producción: ningún campo que no sea estrictamente necesario para la operación. <code class="mono">estado_visual</code> del residente no se persiste — es derivado.</td><td>§04 Data model</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>Marco legal aplicable</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Norma</th><th>Obligación relevante</th><th>Cómo CareSignal la cumple</th></tr></thead>
+      <tbody>
+        <tr><td><strong>LFPDPPP</strong></td><td>Datos sensibles (salud, biometría, condición física) requieren consentimiento expreso y medidas de seguridad reforzadas.</td><td>Datos ficticios en MVP. En producción: consentimiento en onboarding, cifrado E2E, audit log de accesos.</td></tr>
+        <tr><td><strong>NOM-031-SSA3-2012</strong></td><td>Expediente administrativo permanente por residente; bitácoras de operación.</td><td><code class="mono">audit_events</code> es el registro permanente. Append-only garantiza integridad.</td></tr>
+        <tr><td><strong>LGS Art. 419</strong></td><td>Multas por incumplimiento en establecimientos de atención médica continua.</td><td>La bitácora auditable es la evidencia que protege al director ante inspección, queja o demanda.</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>Arquitectura de seguridad v0.2 — GCP + Gemini</h3>
+    <pre><span class="c">── Capas de seguridad en producción ──────────────────────</span>
+
+<span class="kw">Perímetro</span>
+  └── HTTPS/TLS obligatorio — Google Cloud Run
+  └── Autenticación: Firebase Auth (JWT firmado por Google)
+  └── Autorización: middleware RBAC en cada endpoint
+
+<span class="kw">Datos en reposo</span>
+  └── PostgreSQL / Firestore: AES-256 (GCP por defecto)
+  └── audit_events: particionado por residencia_id + fecha
+  └── Backups cifrados automáticos
+
+<span class="kw">Datos en tránsito</span>
+  └── TLS 1.3 en todas las conexiones
+  └── Tokens JWT con expiración corta (1h access / 7d refresh)
+  └── Headers: HSTS, CSP, X-Frame-Options
+
+<span class="kw">Agente de ciberseguridad (Gemini API)</span>
+  └── Monitorea patrones anómalos en audit_events
+  └── Detecta: accesos fuera de turno, cambios en masa, escalaciones inusuales
+  └── Genera alertas internas al gerente — no al residente
+  └── NO procesa datos identificables — solo metadatos de eventos
+
+<span class="kw">Aislamiento multi-tenant</span>
+  └── Row-Level Security (RLS) en PostgreSQL por residencia_id
+  └── Firebase Security Rules: cada documento lleva /residencias/{id}/
+  └── Ningún query devuelve datos de otro tenant</pre>
+
+    <h3>Superficie de ataque — qué NO está expuesto</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Vector</th><th>Estado v0.1.0 (MVP)</th><th>Estado v0.2 (producción)</th></tr></thead>
+      <tbody>
+        <tr><td>API pública</td><td class="check">✅ No existe — localStorage solo</td><td>Autenticada + RBAC + rate limiting</td></tr>
+        <tr><td>Datos reales de residentes</td><td class="check">✅ Solo datos ficticios</td><td>Cifrados en reposo + acceso por rol</td></tr>
+        <tr><td>Credenciales en repo</td><td class="check">✅ Sin secretos en código</td><td>GCP Secret Manager + variables de entorno</td></tr>
+        <tr><td>Acceso entre tenants</td><td class="check">✅ Imposible — localStorage por sesión</td><td>RLS + middleware de tenant</td></tr>
+        <tr><td>Audit log editable</td><td class="check">✅ Append-only por diseño</td><td>INSERT-only + permisos de DB restringidos</td></tr>
+        <tr><td>Datos de residente en Gemini</td><td class="check">✅ No aplica</td><td>Solo metadatos de eventos — sin PII</td></tr>
+      </tbody>
+    </table></div>
+
+    <p style="font-size:12px;margin-top:1rem">Marco: LFPDPPP · NOM-031-SSA3-2012 · LGS Art. 419 · OWASP Top 10 · GCP Security Baseline</p>
+  </section>
+
+</main>
