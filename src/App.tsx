@@ -43,10 +43,13 @@ const App = (): JSX.Element => (
 
           <Route element={<RoleGuard allowedRoles={['supervisor', 'manager', 'demo_admin']} />}>
             <Route path="dashboard" element={<SupervisorDashboardPage />} />
-            <Route path="residentes" element={<ResidentDetailPage />} />
-            <Route path="residentes/:residentId" element={<ResidentDetailPage />} />
             <Route path="alertas" element={<AlertDetailPage />} />
             <Route path="alertas/:alertId" element={<AlertDetailPage />} />
+          </Route>
+
+          <Route element={<RoleGuard allowedRoles={['caregiver', 'supervisor', 'manager', 'demo_admin']} />}>
+            <Route path="residentes" element={<ResidentDetailPage />} />
+            <Route path="residentes/:residentId" element={<ResidentDetailPage />} />
           </Route>
 
           <Route element={<RoleGuard allowedRoles={['manager', 'demo_admin']} />}>

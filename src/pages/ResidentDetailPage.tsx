@@ -7,12 +7,17 @@
  */
 
 import { useMemo } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, Navigate, useParams } from 'react-router-dom';
 import { useDemoSession } from '../components/DemoSessionContext';
 import { StatusBadge } from '../components/StatusBadge';
 import { getResidentById, listAlerts, listResidents, listRounds, listStaffMembers } from '../data/repository';
 import { deriveResidentStatus } from '../domain/rules';
+import type { Round } from '../domain/types';
 import type { CareLevel } from '../domain/types';
+
+function assignedResidentIds(rounds: Round[], staffId: string): Set<string> {
+  return new Set(rounds.filter((r) => r.assignedStaffId === staffId).map((r) => r.residentId));
+}
 
 const CARE_LEVEL_LABEL: Record<CareLevel, string> = {
   low: 'Cuidado bajo',
@@ -21,11 +26,17 @@ const CARE_LEVEL_LABEL: Record<CareLevel, string> = {
 };
 
 const ResidentList = (): JSX.Element => {
-  const { refreshToken } = useDemoSession();
+  const { refreshToken, activeStaff } = useDemoSession();
   const { residents, rounds, alerts } = useMemo(
     () => ({ residents: listResidents(), rounds: listRounds(), alerts: listAlerts() }),
     [refreshToken],
   );
+
+  const visibleResidents = useMemo(() => {
+    if (activeStaff.role !== 'caregiver') return residents;
+    const ids = assignedResidentIds(rounds, activeStaff.id);
+    return residents.filter((r) => ids.has(r.id));
+  }, [residents, rounds, activeStaff]);
 
   return (
     <section>
@@ -41,7 +52,7 @@ const ResidentList = (): JSX.Element => {
             </tr>
           </thead>
           <tbody>
-            {residents.map((resident) => (
+            {visibleResidents.map((resident) => (
               <tr key={resident.id}>
                 <td>
                   <Link to={`/residentes/${resident.id}`}>{resident.displayName}</Link>
@@ -61,7 +72,7 @@ const ResidentList = (): JSX.Element => {
 };
 
 const ResidentDetail = ({ residentId }: { residentId: string }): JSX.Element => {
-  const { refreshToken } = useDemoSession();
+  const { refreshToken, activeStaff } = useDemoSession();
   const data = useMemo(
     () => ({
       resident: getResidentById(residentId),
@@ -79,6 +90,11 @@ const ResidentDetail = ({ residentId }: { residentId: string }): JSX.Element => 
         <Link to="/residentes">Volver a la lista de residentes</Link>
       </section>
     );
+  }
+
+  if (activeStaff.role === 'caregiver') {
+    const ids = assignedResidentIds(data.rounds, activeStaff.id);
+    if (!ids.has(residentId)) return <Navigate to="/residentes" replace />;
   }
 
   const status = deriveResidentStatus(residentId, data.rounds, data.alerts);
