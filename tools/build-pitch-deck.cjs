@@ -698,32 +698,43 @@ function slideModelo(prs) {
     x: 0.5, y: 0.25, w: 9.16, h: 0.55,
     ...T.slideTitulo,
   });
-  s.addText('SaaS B2B · por residencia / mes · margen bruto > 97 %', {
+  s.addText('Freemium + SaaS B2B · por residencia / mes · margen bruto > 80 %', {
     x: 0.5, y: 0.8, w: 9.16, h: 0.35,
     ...T.slideSubtitulo,
   });
   s.addShape('line', { x: 0.5, y: 1.2, w: 9.16, h: 0, line: { color: C.grisSep, width: 1 } });
 
-  // Tres planes
+  // Cuatro planes: Freemium + 3 pagos
   const planes = [
     {
+      nombre: 'Demo Operacional',
+      precio: '$0',
+      sub: 'Sin tarjeta · sin límite de tiempo',
+      residentes: 'Hasta 8 residentes',
+      supervisores: '1 usuario activo',
+      cuidadores: 'Rondas básicas',
+      nota: 'Sin responsabilidad legal',
+      color: 'F0FAF4',
+      colorPrecio: '1a6b3c',
+    },
+    {
       nombre: 'Esencial',
-      precio: '$1,490',
+      precio: '$1,990',
       sub: 'MXN / mes',
-      residentes: 'Hasta 25 residentes',
-      supervisores: '1 supervisor',
-      cuidadores: 'Hasta 5 cuidadores',
+      residentes: 'Hasta 30 residentes',
+      supervisores: '3 usuarios',
+      cuidadores: 'Alertas + auditoría',
       nota: 'Residencias pequeñas',
       color: C.tarjeta,
       colorPrecio: C.azul,
     },
     {
       nombre: 'Profesional',
-      precio: '$3,490',
+      precio: '$3,990',
       sub: 'MXN / mes',
-      residentes: 'Hasta 75 residentes',
-      supervisores: 'Hasta 3 supervisores',
-      cuidadores: 'Hasta 15 cuidadores',
+      residentes: 'Hasta 80 residentes',
+      supervisores: 'Hasta 10 usuarios',
+      cuidadores: 'Dashboard supervisor',
       nota: 'Residencias medianas',
       color: 'EFF6FF',
       colorPrecio: C.azulOscuro,
@@ -731,23 +742,23 @@ function slideModelo(prs) {
     },
     {
       nombre: 'Institucional',
-      precio: '$6,990',
+      precio: '$8,490',
       sub: 'MXN / mes',
-      residentes: 'Sin límite',
+      residentes: 'Sin límite · multi-sede',
       supervisores: 'Sin límite',
-      cuidadores: 'Sin límite',
-      nota: 'Cadenas · soporte prioritario',
+      cuidadores: 'SLA + soporte dedicado',
+      nota: 'Cadenas institucionales',
       color: C.tarjeta,
       colorPrecio: C.azul,
     },
   ];
 
   planes.forEach((p, i) => {
-    const x = 0.5 + i * 3.08;
+    const x = 0.18 + i * 2.38;
     const bordeColor = p.destacado ? C.azul : C.grisSep;
     const bordeW = p.destacado ? 1.5 : 0.5;
     s.addShape('roundRect', {
-      x, y: 1.38, w: 2.88, h: 4.6,
+      x, y: 1.38, w: 2.2, h: 4.6,
       fill: { color: p.color },
       line: { color: bordeColor, width: bordeW },
       rectRadius: 0.12,
@@ -755,28 +766,28 @@ function slideModelo(prs) {
 
     if (p.destacado) {
       s.addShape('roundRect', {
-        x: x + 0.4, y: 1.3, w: 2.05, h: 0.32,
+        x: x + 0.3, y: 1.3, w: 1.6, h: 0.32,
         fill: { color: C.azul }, line: { color: C.azul }, rectRadius: 0.06,
       });
-      s.addText('Más popular', { x: x + 0.4, y: 1.3, w: 2.05, h: 0.32, fontSize: 9, bold: true, color: C.blanco, align: 'center', fontFace: 'Arial', valign: 'middle' });
+      s.addText('Sweet spot', { x: x + 0.3, y: 1.3, w: 1.6, h: 0.32, fontSize: 9, bold: true, color: C.blanco, align: 'center', fontFace: 'Arial', valign: 'middle' });
     }
 
-    s.addText(p.nombre,  { x, y: 1.55, w: 2.88, h: 0.4,  fontSize: 15, bold: true, color: C.grafito, align: 'center', fontFace: 'Arial' });
-    s.addText(p.precio,  { x, y: 2.0,  w: 2.88, h: 0.7,  fontSize: 32, bold: true, color: p.colorPrecio, align: 'center', fontFace: 'Arial' });
-    s.addText(p.sub,     { x, y: 2.72, w: 2.88, h: 0.3,  fontSize: 11, color: C.gris, align: 'center', fontFace: 'Arial' });
+    s.addText(p.nombre,  { x, y: 1.55, w: 2.2, h: 0.4,  fontSize: 11, bold: true, color: C.grafito, align: 'center', fontFace: 'Arial' });
+    s.addText(p.precio,  { x, y: 2.0,  w: 2.2, h: 0.65, fontSize: 26, bold: true, color: p.colorPrecio, align: 'center', fontFace: 'Arial' });
+    s.addText(p.sub,     { x, y: 2.65, w: 2.2, h: 0.35, fontSize: 9,  color: C.gris, align: 'center', fontFace: 'Arial' });
 
-    s.addShape('line', { x: x + 0.2, y: 3.1, w: 2.48, h: 0, line: { color: C.grisSep, width: 0.5 } });
+    s.addShape('line', { x: x + 0.15, y: 3.08, w: 1.9, h: 0, line: { color: C.grisSep, width: 0.5 } });
 
     [p.residentes, p.supervisores, p.cuidadores, p.nota].forEach((txt, j) => {
       const bold = j === 3;
       s.addText(txt, {
-        x: x + 0.15, y: 3.22 + j * 0.54, w: 2.58, h: 0.46,
-        fontSize: 11.5, bold, color: bold ? C.azul : C.grafito, align: 'center', fontFace: 'Arial',
+        x: x + 0.1, y: 3.2 + j * 0.54, w: 2.0, h: 0.46,
+        fontSize: 10, bold, color: bold ? C.azul : C.grafito, align: 'center', fontFace: 'Arial',
       });
     });
   });
 
-  s.addText('⚠️ Precios de referencia — no validados con clientes. Declarar ante jueces.', {
+  s.addText('⚠️ Precios de referencia — no validados con clientes reales. El tier Freemium opera sin SLA ni responsabilidad legal. Declarar ante jueces.', {
     x: 0.5, y: 6.88, w: 9.16, h: 0.22, ...T.nota, align: 'left',
   });
 }
