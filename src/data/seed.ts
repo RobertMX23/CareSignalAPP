@@ -39,13 +39,8 @@ const START_MS = Date.parse(DEMO_START_TIME);
 const atOffset = (minutes: number): ISODateTime =>
   new Date(START_MS + minutes * 60_000).toISOString();
 
-// --- Turnos (campo libre `StaffMember.shift`, no forma parte de la taxonomía) ---
-
-const SHIFTS = {
-  morning: 'Turno mañana (06:00–14:00)',
-  afternoon: 'Turno tarde (14:00–22:00)',
-  night: 'Turno noche (22:00–06:00)',
-} as const;
+// --- Alias para legibilidad en el seed (los IDs canónicos vienen de taxonomy.ts) ---
+const SHIFT = { morning: 'morning', afternoon: 'afternoon', night: 'night' } as const;
 
 // --- Acumulador de auditoría --------------------------------------------------
 
@@ -140,10 +135,10 @@ export const buildResidents = (): Resident[] => {
 
 export const buildStaffMembers = (): StaffMember[] => {
   const staff: StaffMember[] = [
-    { id: 'staff-caregiver-01', displayName: 'Diego Franco', role: 'caregiver', shift: SHIFTS.morning, availability: 'available', isActive: true },
-    { id: 'staff-caregiver-02', displayName: 'Valeria Núñez', role: 'caregiver', shift: SHIFTS.afternoon, availability: 'busy', isActive: true },
-    { id: 'staff-caregiver-03', displayName: 'Tomás Reyes', role: 'caregiver', shift: SHIFTS.night, availability: 'off_shift', isActive: true },
-    { id: 'staff-supervisor-01', displayName: 'Patricia Möller', role: 'supervisor', shift: SHIFTS.morning, availability: 'available', isActive: true },
+    { id: 'staff-caregiver-01', displayName: 'Diego Franco', role: 'caregiver', shift: SHIFT.morning, availability: 'available', isActive: true },
+    { id: 'staff-caregiver-02', displayName: 'Valeria Núñez', role: 'caregiver', shift: SHIFT.afternoon, availability: 'busy', isActive: true },
+    { id: 'staff-caregiver-03', displayName: 'Tomás Reyes', role: 'caregiver', shift: SHIFT.night, availability: 'off_shift', isActive: true },
+    { id: 'staff-supervisor-01', displayName: 'Patricia Möller', role: 'supervisor', shift: SHIFT.morning, availability: 'available', isActive: true },
   ];
   staff.forEach((s) => recordCreation('staff_member', s.id, 'staff_member:created', 'active', SYSTEM_SEED_ACTOR, atOffset(-2880)));
   return staff;

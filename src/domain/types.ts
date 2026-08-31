@@ -11,6 +11,7 @@
 
 import type {
   Role,
+  Shift,
   RoundType,
   RoundStatus,
   AlertStatus,
@@ -24,6 +25,7 @@ import type {
 
 export type {
   Role,
+  Shift,
   RoundType,
   RoundStatus,
   AlertStatus,
@@ -58,7 +60,7 @@ export interface StaffMember {
   id: ID;
   displayName: string;
   role: Role;
-  shift: string;
+  shift: Shift;
   availability: StaffAvailability;
   isActive: boolean;
 }

@@ -160,8 +160,8 @@ tasks:
     level: 2
     title: "Definir SHIFTS enum para StaffMember.shift (DIV-02)"
     gap_ref: "DIV-02"
-    status: pending
-    completed_at: ~
+    status: done
+    completed_at: "2026-08-30"
     complexity: low
     contract_change: false
     depends_on: [T1]

@@ -70,6 +70,10 @@ export const INCIDENT_STATUSES = [
 ] as const;
 export type IncidentStatus = (typeof INCIDENT_STATUSES)[number];
 
+// --- Turnos del personal ---------------------------------------------------
+export const SHIFTS = ['morning', 'afternoon', 'night', 'on_call'] as const;
+export type Shift = (typeof SHIFTS)[number];
+
 // --- Disponibilidad del personal -------------------------------------------
 export const STAFF_AVAILABILITIES = ['available', 'busy', 'off_shift'] as const;
 export type StaffAvailability = (typeof STAFF_AVAILABILITIES)[number];
@@ -125,6 +129,7 @@ export const isAlertSeverity = (v: string): v is AlertSeverity =>
   includes(ALERT_SEVERITIES, v);
 export const isIncidentStatus = (v: string): v is IncidentStatus =>
   includes(INCIDENT_STATUSES, v);
+export const isShift = (v: string): v is Shift => includes(SHIFTS, v);
 export const isStaffAvailability = (v: string): v is StaffAvailability =>
   includes(STAFF_AVAILABILITIES, v);
 export const isVerificationOutcome = (v: string): v is VerificationOutcome =>

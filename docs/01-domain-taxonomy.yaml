@@ -84,6 +84,18 @@ incident_states:
     - resolved
     - closed
 
+staff_shifts:
+  note: "Turnos operativos del personal. IDs de máquina; etiquetas en dict_ui_labels. on_call reservado para guardias de llamada."
+  values:
+    - id: morning
+      es: "Turno mañana (06:00–14:00)"
+    - id: afternoon
+      es: "Turno tarde (14:00–22:00)"
+    - id: night
+      es: "Turno noche (22:00–06:00)"
+    - id: on_call
+      es: "Guardia de llamada"
+
 staff_availability:
   values:
     - available

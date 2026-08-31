@@ -229,6 +229,25 @@ catalog_incident_states:
 
 # A7. Disponibilidad del personal
 # ────────────────────────────────
+# A09b. Turnos del personal
+catalog_staff_shifts:
+  note: "IDs de máquina definidos en src/domain/taxonomy.ts SHIFTS. Etiquetas en dict_ui_labels."
+  ts_const: "SHIFTS"
+  ts_type: "Shift"
+  ts_guard: "isShift()"
+  - id: morning
+    es: "Turno mañana"
+    horario: "06:00–14:00"
+  - id: afternoon
+    es: "Turno tarde"
+    horario: "14:00–22:00"
+  - id: night
+    es: "Turno noche"
+    horario: "22:00–06:00"
+  - id: on_call
+    es: "Guardia de llamada"
+    horario: "variable"
+
 catalog_staff_availability:
   - id: available
     es: "Disponible"
@@ -633,6 +652,11 @@ dict_ui_labels:
   available:                "Disponible"
   busy:                     "Ocupado"
   off_shift:                "Fuera de turno"
+  # Turnos (Shift enum)
+  morning:                  "Turno mañana (06:00–14:00)"
+  afternoon:                "Turno tarde (14:00–22:00)"
+  night:                    "Turno noche (22:00–06:00)"
+  on_call:                  "Guardia de llamada"
   # Resident status
   green:                    "Sin novedad"
   # yellow already mapped above
