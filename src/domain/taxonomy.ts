@@ -70,6 +70,10 @@ export const INCIDENT_STATUSES = [
 ] as const;
 export type IncidentStatus = (typeof INCIDENT_STATUSES)[number];
 
+// --- Nivel de cuidado del residente (v0.1.1 — reemplaza monitoringFrequency) --
+export const CARE_LEVELS = ['low', 'medium', 'high'] as const;
+export type CareLevel = (typeof CARE_LEVELS)[number];
+
 // --- Turnos del personal ---------------------------------------------------
 export const SHIFTS = ['morning', 'afternoon', 'night', 'on_call'] as const;
 export type Shift = (typeof SHIFTS)[number];
@@ -166,6 +170,7 @@ export const isAlertSeverity = (v: string): v is AlertSeverity =>
   includes(ALERT_SEVERITIES, v);
 export const isIncidentStatus = (v: string): v is IncidentStatus =>
   includes(INCIDENT_STATUSES, v);
+export const isCareLevel = (v: string): v is CareLevel => includes(CARE_LEVELS, v);
 export const isShift = (v: string): v is Shift => includes(SHIFTS, v);
 export const isStaffAvailability = (v: string): v is StaffAvailability =>
   includes(STAFF_AVAILABILITIES, v);

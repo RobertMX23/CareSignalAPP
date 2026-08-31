@@ -12,6 +12,13 @@ import { useDemoSession } from '../components/DemoSessionContext';
 import { StatusBadge } from '../components/StatusBadge';
 import { getResidentById, listAlerts, listResidents, listRounds, listStaffMembers } from '../data/repository';
 import { deriveResidentStatus } from '../domain/rules';
+import type { CareLevel } from '../domain/types';
+
+const CARE_LEVEL_LABEL: Record<CareLevel, string> = {
+  low: 'Cuidado bajo',
+  medium: 'Cuidado medio',
+  high: 'Cuidado alto',
+};
 
 const ResidentList = (): JSX.Element => {
   const { refreshToken } = useDemoSession();
@@ -40,7 +47,7 @@ const ResidentList = (): JSX.Element => {
                   <Link to={`/residentes/${resident.id}`}>{resident.displayName}</Link>
                 </td>
                 <td>{resident.room}</td>
-                <td>{resident.monitoringFrequency}</td>
+                <td>{CARE_LEVEL_LABEL[resident.careLevel]}</td>
                 <td>
                   <StatusBadge status={deriveResidentStatus(resident.id, rounds, alerts)} />
                 </td>
@@ -84,7 +91,7 @@ const ResidentDetail = ({ residentId }: { residentId: string }): JSX.Element => 
       </p>
       <h1>{data.resident.displayName}</h1>
       <p>
-        Habitación {data.resident.room} · {data.resident.monitoringFrequency} · <StatusBadge status={status} />
+        Habitación {data.resident.room} · {CARE_LEVEL_LABEL[data.resident.careLevel]} · <StatusBadge status={status} />
       </p>
 
       <h2>Rondas</h2>

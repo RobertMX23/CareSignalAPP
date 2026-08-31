@@ -487,20 +487,22 @@ catalog_room_types:
     es: "Compartida"
     es_description: "Habitación para dos o más residentes"
 
-# A13. Niveles de cuidado del residente
-# ──────────────────────────────────────
+# A13. Niveles de cuidado del residente — CareLevel (v0.1.1)
+# ─────────────────────────────────────────────────────────────
+# typescript_type: CareLevel  (src/domain/taxonomy.ts → CARE_LEVELS)
+# Reemplaza el campo monitoringFrequency: string de v0.1.0 (contrato v0.1.1 C-01)
 catalog_care_levels:
   note: "Determina la frecuencia y tipo de rondas recomendadas. No es diagnóstico."
-  - id: bajo
-    es: "Bajo"
+  - id: low
+    es: "Cuidado bajo"
     es_description: "Residente con alta autonomía; rondas de verificación de rutina"
     priority: 1
-  - id: medio
-    es: "Medio"
+  - id: medium
+    es: "Cuidado medio"
     es_description: "Residente con autonomía parcial; requiere asistencia en algunas actividades"
     priority: 2
-  - id: alto
-    es: "Alto"
+  - id: high
+    es: "Cuidado alto"
     es_description: "Residente con dependencia significativa; rondas frecuentes y asistencia activa"
     priority: 3
 

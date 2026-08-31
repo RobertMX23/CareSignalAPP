@@ -7,7 +7,7 @@
 # Estado: Chunk 1 / Gate C1. Solo documentación; sin código.
 
 meta:
-  baseline: "0.1.0-workshop-frozen"
+  baseline: "0.1.1"
   status: "FROZEN"
   language: "es-MX"
   authority_rank: 3
@@ -117,6 +117,17 @@ resident_status_derived:
       rule: "Existe retraso inicial o alerta amarilla activa."
     - id: red
       rule: "Existe ronda vencida crítica o alerta roja no resuelta."
+
+# Niveles de cuidado del residente (v0.1.1 — reemplaza monitoringFrequency string).
+care_levels:
+  note: "Campo Resident.careLevel: CareLevel. Determina frecuencia de rondas. No es diagnóstico."
+  values:
+    - id: low
+      es: "cuidado bajo"
+    - id: medium
+      es: "cuidado medio"
+    - id: high
+      es: "cuidado alto"
 
 # Resultados de verificación permitidos. Definidos en Chunk 2 (Gate C2) porque el
 # modelo congelado §8.4 y §8.5 ya los referencia en Alert.verificationOutcome e

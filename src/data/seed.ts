@@ -116,16 +116,16 @@ const applyIncident = (
 
 export const buildResidents = (): Resident[] => {
   const residents: Resident[] = [
-    { id: 'resident-01', displayName: 'Marta Ibáñez', room: '101', monitoringFrequency: 'Cada 4 horas', isActive: true },
-    { id: 'resident-02', displayName: 'Antonio Salas', room: '102', monitoringFrequency: 'Cada 4 horas', isActive: true },
-    { id: 'resident-03', displayName: 'Carmen Duarte', room: '103', monitoringFrequency: 'Cada 2 horas', isActive: true },
-    { id: 'resident-04', displayName: 'Luis Peralta', room: '104', monitoringFrequency: 'Cada 2 horas', isActive: true },
-    { id: 'resident-05', displayName: 'Elena Vidal', room: '105', monitoringFrequency: 'Cada 2 horas', isActive: true },
-    { id: 'resident-06', displayName: 'Ramón Ochoa', room: '106', monitoringFrequency: 'Cada 4 horas', isActive: true },
-    { id: 'resident-07', displayName: 'Sofía Lezama', room: '107', monitoringFrequency: 'Cada 2 horas', isActive: true },
-    { id: 'resident-08', displayName: 'Pedro Andrade', room: '108', monitoringFrequency: 'Cada 4 horas', isActive: true },
-    { id: 'resident-09', displayName: 'Isabel Correa', room: '109', monitoringFrequency: 'Cada 6 horas', isActive: true },
-    { id: 'resident-10', displayName: 'Manuel Bravo', room: '110', monitoringFrequency: 'Cada 6 horas', isActive: true },
+    { id: 'resident-01', displayName: 'Marta Ibáñez', room: '101', careLevel: 'medium', isActive: true },
+    { id: 'resident-02', displayName: 'Antonio Salas', room: '102', careLevel: 'medium', isActive: true },
+    { id: 'resident-03', displayName: 'Carmen Duarte', room: '103', careLevel: 'high', isActive: true },
+    { id: 'resident-04', displayName: 'Luis Peralta', room: '104', careLevel: 'high', isActive: true },
+    { id: 'resident-05', displayName: 'Elena Vidal', room: '105', careLevel: 'high', isActive: true },
+    { id: 'resident-06', displayName: 'Ramón Ochoa', room: '106', careLevel: 'medium', isActive: true },
+    { id: 'resident-07', displayName: 'Sofía Lezama', room: '107', careLevel: 'high', isActive: true },
+    { id: 'resident-08', displayName: 'Pedro Andrade', room: '108', careLevel: 'medium', isActive: true },
+    { id: 'resident-09', displayName: 'Isabel Correa', room: '109', careLevel: 'low', isActive: true },
+    { id: 'resident-10', displayName: 'Manuel Bravo', room: '110', careLevel: 'low', isActive: true },
   ];
   residents.forEach((r) => recordCreation('resident', r.id, 'RESIDENT_CREATED', 'active', SYSTEM_SEED_ACTOR, atOffset(-2880)));
   return residents;

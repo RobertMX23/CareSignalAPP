@@ -426,8 +426,8 @@ tasks:
     level: 4
     title: "Renombrar monitoringFrequency → careLevel + definir enum CARE_LEVELS (DIV-01)"
     gap_ref: "DIV-01"
-    status: pending
-    completed_at: ~
+    status: done
+    completed_at: "2026-08-30"
     complexity: high
     contract_change: true
     contract_version_required: "0.1.1"
@@ -455,33 +455,33 @@ tasks:
       - docs/14-vocabulario-maestro.yaml
     subtasks:
       - id: T12.1
-        desc: "GATE — Roberto aprueba el renombre y el bump de versión de contrato a 0.1.1"
-        status: pending
+        desc: "GATE — Roberto aprueba el renombre y el bump a v0.1.1"
+        status: done
         gate: true
       - id: T12.2
-        desc: "Crear versión 0.1.1 del contrato con el cambio documentado"
-        status: pending
+        desc: "contract/CHANGELOG_0.1.1.md creado con el cambio documentado"
+        status: done
       - id: T12.3
-        desc: "Definir CARE_LEVELS, CareLevel e isCareLevel() en taxonomy.ts"
-        status: pending
+        desc: "CARE_LEVELS, CareLevel e isCareLevel() en taxonomy.ts"
+        status: done
       - id: T12.4
-        desc: "Cambiar Resident.monitoringFrequency → Resident.careLevel: CareLevel en types.ts"
-        status: pending
+        desc: "Resident.monitoringFrequency → Resident.careLevel: CareLevel en types.ts"
+        status: done
       - id: T12.5
-        desc: "Hacer grep de 'monitoringFrequency' en todo el codebase — listar todos los archivos afectados"
-        status: pending
+        desc: "Grep — 4 archivos afectados: seed.ts, types.ts, ResidentDetailPage.tsx, docs"
+        status: done
       - id: T12.6
-        desc: "Actualizar cada archivo afectado uno a uno"
-        status: pending
+        desc: "seed.ts y ResidentDetailPage.tsx actualizados (mapeo + etiquetas)"
+        status: done
       - id: T12.7
-        desc: "Actualizar datos seed con valores del enum (low/medium/high)"
-        status: pending
+        desc: "Seed: Cada 6h→low, Cada 4h→medium, Cada 2h→high"
+        status: done
       - id: T12.8
-        desc: "Actualizar docs/01, docs/03 y vocabulario maestro"
-        status: pending
+        desc: "docs/01 (care_levels section), docs/03 (campo Resident), docs/14 YAML (A13 IDs canónicos)"
+        status: done
       - id: T12.9
-        desc: "Ejecutar npm run typecheck y npm test — confirmar cero errores"
-        status: pending
+        desc: "typecheck=0 errores, tests=38/38"
+        status: done
 
   - id: T13
     level: 4

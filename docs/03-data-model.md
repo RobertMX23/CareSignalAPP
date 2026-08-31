@@ -16,7 +16,7 @@
 ## 2. Entidades
 
 ### Resident (§8.1)
-`id`, `displayName`, `room`, `monitoringFrequency`, `notes?`, `isActive`.
+`id`, `displayName`, `room`, `careLevel` (CareLevel: low|medium|high), `notes?`, `isActive`.
 No contiene diagnóstico ni datos clínicos.
 
 ### StaffMember (§8.2)

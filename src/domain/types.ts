@@ -12,6 +12,7 @@
 import type {
   Role,
   Shift,
+  CareLevel,
   AuditEventAction,
   RoundType,
   RoundStatus,
@@ -27,6 +28,7 @@ import type {
 export type {
   Role,
   Shift,
+  CareLevel,
   AuditEventAction,
   RoundType,
   RoundStatus,
@@ -52,7 +54,7 @@ export interface Resident {
   id: ID;
   displayName: string;
   room: string;
-  monitoringFrequency: string;
+  careLevel: CareLevel;
   notes?: string;
   isActive: boolean;
 }
