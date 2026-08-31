@@ -862,7 +862,97 @@ function slideIACiberseg(prs) {
   });
 }
 
-// ── SLIDE 13 — CIERRE ─────────────────────────────────────────────────────────
+// ── SLIDE 13 — FASE PARALELA B2C ─────────────────────────────────────────────
+function slideB2C(prs) {
+  const s = base(prs);
+  decoFondo(s, prs, 'C');
+
+  s.addText('👨‍👩‍👧  Fase paralela — Mercado familiar (B2C)', {
+    x: 0.5, y: 0.22, w: 9.16, h: 0.55,
+    ...T.slideTitulo,
+  });
+  s.addText('La misma plataforma · dos puertas de entrada · conversión cruzada B2C → B2B', {
+    x: 0.5, y: 0.78, w: 9.16, h: 0.32,
+    ...T.slideSubtitulo,
+  });
+  s.addShape('line', { x: 0.5, y: 1.16, w: 9.16, h: 0, line: { color: C.grisSep, width: 1 } });
+
+  // ── Columna izquierda: B2B (contexto) ──
+  tarjeta(s, 0.4, 1.28, 4.2, 3.7, 'EFF6FF');
+  s.addText('B2B (canal actual)', {
+    x: 0.55, y: 1.36, w: 3.88, h: 0.36,
+    fontSize: 12, bold: true, color: C.azulOscuro, align: 'center', fontFace: 'Arial',
+  });
+  const b2bItems = [
+    ['🏢', 'Cliente', 'Director de residencia'],
+    ['💰', 'Ticket', '$1,990 – $8,490 MXN/mes'],
+    ['⏱', 'Ciclo de venta', '2–6 meses · B2B largo'],
+    ['📣', 'Adquisición', 'Ventas de campo'],
+    ['📊', 'SAM México', '~1,200 residencias'],
+  ];
+  b2bItems.forEach(([emoji, lbl, val], i) => {
+    s.addText(emoji, { x: 0.55, y: 1.8 + i * 0.5, w: 0.4, h: 0.42, fontSize: 14, align: 'center' });
+    s.addText(lbl,   { x: 0.98, y: 1.8 + i * 0.5, w: 1.2, h: 0.42, fontSize: 10, bold: true, color: C.gris, fontFace: 'Arial', valign: 'middle' });
+    s.addText(val,   { x: 2.2,  y: 1.8 + i * 0.5, w: 2.2, h: 0.42, fontSize: 10.5, color: C.grafito, fontFace: 'Arial', valign: 'middle' });
+  });
+
+  // ── Flecha central ──
+  s.addText('⇄', {
+    x: 4.55, y: 2.9, w: 0.6, h: 0.55,
+    fontSize: 24, bold: true, color: C.azul, align: 'center', fontFace: 'Arial',
+  });
+
+  // ── Columna derecha: B2C (nuevo) ──
+  tarjeta(s, 5.06, 1.28, 4.54, 3.7, 'FFF7ED');
+  s.addText('B2C — Fase paralela  🆕', {
+    x: 5.18, y: 1.36, w: 4.2, h: 0.36,
+    fontSize: 12, bold: true, color: C.terracota, align: 'center', fontFace: 'Arial',
+  });
+  const b2cItems = [
+    ['👪', 'Cliente', 'Familia de adulto mayor'],
+    ['💰', 'Ticket', '$199 – $399 MXN/mes'],
+    ['⚡', 'Ciclo de venta', '< 5 min · autoservicio'],
+    ['📱', 'Adquisición', 'App stores · redes sociales'],
+    ['📊', 'SAM México', '~2M familias con cuidado activo'],
+  ];
+  b2cItems.forEach(([emoji, lbl, val], i) => {
+    s.addText(emoji, { x: 5.18, y: 1.8 + i * 0.5, w: 0.4, h: 0.42, fontSize: 14, align: 'center' });
+    s.addText(lbl,   { x: 5.62, y: 1.8 + i * 0.5, w: 1.2, h: 0.42, fontSize: 10, bold: true, color: C.gris, fontFace: 'Arial', valign: 'middle' });
+    s.addText(val,   { x: 6.84, y: 1.8 + i * 0.5, w: 2.68, h: 0.42, fontSize: 10.5, color: C.grafito, fontFace: 'Arial', valign: 'middle' });
+  });
+
+  // ── Flywheel — banda inferior ──
+  tarjeta(s, 0.4, 5.1, 9.16, 1.1, 'F0FAF4');
+  s.addText('🔄  El flywheel', {
+    x: 0.6, y: 5.15, w: 2.0, h: 0.35,
+    fontSize: 11, bold: true, color: C.verde, fontFace: 'Arial',
+  });
+  const pasos = [
+    'Familia adopta\nCareSignal en casa',
+    '→',
+    'Familiar ingresa\na una residencia',
+    '→',
+    'Familia recomienda\nCareSignal al director',
+    '→',
+    'Residencia\ncontrata (B2B)',
+  ];
+  pasos.forEach((txt, i) => {
+    const isArrow = txt === '→';
+    s.addText(txt, {
+      x: 0.5 + i * 1.28, y: 5.52, w: isArrow ? 0.4 : 1.18, h: 0.58,
+      fontSize: isArrow ? 16 : 9, bold: !isArrow,
+      color: isArrow ? C.azul : C.grafito,
+      align: 'center', fontFace: 'Arial', valign: 'middle',
+    });
+  });
+
+  s.addText('⚠️ Fase B2C proyectada — requiere versión móvil y validación de mercado. No comprometida en v0.1.0.', {
+    x: 0.5, y: 6.88, w: 9.16, h: 0.22, ...T.nota, align: 'left',
+  });
+}
+
+// ── SLIDE 14 — CIERRE ─────────────────────────────────────────────────────────
+
 function slideCierre(prs) {
   const s = base(prs);
   decoFondo(s, prs, 'A');
@@ -999,6 +1089,7 @@ async function main() {
   slideTraccion(prs);
   slideModelo(prs);
   slideIACiberseg(prs);
+  slideB2C(prs);
   slideCierre(prs);
   slideQA(prs);
 
@@ -1006,7 +1097,5 @@ async function main() {
   await prs.writeFile({ fileName: out });
   console.log('✅ Deck generado:', out);
 }
-
-main().catch(e => { console.error('❌', e); process.exit(1); });
 
 main().catch(e => { console.error('❌', e); process.exit(1); });
