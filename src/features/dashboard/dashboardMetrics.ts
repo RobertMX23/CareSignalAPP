@@ -35,7 +35,7 @@ const computeMedianResponseMinutes = (alerts: readonly Alert[], auditEvents: rea
     const alertEvents = auditEvents
       .filter((e) => e.entityType === 'alert' && e.entityId === alert.id)
       .sort((a, b) => a.timestamp.localeCompare(b.timestamp));
-    const firstResponse = alertEvents.find((e) => e.action !== 'alert:created');
+    const firstResponse = alertEvents.find((e) => e.action !== 'ALERT_CREATED');
     if (firstResponse === undefined) continue;
     const minutes = (Date.parse(firstResponse.timestamp) - Date.parse(alert.createdAt)) / 60_000;
     if (minutes >= 0) responseMinutes.push(minutes);

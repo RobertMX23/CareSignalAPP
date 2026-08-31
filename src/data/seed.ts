@@ -52,7 +52,7 @@ const auditEvents: AuditEvent[] = [];
 const recordCreation = (
   entityType: AuditEvent['entityType'],
   entityId: ID,
-  action: string,
+  action: AuditEvent['action'],
   nextState: string,
   actorId: ID,
   timestamp: ISODateTime,
@@ -127,7 +127,7 @@ export const buildResidents = (): Resident[] => {
     { id: 'resident-09', displayName: 'Isabel Correa', room: '109', monitoringFrequency: 'Cada 6 horas', isActive: true },
     { id: 'resident-10', displayName: 'Manuel Bravo', room: '110', monitoringFrequency: 'Cada 6 horas', isActive: true },
   ];
-  residents.forEach((r) => recordCreation('resident', r.id, 'resident:created', 'active', SYSTEM_SEED_ACTOR, atOffset(-2880)));
+  residents.forEach((r) => recordCreation('resident', r.id, 'RESIDENT_CREATED', 'active', SYSTEM_SEED_ACTOR, atOffset(-2880)));
   return residents;
 };
 
@@ -140,7 +140,7 @@ export const buildStaffMembers = (): StaffMember[] => {
     { id: 'staff-caregiver-03', displayName: 'Tomás Reyes', role: 'caregiver', shift: SHIFT.night, availability: 'off_shift', isActive: true },
     { id: 'staff-supervisor-01', displayName: 'Patricia Möller', role: 'supervisor', shift: SHIFT.morning, availability: 'available', isActive: true },
   ];
-  staff.forEach((s) => recordCreation('staff_member', s.id, 'staff_member:created', 'active', SYSTEM_SEED_ACTOR, atOffset(-2880)));
+  staff.forEach((s) => recordCreation('staff_member', s.id, 'STAFF_MEMBER_CREATED', 'active', SYSTEM_SEED_ACTOR, atOffset(-2880)));
   return staff;
 };
 
@@ -172,7 +172,7 @@ const createRound = (
     createdAt,
     updatedAt: createdAt,
   };
-  recordCreation('round', id, 'round:created', 'scheduled', SYSTEM_SEED_ACTOR, createdAt);
+  recordCreation('round', id, 'ROUND_CREATED', 'scheduled', SYSTEM_SEED_ACTOR, createdAt);
   return round;
 };
 
@@ -204,7 +204,7 @@ export const buildOperationalData = (): SeedResult => {
     status: 'open',
     createdAt: atOffset(-59),
   };
-  recordCreation('alert', alert01Created.id, 'alert:created', 'open', SYSTEM_CLOCK_ACTOR, atOffset(-59));
+  recordCreation('alert', alert01Created.id, 'ALERT_CREATED', 'open', SYSTEM_CLOCK_ACTOR, atOffset(-59));
   alerts.push(alert01Created);
 
   // 4. resident-04 — Escenario 4 + 6: ronda roja vencida, alerta asignada.
@@ -220,7 +220,7 @@ export const buildOperationalData = (): SeedResult => {
     status: 'open',
     createdAt: atOffset(-89),
   };
-  recordCreation('alert', alert02.id, 'alert:created', 'open', SYSTEM_CLOCK_ACTOR, atOffset(-89));
+  recordCreation('alert', alert02.id, 'ALERT_CREATED', 'open', SYSTEM_CLOCK_ACTOR, atOffset(-89));
   alert02 = applyAlert(alert02, 'assigned', 'staff-supervisor-01', atOffset(-80));
   alert02.assignedStaffId = 'staff-caregiver-01';
   alerts.push(alert02);
@@ -238,7 +238,7 @@ export const buildOperationalData = (): SeedResult => {
     status: 'open',
     createdAt: atOffset(-119),
   };
-  recordCreation('alert', alert03.id, 'alert:created', 'open', SYSTEM_CLOCK_ACTOR, atOffset(-119));
+  recordCreation('alert', alert03.id, 'ALERT_CREATED', 'open', SYSTEM_CLOCK_ACTOR, atOffset(-119));
   alert03 = applyAlert(alert03, 'assigned', 'staff-supervisor-01', atOffset(-110));
   alert03.assignedStaffId = 'staff-caregiver-02';
   alert03 = applyAlert(alert03, 'escalated', 'staff-supervisor-01', atOffset(-95));
@@ -257,7 +257,7 @@ export const buildOperationalData = (): SeedResult => {
     status: 'open',
     createdAt: atOffset(-149),
   };
-  recordCreation('alert', alert04.id, 'alert:created', 'open', SYSTEM_CLOCK_ACTOR, atOffset(-149));
+  recordCreation('alert', alert04.id, 'ALERT_CREATED', 'open', SYSTEM_CLOCK_ACTOR, atOffset(-149));
   alert04 = applyAlert(alert04, 'assigned', 'staff-supervisor-01', atOffset(-140));
   alert04.assignedStaffId = 'staff-caregiver-03';
   alert04 = applyAlert(alert04, 'in_verification', 'staff-supervisor-01', atOffset(-130));
@@ -269,7 +269,7 @@ export const buildOperationalData = (): SeedResult => {
     status: 'open',
     openedAt: atOffset(-130),
   };
-  recordCreation('incident', incident01.id, 'incident:created', 'open', 'staff-supervisor-01', atOffset(-130));
+  recordCreation('incident', incident01.id, 'INCIDENT_OPENED', 'open', 'staff-supervisor-01', atOffset(-130));
   incident01 = applyIncident(incident01, 'verification_in_progress', 'staff-supervisor-01', atOffset(-129));
   incidents.push(incident01);
 
@@ -286,7 +286,7 @@ export const buildOperationalData = (): SeedResult => {
     status: 'open',
     createdAt: atOffset(-329),
   };
-  recordCreation('alert', alert05.id, 'alert:created', 'open', SYSTEM_CLOCK_ACTOR, atOffset(-329));
+  recordCreation('alert', alert05.id, 'ALERT_CREATED', 'open', SYSTEM_CLOCK_ACTOR, atOffset(-329));
   alert05 = applyAlert(alert05, 'assigned', 'staff-supervisor-01', atOffset(-320));
   alert05.assignedStaffId = 'staff-caregiver-02';
   alert05 = applyAlert(alert05, 'in_verification', 'staff-supervisor-01', atOffset(-310));
@@ -301,7 +301,7 @@ export const buildOperationalData = (): SeedResult => {
     status: 'open',
     openedAt: atOffset(-310),
   };
-  recordCreation('incident', incident02.id, 'incident:created', 'open', 'staff-supervisor-01', atOffset(-310));
+  recordCreation('incident', incident02.id, 'INCIDENT_OPENED', 'open', 'staff-supervisor-01', atOffset(-310));
   incident02 = applyIncident(incident02, 'verification_in_progress', 'staff-supervisor-01', atOffset(-309));
   incident02 = applyIncident(incident02, 'resolved', 'staff-supervisor-01', atOffset(-300), resolutionOutcome);
   incident02 = applyIncident(incident02, 'closed', 'staff-supervisor-01', atOffset(-290));

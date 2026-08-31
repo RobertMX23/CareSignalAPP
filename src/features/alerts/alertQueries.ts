@@ -20,7 +20,7 @@ export const getAssignmentHistory = (alertId: ID, auditEvents: readonly AuditEve
   const entries: AssignmentHistoryEntry[] = [];
   for (const event of auditEvents) {
     if (event.entityType !== 'alert' || event.entityId !== alertId) continue;
-    if (event.action === 'alert:reassigned' && event.nextState !== undefined) {
+    if (event.action === 'ALERT_REASSIGNED' && event.nextState !== undefined) {
       entries.push({ timestamp: event.timestamp, actorId: event.actorId, staffId: event.nextState, action: 'Reasignada' });
     } else if (event.nextState === 'assigned') {
       const staffId = (event.metadata?.assignedStaffId as ID | undefined) ?? undefined;

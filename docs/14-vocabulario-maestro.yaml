@@ -307,8 +307,9 @@ catalog_verification_outcomes:
     - id: other_operational_result
       es: "Otro resultado operativo — detallar en notas"
 
-# A10. Tipos de evento de auditoría (20 tipos)
-# ─────────────────────────────────────────────
+# A10. Tipos de evento de auditoría (24 tipos) — AuditEventAction
+# ──────────────────────────────────────────────────────────────────
+# typescript_type: AuditEventAction  (src/domain/taxonomy.ts → AUDIT_EVENT_ACTIONS)
 catalog_audit_event_types:
   invariant: "Solo INSERT. Nunca UPDATE ni DELETE en audit_events."
   families:
@@ -321,13 +322,17 @@ catalog_audit_event_types:
     - id: INCIDENT
       es: "Eventos de incidente"
       color_hex: "#7C3AED"
+    - id: ENTITY
+      es: "Eventos de entidades maestras"
+      color_hex: "#D97706"
     - id: SYSTEM
-      es: "Eventos del sistema"
+      es: "Eventos del sistema / motor"
       color_hex: "#059669"
   events:
-    - id: ROUND_SCHEDULED
+    # ROUND (7)
+    - id: ROUND_CREATED
       family: ROUND
-      es: "Ronda programada"
+      es: "Ronda creada / programada"
       actor: "supervisor / sistema"
       payload: { ronda_id: "uuid", residente_id: "uuid", tipo_id: "string", programada_at: "ISO8601", cuidador_id: "uuid|null" }
     - id: ROUND_DUE
@@ -360,10 +365,11 @@ catalog_audit_event_types:
       es: "Ronda reasignada a otro cuidador"
       actor: "supervisor"
       payload: { ronda_id: "uuid", prev_cuidador_id: "uuid|null", new_cuidador_id: "uuid" }
+    # ALERT (9)
     - id: ALERT_CREATED
       family: ALERT
       es: "Alerta creada automáticamente"
-      actor: "motor temporal"
+      actor: "motor temporal / caregiver"
       payload: { alerta_id: "uuid", ronda_id: "uuid", residente_id: "uuid", severidad: "yellow|red" }
     - id: ALERT_ACKNOWLEDGED
       family: ALERT
@@ -379,12 +385,17 @@ catalog_audit_event_types:
       family: ALERT
       es: "Alerta reasignada — responsable anterior conservado en auditoría"
       actor: "supervisor"
-      payload: { alerta_id: "uuid", prev_owner_id: "uuid", new_owner_id: "uuid", motivo: "string|null" }
+      payload: { alerta_id: "uuid", prev_owner_id: "uuid", new_owner_id: "uuid" }
     - id: ALERT_ESCALATED
       family: ALERT
-      es: "Alerta escalada al gerente"
+      es: "Alerta escalada"
       actor: "supervisor"
-      payload: { alerta_id: "uuid", motivo: "string|null" }
+      payload: { alerta_id: "uuid" }
+    - id: ALERT_SEVERITY_ESCALATED
+      family: ALERT
+      es: "Severidad de alerta escalada de yellow a red por retraso"
+      actor: "motor temporal"
+      payload: { alerta_id: "uuid", prev_severidad: "yellow", new_severidad: "red" }
     - id: ALERT_VERIFICATION_STARTED
       family: ALERT
       es: "Verificación en sitio iniciada"
@@ -394,37 +405,55 @@ catalog_audit_event_types:
       family: ALERT
       es: "Alerta resuelta con resultado documentado"
       actor: "supervisor"
-      payload: { alerta_id: "uuid", resultado_verificacion: "string", outcome_id: "VerificationOutcome" }
+      payload: { alerta_id: "uuid", outcome_id: "VerificationOutcome" }
     - id: ALERT_CLOSED
       family: ALERT
       es: "Alerta cerrada — ciclo administrativo completo"
-      actor: "manager / supervisor"
-      payload: { alerta_id: "uuid" }
-    - id: INCIDENT_CREATED
-      family: INCIDENT
-      es: "Incidente formal creado"
       actor: "supervisor"
-      payload: { incidente_id: "uuid", alerta_id: "uuid", residente_id: "uuid", descripcion: "string" }
-    - id: INCIDENT_UPDATED
+      payload: { alerta_id: "uuid" }
+    # INCIDENT (4)
+    - id: INCIDENT_OPENED
       family: INCIDENT
-      es: "Incidente actualizado con nueva información"
-      actor: "supervisor / manager"
-      payload: { incidente_id: "uuid", campo: "string", valor_anterior: "any", valor_nuevo: "any" }
+      es: "Incidente formal abierto"
+      actor: "supervisor"
+      payload: { incidente_id: "uuid", alerta_id: "uuid", residente_id: "uuid" }
+    - id: INCIDENT_VERIFICATION_STARTED
+      family: INCIDENT
+      es: "Verificación de incidente iniciada"
+      actor: "supervisor"
+      payload: { incidente_id: "uuid" }
+    - id: INCIDENT_RESOLVED
+      family: INCIDENT
+      es: "Incidente resuelto con resultado"
+      actor: "supervisor"
+      payload: { incidente_id: "uuid", outcome_id: "VerificationOutcome" }
     - id: INCIDENT_CLOSED
       family: INCIDENT
-      es: "Incidente cerrado con resultado operativo"
-      actor: "manager"
-      payload: { incidente_id: "uuid", resultado_operativo: "string" }
-    - id: DEMO_RESET
-      family: SYSTEM
-      es: "Demo reiniciada al estado inicial del seed"
-      actor: "demo_admin"
-      payload: { seed_version: "string", timestamp: "ISO8601" }
-    - id: CLOCK_ADVANCED
+      es: "Incidente cerrado — ciclo completo"
+      actor: "supervisor"
+      payload: { incidente_id: "uuid" }
+    # ENTITY (2)
+    - id: RESIDENT_CREATED
+      family: ENTITY
+      es: "Residente creado en el sistema"
+      actor: "supervisor / demo_admin"
+      payload: { residente_id: "uuid" }
+    - id: STAFF_MEMBER_CREATED
+      family: ENTITY
+      es: "Miembro del personal creado"
+      actor: "supervisor / demo_admin"
+      payload: { staff_id: "uuid" }
+    # SYSTEM (2)
+    - id: SYSTEM_CLOCK_ADVANCED
       family: SYSTEM
       es: "Reloj simulado avanzado manualmente"
       actor: "demo_admin"
       payload: { delta_min: "int", nuevo_tiempo: "ISO8601" }
+    - id: SYSTEM_DEMO_RESET
+      family: SYSTEM
+      es: "Demo reiniciada al estado inicial del seed"
+      actor: "demo_admin"
+      payload: { seed_version: "string", timestamp: "ISO8601" }
 
 # A11. Planes de suscripción
 # ───────────────────────────

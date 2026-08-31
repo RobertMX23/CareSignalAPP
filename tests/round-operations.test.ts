@@ -38,7 +38,7 @@ describe('Flujo del cuidador (contrato Chunk 5)', () => {
 
     const auditEvent = repository
       .listAuditEvents()
-      .find((e) => e.entityId === 'round-18' && e.action === 'round:in_progress->completed');
+      .find((e) => e.entityId === 'round-18' && e.action === 'ROUND_COMPLETED');
     expect(auditEvent?.metadata?.completionOutcome).toBe('assistance_requested');
   });
 

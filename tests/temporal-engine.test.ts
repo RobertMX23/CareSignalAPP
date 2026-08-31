@@ -74,7 +74,7 @@ describe('Motor temporal (contrato Chunk 7)', () => {
 
     const escalations = repository
       .listAuditEvents()
-      .filter((e) => e.entityId === alerts[0].id && e.action === 'alert:severity_escalated_by_delay');
+      .filter((e) => e.entityId === alerts[0].id && e.action === 'ALERT_SEVERITY_ESCALATED');
     expect(escalations).toHaveLength(1);
   });
 

@@ -12,6 +12,7 @@
 import type {
   Role,
   Shift,
+  AuditEventAction,
   RoundType,
   RoundStatus,
   AlertStatus,
@@ -26,6 +27,7 @@ import type {
 export type {
   Role,
   Shift,
+  AuditEventAction,
   RoundType,
   RoundStatus,
   AlertStatus,
@@ -117,7 +119,7 @@ export interface AuditEvent {
   id: ID;
   entityType: EntityType;
   entityId: ID;
-  action: string;
+  action: AuditEventAction;
   actorId: ID;
   previousState?: string;
   nextState?: string;

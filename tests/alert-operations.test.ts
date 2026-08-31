@@ -70,13 +70,13 @@ describe('Flujo del supervisor (contrato Chunk 6)', () => {
       .listAuditEvents()
       .filter((e) => e.entityId === 'alert-01')
       .map((e) => e.action);
-    expect(auditActions).toContain('alert:created');
-    expect(auditActions).toContain('alert:open->assigned');
-    expect(auditActions).toContain('alert:reassigned');
-    expect(auditActions).toContain('alert:assigned->escalated');
-    expect(auditActions).toContain('alert:escalated->in_verification');
-    expect(auditActions).toContain('alert:in_verification->resolved');
-    expect(auditActions).toContain('alert:resolved->closed');
+    expect(auditActions).toContain('ALERT_CREATED');
+    expect(auditActions).toContain('ALERT_ASSIGNED');
+    expect(auditActions).toContain('ALERT_REASSIGNED');
+    expect(auditActions).toContain('ALERT_ESCALATED');
+    expect(auditActions).toContain('ALERT_VERIFICATION_STARTED');
+    expect(auditActions).toContain('ALERT_RESOLVED');
+    expect(auditActions).toContain('ALERT_CLOSED');
   });
 
   it('reasignar registra su propio evento de auditoría aunque el estado no cambie', async () => {
@@ -91,7 +91,7 @@ describe('Flujo del supervisor (contrato Chunk 6)', () => {
 
     const after = repository.listAuditEvents().length;
     expect(after).toBe(before + 1);
-    const event = repository.listAuditEvents().find((e) => e.action === 'alert:reassigned' && e.entityId === 'alert-02');
+    const event = repository.listAuditEvents().find((e) => e.action === 'ALERT_REASSIGNED' && e.entityId === 'alert-02');
     expect(event?.previousState).toBe('staff-caregiver-01');
     expect(event?.nextState).toBe('staff-caregiver-03');
   });

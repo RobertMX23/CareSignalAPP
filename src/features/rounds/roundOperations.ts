@@ -85,7 +85,7 @@ export const requestSupport = (
       id: nextAuditId(),
       entityType: 'alert',
       entityId: alert.id,
-      action: 'alert:created',
+      action: 'ALERT_CREATED',
       actorId,
       nextState: 'open',
       timestamp,

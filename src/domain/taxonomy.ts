@@ -97,6 +97,43 @@ export const VERIFICATION_OUTCOMES = [
 export type VerificationOutcome = (typeof VERIFICATION_OUTCOMES)[number];
 
 /**
+ * Acciones canónicas del log de auditoría (AuditEvent.action). Nombres semánticos
+ * en SCREAMING_SNAKE_CASE. Fuente única: este array. Documentados en docs/14.
+ */
+export const AUDIT_EVENT_ACTIONS = [
+  // Ronda
+  'ROUND_CREATED',
+  'ROUND_DUE',
+  'ROUND_STARTED',
+  'ROUND_COMPLETED',
+  'ROUND_OVERDUE',
+  'ROUND_CANCELLED',
+  'ROUND_REASSIGNED',
+  // Alerta
+  'ALERT_CREATED',
+  'ALERT_ACKNOWLEDGED',
+  'ALERT_ASSIGNED',
+  'ALERT_REASSIGNED',
+  'ALERT_ESCALATED',
+  'ALERT_SEVERITY_ESCALATED',
+  'ALERT_VERIFICATION_STARTED',
+  'ALERT_RESOLVED',
+  'ALERT_CLOSED',
+  // Incidente
+  'INCIDENT_OPENED',
+  'INCIDENT_VERIFICATION_STARTED',
+  'INCIDENT_RESOLVED',
+  'INCIDENT_CLOSED',
+  // Entidades creadas
+  'RESIDENT_CREATED',
+  'STAFF_MEMBER_CREATED',
+  // Sistema
+  'SYSTEM_CLOCK_ADVANCED',
+  'SYSTEM_DEMO_RESET',
+] as const;
+export type AuditEventAction = (typeof AUDIT_EVENT_ACTIONS)[number];
+
+/**
  * Sinónimos prohibidos como estados/entidades/identificadores (contrato §5.12).
  * En texto de interfaz solo se permite ALLOWED_UI_PHRASE.
  */
@@ -134,3 +171,5 @@ export const isStaffAvailability = (v: string): v is StaffAvailability =>
   includes(STAFF_AVAILABILITIES, v);
 export const isVerificationOutcome = (v: string): v is VerificationOutcome =>
   includes(VERIFICATION_OUTCOMES, v);
+export const isAuditEventAction = (v: string): v is AuditEventAction =>
+  includes(AUDIT_EVENT_ACTIONS, v);

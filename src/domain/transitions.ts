@@ -17,6 +17,7 @@ import type {
 } from './types';
 import type {
   AlertStatus,
+  AuditEventAction,
   EntityType,
   IncidentStatus,
   RoundStatus,
@@ -104,10 +105,36 @@ export const isValidIncidentTransition = (
 
 // --- Helpers ----------------------------------------------------------------
 
+const ROUND_ACTIONS: Record<RoundStatus, AuditEventAction> = {
+  scheduled: 'ROUND_CREATED',
+  due:        'ROUND_DUE',
+  in_progress:'ROUND_STARTED',
+  completed:  'ROUND_COMPLETED',
+  overdue:    'ROUND_OVERDUE',
+  cancelled:  'ROUND_CANCELLED',
+};
+
+const ALERT_ACTIONS: Record<AlertStatus, AuditEventAction> = {
+  open:            'ALERT_CREATED',
+  acknowledged:    'ALERT_ACKNOWLEDGED',
+  assigned:        'ALERT_ASSIGNED',
+  escalated:       'ALERT_ESCALATED',
+  in_verification: 'ALERT_VERIFICATION_STARTED',
+  resolved:        'ALERT_RESOLVED',
+  closed:          'ALERT_CLOSED',
+};
+
+const INCIDENT_ACTIONS: Record<IncidentStatus, AuditEventAction> = {
+  open:                    'INCIDENT_OPENED',
+  verification_in_progress:'INCIDENT_VERIFICATION_STARTED',
+  resolved:                'INCIDENT_RESOLVED',
+  closed:                  'INCIDENT_CLOSED',
+};
+
 const makeAudit = (
   entityType: EntityType,
   entityId: ID,
-  action: string,
+  action: AuditEventAction,
   previousState: string,
   nextState: string,
   ctx: TransitionContext,
@@ -149,7 +176,7 @@ export const transitionRound = (
   const auditEvent = makeAudit(
     'round',
     round.id,
-    `round:${round.status}->${to}`,
+    ROUND_ACTIONS[to],
     round.status,
     to,
     ctx,
@@ -203,7 +230,7 @@ export const transitionAlert = (
   const auditEvent = makeAudit(
     'alert',
     alert.id,
-    `alert:${alert.status}->${to}`,
+    ALERT_ACTIONS[to],
     alert.status,
     to,
     ctx,
@@ -241,7 +268,7 @@ export const transitionIncident = (
   const auditEvent = makeAudit(
     'incident',
     incident.id,
-    `incident:${incident.status}->${to}`,
+    INCIDENT_ACTIONS[to],
     incident.status,
     to,
     ctx,

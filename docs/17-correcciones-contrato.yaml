@@ -209,13 +209,13 @@ tasks:
     level: 2
     title: "Definir AUDIT_EVENT_ACTIONS tipo literal — AuditEvent.action deja de ser string (DIV-03)"
     gap_ref: "DIV-03"
-    status: pending
-    completed_at: ~
+    status: done
+    completed_at: "2026-08-30"
     complexity: medium
     contract_change: false
     depends_on: [T1, T5]
     acceptance_criteria:
-      - "AUDIT_EVENT_ACTIONS array as const en taxonomy.ts con los 20 tipos"
+      - "AUDIT_EVENT_ACTIONS array as const en taxonomy.ts con 24 tipos"
       - "Tipo AuditEventAction derivado correctamente"
       - "isAuditEventAction() type guard existe"
       - "AuditEvent.action es de tipo AuditEventAction (no string)"
@@ -230,29 +230,29 @@ tasks:
       - docs/14-vocabulario-maestro.yaml
     subtasks:
       - id: T6.1
-        desc: "Listar los 20 tipos de evento del vocabulario maestro: ROUND_SCHEDULED, ROUND_STARTED, ROUND_COMPLETED, ROUND_OVERDUE, ROUND_CANCELLED, ROUND_REASSIGNED, ROUND_NOTED, ALERT_CREATED, ALERT_ACKNOWLEDGED, ALERT_ASSIGNED, ALERT_ESCALATED, ALERT_VERIFICATION_STARTED, ALERT_RESOLVED, ALERT_CLOSED, ALERT_REASSIGNED, INCIDENT_OPENED, INCIDENT_RESOLVED, INCIDENT_CLOSED, SYSTEM_CLOCK_ADVANCED, SYSTEM_DEMO_RESET"
-        status: pending
+        desc: "Listar los 24 tipos de evento canónicos"
+        status: done
       - id: T6.2
-        desc: "Hacer grep de todos los literales de acción usados actualmente en el código para verificar que coinciden con los 20 del vocabulario"
-        status: pending
+        desc: "Grep de literales de acción en el código"
+        status: done
       - id: T6.3
-        desc: "Crear AUDIT_EVENT_ACTIONS array as const en taxonomy.ts"
-        status: pending
+        desc: "Crear AUDIT_EVENT_ACTIONS array as const en taxonomy.ts (24 valores)"
+        status: done
       - id: T6.4
         desc: "Crear tipo AuditEventAction y guard isAuditEventAction()"
-        status: pending
+        status: done
       - id: T6.5
         desc: "Cambiar AuditEvent.action: string → AuditEvent.action: AuditEventAction en types.ts"
-        status: pending
+        status: done
       - id: T6.6
         desc: "Corregir todos los archivos que emiten AuditEvent para usar el literal correcto del enum"
-        status: pending
+        status: done
       - id: T6.7
-        desc: "Actualizar vocabulario maestro YAML: la sección A de audit_event_types referencia el nuevo tipo TS"
-        status: pending
+        desc: "Actualizar vocabulario maestro YAML: sección A10 con 24 tipos + referencia typescript_type"
+        status: done
       - id: T6.8
-        desc: "Ejecutar npm run typecheck y npm test"
-        status: pending
+        desc: "Ejecutar npm run typecheck (0 errores) y npm test (38/38)"
+        status: done
 
   - id: T7
     level: 2
