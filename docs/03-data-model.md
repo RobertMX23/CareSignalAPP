@@ -63,7 +63,12 @@ mantiene una sola fuente en tiempo de ejecución y de compilación.
 5. **Errores controlados.** Las transiciones inválidas devuelven
    `{ ok: false, error }` en lugar de lanzar excepciones, para un manejo predecible en
    capas superiores.
-6. **Sin `completionOutcome` en `Round`.** El modelo congelado §8.3 solo define
+6. **`Resident.room` es `string`, no FK a una entidad `Habitacion`.** En v0.1.0 la
+   habitación es un identificador libre ('101', '2-B', etc.) vinculado al residente.
+   No existe tabla de habitaciones porque el MVP es single-tenant y la complejidad no
+   se justifica. `room` es candidata a convertirse en entidad con FK en v0.2
+   (multi-residencia, capacidad, historial de ocupación).
+7. **Sin `completionOutcome` en `Round`.** El modelo congelado §8.3 solo define
    `completionNote?`; no se añade un campo de resultado de ronda para no exceder el
    modelo. El resultado operacional del cuidador se abordará en Chunk 5 dentro del
    alcance permitido.

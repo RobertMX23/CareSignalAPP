@@ -294,8 +294,8 @@ tasks:
     level: 2
     title: "Documentar decisión habitacion como string vs entidad separada"
     gap_ref: "DIV-habitacion"
-    status: pending
-    completed_at: ~
+    status: done
+    completed_at: "2026-08-30"
     complexity: low
     contract_change: false
     depends_on: []
@@ -308,11 +308,11 @@ tasks:
       - docs/14-vocabulario-maestro.yaml
     subtasks:
       - id: T8.1
-        desc: "Agregar nota en docs/03-data-model.md §4 Decisiones de modelado: 'room: string en lugar de FK a habitaciones — decisión de simplicidad para MVP single-tenant; candidata a entidad en v0.2'"
-        status: pending
+        desc: "Nota en docs/03-data-model.md §4 decisión 6: room es string en v0.1.0; candidata a entidad en v0.2"
+        status: done
       - id: T8.2
-        desc: "Agregar entrada en vocabulario maestro YAML con la misma nota y estado: candidato_v02"
-        status: pending
+        desc: "Nota en docs/14-vocabulario-maestro.yaml sección A12: misma decisión de modelado"
+        status: done
 
 # ─────────────────────────────────────────────────────────────
 # NIVEL 3 — Actualización de documentos de análisis

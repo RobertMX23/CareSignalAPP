@@ -475,6 +475,10 @@ catalog_plans:
 
 # A12. Tipos de habitación
 # ─────────────────────────
+# DECISIÓN DE MODELADO (v0.1.0): Resident.room es string libre, no FK a entidad
+# Habitacion. Razón: MVP single-tenant; la complejidad de una tabla de habitaciones
+# no se justifica. Candidata a entidad propia en v0.2 (multi-residencia, capacidad,
+# historial de ocupación). Ver docs/03-data-model.md §4 decisión 6.
 catalog_room_types:
   - id: individual
     es: "Individual"
