@@ -38,8 +38,8 @@ tasks:
     level: 1
     title: "Agregar audit_event a ENTITY_TYPES en taxonomy.ts"
     gap_ref: "GAP-01"
-    status: pending           # pending | in_progress | done | blocked
-    completed_at: ~
+    status: done
+    completed_at: "2026-08-30"
     complexity: trivial       # trivial | low | medium | high
     contract_change: false
     depends_on: []

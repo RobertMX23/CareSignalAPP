@@ -464,6 +464,7 @@ export const validateReferentialIntegrity = (snapshot: SeedSnapshot): string[] =
     round: roundIds,
     alert: alertIds,
     incident: new Set(snapshot.incidents.map((i) => i.id)),
+    audit_event: new Set(snapshot.auditEvents.map((e) => e.id)),
   };
   for (const event of snapshot.auditEvents) {
     if (!knownEntityIds[event.entityType].has(event.entityId)) {
