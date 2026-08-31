@@ -7,6 +7,7 @@ import { CaregiverRoundsPage } from './pages/CaregiverRoundsPage';
 import { ResidentDetailPage } from './pages/ResidentDetailPage';
 import { AlertDetailPage } from './pages/AlertDetailPage';
 import { DemoControlPage } from './pages/DemoControlPage';
+import { ManagerDashboardPage } from './pages/ManagerDashboardPage';
 
 function defaultRouteForRole(role: Role): string {
   switch (role) {
@@ -53,7 +54,7 @@ const App = (): JSX.Element => (
           </Route>
 
           <Route element={<RoleGuard allowedRoles={['manager', 'demo_admin']} />}>
-            <Route path="manager" element={<SupervisorDashboardPage />} />
+            <Route path="manager" element={<ManagerDashboardPage />} />
           </Route>
 
           <Route element={<RoleGuard allowedRoles={['demo_admin']} />}>
