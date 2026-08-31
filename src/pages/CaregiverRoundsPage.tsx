@@ -17,8 +17,8 @@ import {
   completeRound,
   requestSupport,
   startRound,
-  type RoundCompletionOutcome,
 } from '../features/rounds/roundOperations';
+import type { RoundOutcome } from '../domain/types';
 import { bucketLabel, classifyRoundPriority, compareByPriority, describeDelay } from '../features/rounds/roundPriority';
 import { getCurrentTime } from '../data/demoClock';
 import { getResidentById, listAlerts, listRounds } from '../data/repository';
@@ -79,7 +79,7 @@ export const CaregiverRoundsPage = (): JSX.Element => {
     }
   };
 
-  const handleCompleteConfirm = (round: Round, outcome: RoundCompletionOutcome, note: string | undefined): void => {
+  const handleCompleteConfirm = (round: Round, outcome: RoundOutcome, note: string | undefined): void => {
     const result = completeRound(round, activeStaff.id, getCurrentTime(), outcome, note);
     setModal(undefined);
     if (result.ok) {

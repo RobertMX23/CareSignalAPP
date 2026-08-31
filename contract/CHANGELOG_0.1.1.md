@@ -29,5 +29,35 @@ enums establecido para todos los demás catálogos del dominio.
 - `docs/03-data-model.md`
 - `docs/14-vocabulario-maestro.yaml`
 
-**Reglas del contrato que aplican:** §8.1 (modelo Resident), §13 (change request), §16 (log de cambios).  
-**Ningún otro campo ni entidad se modifica en esta versión.**
+**Reglas del contrato que aplican:** §8.1 (modelo Resident), §13 (change request), §16 (log de cambios).
+
+---
+
+### C-02 — Agregar `Round.completionOutcome?: RoundOutcome` + enum `ROUND_OUTCOMES`
+
+**Fecha de aprobación:** 2026-08-30  
+
+**Motivación:** El campo de resultado de ronda existía como tipo local `RoundCompletionOutcome`
+en `roundOperations.ts` con valores no canónicos (`completed_without_issue`, `assistance_requested`,
+`supervisor_verification_required`). Esto divergía de la taxonomía (DIV-04) y no estaba reflejado
+en la interfaz `Round` ni en la capa de dominio. El outcome se guardaba solo en `metadata` del
+`AuditEvent` pero no se persistía en la entidad.
+
+**Cambio:**
+- `ROUND_OUTCOMES = ['ok', 'needs_follow_up', 'no_response', 'other'] as const` en `src/domain/taxonomy.ts`
+- `RoundOutcome` e `isRoundOutcome()` exportados desde `taxonomy.ts` y re-exportados desde `types.ts`
+- `Round.completionOutcome?: RoundOutcome` añadido a la interfaz `Round` (§8.3)
+- `completeRound()` persiste el outcome en la entidad Round además del `AuditEvent.metadata`
+- Tipo local `RoundCompletionOutcome` eliminado de `roundOperations.ts`
+- Modal y página del cuidador actualizados a los nuevos cuatro valores canónicos
+
+**Archivos afectados:**
+- `src/domain/taxonomy.ts`
+- `src/domain/types.ts`
+- `src/features/rounds/roundOperations.ts`
+- `src/features/rounds/CompleteRoundModal.tsx`
+- `src/pages/CaregiverRoundsPage.tsx`
+- `tests/round-operations.test.ts`
+
+**Reglas del contrato que aplican:** §8.3 (modelo Round), §13 (change request), §16 (log de cambios).  
+**Ningún otro campo ni entidad se modifica.**

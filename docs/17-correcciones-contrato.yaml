@@ -487,8 +487,8 @@ tasks:
     level: 4
     title: "Agregar Round.completionOutcome enum (DIV-04)"
     gap_ref: "DIV-04"
-    status: pending
-    completed_at: ~
+    status: done
+    completed_at: "2026-08-30"
     complexity: high
     contract_change: true
     contract_version_required: "0.1.1 o posterior"
@@ -504,28 +504,30 @@ tasks:
     files_affected:
       - src/domain/taxonomy.ts
       - src/domain/types.ts
-      - src/domain/transitions.ts
-      - src/features/rounds/
+      - src/features/rounds/roundOperations.ts
+      - src/features/rounds/CompleteRoundModal.tsx
+      - src/pages/CaregiverRoundsPage.tsx
+      - tests/round-operations.test.ts
     subtasks:
       - id: T13.1
         desc: "GATE — Roberto aprueba el cambio y confirma los valores del enum: ok, needs_follow_up, no_response, other"
-        status: pending
+        status: done
         gate: true
       - id: T13.2
         desc: "Definir ROUND_OUTCOMES, RoundOutcome e isRoundOutcome() en taxonomy.ts"
-        status: pending
+        status: done
       - id: T13.3
         desc: "Agregar completionOutcome?: RoundOutcome a la interfaz Round en types.ts"
-        status: pending
+        status: done
       - id: T13.4
         desc: "Actualizar la transición completeRound() para aceptar y persistir el outcome"
-        status: pending
+        status: done
       - id: T13.5
         desc: "Actualizar la UI del flujo caregiver para mostrar y capturar el outcome"
-        status: pending
+        status: done
       - id: T13.6
         desc: "Ejecutar npm run typecheck y npm test"
-        status: pending
+        status: done
 
   - id: T14
     level: 4

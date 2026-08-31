@@ -24,7 +24,7 @@ No contiene diagnóstico ni datos clínicos.
 
 ### Round (§8.3)
 `id`, `residentId`, `assignedStaffId?`, `type`, `scheduledAt`, `dueAt`, `startedAt?`,
-`completedAt?`, `status`, `completionNote?`, `createdAt`, `updatedAt`.
+`completedAt?`, `status`, `completionNote?`, `completionOutcome?` (RoundOutcome: ok|needs_follow_up|no_response|other), `createdAt`, `updatedAt`.
 
 ### Alert (§8.4)
 `id`, `roundId`, `residentId`, `severity`, `status`, `assignedStaffId?`, `createdAt`,
@@ -68,10 +68,10 @@ mantiene una sola fuente en tiempo de ejecución y de compilación.
    No existe tabla de habitaciones porque el MVP es single-tenant y la complejidad no
    se justifica. `room` es candidata a convertirse en entidad con FK en v0.2
    (multi-residencia, capacidad, historial de ocupación).
-7. **Sin `completionOutcome` en `Round`.** El modelo congelado §8.3 solo define
-   `completionNote?`; no se añade un campo de resultado de ronda para no exceder el
-   modelo. El resultado operacional del cuidador se abordará en Chunk 5 dentro del
-   alcance permitido.
+7. **`completionOutcome?: RoundOutcome` en `Round` (v0.1.1, C-02).** Corrige DIV-04: el
+   tipo local `RoundCompletionOutcome` en `roundOperations.ts` fue reemplazado por el enum
+   canónico `ROUND_OUTCOMES = ['ok','needs_follow_up','no_response','other']` en `taxonomy.ts`.
+   El campo se persiste en la entidad Round además de en `AuditEvent.metadata.completionOutcome`.
 
 ## 5. Integridad referencial (se valida con datos en Chunk 3)
 

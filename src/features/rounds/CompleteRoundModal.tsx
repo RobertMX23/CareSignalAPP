@@ -8,22 +8,23 @@
 
 import { useState } from 'react';
 import { useAutoFocusModal } from '../../components/useAutoFocusModal';
-import type { RoundCompletionOutcome } from './roundOperations';
+import type { RoundOutcome } from '../../domain/types';
 
-const OUTCOME_OPTIONS: { value: RoundCompletionOutcome; label: string }[] = [
-  { value: 'completed_without_issue', label: 'Completada sin novedades' },
-  { value: 'assistance_requested', label: 'Se solicitó asistencia adicional' },
-  { value: 'supervisor_verification_required', label: 'Requiere verificación del supervisor' },
+const OUTCOME_OPTIONS: { value: RoundOutcome; label: string }[] = [
+  { value: 'ok', label: 'Completada sin novedades' },
+  { value: 'needs_follow_up', label: 'Requiere seguimiento posterior' },
+  { value: 'no_response', label: 'Residente no respondió' },
+  { value: 'other', label: 'Otro resultado operacional' },
 ];
 
 interface CompleteRoundModalProps {
   residentName: string;
   onCancel: () => void;
-  onConfirm: (outcome: RoundCompletionOutcome, note: string | undefined) => void;
+  onConfirm: (outcome: RoundOutcome, note: string | undefined) => void;
 }
 
 export const CompleteRoundModal = ({ residentName, onCancel, onConfirm }: CompleteRoundModalProps): JSX.Element => {
-  const [outcome, setOutcome] = useState<RoundCompletionOutcome | undefined>(undefined);
+  const [outcome, setOutcome] = useState<RoundOutcome | undefined>(undefined);
   const [note, setNote] = useState('');
   const { containerRef, handleKeyDown } = useAutoFocusModal<HTMLDivElement>(onCancel);
 

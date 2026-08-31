@@ -70,6 +70,10 @@ export const INCIDENT_STATUSES = [
 ] as const;
 export type IncidentStatus = (typeof INCIDENT_STATUSES)[number];
 
+// --- Resultados de ronda (v0.1.1 — campo Round.completionOutcome) -------------
+export const ROUND_OUTCOMES = ['ok', 'needs_follow_up', 'no_response', 'other'] as const;
+export type RoundOutcome = (typeof ROUND_OUTCOMES)[number];
+
 // --- Nivel de cuidado del residente (v0.1.1 — reemplaza monitoringFrequency) --
 export const CARE_LEVELS = ['low', 'medium', 'high'] as const;
 export type CareLevel = (typeof CARE_LEVELS)[number];
@@ -170,6 +174,7 @@ export const isAlertSeverity = (v: string): v is AlertSeverity =>
   includes(ALERT_SEVERITIES, v);
 export const isIncidentStatus = (v: string): v is IncidentStatus =>
   includes(INCIDENT_STATUSES, v);
+export const isRoundOutcome = (v: string): v is RoundOutcome => includes(ROUND_OUTCOMES, v);
 export const isCareLevel = (v: string): v is CareLevel => includes(CARE_LEVELS, v);
 export const isShift = (v: string): v is Shift => includes(SHIFTS, v);
 export const isStaffAvailability = (v: string): v is StaffAvailability =>

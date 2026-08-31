@@ -118,6 +118,19 @@ resident_status_derived:
     - id: red
       rule: "Existe ronda vencida crítica o alerta roja no resuelta."
 
+# Resultados de ronda (v0.1.1 — C-02, reemplaza tipo local RoundCompletionOutcome).
+round_outcomes:
+  note: "Campo Round.completionOutcome?: RoundOutcome. Resultado operacional al completar una ronda."
+  values:
+    - id: ok
+      es: "sin novedades"
+    - id: needs_follow_up
+      es: "requiere seguimiento posterior"
+    - id: no_response
+      es: "residente no respondió"
+    - id: other
+      es: "otro resultado operacional"
+
 # Niveles de cuidado del residente (v0.1.1 — reemplaza monitoringFrequency string).
 care_levels:
   note: "Campo Resident.careLevel: CareLevel. Determina frecuencia de rondas. No es diagnóstico."

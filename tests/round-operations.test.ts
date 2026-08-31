@@ -27,19 +27,20 @@ describe('Flujo del cuidador (contrato Chunk 5)', () => {
       round18,
       'staff-caregiver-01',
       '2026-07-18T08:05:00.000Z',
-      'assistance_requested',
+      'needs_follow_up',
       'Nota de prueba',
     );
 
     expect(result.ok).toBe(true);
     if (!result.ok) return;
     expect(result.value.status).toBe('completed');
+    expect(result.value.completionOutcome).toBe('needs_follow_up');
     expect(result.value.completionNote).toBe('Nota de prueba');
 
     const auditEvent = repository
       .listAuditEvents()
       .find((e) => e.entityId === 'round-18' && e.action === 'ROUND_COMPLETED');
-    expect(auditEvent?.metadata?.completionOutcome).toBe('assistance_requested');
+    expect(auditEvent?.metadata?.completionOutcome).toBe('needs_follow_up');
   });
 
   it('rechaza completar una ronda dos veces sin corromper los datos', async () => {
@@ -47,11 +48,11 @@ describe('Flujo del cuidador (contrato Chunk 5)', () => {
     const round18 = repository.getRoundById('round-18');
     if (round18 === undefined) throw new Error('round-18 missing from seed');
 
-    const first = roundOperations.completeRound(round18, 'staff-caregiver-01', '2026-07-18T08:05:00.000Z', 'completed_without_issue', undefined);
+    const first = roundOperations.completeRound(round18, 'staff-caregiver-01', '2026-07-18T08:05:00.000Z', 'ok', undefined);
     expect(first.ok).toBe(true);
     if (!first.ok) return;
 
-    const second = roundOperations.completeRound(first.value, 'staff-caregiver-01', '2026-07-18T08:06:00.000Z', 'completed_without_issue', undefined);
+    const second = roundOperations.completeRound(first.value, 'staff-caregiver-01', '2026-07-18T08:06:00.000Z', 'ok', undefined);
     expect(second.ok).toBe(false);
 
     expect(repository.getRoundById('round-18')?.status).toBe('completed');

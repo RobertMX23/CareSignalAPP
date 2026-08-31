@@ -13,6 +13,7 @@ import type {
   Role,
   Shift,
   CareLevel,
+  RoundOutcome,
   AuditEventAction,
   RoundType,
   RoundStatus,
@@ -29,6 +30,7 @@ export type {
   Role,
   Shift,
   CareLevel,
+  RoundOutcome,
   AuditEventAction,
   RoundType,
   RoundStatus,
@@ -81,6 +83,7 @@ export interface Round {
   completedAt?: ISODateTime;
   status: RoundStatus;
   completionNote?: string;
+  completionOutcome?: RoundOutcome;
   createdAt: ISODateTime;
   updatedAt: ISODateTime;
 }

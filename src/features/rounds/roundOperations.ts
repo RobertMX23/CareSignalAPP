@@ -10,16 +10,11 @@
  * estado congelado no define una transición separada de "aceptar".
  */
 
-import type { Alert, ID, ISODateTime, Round } from '../../domain/types';
+import type { Alert, ID, ISODateTime, Round, RoundOutcome } from '../../domain/types';
 import type { AlertSeverity } from '../../domain/taxonomy';
 import { hasActiveAlertForRound } from '../../domain/rules';
 import { transitionAlert, transitionRound, type TransitionContext } from '../../domain/transitions';
 import { appendAuditEvents, listAlerts, listAuditEvents, saveAlert, saveRound } from '../../data/repository';
-
-export type RoundCompletionOutcome =
-  | 'completed_without_issue'
-  | 'assistance_requested'
-  | 'supervisor_verification_required';
 
 export type OperationResult<T> = { ok: true; value: T } | { ok: false; message: string };
 
@@ -41,7 +36,7 @@ export const completeRound = (
   round: Round,
   actorId: ID,
   timestamp: ISODateTime,
-  outcome: RoundCompletionOutcome,
+  outcome: RoundOutcome,
   note: string | undefined,
 ): OperationResult<Round> => {
   const ctx: TransitionContext = {
@@ -54,7 +49,11 @@ export const completeRound = (
   if (!result.ok) return { ok: false, message: result.error.message };
 
   const trimmedNote = note?.trim();
-  const updated: Round = { ...(result.round as Round), completionNote: trimmedNote || undefined };
+  const updated: Round = {
+    ...(result.round as Round),
+    completionNote: trimmedNote || undefined,
+    completionOutcome: outcome,
+  };
   saveRound(updated);
   appendAuditEvents([result.auditEvent]);
   return { ok: true, value: updated };
