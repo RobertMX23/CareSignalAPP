@@ -8,7 +8,7 @@
  * aquí directamente: todo pasa por `demoClock`/`repository`/`resetDemo`.
  */
 
-import { useMemo, useState, type ChangeEvent } from 'react';
+import { useEffect, useMemo, useState, type ChangeEvent } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import { useDemoSession } from './DemoSessionContext';
 import type { Role, Shift } from '../domain/taxonomy';
@@ -62,6 +62,14 @@ export const AppLayout = (): JSX.Element => {
       ),
     [staffMembers, filterRole, filterShift],
   );
+
+  useEffect(() => {
+    if (filteredStaff.length === 0) return;
+    const isActiveInFilter = filteredStaff.some((s) => s.id === activeStaffId);
+    if (!isActiveInFilter) {
+      setActiveStaffId(filteredStaff[0].id);
+    }
+  }, [filteredStaff, activeStaffId, setActiveStaffId]);
 
   const currentTime = getCurrentTime();
   const formattedTime = new Date(currentTime).toLocaleString('es-ES', {
