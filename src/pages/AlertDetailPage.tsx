@@ -241,6 +241,9 @@ const AlertDetail = ({ alertId }: { alertId: string }): JSX.Element => {
   }
   const alert: Alert = data.alert;
 
+  const canClose   = activeStaff.role === 'manager'    || activeStaff.role === 'demo_admin';
+  const canManage  = activeStaff.role === 'supervisor'  || canClose;
+
   const resident = getResidentById(alert.residentId);
   const assignedStaff = alert.assignedStaffId !== undefined ? getStaffMemberById(alert.assignedStaffId) : undefined;
   const delay = data.round !== undefined ? describeDelay(data.round, getCurrentTime()) : undefined;
@@ -263,7 +266,10 @@ const AlertDetail = ({ alertId }: { alertId: string }): JSX.Element => {
   const handleStartVerification = (): void =>
     runAction(() => startVerification(alert, activeStaff.id, getCurrentTime()), 'Verificación iniciada.');
 
-  const handleClose = (): void => runAction(() => closeAlert(alert, activeStaff.id, getCurrentTime()), 'Alerta cerrada.');
+  const handleClose = (): void => {
+    if (!canClose) return;
+    runAction(() => closeAlert(alert, activeStaff.id, getCurrentTime()), 'Alerta cerrada.');
+  };
 
   const handleAssignConfirm = (staffId: ID): void => {
     const isReassign = modal?.kind === 'reassign';
@@ -324,40 +330,43 @@ const AlertDetail = ({ alertId }: { alertId: string }): JSX.Element => {
 
       <h2>Acciones</h2>
       <div className="row-actions">
-        {alert.status === 'open' && (
+        {canManage && alert.status === 'open' && (
           <button type="button" className="button" onClick={handleAcknowledge}>
             Reconocer
           </button>
         )}
-        {(alert.status === 'open' || alert.status === 'acknowledged') && (
+        {canManage && (alert.status === 'open' || alert.status === 'acknowledged') && (
           <button type="button" className="button" onClick={() => setModal({ kind: 'assign' })}>
             Asignar
           </button>
         )}
-        {(alert.status === 'assigned' || alert.status === 'escalated') && (
+        {canManage && (alert.status === 'assigned' || alert.status === 'escalated') && (
           <button type="button" className="button button--secondary" onClick={() => setModal({ kind: 'reassign' })}>
             Reasignar
           </button>
         )}
-        {alert.status === 'assigned' && (
+        {canManage && alert.status === 'assigned' && (
           <button type="button" className="button button--secondary" onClick={handleEscalate}>
             Escalar
           </button>
         )}
-        {(alert.status === 'assigned' || alert.status === 'escalated') && (
+        {canManage && (alert.status === 'assigned' || alert.status === 'escalated') && (
           <button type="button" className="button" onClick={handleStartVerification}>
             Iniciar verificación
           </button>
         )}
-        {alert.status === 'in_verification' && (
+        {canManage && alert.status === 'in_verification' && (
           <button type="button" className="button" onClick={() => setModal({ kind: 'resolve' })}>
             Registrar resultado y resolver
           </button>
         )}
-        {alert.status === 'resolved' && (
+        {canClose && alert.status === 'resolved' && (
           <button type="button" className="button" onClick={handleClose}>
             Cerrar
           </button>
+        )}
+        {!canManage && !alert.status.startsWith('close') && (
+          <p className="hint">Sin acciones disponibles para este rol.</p>
         )}
         {alert.status === 'closed' && <p className="hint">Esta alerta está cerrada; no admite más acciones.</p>}
       </div>
