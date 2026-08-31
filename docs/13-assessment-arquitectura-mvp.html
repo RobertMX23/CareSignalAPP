@@ -263,7 +263,7 @@
     <div class="eyebrow">CareSignal MVP v0.1.0-workshop · Arquitectura event-driven</div>
     <h1>Assessment de arquitectura y alcance MVP demo</h1>
     <div class="meta">
-      <span>10 categorías · 60 puntos evaluados</span>
+      <span>11 categorías · 66 puntos evaluados</span>
       <span>Enfoque: diseño de arquitectura + pipeline + alcance demo funcional</span>
       <span>Fecha: 2026-08-30</span>
       <span>Contexto: WomenCISO 4 / MenCISO 1 · registro 6 sep</span>
@@ -283,15 +283,15 @@
   <section id="resumen">
     <div class="summary-grid">
       <div class="summary-card">
-        <div class="big" style="color:var(--done)">31</div>
+        <div class="big" style="color:var(--done)">34</div>
         <div class="label">✅ Listos</div>
       </div>
       <div class="summary-card">
-        <div class="big" style="color:var(--pend)">9</div>
+        <div class="big" style="color:var(--pend)">10</div>
         <div class="label">🔨 Pendientes</div>
       </div>
       <div class="summary-card">
-        <div class="big" style="color:var(--gap)">7</div>
+        <div class="big" style="color:var(--gap)">9</div>
         <div class="label">⚠️ Brechas</div>
       </div>
       <div class="summary-card">
@@ -985,6 +985,113 @@
     </table></div>
   </section>
 
+  <!-- CAT 11 -->
+  <section class="cat-section" id="cat11">
+    <div class="cat-header">
+      <span class="cat-num">11</span>
+      <span class="cat-title">Cumplimiento normativo — NOM-031-SSA3-2012</span>
+      <span class="cat-meta">6 puntos</span>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>#</th><th>Punto de evaluación</th><th style="min-width:130px">Estado</th><th>Implicación / acción</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="row-num">11.1</td>
+          <td>
+            <div class="point-label">Bitácora de actividades cubre §8 NOM-031 — R-01/02/03/04</div>
+            <div class="point-detail"><code>audit_events</code> (append-only, actor + timestamp + payload) satisface el requisito de bitácora diaria de la norma. Cada acción queda registrada con quién, cuándo y qué estado resultó. El log es la evidencia ante inspección de COFEPRIS.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-done">✅ LISTO</span></td>
+          <td class="implication">Argumento de cumplimiento ante compradores: "su bitácora NOM-031 se genera automáticamente, sin llenar formatos." Ref: docs/12 §11, docs/15.</td>
+        </tr>
+        <tr>
+          <td class="row-num">11.2</td>
+          <td>
+            <div class="point-label">Rondas programadas + motor temporal cubre §7.1 y §7.3 NOM-031 — R-05/19/20/21/22/23/24</div>
+            <div class="point-detail">El plan de actividades diarias (R-05) se materializa en rondas <code>scheduled</code>. La verificación de ejecución (R-22) es el estado <code>completed</code>. La detección de incumplimiento (R-23/R-24) es el motor temporal que transiciona a <code>overdue</code> y crea la alerta. Determinista y auditable.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-done">✅ LISTO</span></td>
+          <td class="implication">Este es el argumento central de valor: "el sistema detecta automáticamente las rondas que no se ejecutaron en tiempo." Conecta con el pain point principal de las residencias.</td>
+        </tr>
+        <tr>
+          <td class="row-num">11.3</td>
+          <td>
+            <div class="point-label">Ciclo alerta-incidente-verificación cubre §8.2 y §9.1 NOM-031 — R-02/R-17</div>
+            <div class="point-detail">El ciclo <code>open → acknowledged → assigned → in_verification → resolved → closed</code> implementa el procedimiento de verificación de incidentes que exige la norma. Cada transición registra actor, timestamp y resultado. El <code>verificationOutcome</code> es el resultado documentado requerido por R-17.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-done">✅ LISTO</span></td>
+          <td class="implication">Frente al comprador: "ningún evento queda sin respuesta documentada — la norma lo exige y el sistema lo garantiza por diseño."</td>
+        </tr>
+        <tr>
+          <td class="row-num">11.4</td>
+          <td>
+            <div class="point-label">Expediente del residente incompleto — sin CURP, fecha de nacimiento, género — R-09 NOM-031</div>
+            <div class="point-detail"><code>Resident</code> en v0.1.0 tiene solo <code>id</code>, <code>displayName</code>, <code>room</code>, <code>monitoringFrequency</code>, <code>notes?</code>, <code>isActive</code>. La NOM-031 §11 requiere datos de identificación del residente. Estos campos son datos personales reales — correctamente excluidos del MVP con datos ficticios, pero necesarios en producción.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-gap">⚠️ BRECHA</span></td>
+          <td class="implication">Para la demo: declarar explícitamente "en producción el módulo de admisión captura CURP, fecha de nacimiento y datos de contacto familiar — fuera del alcance del MVP operacional." Backlog v0.2 T14-adm.</td>
+        </tr>
+        <tr>
+          <td class="row-num">11.5</td>
+          <td>
+            <div class="point-label"><code>residencia_id</code> ausente de todas las entidades del modelo v0.1.0 — R-06/R-29</div>
+            <div class="point-detail">El aislamiento por establecimiento que exige NOM-031 §4.1 (y el diseño multi-tenant del MVP) requiere <code>residencia_id</code> en cada entidad. En v0.1.0 el campo existe en el diseño conceptual (§02 del doc de arquitectura) pero no en <code>types.ts</code> ni en el seed. Es GAP-03 del contrato de correcciones — diferido a v0.2.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-gap">⚠️ BRECHA</span></td>
+          <td class="implication">Para la demo: "el MVP es single-tenant por diseño; el campo residencia_id está en el roadmap v0.2 junto con la base de datos real." Documentado en T14 del contrato de correcciones.</td>
+        </tr>
+        <tr>
+          <td class="row-num">11.6</td>
+          <td>
+            <div class="point-label">Exportar bitácora desde la UI — R-08 NOM-031 (acceso por inspector)</div>
+            <div class="point-detail">La NOM-031 §8 exige que la bitácora sea accesible para inspectores de COFEPRIS. La arquitectura tiene el log completo en <code>audit_events</code>. La UI del gerente en §06 del doc de arquitectura diseña esta función, pero no está confirmado que exista un botón de exportar en la app actual.</div>
+          </td>
+          <td class="status-col"><span class="chip chip-pend">🔨 PENDIENTE</span></td>
+          <td class="implication">Verificar que la página del gerente tiene botón "Exportar bitácora (CSV/JSON)". Si no existe, es un pendiente de UI antes de la demo. La función de datos ya está — solo falta el botón.</td>
+        </tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- TABLA CRUZADA Cat 01-11 × NOM-031 -->
+  <section id="tabla-cruzada" style="margin-top:2rem">
+    <h2 style="font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:1rem;padding-top:2rem;border-top:2px solid var(--accent)">
+      Tabla cruzada — Categorías del assessment × Requisitos NOM-031 cubiertos
+    </h2>
+    <p style="font-size:13px;color:var(--text-muted);margin-bottom:1rem">Muestra qué categorías del assessment contribuyen a cada grupo de requisitos de la norma. Un ✅ indica cobertura directa; un ○ indica cobertura indirecta o parcial.</p>
+    <div class="table-wrap" style="border:1px solid var(--border);border-radius:8px;overflow:hidden;background:var(--surface)">
+      <table>
+        <thead>
+          <tr>
+            <th>Categoría</th>
+            <th>R-01…04<br><small>Bitácora</small></th>
+            <th>R-05/19…24<br><small>Rondas</small></th>
+            <th>R-02/17<br><small>Incidentes</small></th>
+            <th>R-06/29<br><small>Establecimiento</small></th>
+            <th>R-09<br><small>Residente</small></th>
+            <th>R-14/15<br><small>Personal</small></th>
+            <th>R-18<br><small>Dashboard</small></th>
+            <th>R-30<br><small>RBAC</small></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>01</strong> Arquitectura</td><td>○</td><td></td><td></td><td></td><td></td><td></td><td></td><td>○</td></tr>
+          <tr><td><strong>02</strong> Multi-tenant</td><td></td><td></td><td></td><td>✅</td><td></td><td></td><td></td><td></td></tr>
+          <tr><td><strong>03</strong> Rondas</td><td>○</td><td>✅</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><td><strong>04</strong> Data model</td><td>✅</td><td>○</td><td>○</td><td>○</td><td>○</td><td>○</td><td></td><td></td></tr>
+          <tr><td><strong>05</strong> Audit events</td><td>✅</td><td>○</td><td>✅</td><td></td><td></td><td>✅</td><td></td><td></td></tr>
+          <tr><td><strong>06</strong> Vistas / roles</td><td></td><td></td><td>✅</td><td></td><td></td><td>✅</td><td>✅</td><td>✅</td></tr>
+          <tr><td><strong>07</strong> API layer</td><td>○</td><td>○</td><td>○</td><td></td><td></td><td></td><td></td><td>○</td></tr>
+          <tr><td><strong>08</strong> Repo público</td><td></td><td></td><td></td><td></td><td>○</td><td></td><td></td><td></td></tr>
+          <tr><td><strong>09</strong> Ciberseguridad</td><td>○</td><td></td><td></td><td>✅</td><td>○</td><td></td><td></td><td>✅</td></tr>
+          <tr><td><strong>10</strong> IA / ML</td><td>○</td><td></td><td></td><td></td><td></td><td></td><td>○</td><td></td></tr>
+          <tr style="background:var(--bg-alt);font-weight:600"><td><strong>11</strong> NOM-031</td><td>✅</td><td>✅</td><td>✅</td><td>⚠️</td><td>⚠️</td><td>✅</td><td>○</td><td>✅</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:11px;color:var(--text-muted);margin-top:0.5rem">✅ cobertura directa &nbsp;·&nbsp; ○ cobertura indirecta / parcial &nbsp;·&nbsp; ⚠️ brecha identificada</p>
+  </section>
+
   <!-- RESUMEN DE TAREAS PENDIENTES -->
   <section id="resumen-tareas" style="margin-top:3rem">
     <h2 style="font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:1.25rem;padding-top:2rem;border-top:2px solid var(--accent)">
@@ -1014,9 +1121,21 @@
           </tr>
           <tr>
             <td><span class="chip chip-pend">🟡 ALTA</span></td>
-            <td><strong>Verificar función "Exportar bitácora" del gerente</strong> — confirmar que existe botón y funciona en la UI antes de la demo</td>
-            <td>06.3</td>
+            <td><strong>Verificar función "Exportar bitácora" del gerente</strong> — confirmar que existe botón de exportar CSV/JSON en la UI antes de la demo (R-08 NOM-031)</td>
+            <td>06.3, 11.6</td>
             <td>QA previo a E3</td>
+          </tr>
+          <tr>
+            <td><span class="chip chip-pend">🟡 ALTA</span></td>
+            <td><strong>Documentar campos faltantes del residente para producción</strong> — CURP, fecha de nacimiento, género, contacto familiar en README / pitch (R-09 NOM-031). No implementar en v0.1.0 — declarar en backlog v0.2.</td>
+            <td>11.4</td>
+            <td>E2 (contenido)</td>
+          </tr>
+          <tr>
+            <td><span class="chip chip-pend">🟡 ALTA</span></td>
+            <td><strong>Confirmar <code>residencia_id</code> en roadmap v0.2</strong> — documentar en pitch que el aislamiento multi-tenant (R-06/R-29 NOM-031) requiere este campo en la migración a producción</td>
+            <td>11.5</td>
+            <td>E2 (contenido)</td>
           </tr>
           <tr>
             <td><span class="chip chip-pend">🟡 ALTA</span></td>

@@ -353,8 +353,8 @@ tasks:
     level: 3
     title: "Actualizar docs/13-assessment-arquitectura-mvp.html — Cat 11 + tabla cruzada"
     gap_ref: ~
-    status: pending
-    completed_at: ~
+    status: done
+    completed_at: "2026-08-30"
     complexity: medium
     contract_change: false
     depends_on: [T9]
@@ -368,20 +368,20 @@ tasks:
       - docs/13-assessment-arquitectura-mvp.html
     subtasks:
       - id: T10.1
-        desc: "Escribir Cat 11 con 6 puntos: cobertura R-series bitácoras (✅), cobertura personal/escalación (✅), cobertura 5 tipos ronda (✅), expediente parcial sin CURP (⚠️ BRECHA), residenciaId ausente (⚠️ BRECHA), audit log exportable (🔨 PENDIENTE)"
-        status: pending
+        desc: "Cat 11 con 6 puntos (3✅ + 2⚠️ + 1🔨): bitácoras, rondas, ciclo alerta-incidente, expediente, residenciaId, exportar bitácora"
+        status: done
       - id: T10.2
-        desc: "Actualizar scorecard: recalcular totales de 60 a 66 puntos con los 6 nuevos"
-        status: pending
+        desc: "Scorecard actualizado: 34✅ / 10🔨 / 9⚠️ / 7🚫 / 6📐 = 66 puntos"
+        status: done
       - id: T10.3
-        desc: "Agregar tabla cruzada Cat 01–11 × Requisitos NOM cubiertos por cada categoría"
-        status: pending
+        desc: "Tabla cruzada Cat 01–11 × 8 grupos de requisitos NOM-031"
+        status: done
       - id: T10.4
-        desc: "Actualizar tabla de tareas pendientes consolidadas con: agregar campos CURP/familia (R-09), agregar residenciaId (R-29), verificar exportar bitácora (R-08)"
-        status: pending
+        desc: "Tareas pendientes normativas añadidas: CURP (11.4), residenciaId (11.5), exportar bitácora (11.6)"
+        status: done
       - id: T10.5
-        desc: "Republicar artefacto en https://claude.ai/code/artifact/94b2b580-18f6-4474-a3db-e0a27b365873"
-        status: pending
+        desc: "Artefacto republicado"
+        status: done
 
   - id: T11
     level: 3
