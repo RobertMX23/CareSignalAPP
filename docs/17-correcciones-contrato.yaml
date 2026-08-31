@@ -322,8 +322,8 @@ tasks:
     level: 3
     title: "Agregar §11 NOM-031 a docs/12-arquitectura-evento-driven.html"
     gap_ref: ~
-    status: pending
-    completed_at: ~
+    status: done
+    completed_at: "2026-08-30"
     complexity: medium
     contract_change: false
     depends_on: [T7]
@@ -338,16 +338,16 @@ tasks:
     subtasks:
       - id: T9.1
         desc: "Agregar ancla #nom031 al nav bar sticky del documento"
-        status: pending
+        status: done
       - id: T9.2
-        desc: "Escribir sección §11 con mini-scorecard 12 CUBRE / 7 CONTRIBUYE / 5 INFRAESTRUCTURA / 8 FUERA"
-        status: pending
+        desc: "Sección §11 con scorecard 12/7/5/8 y tabla arq → requisitos NOM-031"
+        status: done
       - id: T9.3
-        desc: "Agregar tabla de mapa: audit_events→R-01/02/03/04, rondas→R-05/19-23, alerta-incidente→R-02/17, overdue→R-24, RBAC→R-30, dashboard supervisor→R-18, asignación staff→R-14/15"
-        status: pending
+        desc: "Tabla de mapa: audit_events, rondas, alertas, overdue, RBAC, dashboard, staff"
+        status: done
       - id: T9.4
-        desc: "Republicar artefacto en https://claude.ai/code/artifact/8a94bbf8-8fd9-4ab6-9a1c-1b21e5a70e1e"
-        status: pending
+        desc: "Republicar artefacto"
+        status: done
 
   - id: T10
     level: 3

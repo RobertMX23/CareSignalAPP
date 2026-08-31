@@ -368,6 +368,7 @@
   <a href="#repo">Repo público/privado</a>
   <a href="#ciberseguridad">Ciberseguridad</a>
   <a href="#ia-assessment">IA / ML / Chatbots</a>
+  <a href="#nom031">NOM-031</a>
 </nav>
 
 <main>
@@ -1122,6 +1123,110 @@ node_modules/
       </tbody>
     </table></div>
     <p style="font-size:12px;margin-top:1rem">Principio aplicado: <em>"La solución más simple que resuelve el problema real es la correcta."</em> Las reglas deterministas ganan a ML cuando los datos son escasos. Los agentes LLM ganan cuando el problema es semántico y no estructurado. Los chatbots pierden cuando la UI directa es más rápida.</p>
+  </section>
+
+  <section id="nom031">
+    <h2><span class="sec-num">11</span> Cobertura NOM-031-SSA3-2012</h2>
+    <p>La NOM-031-SSA3-2012 regula el funcionamiento de establecimientos de atención médica de largo plazo para adultos mayores en México. CareSignal no es un dispositivo médico, pero su arquitectura cubre directamente los requisitos operacionales y de bitácora que la norma exige a las residencias privadas.</p>
+
+    <h3>Scorecard de cobertura</h3>
+    <div style="overflow-x:auto;margin-bottom:1.5rem">
+      <table>
+        <thead><tr><th>Nivel</th><th>Descripción</th><th>Requisitos</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#16a34a;margin-right:6px"></span><strong>CUBRE</strong></td>
+            <td>La arquitectura satisface el requisito directamente</td>
+            <td style="text-align:center;font-weight:700">12</td>
+          </tr>
+          <tr>
+            <td><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#ca8a04;margin-right:6px"></span><strong>CONTRIBUYE</strong></td>
+            <td>Cubre parcialmente; complemento organizacional requerido</td>
+            <td style="text-align:center;font-weight:700">7</td>
+          </tr>
+          <tr>
+            <td><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#2563eb;margin-right:6px"></span><strong>INFRAESTRUCTURA</strong></td>
+            <td>Provee la base técnica; el proceso lo completa el personal</td>
+            <td style="text-align:center;font-weight:700">5</td>
+          </tr>
+          <tr>
+            <td><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#6b7280;margin-right:6px"></span><strong>FUERA DE ALCANCE</strong></td>
+            <td>Dominio médico o regulatorio ajeno al MVP operacional</td>
+            <td style="text-align:center;font-weight:700">8</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Mapa arquitectura → requisitos NOM-031</h3>
+    <div style="overflow-x:auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Componente de arquitectura</th>
+            <th>Requisitos NOM-031 cubiertos</th>
+            <th>Cobertura</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code class="mono">audit_events</code> — log inmutable append-only</td>
+            <td>§8 Bitácora de actividades diarias (R-01), registro de cada intervención (R-02), conservación de registros (R-03), acceso por inspector (R-04)</td>
+            <td><span style="color:#16a34a;font-weight:700">CUBRE</span></td>
+          </tr>
+          <tr>
+            <td><code class="mono">rondas</code> — evento core programado</td>
+            <td>§7.1 Plan de actividades diarias (R-05), supervisión periódica de residentes (R-19), registro de actividades (R-20), frecuencia según necesidad (R-21), verificación de ejecución (R-22), documentación de incumplimiento (R-23)</td>
+            <td><span style="color:#16a34a;font-weight:700">CUBRE</span></td>
+          </tr>
+          <tr>
+            <td>Ciclo alerta → incidente → verificación</td>
+            <td>§8.2 Registro de eventos que requieren atención (R-02), §9.1 Procedimiento de verificación de incidentes (R-17)</td>
+            <td><span style="color:#16a34a;font-weight:700">CUBRE</span></td>
+          </tr>
+          <tr>
+            <td>Motor temporal + rondas <code class="mono">overdue</code></td>
+            <td>§7.3 Detección de rondas no ejecutadas en tiempo (R-24)</td>
+            <td><span style="color:#16a34a;font-weight:700">CUBRE</span></td>
+          </tr>
+          <tr>
+            <td>RBAC — 4 roles (caregiver, supervisor, manager, demo_admin)</td>
+            <td>§5.3 Responsabilidades diferenciadas por perfil de personal (R-30)</td>
+            <td><span style="color:#16a34a;font-weight:700">CUBRE</span></td>
+          </tr>
+          <tr>
+            <td>Dashboard supervisor — alertas activas + métricas</td>
+            <td>§6.2 Supervisión continua del estado operacional de la residencia (R-18)</td>
+            <td><span style="color:#16a34a;font-weight:700">CUBRE</span></td>
+          </tr>
+          <tr>
+            <td>Asignación y reasignación de staff a alertas</td>
+            <td>§5.4 Asignación documentada de responsable por evento (R-14), trazabilidad de cambios de responsable (R-15)</td>
+            <td><span style="color:#16a34a;font-weight:700">CUBRE</span></td>
+          </tr>
+          <tr>
+            <td>Estado visual del residente (green/yellow/red) — derivado</td>
+            <td>§7.2 Monitoreo del estado general del residente (R-19 parcial)</td>
+            <td><span style="color:#ca8a04;font-weight:700">CONTRIBUYE</span></td>
+          </tr>
+          <tr>
+            <td>Aislamiento por <code class="mono">residencia_id</code> (multi-tenant)</td>
+            <td>§4.1 Expediente separado por establecimiento (R-06), confidencialidad entre residencias (R-07)</td>
+            <td><span style="color:#2563eb;font-weight:700">INFRAESTRUCTURA</span></td>
+          </tr>
+          <tr>
+            <td>Datos ficticios / sin datos clínicos</td>
+            <td>§10 Protección de datos personales del residente (fuera de alcance v0.1.0)</td>
+            <td><span style="color:#6b7280;font-weight:700">FUERA DE ALCANCE</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Lo que CareSignal <em>no</em> cubre (declaración de límites)</h3>
+    <p style="font-size:13px;color:var(--text-muted)">De acuerdo con el contrato §8 y la NOM-031: CareSignal no es un dispositivo médico, no detecta signos vitales, no realiza diagnósticos, no reemplaza al personal clínico y no gestiona expedientes médicos, medicamentos ni protocolos de emergencia médica. Los requisitos NOM-031 relativos a historial clínico (§11), prescripción médica (§12), traslado a hospital (§15) y atención de urgencias (§16) están fuera del alcance del MVP operacional.</p>
+
+    <p style="font-size:12px;margin-top:1rem">Referencia completa: <em>docs/15-nom031-cobertura.html</em> — glosario NOM-031 ↔ CareSignal, 32 requisitos clasificados, frases de pitch con respaldo normativo.</p>
   </section>
 
 </main>
