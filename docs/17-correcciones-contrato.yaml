@@ -99,8 +99,8 @@ tasks:
     level: 1
     title: "Documentar inconsistencia in_verification vs verification_in_progress (DIV-05)"
     gap_ref: "DIV-05"
-    status: pending
-    completed_at: ~
+    status: done
+    completed_at: "2026-08-30"
     complexity: low
     contract_change: false
     depends_on: []

@@ -534,6 +534,11 @@ state_machine_ronda:
 # ─────────────────────────────────
 state_machine_alerta:
   note: "Tuplas (from, to, actor, condition, event_emitted, valid)"
+  nomenclatura_nota: >
+    El estado in_verification (alerta) es funcionalmente equivalente a
+    verification_in_progress (incidente) — ambos significan 'verificación en curso'.
+    La diferencia de nombre es intencional: cada máquina de estados nombra sus propios
+    estados sin acoplar el vocabulario entre entidades distintas.
   transitions:
     - from: open          to: acknowledged    actor: supervisor   condition: "—"                                 event: ALERT_ACKNOWLEDGED         valid: true
     - from: acknowledged  to: assigned        actor: supervisor   condition: "owner_id provisto"                 event: ALERT_ASSIGNED             valid: true
@@ -550,6 +555,10 @@ state_machine_alerta:
 # C3. Máquina de estados — Incidente
 # ───────────────────────────────────
 state_machine_incidente:
+  nomenclatura_nota: >
+    El estado verification_in_progress (incidente) es funcionalmente equivalente a
+    in_verification (alerta) — ambos significan 'verificación en curso'.
+    Ver nota cruzada en state_machine_alerta.
   transitions:
     - from: open                    to: verification_in_progress  actor: supervisor  event: INCIDENT_UPDATED  valid: true
     - from: verification_in_progress to: resolved                 actor: supervisor  condition: "resultado_operativo provisto"  event: INCIDENT_UPDATED  valid: true
