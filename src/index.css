@@ -2,24 +2,40 @@
  * index.css — Estilos globales del shell (contrato Chunk 4: diseño profesional,
  * sencillo, alta legibilidad, botones grandes, contraste adecuado, responsive,
  * sin depender solo del color, sin gráficas decorativas ni animaciones.
+ *
+ * Dirección visual: Cálido accesible — Nunito, neutros cálidos, teal primario.
  */
 
-:root {
-  --color-bg: #f4f6f8;
-  --color-surface: #ffffff;
-  --color-text: #1a2733;
-  --color-text-muted: #52616f;
-  --color-border: #cbd5e0;
-  --color-primary: #0b5e8c;
-  --color-primary-dark: #084a70;
-  --color-red: #b3261e;
-  --color-red-bg: #fbe9e7;
-  --color-yellow: #8a6100;
-  --color-yellow-bg: #fff4d6;
-  --color-green: #1e6b3c;
-  --color-green-bg: #e3f3e8;
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap');
 
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+:root {
+  /* Neutrales cálidos */
+  --color-bg:           #f7f4f0;
+  --color-surface:      #ffffff;
+  --color-border:       #ddd3c5;
+  --color-border-light: #ede6db;
+  --color-text:         #231a0f;
+  --color-text-muted:   #6b5744;
+
+  /* Primario — teal cálido */
+  --color-primary:      #1a6b5c;
+  --color-primary-dark: #124f44;
+  --color-primary-bg:   #e5f3f0;
+  --color-primary-bd:   #7dbfb4;
+
+  /* Semánticos */
+  --color-red:        #b3261e;
+  --color-red-bg:     #fce9e8;
+  --color-red-bd:     #f09490;
+  --color-yellow:     #92680a;
+  --color-yellow-bg:  #fff3d0;
+  --color-yellow-bd:  #e8b84b;
+  --color-green:      #1a6b3c;
+  --color-green-bg:   #e3f3e8;
+  --color-green-bd:   #86c9a0;
+
+  /* Tipografía */
+  font-family: 'Nunito', system-ui, -apple-system, 'Segoe UI', sans-serif;
   color-scheme: light;
 }
 
@@ -94,31 +110,31 @@ a {
 }
 
 .badge--fictional {
-  background: #e0e7ff;
+  background: #edeaff;
   color: #3730a3;
   border: 1px solid #a5b4fc;
 }
 
 .badge--role-caregiver {
-  background: #e3f3e8;
-  color: #1e6b3c;
-  border: 1px solid #86c9a0;
+  background: var(--color-green-bg);
+  color: var(--color-green);
+  border: 1px solid var(--color-green-bd);
 }
 
 .badge--role-supervisor {
-  background: #fff4d6;
-  color: #8a6100;
-  border: 1px solid #f5c542;
+  background: var(--color-yellow-bg);
+  color: var(--color-yellow);
+  border: 1px solid var(--color-yellow-bd);
 }
 
 .badge--role-manager {
-  background: #fbe9e7;
-  color: #b3261e;
-  border: 1px solid #f09490;
+  background: var(--color-red-bg);
+  color: var(--color-red);
+  border: 1px solid var(--color-red-bd);
 }
 
 .badge--role-demo_admin {
-  background: #e0e7ff;
+  background: #edeaff;
   color: #3730a3;
   border: 1px solid #a5b4fc;
 }
@@ -162,9 +178,12 @@ a {
 select {
   min-height: 44px;
   padding: 0.35rem 0.5rem;
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
+  border: 1.5px solid var(--color-border);
+  border-radius: 8px;
   font-size: 1rem;
+  font-family: inherit;
+  background: var(--color-surface);
+  color: var(--color-text);
 }
 
 .nav-toggle {
@@ -185,7 +204,7 @@ select {
   min-height: 44px;
   display: flex;
   align-items: center;
-  border-radius: 6px;
+  border-radius: 8px;
   color: var(--color-text);
   text-decoration: none;
   font-weight: 600;
@@ -210,14 +229,16 @@ select {
 
 .button {
   min-height: 44px;
-  padding: 0.6rem 1.2rem;
+  padding: 0.6rem 1.25rem;
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 700;
+  font-family: inherit;
   border-radius: 8px;
-  border: 1px solid var(--color-primary-dark);
+  border: 1.5px solid var(--color-primary-dark);
   background: var(--color-primary);
   color: #ffffff;
   cursor: pointer;
+  letter-spacing: 0.01em;
 }
 
 .button:hover {
@@ -226,7 +247,8 @@ select {
 
 .button--secondary {
   background: var(--color-surface);
-  color: var(--color-primary-dark);
+  color: var(--color-text);
+  border-color: var(--color-border);
 }
 
 .button--secondary:hover {
@@ -236,7 +258,7 @@ select {
 .button--danger {
   background: var(--color-red-bg);
   color: var(--color-red);
-  border-color: var(--color-red);
+  border-color: var(--color-red-bd);
 }
 
 .button-row {
@@ -260,8 +282,8 @@ select {
 
 .summary-card {
   background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
+  border: 1.5px solid var(--color-border);
+  border-radius: 12px;
   padding: 1rem 1.25rem;
   min-width: 150px;
   display: flex;
@@ -270,15 +292,18 @@ select {
 }
 
 .summary-card--red {
-  border-color: var(--color-red);
+  border-color: var(--color-red-bd);
+  background: var(--color-red-bg);
 }
 
 .summary-card--yellow {
-  border-color: var(--color-yellow);
+  border-color: var(--color-yellow-bd);
+  background: var(--color-yellow-bg);
 }
 
 .summary-card--green {
-  border-color: var(--color-green);
+  border-color: var(--color-green-bd);
+  background: var(--color-green-bg);
 }
 
 .summary-card__value {
@@ -312,9 +337,11 @@ select {
 
 .data-table th {
   color: var(--color-text-muted);
-  font-size: 0.85rem;
+  font-size: 0.78rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.06em;
+  background: var(--color-bg);
 }
 
 .detail-list {
@@ -322,8 +349,8 @@ select {
   grid-template-columns: max-content 1fr;
   gap: 0.4rem 1rem;
   background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
+  border: 1.5px solid var(--color-border);
+  border-radius: 12px;
   padding: 1rem 1.25rem;
   margin-bottom: 1.5rem;
 }
@@ -395,8 +422,8 @@ select {
   flex-wrap: wrap;
   gap: 1rem;
   background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
+  border: 1.5px solid var(--color-border);
+  border-radius: 10px;
   padding: 1rem;
   margin-bottom: 1.5rem;
 }
@@ -416,9 +443,10 @@ select {
 .filter-field select {
   min-height: 40px;
   padding: 0.3rem 0.5rem;
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
+  border: 1.5px solid var(--color-border);
+  border-radius: 8px;
   font-size: 0.95rem;
+  font-family: inherit;
 }
 
 .timeline {
@@ -461,19 +489,19 @@ select {
 .inline-banner--success {
   background: var(--color-green-bg);
   color: var(--color-green);
-  border: 1px solid var(--color-green);
+  border: 1.5px solid var(--color-green-bd);
 }
 
 .inline-banner--error {
   background: var(--color-red-bg);
   color: var(--color-red);
-  border: 1px solid var(--color-red);
+  border: 1.5px solid var(--color-red-bd);
 }
 
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(26, 39, 51, 0.55);
+  background: rgba(35, 26, 15, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -483,7 +511,7 @@ select {
 
 .modal {
   background: var(--color-surface);
-  border-radius: 10px;
+  border-radius: 16px;
   padding: 1.5rem;
   max-width: 480px;
   width: 100%;
@@ -493,8 +521,8 @@ select {
 }
 
 .modal-fieldset {
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
+  border: 1.5px solid var(--color-border);
+  border-radius: 10px;
   padding: 0.75rem 1rem;
   display: flex;
   flex-direction: column;
@@ -522,9 +550,10 @@ select {
 .modal-field input {
   min-height: 44px;
   padding: 0.4rem 0.6rem;
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
+  border: 1.5px solid var(--color-border);
+  border-radius: 8px;
   font-size: 1rem;
+  font-family: inherit;
 }
 
 .modal-actions {
@@ -569,7 +598,7 @@ select {
 
 .roster-card {
   background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  border: 1.5px solid var(--color-border);
   border-radius: 10px;
   overflow: hidden;
 }
@@ -621,17 +650,17 @@ select {
 .availability-badge--available {
   background: var(--color-green-bg);
   color: var(--color-green);
-  border: 1px solid #86c9a0;
+  border: 1px solid var(--color-green-bd);
 }
 
 .availability-badge--busy {
   background: var(--color-yellow-bg);
   color: var(--color-yellow);
-  border: 1px solid #f5c542;
+  border: 1px solid var(--color-yellow-bd);
 }
 
 .availability-badge--off-shift {
-  background: #f1f5f9;
-  color: #64748b;
-  border: 1px solid #cbd5e0;
+  background: var(--color-bg);
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
 }
