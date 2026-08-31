@@ -103,6 +103,25 @@ resident_status_derived:
     - id: red
       rule: "Existe ronda vencida crítica o alerta roja no resuelta."
 
+# Resultados de verificación permitidos. Definidos en Chunk 2 (Gate C2) porque el
+# modelo congelado §8.4 y §8.5 ya los referencia en Alert.verificationOutcome e
+# Incident.outcome. Vocabulario operacional, NO clínico.
+verification_outcomes:
+  note: "Vocabulario operacional, no clínico. Seis resultados posibles al cerrar una alerta o incidente."
+  values:
+    - id: resident_confirmed_ok
+      es: "residente confirmado sin novedad"
+    - id: assistance_provided
+      es: "asistencia prestada"
+    - id: caregiver_support_required
+      es: "se requiere apoyo de cuidador adicional"
+    - id: supervisor_follow_up_required
+      es: "se requiere seguimiento del supervisor"
+    - id: false_alert
+      es: "alerta sin sustento verificado"
+    - id: other_operational_result
+      es: "otro resultado operativo"
+
 # Distinciones conceptuales que Gate C1 exige mantener explícitas.
 distinctions:
   alert_vs_incident:
