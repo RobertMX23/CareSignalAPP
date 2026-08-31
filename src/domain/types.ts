@@ -54,6 +54,7 @@ export type ISODateTime = string;
 /** §8.1 — Persona ficticia asociada con rondas y alertas. No contiene diagnóstico. */
 export interface Resident {
   id: ID;
+  residenciaId: ID;
   displayName: string;
   room: string;
   careLevel: CareLevel;
@@ -64,6 +65,7 @@ export interface Resident {
 /** §8.2 — Usuario ficticio con rol, turno y disponibilidad. */
 export interface StaffMember {
   id: ID;
+  residenciaId: ID;
   displayName: string;
   role: Role;
   shift: Shift;
@@ -74,6 +76,7 @@ export interface StaffMember {
 /** §8.3 — Actividad operacional programada para verificar o asistir a un residente. */
 export interface Round {
   id: ID;
+  residenciaId: ID;
   residentId: ID;
   assignedStaffId?: ID;
   type: RoundType;
@@ -91,6 +94,7 @@ export interface Round {
 /** §8.4 — Señal operacional que requiere asignación, atención y verificación. */
 export interface Alert {
   id: ID;
+  residenciaId: ID;
   roundId: ID;
   residentId: ID;
   severity: AlertSeverity;
@@ -108,6 +112,7 @@ export interface Alert {
 /** §8.5 — Registro formal abierto cuando una alerta entra en verificación. */
 export interface Incident {
   id: ID;
+  residenciaId: ID;
   alertId: ID;
   residentId: ID;
   status: IncidentStatus;
@@ -122,6 +127,7 @@ export interface Incident {
 /** §8.6 — Registro inmutable (append-only) de una acción o transición. */
 export interface AuditEvent {
   id: ID;
+  residenciaId: ID;
   entityType: EntityType;
   entityId: ID;
   action: AuditEventAction;

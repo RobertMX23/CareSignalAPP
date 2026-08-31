@@ -8,14 +8,18 @@ import { describe, expect, it } from 'vitest';
 import { transitionAlert, transitionIncident, transitionRound } from '../src/domain/transitions';
 import type { Alert, Incident, Round } from '../src/domain/types';
 
+const TEST_RESIDENCIA = 'residencia-demo-01';
+
 const ctx = (auditEventId: string) => ({
   actorId: 'test-actor',
+  residenciaId: TEST_RESIDENCIA,
   timestamp: '2026-07-18T08:00:00.000Z',
   auditEventId,
 });
 
 const baseRound: Round = {
   id: 'round-x',
+  residenciaId: TEST_RESIDENCIA,
   residentId: 'resident-x',
   type: 'routine_check',
   scheduledAt: '2026-07-18T08:00:00.000Z',
@@ -27,6 +31,7 @@ const baseRound: Round = {
 
 const baseAlert: Alert = {
   id: 'alert-x',
+  residenciaId: TEST_RESIDENCIA,
   roundId: 'round-x',
   residentId: 'resident-x',
   severity: 'yellow',
@@ -36,6 +41,7 @@ const baseAlert: Alert = {
 
 const baseIncident: Incident = {
   id: 'incident-x',
+  residenciaId: TEST_RESIDENCIA,
   alertId: 'alert-x',
   residentId: 'resident-x',
   status: 'verification_in_progress',

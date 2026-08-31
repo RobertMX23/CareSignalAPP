@@ -16,27 +16,27 @@
 ## 2. Entidades
 
 ### Resident (§8.1)
-`id`, `displayName`, `room`, `careLevel` (CareLevel: low|medium|high), `notes?`, `isActive`.
+`id`, `residenciaId`, `displayName`, `room`, `careLevel` (CareLevel: low|medium|high), `notes?`, `isActive`.
 No contiene diagnóstico ni datos clínicos.
 
 ### StaffMember (§8.2)
-`id`, `displayName`, `role`, `shift`, `availability`, `isActive`.
+`id`, `residenciaId`, `displayName`, `role`, `shift`, `availability`, `isActive`.
 
 ### Round (§8.3)
-`id`, `residentId`, `assignedStaffId?`, `type`, `scheduledAt`, `dueAt`, `startedAt?`,
+`id`, `residenciaId`, `residentId`, `assignedStaffId?`, `type`, `scheduledAt`, `dueAt`, `startedAt?`,
 `completedAt?`, `status`, `completionNote?`, `completionOutcome?` (RoundOutcome: ok|needs_follow_up|no_response|other), `createdAt`, `updatedAt`.
 
 ### Alert (§8.4)
-`id`, `roundId`, `residentId`, `severity`, `status`, `assignedStaffId?`, `createdAt`,
+`id`, `residenciaId`, `roundId`, `residentId`, `severity`, `status`, `assignedStaffId?`, `createdAt`,
 `acknowledgedAt?`, `escalatedAt?`, `resolvedAt?`, `closedAt?`, `verificationOutcome?`,
 `resolutionNote?`.
 
 ### Incident (§8.5)
-`id`, `alertId`, `residentId`, `status`, `openedAt`, `verificationStartedAt?`,
+`id`, `residenciaId`, `alertId`, `residentId`, `status`, `openedAt`, `verificationStartedAt?`,
 `resolvedAt?`, `closedAt?`, `outcome?`, `notes?`.
 
 ### AuditEvent (§8.6)
-`id`, `entityType`, `entityId`, `action`, `actorId`, `previousState?`, `nextState?`,
+`id`, `residenciaId`, `entityType`, `entityId`, `action`, `actorId`, `previousState?`, `nextState?`,
 `timestamp`, `metadata?`. Append-only; no editable desde la UI (§6.18).
 
 ## 3. Vocabulario (fuente única: `taxonomy.ts`)

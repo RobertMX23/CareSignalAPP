@@ -14,8 +14,8 @@
 import type { Alert, AuditEvent, ID, Incident, Resident, Round, StaffMember } from '../domain/types';
 import { buildSeedSnapshot } from './seed';
 
-const STORAGE_KEY = 'caresignal:demo-store:v1';
-const SCHEMA_VERSION = 1;
+const STORAGE_KEY = 'caresignal:demo-store:v2';
+const SCHEMA_VERSION = 2;
 
 export interface DemoStore {
   schemaVersion: number;

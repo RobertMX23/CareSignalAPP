@@ -22,7 +22,7 @@ const nextAuditId = (): ID => `audit-live-${listAuditEvents().length + 1}`;
 
 /** Regla 7: solo `due → in_progress` es válido (ver `ROUND_TRANSITIONS`). */
 export const startRound = (round: Round, actorId: ID, timestamp: ISODateTime): OperationResult<Round> => {
-  const ctx: TransitionContext = { actorId, timestamp, auditEventId: nextAuditId() };
+  const ctx: TransitionContext = { actorId, residenciaId: round.residenciaId, timestamp, auditEventId: nextAuditId() };
   const result = transitionRound(round, 'in_progress', ctx);
   if (!result.ok) return { ok: false, message: result.error.message };
 
@@ -41,6 +41,7 @@ export const completeRound = (
 ): OperationResult<Round> => {
   const ctx: TransitionContext = {
     actorId,
+    residenciaId: round.residenciaId,
     timestamp,
     auditEventId: nextAuditId(),
     metadata: { completionOutcome: outcome },
@@ -72,6 +73,7 @@ export const requestSupport = (
 
   const alert: Alert = {
     id: `alert-live-${listAlerts().length + 1}`,
+    residenciaId: round.residenciaId,
     roundId: round.id,
     residentId: round.residentId,
     severity,
@@ -82,6 +84,7 @@ export const requestSupport = (
   appendAuditEvents([
     {
       id: nextAuditId(),
+      residenciaId: round.residenciaId,
       entityType: 'alert',
       entityId: alert.id,
       action: 'ALERT_CREATED',
@@ -95,7 +98,7 @@ export const requestSupport = (
 
 /** Autoasignación de una alerta abierta (`open → assigned`, único camino válido). */
 export const acceptAlert = (alert: Alert, actorId: ID, timestamp: ISODateTime): OperationResult<Alert> => {
-  const ctx: TransitionContext = { actorId, timestamp, auditEventId: nextAuditId() };
+  const ctx: TransitionContext = { actorId, residenciaId: alert.residenciaId, timestamp, auditEventId: nextAuditId() };
   const result = transitionAlert(alert, 'assigned', ctx);
   if (!result.ok) return { ok: false, message: result.error.message };
 

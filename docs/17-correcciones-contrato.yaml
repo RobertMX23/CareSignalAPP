@@ -533,8 +533,8 @@ tasks:
     level: 4
     title: "Agregar residenciaId a todas las entidades — preparación multi-tenant (GAP-03)"
     gap_ref: "GAP-03"
-    status: pending
-    completed_at: ~
+    status: done
+    completed_at: "2026-08-31"
     complexity: high
     contract_change: true
     contract_version_required: "0.2.0"
@@ -559,26 +559,26 @@ tasks:
     subtasks:
       - id: T14.1
         desc: "GATE — Roberto aprueba el cambio como parte del inicio de v0.2.0"
-        status: pending
+        status: done
         gate: true
       - id: T14.2
         desc: "Crear versión 0.2.0 del contrato con el cambio multi-tenant documentado"
-        status: pending
+        status: done
       - id: T14.3
         desc: "Agregar residenciaId: ID a las 6 interfaces en types.ts"
-        status: pending
+        status: done
       - id: T14.4
-        desc: "Actualizar repositorio localStorage para manejar el campo"
-        status: pending
+        desc: "Actualizar repositorio localStorage para manejar el campo (SCHEMA_VERSION 1→2)"
+        status: done
       - id: T14.5
         desc: "Actualizar datos seed con residenciaId: 'residencia-demo-01' en todos los registros"
-        status: pending
+        status: done
       - id: T14.6
         desc: "Actualizar docs/01, docs/03, vocabulario maestro y arquitectura"
-        status: pending
+        status: done
       - id: T14.7
         desc: "Ejecutar npm run typecheck y npm test"
-        status: pending
+        status: done
 
 # ─────────────────────────────────────────────────────────────
 # RESUMEN DE EJECUCIÓN

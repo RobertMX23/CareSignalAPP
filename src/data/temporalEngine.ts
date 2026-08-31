@@ -45,7 +45,7 @@ export const runTemporalEngine = (currentTime: ISODateTime): TemporalEngineResul
     let current: Round = round;
 
     if (current.status === 'scheduled' && nowMs >= Date.parse(current.scheduledAt)) {
-      const ctx: TransitionContext = { actorId: SYSTEM_CLOCK_ACTOR, timestamp: currentTime, auditEventId: nextAuditId() };
+      const ctx: TransitionContext = { actorId: SYSTEM_CLOCK_ACTOR, residenciaId: current.residenciaId, timestamp: currentTime, auditEventId: nextAuditId() };
       const transition = transitionRound(current, 'due', ctx);
       if (transition.ok) {
         current = transition.round as Round;
@@ -56,7 +56,7 @@ export const runTemporalEngine = (currentTime: ISODateTime): TemporalEngineResul
     }
 
     if (current.status === 'due' && nowMs >= Date.parse(current.dueAt)) {
-      const ctx: TransitionContext = { actorId: SYSTEM_CLOCK_ACTOR, timestamp: currentTime, auditEventId: nextAuditId() };
+      const ctx: TransitionContext = { actorId: SYSTEM_CLOCK_ACTOR, residenciaId: current.residenciaId, timestamp: currentTime, auditEventId: nextAuditId() };
       const transition = transitionRound(current, 'overdue', ctx);
       if (transition.ok) {
         current = transition.round as Round;
@@ -77,6 +77,7 @@ export const runTemporalEngine = (currentTime: ISODateTime): TemporalEngineResul
       if (hasActiveAlertForRound(round.id, alerts)) continue;
       const alert: Alert = {
         id: `alert-live-${alerts.length + 1}`,
+        residenciaId: round.residenciaId,
         roundId: round.id,
         residentId: round.residentId,
         severity: delayMinutes >= CRITICAL_DELAY_MINUTES ? 'red' : 'yellow',
@@ -87,6 +88,7 @@ export const runTemporalEngine = (currentTime: ISODateTime): TemporalEngineResul
       appendAuditEvents([
         {
           id: nextAuditId(),
+          residenciaId: round.residenciaId,
           entityType: 'alert',
           entityId: alert.id,
           action: 'ALERT_CREATED',
@@ -102,6 +104,7 @@ export const runTemporalEngine = (currentTime: ISODateTime): TemporalEngineResul
       appendAuditEvents([
         {
           id: nextAuditId(),
+          residenciaId: activeAlert.residenciaId,
           entityType: 'alert',
           entityId: updated.id,
           action: 'ALERT_SEVERITY_ESCALATED',

@@ -20,7 +20,7 @@ export type OperationResult<T> = { ok: true; value: T } | { ok: false; message: 
 const nextAuditId = (): ID => `audit-live-${listAuditEvents().length + 1}`;
 
 export const acknowledgeAlert = (alert: Alert, actorId: ID, timestamp: ISODateTime): OperationResult<Alert> => {
-  const ctx: TransitionContext = { actorId, timestamp, auditEventId: nextAuditId() };
+  const ctx: TransitionContext = { actorId, residenciaId: alert.residenciaId, timestamp, auditEventId: nextAuditId() };
   const result = transitionAlert(alert, 'acknowledged', ctx);
   if (!result.ok) return { ok: false, message: result.error.message };
   const updated = result.alert as Alert;
@@ -33,6 +33,7 @@ export const acknowledgeAlert = (alert: Alert, actorId: ID, timestamp: ISODateTi
 export const assignAlert = (alert: Alert, staffId: ID, actorId: ID, timestamp: ISODateTime): OperationResult<Alert> => {
   const ctx: TransitionContext = {
     actorId,
+    residenciaId: alert.residenciaId,
     timestamp,
     auditEventId: nextAuditId(),
     metadata: { assignedStaffId: staffId },
@@ -59,6 +60,7 @@ export const reassignAlert = (alert: Alert, newStaffId: ID, actorId: ID, timesta
   appendAuditEvents([
     {
       id: nextAuditId(),
+      residenciaId: alert.residenciaId,
       entityType: 'alert',
       entityId: alert.id,
       action: 'ALERT_REASSIGNED',
@@ -72,7 +74,7 @@ export const reassignAlert = (alert: Alert, newStaffId: ID, actorId: ID, timesta
 };
 
 export const escalateAlert = (alert: Alert, actorId: ID, timestamp: ISODateTime): OperationResult<Alert> => {
-  const ctx: TransitionContext = { actorId, timestamp, auditEventId: nextAuditId() };
+  const ctx: TransitionContext = { actorId, residenciaId: alert.residenciaId, timestamp, auditEventId: nextAuditId() };
   const result = transitionAlert(alert, 'escalated', ctx);
   if (!result.ok) return { ok: false, message: result.error.message };
   const updated = result.alert as Alert;
@@ -87,7 +89,7 @@ export const startVerification = (
   actorId: ID,
   timestamp: ISODateTime,
 ): OperationResult<{ alert: Alert; incident: Incident }> => {
-  const alertCtx: TransitionContext = { actorId, timestamp, auditEventId: nextAuditId() };
+  const alertCtx: TransitionContext = { actorId, residenciaId: alert.residenciaId, timestamp, auditEventId: nextAuditId() };
   const alertResult = transitionAlert(alert, 'in_verification', alertCtx);
   if (!alertResult.ok) return { ok: false, message: alertResult.error.message };
   const updatedAlert = alertResult.alert as Alert;
@@ -98,6 +100,7 @@ export const startVerification = (
   if (incident === undefined) {
     incident = {
       id: `incident-live-${listIncidents().length + 1}`,
+      residenciaId: alert.residenciaId,
       alertId: alert.id,
       residentId: alert.residentId,
       status: 'open',
@@ -107,6 +110,7 @@ export const startVerification = (
     appendAuditEvents([
       {
         id: nextAuditId(),
+        residenciaId: alert.residenciaId,
         entityType: 'incident',
         entityId: incident.id,
         action: 'INCIDENT_OPENED',
@@ -117,7 +121,7 @@ export const startVerification = (
     ]);
   }
 
-  const incidentCtx: TransitionContext = { actorId, timestamp, auditEventId: nextAuditId() };
+  const incidentCtx: TransitionContext = { actorId, residenciaId: alert.residenciaId, timestamp, auditEventId: nextAuditId() };
   const incidentResult = transitionIncident(incident, 'verification_in_progress', incidentCtx);
   if (!incidentResult.ok) return { ok: false, message: incidentResult.error.message };
   const updatedIncident = incidentResult.incident as Incident;
@@ -134,7 +138,7 @@ export const resolveAlert = (
   actorId: ID,
   timestamp: ISODateTime,
 ): OperationResult<Alert> => {
-  const ctx: TransitionContext = { actorId, timestamp, auditEventId: nextAuditId() };
+  const ctx: TransitionContext = { actorId, residenciaId: alert.residenciaId, timestamp, auditEventId: nextAuditId() };
   const result = transitionAlert(alert, 'resolved', ctx, outcome);
   if (!result.ok) return { ok: false, message: result.error.message };
   const updated = result.alert as Alert;
@@ -143,7 +147,7 @@ export const resolveAlert = (
 
   const incident = listIncidents().find((i) => i.alertId === alert.id);
   if (incident !== undefined && incident.status === 'verification_in_progress') {
-    const incidentCtx: TransitionContext = { actorId, timestamp, auditEventId: nextAuditId() };
+    const incidentCtx: TransitionContext = { actorId, residenciaId: alert.residenciaId, timestamp, auditEventId: nextAuditId() };
     const incidentResult = transitionIncident(incident, 'resolved', incidentCtx, outcome);
     if (incidentResult.ok) {
       saveIncident(incidentResult.incident as Incident);
@@ -154,7 +158,7 @@ export const resolveAlert = (
 };
 
 export const closeAlert = (alert: Alert, actorId: ID, timestamp: ISODateTime): OperationResult<Alert> => {
-  const ctx: TransitionContext = { actorId, timestamp, auditEventId: nextAuditId() };
+  const ctx: TransitionContext = { actorId, residenciaId: alert.residenciaId, timestamp, auditEventId: nextAuditId() };
   const result = transitionAlert(alert, 'closed', ctx);
   if (!result.ok) return { ok: false, message: result.error.message };
   const updated = result.alert as Alert;
@@ -163,7 +167,7 @@ export const closeAlert = (alert: Alert, actorId: ID, timestamp: ISODateTime): O
 
   const incident = listIncidents().find((i) => i.alertId === alert.id);
   if (incident !== undefined && incident.status === 'resolved') {
-    const incidentCtx: TransitionContext = { actorId, timestamp, auditEventId: nextAuditId() };
+    const incidentCtx: TransitionContext = { actorId, residenciaId: alert.residenciaId, timestamp, auditEventId: nextAuditId() };
     const incidentResult = transitionIncident(incident, 'closed', incidentCtx);
     if (incidentResult.ok) {
       saveIncident(incidentResult.incident as Incident);

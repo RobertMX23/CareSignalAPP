@@ -7,11 +7,11 @@
 # Estado: Chunk 1 / Gate C1. Solo documentación; sin código.
 
 meta:
-  baseline: "0.1.1"
+  baseline: "0.2.0"
   status: "FROZEN"
   language: "es-MX"
   authority_rank: 3
-  note: "MVP operacional, no dispositivo médico. Datos ficticios."
+  note: "MVP operacional, no dispositivo médico. Datos ficticios. v0.2.0: residenciaId en las 6 interfaces (preparación multi-tenant)."
 
 roles:
   - id: caregiver

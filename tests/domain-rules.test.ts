@@ -7,8 +7,11 @@ import { describe, expect, it } from 'vitest';
 import { canRaiseAlertForRound, deriveResidentStatus, hasActiveAlertForRound } from '../src/domain/rules';
 import type { Alert, Round } from '../src/domain/types';
 
+const TEST_RESIDENCIA = 'residencia-demo-01';
+
 const round = (overrides: Partial<Round>): Round => ({
   id: 'r1',
+  residenciaId: TEST_RESIDENCIA,
   residentId: 'res-1',
   type: 'routine_check',
   scheduledAt: '2026-07-18T08:00:00.000Z',
@@ -21,6 +24,7 @@ const round = (overrides: Partial<Round>): Round => ({
 
 const alert = (overrides: Partial<Alert>): Alert => ({
   id: 'a1',
+  residenciaId: TEST_RESIDENCIA,
   roundId: 'r1',
   residentId: 'res-1',
   severity: 'yellow',

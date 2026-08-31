@@ -55,6 +55,7 @@ export type TransitionResult<S extends string> =
 /** Datos de contexto que toda transición registra (actor, fecha/hora, id de evento). */
 export interface TransitionContext {
   actorId: ID;
+  residenciaId: ID;
   timestamp: ISODateTime;
   auditEventId: ID;
   metadata?: Record<string, unknown>;
@@ -140,6 +141,7 @@ const makeAudit = (
   ctx: TransitionContext,
 ): AuditEvent => ({
   id: ctx.auditEventId,
+  residenciaId: ctx.residenciaId,
   entityType,
   entityId,
   action,

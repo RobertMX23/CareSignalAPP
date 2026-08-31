@@ -33,6 +33,9 @@ import { transitionAlert, transitionIncident, transitionRound } from '../domain/
 /** Instante "ahora" al iniciar una demo fresca. Fijo; no proviene de `Date.now()`. */
 export const DEMO_START_TIME: ISODateTime = '2026-07-18T08:00:00.000Z';
 
+/** Identificador fijo de la residencia demo (single-tenant). */
+export const DEMO_RESIDENCIA_ID = 'residencia-demo-01';
+
 const START_MS = Date.parse(DEMO_START_TIME);
 
 /** ISO derivada de `DEMO_START_TIME` desplazada N minutos (negativo = pasado). */
@@ -59,6 +62,7 @@ const recordCreation = (
 ): void => {
   auditEvents.push({
     id: nextAuditId(),
+    residenciaId: DEMO_RESIDENCIA_ID,
     entityType,
     entityId,
     action,
@@ -74,7 +78,7 @@ const SYSTEM_SEED_ACTOR: ID = 'system:seed';
 // --- Helpers de transición (lanzan si la semilla generase un estado inválido) ---
 
 const applyRound = (round: Round, to: RoundStatus, actorId: ID, timestamp: ISODateTime): Round => {
-  const result = transitionRound(round, to, { actorId, timestamp, auditEventId: nextAuditId() });
+  const result = transitionRound(round, to, { actorId, residenciaId: DEMO_RESIDENCIA_ID, timestamp, auditEventId: nextAuditId() });
   if (!result.ok) {
     throw new Error(`Semilla inválida: round ${round.id} ${round.status}->${to}: ${result.error.message}`);
   }
@@ -89,7 +93,7 @@ const applyAlert = (
   timestamp: ISODateTime,
   outcome?: VerificationOutcome,
 ): Alert => {
-  const result = transitionAlert(alert, to, { actorId, timestamp, auditEventId: nextAuditId() }, outcome);
+  const result = transitionAlert(alert, to, { actorId, residenciaId: DEMO_RESIDENCIA_ID, timestamp, auditEventId: nextAuditId() }, outcome);
   if (!result.ok) {
     throw new Error(`Semilla inválida: alert ${alert.id} ${alert.status}->${to}: ${result.error.message}`);
   }
@@ -104,7 +108,7 @@ const applyIncident = (
   timestamp: ISODateTime,
   outcome?: VerificationOutcome,
 ): Incident => {
-  const result = transitionIncident(incident, to, { actorId, timestamp, auditEventId: nextAuditId() }, outcome);
+  const result = transitionIncident(incident, to, { actorId, residenciaId: DEMO_RESIDENCIA_ID, timestamp, auditEventId: nextAuditId() }, outcome);
   if (!result.ok) {
     throw new Error(`Semilla inválida: incident ${incident.id} ${incident.status}->${to}: ${result.error.message}`);
   }
@@ -115,17 +119,18 @@ const applyIncident = (
 // --- Residentes (10, ficticios, sin diagnóstico) -----------------------------
 
 export const buildResidents = (): Resident[] => {
+  const R = DEMO_RESIDENCIA_ID;
   const residents: Resident[] = [
-    { id: 'resident-01', displayName: 'Marta Ibáñez', room: '101', careLevel: 'medium', isActive: true },
-    { id: 'resident-02', displayName: 'Antonio Salas', room: '102', careLevel: 'medium', isActive: true },
-    { id: 'resident-03', displayName: 'Carmen Duarte', room: '103', careLevel: 'high', isActive: true },
-    { id: 'resident-04', displayName: 'Luis Peralta', room: '104', careLevel: 'high', isActive: true },
-    { id: 'resident-05', displayName: 'Elena Vidal', room: '105', careLevel: 'high', isActive: true },
-    { id: 'resident-06', displayName: 'Ramón Ochoa', room: '106', careLevel: 'medium', isActive: true },
-    { id: 'resident-07', displayName: 'Sofía Lezama', room: '107', careLevel: 'high', isActive: true },
-    { id: 'resident-08', displayName: 'Pedro Andrade', room: '108', careLevel: 'medium', isActive: true },
-    { id: 'resident-09', displayName: 'Isabel Correa', room: '109', careLevel: 'low', isActive: true },
-    { id: 'resident-10', displayName: 'Manuel Bravo', room: '110', careLevel: 'low', isActive: true },
+    { id: 'resident-01', residenciaId: R, displayName: 'Marta Ibáñez', room: '101', careLevel: 'medium', isActive: true },
+    { id: 'resident-02', residenciaId: R, displayName: 'Antonio Salas', room: '102', careLevel: 'medium', isActive: true },
+    { id: 'resident-03', residenciaId: R, displayName: 'Carmen Duarte', room: '103', careLevel: 'high', isActive: true },
+    { id: 'resident-04', residenciaId: R, displayName: 'Luis Peralta', room: '104', careLevel: 'high', isActive: true },
+    { id: 'resident-05', residenciaId: R, displayName: 'Elena Vidal', room: '105', careLevel: 'high', isActive: true },
+    { id: 'resident-06', residenciaId: R, displayName: 'Ramón Ochoa', room: '106', careLevel: 'medium', isActive: true },
+    { id: 'resident-07', residenciaId: R, displayName: 'Sofía Lezama', room: '107', careLevel: 'high', isActive: true },
+    { id: 'resident-08', residenciaId: R, displayName: 'Pedro Andrade', room: '108', careLevel: 'medium', isActive: true },
+    { id: 'resident-09', residenciaId: R, displayName: 'Isabel Correa', room: '109', careLevel: 'low', isActive: true },
+    { id: 'resident-10', residenciaId: R, displayName: 'Manuel Bravo', room: '110', careLevel: 'low', isActive: true },
   ];
   residents.forEach((r) => recordCreation('resident', r.id, 'RESIDENT_CREATED', 'active', SYSTEM_SEED_ACTOR, atOffset(-2880)));
   return residents;
@@ -134,11 +139,12 @@ export const buildResidents = (): Resident[] => {
 // --- Personal: 3 cuidadores + 1 supervisor, 3 turnos -------------------------
 
 export const buildStaffMembers = (): StaffMember[] => {
+  const R = DEMO_RESIDENCIA_ID;
   const staff: StaffMember[] = [
-    { id: 'staff-caregiver-01', displayName: 'Diego Franco', role: 'caregiver', shift: SHIFT.morning, availability: 'available', isActive: true },
-    { id: 'staff-caregiver-02', displayName: 'Valeria Núñez', role: 'caregiver', shift: SHIFT.afternoon, availability: 'busy', isActive: true },
-    { id: 'staff-caregiver-03', displayName: 'Tomás Reyes', role: 'caregiver', shift: SHIFT.night, availability: 'off_shift', isActive: true },
-    { id: 'staff-supervisor-01', displayName: 'Patricia Möller', role: 'supervisor', shift: SHIFT.morning, availability: 'available', isActive: true },
+    { id: 'staff-caregiver-01', residenciaId: R, displayName: 'Diego Franco', role: 'caregiver', shift: SHIFT.morning, availability: 'available', isActive: true },
+    { id: 'staff-caregiver-02', residenciaId: R, displayName: 'Valeria Núñez', role: 'caregiver', shift: SHIFT.afternoon, availability: 'busy', isActive: true },
+    { id: 'staff-caregiver-03', residenciaId: R, displayName: 'Tomás Reyes', role: 'caregiver', shift: SHIFT.night, availability: 'off_shift', isActive: true },
+    { id: 'staff-supervisor-01', residenciaId: R, displayName: 'Patricia Möller', role: 'supervisor', shift: SHIFT.morning, availability: 'available', isActive: true },
   ];
   staff.forEach((s) => recordCreation('staff_member', s.id, 'STAFF_MEMBER_CREATED', 'active', SYSTEM_SEED_ACTOR, atOffset(-2880)));
   return staff;
@@ -163,6 +169,7 @@ const createRound = (
 ): Round => {
   const round: Round = {
     id,
+    residenciaId: DEMO_RESIDENCIA_ID,
     residentId,
     assignedStaffId,
     type,
@@ -198,6 +205,7 @@ export const buildOperationalData = (): SeedResult => {
   rounds.push(r03);
   const alert01Created: Alert = {
     id: 'alert-01',
+    residenciaId: DEMO_RESIDENCIA_ID,
     roundId: r03.id,
     residentId: r03.residentId,
     severity: 'yellow',
@@ -214,6 +222,7 @@ export const buildOperationalData = (): SeedResult => {
   rounds.push(r04);
   let alert02: Alert = {
     id: 'alert-02',
+    residenciaId: DEMO_RESIDENCIA_ID,
     roundId: r04.id,
     residentId: r04.residentId,
     severity: 'red',
@@ -232,6 +241,7 @@ export const buildOperationalData = (): SeedResult => {
   rounds.push(r05);
   let alert03: Alert = {
     id: 'alert-03',
+    residenciaId: DEMO_RESIDENCIA_ID,
     roundId: r05.id,
     residentId: r05.residentId,
     severity: 'red',
@@ -251,6 +261,7 @@ export const buildOperationalData = (): SeedResult => {
   rounds.push(r06);
   let alert04: Alert = {
     id: 'alert-04',
+    residenciaId: DEMO_RESIDENCIA_ID,
     roundId: r06.id,
     residentId: r06.residentId,
     severity: 'red',
@@ -264,6 +275,7 @@ export const buildOperationalData = (): SeedResult => {
   alerts.push(alert04);
   let incident01: Incident = {
     id: 'incident-01',
+    residenciaId: DEMO_RESIDENCIA_ID,
     alertId: alert04.id,
     residentId: r06.residentId,
     status: 'open',
@@ -280,6 +292,7 @@ export const buildOperationalData = (): SeedResult => {
   rounds.push(r07);
   let alert05: Alert = {
     id: 'alert-05',
+    residenciaId: DEMO_RESIDENCIA_ID,
     roundId: r07.id,
     residentId: r07.residentId,
     severity: 'yellow',
@@ -296,6 +309,7 @@ export const buildOperationalData = (): SeedResult => {
   alerts.push(alert05);
   let incident02: Incident = {
     id: 'incident-02',
+    residenciaId: DEMO_RESIDENCIA_ID,
     alertId: alert05.id,
     residentId: r07.residentId,
     status: 'open',
