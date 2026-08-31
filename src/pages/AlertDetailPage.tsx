@@ -36,17 +36,10 @@ import {
 } from '../data/repository';
 import type { Alert, ID } from '../domain/types';
 import type { AlertStatus, VerificationOutcome } from '../domain/taxonomy';
+import { ALERT_SEVERITY_LABEL, ALERT_STATUS_LABEL, INCIDENT_STATUS_LABEL, ROUND_TYPE_LABEL, VERIFICATION_OUTCOME_LABEL } from '../features/labels';
 
-const SEVERITY_LABEL: Record<string, string> = { red: 'Roja', yellow: 'Amarilla' };
-const STATUS_LABEL: Record<AlertStatus, string> = {
-  open: 'Abierta',
-  acknowledged: 'Reconocida',
-  assigned: 'Asignada',
-  escalated: 'Escalada',
-  in_verification: 'En verificación',
-  resolved: 'Resuelta',
-  closed: 'Cerrada',
-};
+const SEVERITY_LABEL = ALERT_SEVERITY_LABEL;
+const STATUS_LABEL = ALERT_STATUS_LABEL;
 
 interface AlertFilters {
   severity: 'all' | 'yellow' | 'red';
@@ -307,7 +300,7 @@ const AlertDetail = ({ alertId }: { alertId: string }): JSX.Element => {
         <dt>Habitación</dt>
         <dd>{resident?.room ?? '—'}</dd>
         <dt>Ronda de origen</dt>
-        <dd>{data.round !== undefined ? `${data.round.type} (${data.round.id})` : alert.roundId}</dd>
+        <dd>{data.round !== undefined ? `${ROUND_TYPE_LABEL[data.round.type]} (${data.round.id})` : alert.roundId}</dd>
         <dt>Hora programada</dt>
         <dd>{data.round !== undefined ? new Date(data.round.scheduledAt).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' }) : '—'}</dd>
         <dt>Tiempo de retraso</dt>
@@ -323,7 +316,7 @@ const AlertDetail = ({ alertId }: { alertId: string }): JSX.Element => {
         {alert.verificationOutcome !== undefined && (
           <>
             <dt>Resultado de verificación</dt>
-            <dd>{alert.verificationOutcome}</dd>
+            <dd>{VERIFICATION_OUTCOME_LABEL[alert.verificationOutcome as VerificationOutcome] ?? alert.verificationOutcome}</dd>
           </>
         )}
       </dl>
@@ -379,11 +372,11 @@ const AlertDetail = ({ alertId }: { alertId: string }): JSX.Element => {
           <dt>Incidente</dt>
           <dd>{data.incident.id}</dd>
           <dt>Estado</dt>
-          <dd>{data.incident.status}</dd>
+          <dd>{INCIDENT_STATUS_LABEL[data.incident.status]}</dd>
           {data.incident.outcome !== undefined && (
             <>
               <dt>Resultado</dt>
-              <dd>{data.incident.outcome}</dd>
+              <dd>{VERIFICATION_OUTCOME_LABEL[data.incident.outcome as VerificationOutcome] ?? data.incident.outcome}</dd>
             </>
           )}
         </dl>

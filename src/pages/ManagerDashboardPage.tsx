@@ -13,24 +13,7 @@ import {
   listRounds,
 } from '../data/repository';
 import { deriveResidentStatus } from '../domain/rules';
-import type { AlertStatus, IncidentStatus } from '../domain/taxonomy';
-
-const ALERT_STATUS_LABEL: Record<AlertStatus, string> = {
-  open: 'Abierta',
-  acknowledged: 'Reconocida',
-  assigned: 'Asignada',
-  escalated: 'Escalada',
-  in_verification: 'En verificación',
-  resolved: 'Resuelta',
-  closed: 'Cerrada',
-};
-
-const INCIDENT_STATUS_LABEL: Record<IncidentStatus, string> = {
-  open: 'Abierto',
-  verification_in_progress: 'Verificación en progreso',
-  resolved: 'Resuelto',
-  closed: 'Cerrado',
-};
+import { ALERT_STATUS_LABEL, INCIDENT_STATUS_LABEL } from '../features/labels';
 
 export const ManagerDashboardPage = (): JSX.Element => {
   const { activeStaff, refreshToken, refreshDemoData } = useDemoSession();

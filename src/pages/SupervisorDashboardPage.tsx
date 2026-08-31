@@ -13,6 +13,7 @@ import { StatusBadge } from '../components/StatusBadge';
 import { computeDashboardMetrics } from '../features/dashboard/dashboardMetrics';
 import { getStaffMemberById, listAlerts, listAuditEvents, listIncidents, listResidents, listRounds } from '../data/repository';
 import { deriveResidentStatus, isAlertActive } from '../domain/rules';
+import { ALERT_STATUS_LABEL } from '../features/labels';
 
 export const SupervisorDashboardPage = (): JSX.Element => {
   const { refreshToken } = useDemoSession();
@@ -137,7 +138,7 @@ export const SupervisorDashboardPage = (): JSX.Element => {
                     </td>
                     <td>{resident?.displayName ?? alert.residentId}</td>
                     <td>{alert.severity === 'red' ? 'Roja' : 'Amarilla'}</td>
-                    <td>{alert.status}</td>
+                    <td>{ALERT_STATUS_LABEL[alert.status]}</td>
                     <td>
                       {alert.assignedStaffId === undefined ? (
                         <span className="badge badge--unassigned">Sin asignar</span>

@@ -25,15 +25,7 @@ import { getResidentById, listAlerts, listRounds } from '../data/repository';
 import { isAlertActive } from '../domain/rules';
 import type { Alert, Round } from '../domain/types';
 import type { AlertSeverity } from '../domain/taxonomy';
-
-const ROUND_STATUS_LABELS: Record<string, string> = {
-  scheduled: 'Programada',
-  due: 'Próxima a vencer',
-  in_progress: 'En curso',
-  completed: 'Completada',
-  overdue: 'Vencida',
-  cancelled: 'Cancelada',
-};
+import { ROUND_STATUS_LABEL, ROUND_TYPE_LABEL } from '../features/labels';
 
 type ModalState = { kind: 'complete'; round: Round } | { kind: 'support'; round: Round } | undefined;
 
@@ -167,8 +159,8 @@ export const CaregiverRoundsPage = (): JSX.Element => {
                   <td>
                     <Link to={`/residentes/${round.residentId}`}>{resident?.displayName ?? round.residentId}</Link>
                   </td>
-                  <td>{round.type}</td>
-                  <td>{ROUND_STATUS_LABELS[round.status] ?? round.status}</td>
+                  <td>{ROUND_TYPE_LABEL[round.type]}</td>
+                  <td>{ROUND_STATUS_LABEL[round.status]}</td>
                   <td>{bucketLabel(bucket, round)}</td>
                   <td>{delay ?? '—'}</td>
                   <td>

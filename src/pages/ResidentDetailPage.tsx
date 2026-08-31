@@ -14,6 +14,7 @@ import { getResidentById, listAlerts, listResidents, listRounds, listStaffMember
 import { deriveResidentStatus } from '../domain/rules';
 import type { Round } from '../domain/types';
 import type { CareLevel } from '../domain/types';
+import { ALERT_STATUS_LABEL, ROUND_STATUS_LABEL, ROUND_TYPE_LABEL } from '../features/labels';
 
 function assignedResidentIds(rounds: Round[], staffId: string): Set<string> {
   return new Set(rounds.filter((r) => r.assignedStaffId === staffId).map((r) => r.residentId));
@@ -125,8 +126,8 @@ const ResidentDetail = ({ residentId }: { residentId: string }): JSX.Element => 
             {data.rounds.map((round) => (
               <tr key={round.id}>
                 <td>{new Date(round.scheduledAt).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' })}</td>
-                <td>{round.type}</td>
-                <td>{round.status}</td>
+                <td>{ROUND_TYPE_LABEL[round.type]}</td>
+                <td>{ROUND_STATUS_LABEL[round.status]}</td>
                 <td>{staffName(round.assignedStaffId)}</td>
               </tr>
             ))}
@@ -154,7 +155,7 @@ const ResidentDetail = ({ residentId }: { residentId: string }): JSX.Element => 
                     <Link to={`/alertas/${alert.id}`}>{alert.id}</Link>
                   </td>
                   <td>{alert.severity === 'red' ? 'Roja' : 'Amarilla'}</td>
-                  <td>{alert.status}</td>
+                  <td>{ALERT_STATUS_LABEL[alert.status]}</td>
                 </tr>
               ))}
             </tbody>
