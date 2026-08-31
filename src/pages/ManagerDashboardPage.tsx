@@ -11,21 +11,24 @@ import {
   listIncidents,
   listResidents,
   listRounds,
+  listStaffMembers,
 } from '../data/repository';
 import { deriveResidentStatus } from '../domain/rules';
 import { ALERT_STATUS_LABEL, INCIDENT_STATUS_LABEL } from '../features/labels';
+import { StaffRosterTable } from '../components/StaffRosterTable';
 
 export const ManagerDashboardPage = (): JSX.Element => {
   const { activeStaff, refreshToken, refreshDemoData } = useDemoSession();
   const [message, setMessage] = useState<{ kind: 'success' | 'error'; text: string } | undefined>(undefined);
 
-  const { alerts, incidents, auditEvents, residents, rounds } = useMemo(
+  const { alerts, incidents, auditEvents, residents, rounds, staffMembers } = useMemo(
     () => ({
       alerts: listAlerts().sort((a, b) => b.createdAt.localeCompare(a.createdAt)),
       incidents: listIncidents().sort((a, b) => b.openedAt.localeCompare(a.openedAt)),
       auditEvents: listAuditEvents().sort((a, b) => b.timestamp.localeCompare(a.timestamp)),
       residents: listResidents(),
       rounds: listRounds(),
+      staffMembers: listStaffMembers(),
     }),
     [refreshToken],
   );
@@ -206,6 +209,9 @@ export const ManagerDashboardPage = (): JSX.Element => {
           </tbody>
         </table>
       </div>
+
+      <h2>Plantilla de personal</h2>
+      <StaffRosterTable staffMembers={staffMembers} />
     </section>
   );
 };

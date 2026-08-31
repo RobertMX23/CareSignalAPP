@@ -11,20 +11,22 @@ import { Link } from 'react-router-dom';
 import { useDemoSession } from '../components/DemoSessionContext';
 import { StatusBadge } from '../components/StatusBadge';
 import { computeDashboardMetrics } from '../features/dashboard/dashboardMetrics';
-import { getStaffMemberById, listAlerts, listAuditEvents, listIncidents, listResidents, listRounds } from '../data/repository';
+import { getStaffMemberById, listAlerts, listAuditEvents, listIncidents, listResidents, listRounds, listStaffMembers } from '../data/repository';
+import { StaffRosterTable } from '../components/StaffRosterTable';
 import { deriveResidentStatus, isAlertActive } from '../domain/rules';
 import { ALERT_STATUS_LABEL } from '../features/labels';
 
 export const SupervisorDashboardPage = (): JSX.Element => {
   const { refreshToken } = useDemoSession();
 
-  const { residents, rounds, alerts, metrics } = useMemo(() => {
+  const { residents, rounds, alerts, metrics, staffMembers } = useMemo(() => {
     const residents = listResidents();
     const rounds = listRounds();
     const alerts = listAlerts();
     const incidents = listIncidents();
     const auditEvents = listAuditEvents();
-    return { residents, rounds, alerts, metrics: computeDashboardMetrics(residents, rounds, alerts, incidents, auditEvents) };
+    const staffMembers = listStaffMembers();
+    return { residents, rounds, alerts, staffMembers, metrics: computeDashboardMetrics(residents, rounds, alerts, incidents, auditEvents) };
   }, [refreshToken]);
 
   const activeAlerts = alerts.filter((a) => isAlertActive(a.status));
@@ -153,6 +155,9 @@ export const SupervisorDashboardPage = (): JSX.Element => {
           </table>
         </div>
       )}
+
+      <h2>Plantilla de personal</h2>
+      <StaffRosterTable staffMembers={staffMembers} />
     </section>
   );
 };
