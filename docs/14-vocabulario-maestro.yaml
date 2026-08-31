@@ -20,7 +20,7 @@
 meta:
   baseline: "0.1.0-workshop-frozen"
   status: "FROZEN"
-  version: "1.0.0"
+  version: "1.1.0"
   language: "es-MX"
   authority_rank: 2.5   # entre 02-state-machine.md (rank 4) y 01-domain-taxonomy.yaml (rank 3)
   note: "MVP operacional, no dispositivo médico. Datos ficticios."
@@ -773,3 +773,26 @@ dict_legal_notices:
     - "No emite diagnósticos"
     - "No conecta con servicios de emergencia (911, SMS, WhatsApp)"
     - "No almacena datos biométricos ni de salud real"
+
+# ─────────────────────────────────────────────────────────────
+# CHANGELOG
+# ─────────────────────────────────────────────────────────────
+
+changelog:
+  - version: "1.1.0"
+    date: "2026-08-30"
+    changes:
+      - "GAP-02: agregada sección verification_outcomes con 6 valores (sincronizado con taxonomy.ts y docs/01-domain-taxonomy.yaml)"
+      - "DIV-05: agregada nota nomenclatura_nota en state_machine_alerta y state_machine_incidente documentando equivalencia funcional in_verification / verification_in_progress"
+      - "HTML: nueva sección C3 con tabla completa de máquina de estados de incidente"
+      - "HTML: nota DIV-05 visible al final de C2 (alerta) y C3 (incidente)"
+      - "HTML: ancla #sm-incidente agregada al nav"
+
+  - version: "1.0.0"
+    date: "2026-08-29"
+    changes:
+      - "Versión inicial — catálogos A, taxonomías B, tuplas C, diccionarios D"
+      - "13 catálogos con id, etiqueta es, descripción y atributos"
+      - "Máquinas de estado: ronda (8 transiciones + 2 inválidas), alerta (9 + 2 inválidas), incidente (3 + 1 inválida)"
+      - "10 reglas de integridad IR-01 a IR-10"
+      - "Diccionarios: ui_labels (38 entradas), forbidden_vocabulary (11), design_tokens, app_pages (5), legal_notices"

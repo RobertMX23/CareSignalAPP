@@ -129,8 +129,8 @@ tasks:
     level: 1
     title: "Bump del vocabulario maestro a v1.1.0"
     gap_ref: ~
-    status: pending
-    completed_at: ~
+    status: done
+    completed_at: "2026-08-30"
     complexity: trivial
     contract_change: false
     depends_on: [T2, T3]
