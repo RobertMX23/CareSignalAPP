@@ -19,7 +19,10 @@ roles:
     def: "Usuario ficticio que ejecuta rondas y solicita apoyo."
   - id: supervisor
     es: "supervisor"
-    def: "Usuario ficticio que observa, asigna, escala, verifica, resuelve y cierra."
+    def: "Usuario ficticio que observa, asigna, escala, verifica y resuelve alertas."
+  - id: manager
+    es: "gerente"
+    def: "Usuario ficticio que cierra el ciclo administrativo: cierra alertas e incidentes ya resueltos. Rol distinto del supervisor."
   - id: demo_admin
     es: "administrador de demostración"
     def: "Controla usuario activo, reloj simulado, escenarios y reinicio. No es rol comercial real."

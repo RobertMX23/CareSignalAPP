@@ -10,7 +10,7 @@
  */
 
 // --- Roles -----------------------------------------------------------------
-export const ROLES = ['caregiver', 'supervisor', 'demo_admin'] as const;
+export const ROLES = ['caregiver', 'supervisor', 'manager', 'demo_admin'] as const;
 export type Role = (typeof ROLES)[number];
 
 // --- Entidades -------------------------------------------------------------

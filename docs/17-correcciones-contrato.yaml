@@ -258,8 +258,9 @@ tasks:
     level: 2
     title: "Resolver decisión sobre rol manager — supervisor o 4to rol (GAP-04)"
     gap_ref: "GAP-04"
-    status: pending
-    completed_at: ~
+    status: done
+    completed_at: "2026-08-30"
+    decision: "Opción B — manager es rol distinto; añadido a ROLES en taxonomy.ts y docs/01"
     complexity: medium
     contract_change: "condicional — solo si se elige Opción B (4to rol)"
     depends_on: []
@@ -277,20 +278,17 @@ tasks:
     subtasks:
       - id: T7.1
         desc: "Leer src/features/dashboard para identificar qué funciones tiene actualmente el rol supervisor en el código"
-        status: pending
+        status: done
       - id: T7.2
-        desc: "Grep de la palabra 'manager' en todo el codebase para saber si ya se usa en algún lugar"
-        status: pending
+        desc: "Grep de la palabra 'manager' en todo el codebase — presente en vocabulario maestro, ausente en taxonomy.ts"
+        status: done
       - id: T7.3
-        desc: "GATE HUMANO — Roberto decide: Opción A (supervisor = manager en MVP) o Opción B (agregar rol manager con change request §13)"
-        status: pending
+        desc: "GATE HUMANO — Roberto decide Opción B: manager es rol distinto al supervisor"
+        status: done
         gate: true
-      - id: T7.4a
-        desc: "[Si Opción A] Actualizar docs NOM-031, arquitectura y vocabulario maestro para usar supervisor consistentemente donde decía manager"
-        status: pending
       - id: T7.4b
-        desc: "[Si Opción B] Abrir change request formal según contrato §13 — nueva versión del contrato antes de tocar código"
-        status: pending
+        desc: "Opción B ejecutada — manager añadido a ROLES (taxonomy.ts) y sección roles (docs/01)"
+        status: done
 
   - id: T8
     level: 2
