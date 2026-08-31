@@ -11,21 +11,24 @@
 import { useState, type ChangeEvent } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import { useDemoSession } from './DemoSessionContext';
+import type { Role } from '../domain/taxonomy';
 import { getCurrentTime } from '../data/demoClock';
 import { resetDemo } from '../data/resetDemo';
 
 const ROLE_LABELS: Record<string, string> = {
-  caregiver: 'Cuidador/a',
+  caregiver:  'Cuidador/a',
   supervisor: 'Supervisor/a',
+  manager:    'Gerente',
   demo_admin: 'Administrador/a de demo',
 };
 
-const NAV_ITEMS = [
-  { to: '/dashboard', label: 'Dashboard' },
-  { to: '/mis-rondas', label: 'Mis rondas' },
-  { to: '/residentes', label: 'Residentes' },
-  { to: '/alertas', label: 'Alertas' },
-  { to: '/control-demo', label: 'Control de demo' },
+const NAV_ITEMS: { to: string; label: string; roles: Role[] }[] = [
+  { to: '/dashboard',    label: 'Dashboard',       roles: ['supervisor', 'manager', 'demo_admin'] },
+  { to: '/mis-rondas',   label: 'Mis rondas',      roles: ['caregiver', 'demo_admin'] },
+  { to: '/residentes',   label: 'Residentes',      roles: ['supervisor', 'manager', 'demo_admin'] },
+  { to: '/alertas',      label: 'Alertas',         roles: ['supervisor', 'manager', 'demo_admin'] },
+  { to: '/manager',      label: 'Vista ejecutiva', roles: ['manager', 'demo_admin'] },
+  { to: '/control-demo', label: 'Control de demo', roles: ['demo_admin'] },
 ];
 
 export const AppLayout = (): JSX.Element => {
@@ -100,7 +103,7 @@ export const AppLayout = (): JSX.Element => {
       </header>
 
       <nav id="app-nav" className={navOpen ? 'app-nav app-nav--open' : 'app-nav'}>
-        {NAV_ITEMS.map((item) => (
+        {NAV_ITEMS.filter((item) => item.roles.includes(activeStaff.role)).map((item) => (
           <NavLink
             key={item.to}
             to={item.to}
