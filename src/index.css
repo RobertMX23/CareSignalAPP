@@ -99,6 +99,30 @@ a {
   border: 1px solid #a5b4fc;
 }
 
+.badge--role-caregiver {
+  background: #e3f3e8;
+  color: #1e6b3c;
+  border: 1px solid #86c9a0;
+}
+
+.badge--role-supervisor {
+  background: #fff4d6;
+  color: #8a6100;
+  border: 1px solid #f5c542;
+}
+
+.badge--role-manager {
+  background: #fbe9e7;
+  color: #b3261e;
+  border: 1px solid #f09490;
+}
+
+.badge--role-demo_admin {
+  background: #e0e7ff;
+  color: #3730a3;
+  border: 1px solid #a5b4fc;
+}
+
 .app-header__session {
   display: flex;
   flex-wrap: wrap;
@@ -121,6 +145,14 @@ a {
 .role-indicator,
 .clock-indicator {
   font-weight: 600;
+}
+
+.session-field__separator {
+  width: 1px;
+  height: 2rem;
+  background: var(--color-border);
+  align-self: center;
+  flex-shrink: 0;
 }
 
 .clock-indicator--large {

@@ -8,10 +8,10 @@
  * aquí directamente: todo pasa por `demoClock`/`repository`/`resetDemo`.
  */
 
-import { useState, type ChangeEvent } from 'react';
+import { useMemo, useState, type ChangeEvent } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import { useDemoSession } from './DemoSessionContext';
-import type { Role } from '../domain/taxonomy';
+import type { Role, Shift } from '../domain/taxonomy';
 import { getCurrentTime } from '../data/demoClock';
 import { resetDemo } from '../data/resetDemo';
 
@@ -20,6 +20,13 @@ const ROLE_LABELS: Record<string, string> = {
   supervisor: 'Supervisor/a',
   manager:    'Gerente',
   demo_admin: 'Administrador/a de demo',
+};
+
+const SHIFT_LABELS: Record<Shift, string> = {
+  morning:   'Mañana',
+  afternoon: 'Tarde',
+  night:     'Noche',
+  on_call:   'Guardia',
 };
 
 const NAV_ITEMS: { to: string; label: string; roles: Role[] }[] = [
@@ -34,6 +41,27 @@ const NAV_ITEMS: { to: string; label: string; roles: Role[] }[] = [
 export const AppLayout = (): JSX.Element => {
   const { staffMembers, activeStaffId, activeStaff, setActiveStaffId, refreshDemoData } = useDemoSession();
   const [navOpen, setNavOpen] = useState(false);
+  const [filterRole, setFilterRole] = useState<Role | 'all'>('all');
+  const [filterShift, setFilterShift] = useState<Shift | 'all'>('all');
+
+  const availableRoles = useMemo(
+    () => Array.from(new Set(staffMembers.map((s) => s.role))) as Role[],
+    [staffMembers],
+  );
+  const availableShifts = useMemo(
+    () => Array.from(new Set(staffMembers.map((s) => s.shift))) as Shift[],
+    [staffMembers],
+  );
+
+  const filteredStaff = useMemo(
+    () =>
+      staffMembers.filter(
+        (s) =>
+          (filterRole === 'all' || s.role === filterRole) &&
+          (filterShift === 'all' || s.shift === filterShift),
+      ),
+    [staffMembers, filterRole, filterShift],
+  );
 
   const currentTime = getCurrentTime();
   const formattedTime = new Date(currentTime).toLocaleString('es-ES', {
@@ -76,19 +104,45 @@ export const AppLayout = (): JSX.Element => {
 
         <div className="app-header__session">
           <label className="session-field">
+            <span className="session-field__label">Filtrar por rol</span>
+            <select value={filterRole} onChange={(e) => setFilterRole(e.target.value as Role | 'all')}>
+              <option value="all">Todos los roles</option>
+              {availableRoles.map((r) => (
+                <option key={r} value={r}>{ROLE_LABELS[r] ?? r}</option>
+              ))}
+            </select>
+          </label>
+
+          <label className="session-field">
+            <span className="session-field__label">Filtrar por turno</span>
+            <select value={filterShift} onChange={(e) => setFilterShift(e.target.value as Shift | 'all')}>
+              <option value="all">Todos los turnos</option>
+              {availableShifts.map((s) => (
+                <option key={s} value={s}>{SHIFT_LABELS[s] ?? s}</option>
+              ))}
+            </select>
+          </label>
+
+          <span className="session-field__separator" aria-hidden="true" />
+
+          <label className="session-field">
             <span className="session-field__label">Usuario ficticio</span>
             <select value={activeStaffId} onChange={handleUserChange}>
-              {staffMembers.map((staff) => (
-                <option key={staff.id} value={staff.id}>
-                  {staff.displayName}
-                </option>
-              ))}
+              {filteredStaff.length === 0 ? (
+                <option value={activeStaffId}>{activeStaff.displayName}</option>
+              ) : (
+                filteredStaff.map((staff) => (
+                  <option key={staff.id} value={staff.id}>
+                    {staff.displayName}
+                  </option>
+                ))
+              )}
             </select>
           </label>
 
           <span className="session-field">
             <span className="session-field__label">Rol</span>
-            <span className="role-indicator">{ROLE_LABELS[activeStaff.role] ?? activeStaff.role}</span>
+            <span className={`badge badge--role-${activeStaff.role}`}>{ROLE_LABELS[activeStaff.role] ?? activeStaff.role}</span>
           </span>
 
           <span className="session-field">
