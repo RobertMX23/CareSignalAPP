@@ -1007,8 +1007,13 @@ function slideCierre(prs) {
   });
 
   s.addText('Gracias.', {
-    x: 0.5, y: 6.45, w: 9.16, h: 0.4,
+    x: 0.5, y: 6.2, w: 9.16, h: 0.38,
     fontSize: 18, bold: true, color: C.grafito, align: 'center', fontFace: 'Arial',
+  });
+
+  s.addText('Roberto García  ·  robertogarciaits@gmail.com  ·  linkedin.com/in/robertogarciaits  ·  844 588 1313', {
+    x: 0.5, y: 6.6, w: 9.16, h: 0.25,
+    fontSize: 10, bold: false, color: C.azul, align: 'center', fontFace: 'Arial',
   });
 
   s.addText('MVP operacional · No dispositivo médico · Datos ficticios · v0.1.0-workshop', {

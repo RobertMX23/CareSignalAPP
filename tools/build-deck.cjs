@@ -699,7 +699,7 @@ function todoBand(s, texto) {
     fontFace: F, fontSize: 15.5, color: SOFT, margin: 0, valign: 'top', lineSpacing: 22,
   });
   s.addShape(pres.ShapeType.rect, { x: M, y: 6.35, w: W - M * 2, h: 0.012, fill: { color: LINE }, line: { type: 'none' } });
-  s.addText('[ nombre · correo · teléfono ]', {
+  s.addText('Roberto García  ·  robertogarciaits@gmail.com  ·  linkedin.com/in/robertogarciaits  ·  844 588 1313', {
     x: M, y: 6.62, w: 7, h: 0.34,
     fontFace: F, fontSize: 11.5, color: SOFT_2, margin: 0, valign: 'middle',
   });

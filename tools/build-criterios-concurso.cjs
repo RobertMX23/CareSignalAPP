@@ -148,7 +148,7 @@ function portada() {
       spacing: { after: 80 },
     }),
     new Paragraph({
-      children: [new TextRun({ text: 'Agosto 2026  ·  Roberto García  ·  Fundador y Líder de Proyecto', size: 24, color: C.gris, font: 'Calibri', italics: true })],
+      children: [new TextRun({ text: 'Agosto 2026  ·  Roberto García  ·  Fundador y Líder de Proyecto  ·  robertogarciaits@gmail.com  ·  linkedin.com/in/robertogarciaits  ·  844 588 1313', size: 24, color: C.gris, font: 'Calibri', italics: true })],
       alignment: AlignmentType.CENTER,
       spacing: { after: 400 },
     }),

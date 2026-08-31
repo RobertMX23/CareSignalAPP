@@ -123,7 +123,7 @@ async function main() {
           alignment: AlignmentType.CENTER, spacing: { after: 80 },
         }),
         new Paragraph({
-          children: [new TextRun({ text: 'Roberto García · Agosto 2026', size: 22, color: C.gris, font: 'Calibri', italics: true })],
+          children: [new TextRun({ text: 'Roberto García  ·  Agosto 2026  ·  robertogarciaits@gmail.com  ·  linkedin.com/in/robertogarciaits  ·  844 588 1313', size: 22, color: C.gris, font: 'Calibri', italics: true })],
           alignment: AlignmentType.CENTER, spacing: { after: 400 },
         }),
         new Paragraph({
