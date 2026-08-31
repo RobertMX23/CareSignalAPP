@@ -148,7 +148,7 @@
   <a href="#staff">Staff</a>
   <a href="#resident">Residente</a>
   <a href="#outcomes">Verificación</a>
-  <a href="#events">Eventos (20)</a>
+  <a href="#events">Eventos (24)</a>
   <a href="#sm-ronda">SM Ronda</a>
   <a href="#sm-alerta">SM Alerta</a>
   <a href="#sm-incidente">SM Incidente</a>
@@ -157,6 +157,7 @@
   <a href="#forbidden">Prohibidos</a>
   <a href="#design">Diseño</a>
   <a href="#pages">Páginas</a>
+  <a href="#nom031">NOM-031</a>
 </nav>
 
 <main>
@@ -340,32 +341,41 @@
   <div class="section-header">
     <span class="section-num">A10</span>
     <span class="section-title">Catálogo de tipos de evento — audit_events</span>
-    <span class="section-tag">CATÁLOGO · 20 tipos — append-only, nunca UPDATE ni DELETE</span>
+    <span class="section-tag">CATÁLOGO · 24 tipos — <code>AuditEventAction</code> · append-only, nunca UPDATE ni DELETE</span>
   </div>
   <div class="section-body">
     <div class="table-wrap"><table>
       <thead><tr><th>Evento</th><th>Familia</th><th>Etiqueta ES</th><th>Actor</th><th>Campos principales del payload</th></tr></thead>
       <tbody>
-        <tr><td><span class="event-code ev-round">ROUND_SCHEDULED</span></td><td style="color:var(--c-round)">Ronda</td><td>Ronda programada</td><td class="actor">supervisor / sistema</td><td><code>ronda_id, residente_id, tipo_id, programada_at, cuidador_id?</code></td></tr>
+        <tr><td colspan="5" style="background:var(--bg-alt);font-size:11px;font-weight:600;color:var(--c-round);padding:4px 8px">RONDA — 7 eventos</td></tr>
+        <tr><td><span class="event-code ev-round">ROUND_CREATED</span></td><td style="color:var(--c-round)">Ronda</td><td>Ronda creada / programada</td><td class="actor">supervisor / sistema</td><td><code>ronda_id, residente_id, tipo_id, programada_at, cuidador_id?</code></td></tr>
         <tr><td><span class="event-code ev-round">ROUND_DUE</span></td><td style="color:var(--c-round)">Ronda</td><td>Ronda en tiempo — pendiente</td><td class="actor">motor temporal</td><td><code>ronda_id, residente_id</code></td></tr>
         <tr><td><span class="event-code ev-round">ROUND_STARTED</span></td><td style="color:var(--c-round)">Ronda</td><td>Ronda iniciada</td><td class="actor">caregiver</td><td><code>ronda_id, residente_id, iniciada_at</code></td></tr>
         <tr><td><span class="event-code ev-round">ROUND_COMPLETED</span></td><td style="color:var(--c-round)">Ronda</td><td>Ronda completada</td><td class="actor">caregiver</td><td><code>ronda_id, completada_at, resultado?</code></td></tr>
         <tr><td><span class="event-code ev-round">ROUND_OVERDUE</span></td><td style="color:var(--c-round)">Ronda</td><td>Ronda vencida</td><td class="actor">motor temporal</td><td><code>ronda_id, residente_id, tiempo_excedido_min</code></td></tr>
         <tr><td><span class="event-code ev-round">ROUND_CANCELLED</span></td><td style="color:var(--c-round)">Ronda</td><td>Ronda cancelada</td><td class="actor">supervisor</td><td><code>ronda_id, motivo?</code></td></tr>
         <tr><td><span class="event-code ev-round">ROUND_REASSIGNED</span></td><td style="color:var(--c-round)">Ronda</td><td>Ronda reasignada</td><td class="actor">supervisor</td><td><code>ronda_id, prev_cuidador_id?, new_cuidador_id</code></td></tr>
-        <tr><td><span class="event-code ev-alert">ALERT_CREATED</span></td><td style="color:var(--c-alert)">Alerta</td><td>Alerta creada automáticamente</td><td class="actor">motor temporal</td><td><code>alerta_id, ronda_id, residente_id, severidad</code></td></tr>
+        <tr><td colspan="5" style="background:var(--bg-alt);font-size:11px;font-weight:600;color:var(--c-alert);padding:4px 8px">ALERTA — 9 eventos</td></tr>
+        <tr><td><span class="event-code ev-alert">ALERT_CREATED</span></td><td style="color:var(--c-alert)">Alerta</td><td>Alerta creada</td><td class="actor">motor temporal / caregiver</td><td><code>alerta_id, ronda_id, residente_id, severidad</code></td></tr>
         <tr><td><span class="event-code ev-alert">ALERT_ACKNOWLEDGED</span></td><td style="color:var(--c-alert)">Alerta</td><td>Alerta reconocida</td><td class="actor">supervisor</td><td><code>alerta_id</code></td></tr>
         <tr><td><span class="event-code ev-alert">ALERT_ASSIGNED</span></td><td style="color:var(--c-alert)">Alerta</td><td>Alerta asignada</td><td class="actor">supervisor</td><td><code>alerta_id, owner_id</code></td></tr>
-        <tr><td><span class="event-code ev-alert">ALERT_REASSIGNED</span></td><td style="color:var(--c-alert)">Alerta</td><td>Alerta reasignada</td><td class="actor">supervisor</td><td><code>alerta_id, prev_owner_id, new_owner_id, motivo?</code></td></tr>
-        <tr><td><span class="event-code ev-alert">ALERT_ESCALATED</span></td><td style="color:var(--c-alert)">Alerta</td><td>Alerta escalada al gerente</td><td class="actor">supervisor</td><td><code>alerta_id, motivo?</code></td></tr>
+        <tr><td><span class="event-code ev-alert">ALERT_REASSIGNED</span></td><td style="color:var(--c-alert)">Alerta</td><td>Alerta reasignada</td><td class="actor">supervisor</td><td><code>alerta_id, prev_owner_id, new_owner_id</code></td></tr>
+        <tr><td><span class="event-code ev-alert">ALERT_ESCALATED</span></td><td style="color:var(--c-alert)">Alerta</td><td>Alerta escalada</td><td class="actor">supervisor</td><td><code>alerta_id</code></td></tr>
+        <tr><td><span class="event-code ev-alert">ALERT_SEVERITY_ESCALATED</span></td><td style="color:var(--c-alert)">Alerta</td><td>Severidad escalada yellow→red</td><td class="actor">motor temporal</td><td><code>alerta_id, prev_severidad, new_severidad</code></td></tr>
         <tr><td><span class="event-code ev-alert">ALERT_VERIFICATION_STARTED</span></td><td style="color:var(--c-alert)">Alerta</td><td>Verificación iniciada</td><td class="actor">supervisor</td><td><code>alerta_id, incidente_id</code></td></tr>
-        <tr><td><span class="event-code ev-alert">ALERT_RESOLVED</span></td><td style="color:var(--c-alert)">Alerta</td><td>Alerta resuelta con resultado</td><td class="actor">supervisor</td><td><code>alerta_id, resultado_verificacion, outcome_id</code></td></tr>
-        <tr><td><span class="event-code ev-alert">ALERT_CLOSED</span></td><td style="color:var(--c-alert)">Alerta</td><td>Alerta cerrada</td><td class="actor">manager / supervisor</td><td><code>alerta_id</code></td></tr>
-        <tr><td><span class="event-code ev-inc">INCIDENT_CREATED</span></td><td style="color:var(--c-inc)">Incidente</td><td>Incidente formal creado</td><td class="actor">supervisor</td><td><code>incidente_id, alerta_id, residente_id, descripcion</code></td></tr>
-        <tr><td><span class="event-code ev-inc">INCIDENT_UPDATED</span></td><td style="color:var(--c-inc)">Incidente</td><td>Incidente actualizado</td><td class="actor">supervisor / manager</td><td><code>incidente_id, campo, valor_anterior, valor_nuevo</code></td></tr>
-        <tr><td><span class="event-code ev-inc">INCIDENT_CLOSED</span></td><td style="color:var(--c-inc)">Incidente</td><td>Incidente cerrado</td><td class="actor">manager</td><td><code>incidente_id, resultado_operativo</code></td></tr>
-        <tr><td><span class="event-code ev-sys">DEMO_RESET</span></td><td style="color:var(--c-sys)">Sistema</td><td>Demo reiniciada al seed</td><td class="actor">demo_admin</td><td><code>seed_version, timestamp</code></td></tr>
-        <tr><td><span class="event-code ev-sys">CLOCK_ADVANCED</span></td><td style="color:var(--c-sys)">Sistema</td><td>Reloj simulado avanzado</td><td class="actor">demo_admin</td><td><code>delta_min, nuevo_tiempo</code></td></tr>
+        <tr><td><span class="event-code ev-alert">ALERT_RESOLVED</span></td><td style="color:var(--c-alert)">Alerta</td><td>Alerta resuelta con resultado</td><td class="actor">supervisor</td><td><code>alerta_id, outcome_id</code></td></tr>
+        <tr><td><span class="event-code ev-alert">ALERT_CLOSED</span></td><td style="color:var(--c-alert)">Alerta</td><td>Alerta cerrada</td><td class="actor">supervisor</td><td><code>alerta_id</code></td></tr>
+        <tr><td colspan="5" style="background:var(--bg-alt);font-size:11px;font-weight:600;color:var(--c-inc);padding:4px 8px">INCIDENTE — 4 eventos</td></tr>
+        <tr><td><span class="event-code ev-inc">INCIDENT_OPENED</span></td><td style="color:var(--c-inc)">Incidente</td><td>Incidente formal abierto</td><td class="actor">supervisor</td><td><code>incidente_id, alerta_id, residente_id</code></td></tr>
+        <tr><td><span class="event-code ev-inc">INCIDENT_VERIFICATION_STARTED</span></td><td style="color:var(--c-inc)">Incidente</td><td>Verificación del incidente iniciada</td><td class="actor">supervisor</td><td><code>incidente_id</code></td></tr>
+        <tr><td><span class="event-code ev-inc">INCIDENT_RESOLVED</span></td><td style="color:var(--c-inc)">Incidente</td><td>Incidente resuelto</td><td class="actor">supervisor</td><td><code>incidente_id, outcome_id</code></td></tr>
+        <tr><td><span class="event-code ev-inc">INCIDENT_CLOSED</span></td><td style="color:var(--c-inc)">Incidente</td><td>Incidente cerrado</td><td class="actor">supervisor</td><td><code>incidente_id</code></td></tr>
+        <tr><td colspan="5" style="background:var(--bg-alt);font-size:11px;font-weight:600;color:#D97706;padding:4px 8px">ENTIDAD — 2 eventos</td></tr>
+        <tr><td><span class="event-code" style="background:#FEF3C7;color:#92400E">RESIDENT_CREATED</span></td><td style="color:#D97706">Entidad</td><td>Residente creado</td><td class="actor">supervisor / demo_admin</td><td><code>residente_id</code></td></tr>
+        <tr><td><span class="event-code" style="background:#FEF3C7;color:#92400E">STAFF_MEMBER_CREATED</span></td><td style="color:#D97706">Entidad</td><td>Personal creado</td><td class="actor">supervisor / demo_admin</td><td><code>staff_id</code></td></tr>
+        <tr><td colspan="5" style="background:var(--bg-alt);font-size:11px;font-weight:600;color:var(--c-sys);padding:4px 8px">SISTEMA — 2 eventos</td></tr>
+        <tr><td><span class="event-code ev-sys">SYSTEM_CLOCK_ADVANCED</span></td><td style="color:var(--c-sys)">Sistema</td><td>Reloj simulado avanzado</td><td class="actor">demo_admin</td><td><code>delta_min, nuevo_tiempo</code></td></tr>
+        <tr><td><span class="event-code ev-sys">SYSTEM_DEMO_RESET</span></td><td style="color:var(--c-sys)">Sistema</td><td>Demo reiniciada al seed</td><td class="actor">demo_admin</td><td><code>seed_version, timestamp</code></td></tr>
       </tbody>
     </table></div>
   </div>
@@ -602,6 +612,139 @@
       </tbody>
     </table></div>
     <div class="note-block">Aviso obligatorio en todas las páginas: <strong>"MVP operacional, no dispositivo médico"</strong> + <strong>"Datos ficticios"</strong></div>
+  </div>
+</div>
+
+<!-- §E NOM-031 -->
+<div class="section" id="nom031">
+  <div class="section-header">
+    <span class="section-num">E1</span>
+    <span class="section-title">Equivalencias NOM-031-SSA3-2012 ↔ CareSignal</span>
+    <span class="section-tag">REFERENCIA NORMATIVA · Scorecard: 12 🟢 · 7 🟡 · 5 🔵 · 8 ⬜</span>
+  </div>
+  <div class="section-body">
+    <p style="font-size:13px;margin-bottom:1rem">La NOM-031-SSA3-2012 regula los establecimientos de atención médica de largo plazo para adultos mayores. La tabla muestra el término normativo, el término CareSignal equivalente y el nivel de cobertura del MVP.</p>
+    <div class="table-wrap"><table>
+      <thead>
+        <tr>
+          <th>Término NOM-031</th>
+          <th>Equivalente CareSignal</th>
+          <th>Entidad / campo</th>
+          <th>Cobertura</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Bitácora de actividades diarias</strong> (§8)</td>
+          <td>Audit log (<code>audit_events</code>)</td>
+          <td><code>AuditEvent</code></td>
+          <td><span style="color:#16a34a;font-size:15px">🟢</span> CUBRE</td>
+        </tr>
+        <tr>
+          <td><strong>Actividad de cuidado</strong> (§7.1)</td>
+          <td>Ronda operacional (<code>round</code>)</td>
+          <td><code>Round</code></td>
+          <td><span style="color:#16a34a;font-size:15px">🟢</span> CUBRE</td>
+        </tr>
+        <tr>
+          <td><strong>Plan de actividades</strong> (§7.1)</td>
+          <td>Rondas programadas (<code>scheduled</code>)</td>
+          <td><code>Round.status = scheduled</code></td>
+          <td><span style="color:#16a34a;font-size:15px">🟢</span> CUBRE</td>
+        </tr>
+        <tr>
+          <td><strong>Incumplimiento de actividad</strong> (§7.3)</td>
+          <td>Ronda vencida + alerta automática</td>
+          <td><code>Round.status = overdue</code> + motor temporal</td>
+          <td><span style="color:#16a34a;font-size:15px">🟢</span> CUBRE</td>
+        </tr>
+        <tr>
+          <td><strong>Evento que requiere atención</strong> (§8.2)</td>
+          <td>Alerta operacional (<code>alert</code>)</td>
+          <td><code>Alert</code></td>
+          <td><span style="color:#16a34a;font-size:15px">🟢</span> CUBRE</td>
+        </tr>
+        <tr>
+          <td><strong>Verificación de incidente</strong> (§9.1)</td>
+          <td>Incidente + resultado de verificación</td>
+          <td><code>Incident</code> + <code>VerificationOutcome</code></td>
+          <td><span style="color:#16a34a;font-size:15px">🟢</span> CUBRE</td>
+        </tr>
+        <tr>
+          <td><strong>Responsable asignado</strong> (§5.4)</td>
+          <td>Staff asignado a alerta</td>
+          <td><code>Alert.assignedStaffId</code></td>
+          <td><span style="color:#16a34a;font-size:15px">🟢</span> CUBRE</td>
+        </tr>
+        <tr>
+          <td><strong>Reasignación documentada</strong> (§5.4)</td>
+          <td>Evento <code>ALERT_REASSIGNED</code> en audit</td>
+          <td><code>AuditEvent.action = ALERT_REASSIGNED</code></td>
+          <td><span style="color:#16a34a;font-size:15px">🟢</span> CUBRE</td>
+        </tr>
+        <tr>
+          <td><strong>Supervisión del turno</strong> (§6.2)</td>
+          <td>Dashboard supervisor — alertas activas + métricas</td>
+          <td><code>SupervisorDashboardPage</code></td>
+          <td><span style="color:#16a34a;font-size:15px">🟢</span> CUBRE</td>
+        </tr>
+        <tr>
+          <td><strong>Diferenciación de responsabilidades</strong> (§5.3)</td>
+          <td>RBAC — 4 roles con permisos distintos</td>
+          <td><code>ROLES</code> en taxonomy</td>
+          <td><span style="color:#16a34a;font-size:15px">🟢</span> CUBRE</td>
+        </tr>
+        <tr>
+          <td><strong>Aislamiento por establecimiento</strong> (§4.1)</td>
+          <td>Diseño multi-tenant con <code>residencia_id</code></td>
+          <td>Documentado — pendiente en código v0.2</td>
+          <td><span style="color:#ca8a04;font-size:15px">🟡</span> CONTRIBUYE</td>
+        </tr>
+        <tr>
+          <td><strong>Acceso del inspector a registros</strong> (§8)</td>
+          <td>Exportar bitácora — función diseñada</td>
+          <td><code>ManagerDashboardPage</code> — pendiente UI</td>
+          <td><span style="color:#ca8a04;font-size:15px">🟡</span> CONTRIBUYE</td>
+        </tr>
+        <tr>
+          <td><strong>Datos del residente</strong> (§11)</td>
+          <td>Entidad <code>resident</code> — campos básicos solamente</td>
+          <td><code>Resident</code> sin CURP/fecha_nacimiento</td>
+          <td><span style="color:#2563eb;font-size:15px">🔵</span> INFRAESTRUCTURA</td>
+        </tr>
+        <tr>
+          <td><strong>Expediente de personal</strong> (§5)</td>
+          <td>Entidad <code>staff_member</code> — datos operativos</td>
+          <td><code>StaffMember</code></td>
+          <td><span style="color:#2563eb;font-size:15px">🔵</span> INFRAESTRUCTURA</td>
+        </tr>
+        <tr>
+          <td><strong>Historial clínico / prescripciones</strong> (§11/§12)</td>
+          <td>Fuera de alcance del MVP operacional</td>
+          <td>—</td>
+          <td><span style="color:#6b7280;font-size:15px">⬜</span> FUERA DE ALCANCE</td>
+        </tr>
+      </tbody>
+    </table></div>
+
+    <div class="section-header" style="margin-top:1.5rem">
+      <span class="section-num">E2</span>
+      <span class="section-title">Resultados de verificación (<code>VerificationOutcome</code>) — equivalencia normativa</span>
+      <span class="section-tag">6 valores · R-17 NOM-031</span>
+    </div>
+    <div class="table-wrap" style="margin-top:0.5rem"><table>
+      <thead><tr><th>ID canónico</th><th>Etiqueta ES</th><th>Equivalente NOM-031 §9.1</th></tr></thead>
+      <tbody>
+        <tr><td><code>resident_confirmed_ok</code></td><td>Residente verificado, sin novedad</td><td>Verificación negativa — no se confirma el evento</td></tr>
+        <tr><td><code>assistance_provided</code></td><td>Asistencia prestada en sitio</td><td>Atención inmediata documentada</td></tr>
+        <tr><td><code>caregiver_support_required</code></td><td>Se requiere apoyo del cuidador</td><td>Seguimiento asignado al personal operativo</td></tr>
+        <tr><td><code>supervisor_follow_up_required</code></td><td>Seguimiento del supervisor requerido</td><td>Escalación interna — continúa el ciclo de verificación</td></tr>
+        <tr><td><code>false_alert</code></td><td>Alerta falsa — sin evento real</td><td>Cierre por ausencia de condición — R-17 resultado negativo</td></tr>
+        <tr><td><code>other_operational_result</code></td><td>Otro resultado operativo — detallar en notas</td><td>Resultado no catalogado — requiere nota libre</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="note-block" style="margin-top:1rem">Referencia completa: <strong>docs/15-nom031-cobertura.html</strong> — glosario de 15 términos NOM-031, 32 requisitos clasificados y frases de pitch con respaldo normativo. Scorecard de cobertura también en <strong>docs/12-arquitectura-evento-driven.html §11</strong> y <strong>docs/13-assessment-arquitectura-mvp.html Cat 11</strong>.</div>
   </div>
 </div>
 
