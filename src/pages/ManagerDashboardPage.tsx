@@ -10,26 +10,22 @@ import {
   listIncidents,
   listResidents,
   listRounds,
-  listStaffMembers,
 } from '../data/repository';
 import { deriveResidentStatus } from '../domain/rules';
 import { ALERT_STATUS_LABEL, INCIDENT_STATUS_LABEL, VERIFICATION_OUTCOME_LABEL } from '../features/labels';
 import type { VerificationOutcome } from '../domain/taxonomy';
-import { StaffRosterTable } from '../components/StaffRosterTable';
-import { StatusBadge } from '../components/StatusBadge';
 import { SeverityBadge } from '../components/SeverityBadge';
 
 export const ManagerDashboardPage = (): JSX.Element => {
   const { activeStaff, refreshToken, refreshDemoData } = useDemoSession();
   const [message, setMessage] = useState<{ kind: 'success' | 'error'; text: string } | undefined>(undefined);
 
-  const { alerts, incidents, residents, rounds, staffMembers } = useMemo(
+  const { alerts, incidents, residents, rounds } = useMemo(
     () => ({
       alerts: listAlerts().sort((a, b) => b.createdAt.localeCompare(a.createdAt)),
       incidents: listIncidents().sort((a, b) => b.openedAt.localeCompare(a.openedAt)),
       residents: listResidents(),
       rounds: listRounds(),
-      staffMembers: listStaffMembers(),
     }),
     [refreshToken],
   );
@@ -99,37 +95,6 @@ export const ManagerDashboardPage = (): JSX.Element => {
           <span className="summary-card__value">{metrics.alertsClosed}</span>
           <span className="summary-card__label">Alertas cerradas</span>
         </div>
-      </div>
-
-      <h2>Residentes — estado actual</h2>
-      <div className="table-scroll">
-        <table className="data-table">
-          <thead>
-            <tr>
-              <th>Residente</th>
-              <th>Habitación</th>
-              <th>Estado</th>
-            </tr>
-          </thead>
-          <tbody>
-            {[...residents]
-              .sort((a, b) => {
-                const p: Record<string, number> = { red: 0, yellow: 1, green: 2 };
-                return (p[deriveResidentStatus(a.id, rounds, alerts)] ?? 2) -
-                       (p[deriveResidentStatus(b.id, rounds, alerts)] ?? 2);
-              })
-              .map((resident) => {
-                const st = deriveResidentStatus(resident.id, rounds, alerts);
-                return (
-                  <tr key={resident.id} className={`row-${st}`}>
-                    <td><Link to={`/residentes/${resident.id}`}>{resident.displayName}</Link></td>
-                    <td>{resident.room}</td>
-                    <td><StatusBadge status={st} /></td>
-                  </tr>
-                );
-              })}
-          </tbody>
-        </table>
       </div>
 
       <h2>Historial completo de alertas</h2>
@@ -202,8 +167,6 @@ export const ManagerDashboardPage = (): JSX.Element => {
         </div>
       )}
 
-      <h2>Plantilla de personal</h2>
-      <StaffRosterTable staffMembers={staffMembers} />
     </section>
   );
 };

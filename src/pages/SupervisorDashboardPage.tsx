@@ -9,25 +9,22 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useDemoSession } from '../components/DemoSessionContext';
-import { StatusBadge } from '../components/StatusBadge';
 import { computeDashboardMetrics } from '../features/dashboard/dashboardMetrics';
-import { getStaffMemberById, listAlerts, listAuditEvents, listIncidents, listResidents, listRounds, listStaffMembers } from '../data/repository';
-import { StaffRosterTable } from '../components/StaffRosterTable';
-import { deriveResidentStatus, isAlertActive } from '../domain/rules';
+import { getStaffMemberById, listAlerts, listAuditEvents, listIncidents, listResidents, listRounds } from '../data/repository';
+import { isAlertActive } from '../domain/rules';
 import { ALERT_STATUS_LABEL } from '../features/labels';
 import { SeverityBadge } from '../components/SeverityBadge';
 
 export const SupervisorDashboardPage = (): JSX.Element => {
   const { refreshToken } = useDemoSession();
 
-  const { residents, rounds, alerts, metrics, staffMembers } = useMemo(() => {
+  const { residents, alerts, metrics } = useMemo(() => {
     const residents = listResidents();
     const rounds = listRounds();
     const alerts = listAlerts();
     const incidents = listIncidents();
     const auditEvents = listAuditEvents();
-    const staffMembers = listStaffMembers();
-    return { residents, rounds, alerts, staffMembers, metrics: computeDashboardMetrics(residents, rounds, alerts, incidents, auditEvents) };
+    return { residents, alerts, metrics: computeDashboardMetrics(residents, rounds, alerts, incidents, auditEvents) };
   }, [refreshToken]);
 
   const activeAlerts = alerts
@@ -110,39 +107,6 @@ export const SupervisorDashboardPage = (): JSX.Element => {
         </div>
       </div>
 
-      <h2>Residentes</h2>
-      <div className="table-scroll">
-        <table className="data-table">
-          <thead>
-            <tr>
-              <th>Residente</th>
-              <th>Habitación</th>
-              <th>Estado</th>
-            </tr>
-          </thead>
-          <tbody>
-            {[...residents]
-              .sort((a, b) => {
-                const p: Record<string, number> = { red: 0, yellow: 1, green: 2 };
-                return (p[deriveResidentStatus(a.id, rounds, alerts)] ?? 2) -
-                       (p[deriveResidentStatus(b.id, rounds, alerts)] ?? 2);
-              })
-              .map((resident) => {
-                const st = deriveResidentStatus(resident.id, rounds, alerts);
-                return (
-                  <tr key={resident.id} className={`row-${st}`}>
-                    <td>
-                      <Link to={`/residentes/${resident.id}`}>{resident.displayName}</Link>
-                    </td>
-                    <td>{resident.room}</td>
-                    <td><StatusBadge status={st} /></td>
-                  </tr>
-                );
-              })}
-          </tbody>
-        </table>
-      </div>
-
       <h2>Residentes por estado</h2>
       <div className="summary-cards">
         <div className="summary-card summary-card--red">
@@ -171,8 +135,6 @@ export const SupervisorDashboardPage = (): JSX.Element => {
         </div>
       </div>
 
-      <h2>Plantilla de personal</h2>
-      <StaffRosterTable staffMembers={staffMembers} />
     </section>
   );
 };
