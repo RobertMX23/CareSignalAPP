@@ -245,11 +245,11 @@ const resumen = [
   h3('Los cuatro puntos que un decisor necesita'),
   bulletRich('Demanda estructural. ', 'México tiene 17.1 millones de personas de 60 años o más (12.8% de la población) y la proyección llega a 27.7% hacia 2050. El envejecimiento no se revierte.'),
   bulletRich('Respaldo regulatorio, con matiz. ', 'Existe una norma vigente que exige documentación por usuario, y el producto la convierte en un subproducto automático de la operación diaria. La fiscalización es débil, de modo que se vende como respaldo ante reclamos y como seguro frente a un riesgo de baja probabilidad y consecuencia máxima: la clausura.'),
-  bulletRich('Mercado formal estrecho. ', 'Alrededor de 1,300 establecimientos registrados en todo México. No es un mercado de volumen: obliga a un ticket alto por cliente o a expansión geográfica.'),
+  bulletRich('Mercado B2B formal estrecho — complementado por B2C. ', 'Alrededor de 1,300 establecimientos B2B en México: obliga a ticket alto o expansión geográfica. El segmento B2C amplía el universo direccionable a ~2M familias con cuidado activo (CONAPO 2025) con un modelo freemium de adquisición viral y bajo CAC.'),
   bulletRich('Producto construido y verificado. ', 'El MVP está terminado, con 20 de 20 pruebas de aceptación aprobadas y 38 pruebas automatizadas en verde. No es una idea: es un producto demostrable hoy.'),
   spacer(80),
   h3('Recomendación'),
-  p('Cobrar en el segmento B2B —donde ya existe producto y obligación normativa— mientras se valida el segmento B2C mediante entrevistas, no mediante desarrollo. La línea al consumidor multiplica el universo por mil, pero depende de notificaciones externas que hoy están explícitamente fuera del alcance contratado.'),
+  p('Activar B2B con ventas directas —donde existe producto y obligación normativa— en paralelo con la entrada freemium B2C, que opera sobre el mismo motor sin requerir desarrollo adicional. El flywheel: familias que adoptan CareSignal en casa recomiendan la plataforma a la residencia donde ingresa su familiar, generando leads B2B de costo cero. Las notificaciones externas se reservan para v0.2.'),
   pageBreak(),
 ];
 
@@ -466,9 +466,9 @@ const valor = [
 const avatarB2C = [
   h1('6. Segmento de expansión: familias'),
   ...callout(
-    'Estado de esta línea',
-    'Este segmento no es vendible con el producto actual. El núcleo de su propuesta es el aviso que sale del sistema y llega al teléfono de la familia, y las notificaciones externas están explícitamente fuera del alcance de la versión contratada. Requiere una nueva versión del contrato, no un ajuste menor.',
-    RISK_BG, '8A5A00'
+    'Estado de esta línea — fase paralela activa',
+    'Este segmento ya forma parte del modelo de negocio como fase paralela B2C. El tier Freemium ($0, sin responsabilidad legal) permite que familias adopten CareSignal sin ciclo de venta ni notificaciones externas. El plan Familiar ($199–$399 MXN/mes) opera sobre el mismo motor de rondas de v0.1.0. Las notificaciones externas (SMS/WhatsApp) están reservadas para v0.2 — no bloquean la entrada al mercado. SAM B2C estimado: ~2M familias mexicanas con cuidado activo (CONAPO 2025).',
+    'E8F5E9', '1a6b3c'
   ),
   h2('6.1 La coordinadora familiar'),
   table(
