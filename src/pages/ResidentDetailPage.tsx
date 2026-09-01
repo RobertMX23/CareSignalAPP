@@ -6,14 +6,16 @@
  * una sexta página.
  */
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { useDemoSession } from '../components/DemoSessionContext';
 import { StatusBadge } from '../components/StatusBadge';
 import { getResidentById, listAlerts, listResidents, listRounds, listStaffMembers } from '../data/repository';
+import { completeRound, startRound } from '../features/rounds/roundOperations';
+import { getCurrentTime } from '../data/demoClock';
 import { deriveResidentStatus } from '../domain/rules';
-import type { Round } from '../domain/types';
-import type { CareLevel } from '../domain/types';
+import type { CareLevel, Round, RoundOutcome } from '../domain/types';
+import { CompleteRoundModal } from '../features/rounds/CompleteRoundModal';
 import { ALERT_STATUS_LABEL, ROUND_STATUS_LABEL, ROUND_TYPE_LABEL } from '../features/labels';
 
 function assignedResidentIds(rounds: Round[], staffId: string): Set<string> {
@@ -84,7 +86,9 @@ const ResidentList = (): JSX.Element => {
 };
 
 const ResidentDetail = ({ residentId }: { residentId: string }): JSX.Element => {
-  const { refreshToken, activeStaff } = useDemoSession();
+  const { refreshToken, activeStaff, refreshDemoData } = useDemoSession();
+  const [completeModal, setCompleteModal] = useState<Round | undefined>(undefined);
+  const [message, setMessage] = useState<string | undefined>(undefined);
   const data = useMemo(
     () => ({
       resident: getResidentById(residentId),
@@ -112,6 +116,21 @@ const ResidentDetail = ({ residentId }: { residentId: string }): JSX.Element => 
   const status = deriveResidentStatus(residentId, data.rounds, data.alerts);
   const staffName = (id?: string): string => data.staffMembers.find((s) => s.id === id)?.displayName ?? '—';
 
+  const isCaregiver = activeStaff.role === 'caregiver';
+
+  const handleStart = (round: Round): void => {
+    const result = startRound(round, activeStaff.id, getCurrentTime());
+    if (result.ok) { setMessage('Ronda iniciada.'); refreshDemoData(); }
+    else setMessage(result.message);
+  };
+
+  const handleCompleteConfirm = (round: Round, outcome: RoundOutcome, note: string | undefined): void => {
+    const result = completeRound(round, activeStaff.id, getCurrentTime(), outcome, note);
+    setCompleteModal(undefined);
+    if (result.ok) { setMessage('Ronda completada.'); refreshDemoData(); }
+    else setMessage(result.message);
+  };
+
   return (
     <section>
       <p>
@@ -131,17 +150,35 @@ const ResidentDetail = ({ residentId }: { residentId: string }): JSX.Element => 
               <th>Tipo</th>
               <th>Estado</th>
               <th>Cuidador asignado</th>
+              {isCaregiver && <th>Acción</th>}
             </tr>
           </thead>
           <tbody>
-            {data.rounds.map((round) => (
-              <tr key={round.id}>
-                <td>{new Date(round.scheduledAt).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' })}</td>
-                <td>{ROUND_TYPE_LABEL[round.type]}</td>
-                <td>{ROUND_STATUS_LABEL[round.status]}</td>
-                <td>{staffName(round.assignedStaffId)}</td>
-              </tr>
-            ))}
+            {data.rounds.map((round) => {
+              const myRound = isCaregiver && round.assignedStaffId === activeStaff.id;
+              return (
+                <tr key={round.id}>
+                  <td>{new Date(round.scheduledAt).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' })}</td>
+                  <td>{ROUND_TYPE_LABEL[round.type]}</td>
+                  <td>{ROUND_STATUS_LABEL[round.status]}</td>
+                  <td>{staffName(round.assignedStaffId)}</td>
+                  {isCaregiver && (
+                    <td>
+                      {myRound && (round.status === 'scheduled' || round.status === 'due') && (
+                        <button type="button" className="button button--small" onClick={() => handleStart(round)}>
+                          Iniciar
+                        </button>
+                      )}
+                      {myRound && round.status === 'in_progress' && (
+                        <button type="button" className="button button--small" onClick={() => setCompleteModal(round)}>
+                          Completar
+                        </button>
+                      )}
+                    </td>
+                  )}
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
@@ -174,6 +211,18 @@ const ResidentDetail = ({ residentId }: { residentId: string }): JSX.Element => 
             </tbody>
           </table>
         </div>
+      )}
+
+      {message && (
+        <p style={{ marginTop: '1rem', color: 'var(--color-primary)' }}>{message}</p>
+      )}
+
+      {completeModal && (
+        <CompleteRoundModal
+          round={completeModal}
+          onConfirm={(outcome, note) => handleCompleteConfirm(completeModal, outcome, note)}
+          onCancel={() => setCompleteModal(undefined)}
+        />
       )}
     </section>
   );
