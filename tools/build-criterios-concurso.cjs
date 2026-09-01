@@ -263,27 +263,29 @@ function c3() {
       [2500, 1800, 2500, 2200]
     ),
     note('IMARC Group y Grand View Research son firmas privadas de investigación de mercado, no fuentes oficiales.'),
-    h2('TAM / SAM / SOM — modelo B2B'),
+    h2('TAM / SAM / SOM — dos líneas de mercado'),
     tabla(
-      ['Nivel', 'Descripción', 'Estimación', 'Lógica'],
+      ['Nivel', 'Línea', 'Estimación', 'Lógica'],
       [
-        ['TAM', 'Mercado total de cuidados y tecnología geriátrica (MX + LatAm)', 'Decenas de miles de millones USD', 'LTC solo en MX supera USD 25 B'],
-        ['SAM', 'Residencias privadas formales en México con capacidad SaaS', '~1,100–1,300 residencias', 'DENUE 2025 · segmento con presupuesto y NOM-031'],
-        ['SOM', 'Captura realista en 3–5 años (ciclo B2B)', '50–200 residencias', 'Pilotos + referencias + confianza'],
+        ['TAM', 'Cuidados y tecnología geriátrica MX + LatAm', 'Decenas de miles de millones USD', 'LTC solo en MX supera USD 25 B'],
+        ['SAM B2B', 'Residencias privadas formales en México con capacidad SaaS', '~1,100–1,300 residencias', 'DENUE 2025 · segmento con presupuesto y NOM-031'],
+        ['SAM B2C', 'Familias mexicanas con cuidado activo de adulto mayor', '~2M familias', 'CONAPO 2025 · hijos que coordinan cuidado a distancia'],
+        ['SOM', 'Captura realista en 3–5 años (ciclo B2B + freemium B2C)', '50–200 residencias + 5,000–20,000 familias', 'Pilotos B2B + autoservicio freemium B2C'],
       ],
       [1200, 3000, 2500, 2300]
     ),
     br(),
-    h2('Revenue potencial del SOM'),
+    h2('Revenue potencial del SOM — precios sweet-spot'),
     tabla(
       ['Escenario', 'Residencias', 'Plan promedio', 'MRR estimado'],
       [
-        ['Conservador', '50', 'Esencial ($1,490/mes)', '~$74,500 MXN/mes'],
-        ['Base', '100', 'Profesional ($3,490/mes)', '~$349,000 MXN/mes'],
-        ['Optimista', '200', 'Profesional ($3,490/mes)', '~$698,000 MXN/mes'],
+        ['Pesimista', '25–35', 'Esencial ($1,990/mes)', '~$50k–$70k MXN/mes'],
+        ['Equilibrado ⭐', '80–120', 'Profesional ($3,990/mes) — sweet spot', '~$319k–$479k MXN/mes'],
+        ['Positivo', '180–250', 'Mix Profesional + Institucional ($8,490)', '~$717k–$997k MXN/mes'],
       ],
-      [2000, 1800, 2500, 2700]
+      [2000, 1800, 2800, 2400]
     ),
+    note('Freemium $0 no genera MRR directo — reduce CAC y acelera conversión a planes pagos. Margen bruto estimado > 80%.'),
     br(),
     h2('Análisis de competencia — mercado mexicano (agosto 2026)'),
     tabla(
@@ -293,7 +295,7 @@ function c3() {
         ['GERIGES', 'España (localiz. MX)', 'Versión .com/mx/', 'Expediente clínico, PAI/PIA, medicación, turnos', 'No'],
         ['StoriiCare', 'EE.UU.', 'Sin confirmar en MX', 'EHR, eMAR, IA integrada, EVV GPS', 'No'],
         ['Papel / hoja de cálculo', '—', 'Predominante', '—', '—'],
-        ['CareSignal', 'México', 'MVP listo para Cloud Run', 'Ciclo operativo de ronda con máquina de estados', '✅ 3 planes publicados'],
+        ['CareSignal', 'México', 'MVP listo para Cloud Run', 'Ciclo operativo de ronda con máquina de estados', '✅ Freemium $0 + 3 planes ($1,990–$8,490)'],
       ],
       [1800, 1500, 2000, 2700, 1000]
     ),
