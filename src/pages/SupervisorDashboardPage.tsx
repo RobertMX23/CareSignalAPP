@@ -100,17 +100,24 @@ export const SupervisorDashboardPage = (): JSX.Element => {
             </tr>
           </thead>
           <tbody>
-            {residents.map((resident) => (
-              <tr key={resident.id}>
-                <td>
-                  <Link to={`/residentes/${resident.id}`}>{resident.displayName}</Link>
-                </td>
-                <td>{resident.room}</td>
-                <td>
-                  <StatusBadge status={deriveResidentStatus(resident.id, rounds, alerts)} />
-                </td>
-              </tr>
-            ))}
+            {[...residents]
+              .sort((a, b) => {
+                const p: Record<string, number> = { red: 0, yellow: 1, green: 2 };
+                return (p[deriveResidentStatus(a.id, rounds, alerts)] ?? 2) -
+                       (p[deriveResidentStatus(b.id, rounds, alerts)] ?? 2);
+              })
+              .map((resident) => {
+                const st = deriveResidentStatus(resident.id, rounds, alerts);
+                return (
+                  <tr key={resident.id} className={`row-${st}`}>
+                    <td>
+                      <Link to={`/residentes/${resident.id}`}>{resident.displayName}</Link>
+                    </td>
+                    <td>{resident.room}</td>
+                    <td><StatusBadge status={st} /></td>
+                  </tr>
+                );
+              })}
           </tbody>
         </table>
       </div>
