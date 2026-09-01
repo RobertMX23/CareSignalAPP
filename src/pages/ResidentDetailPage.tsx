@@ -61,18 +61,21 @@ const ResidentList = (): JSX.Element => {
             </tr>
           </thead>
           <tbody>
-            {visibleResidents.map((resident) => (
-              <tr key={resident.id}>
+            {visibleResidents.map((resident) => {
+              const rowStatus = deriveResidentStatus(resident.id, rounds, alerts);
+              return (
+              <tr key={resident.id} className={`row-${rowStatus}`}>
                 <td>
                   <Link to={`/residentes/${resident.id}`}>{resident.displayName}</Link>
                 </td>
                 <td>{resident.room}</td>
                 <td>{CARE_LEVEL_LABEL[resident.careLevel]}</td>
                 <td>
-                  <StatusBadge status={deriveResidentStatus(resident.id, rounds, alerts)} />
+                  <StatusBadge status={rowStatus} />
                 </td>
               </tr>
-            ))}
+              );
+            })}
           </tbody>
         </table>
       </div>
