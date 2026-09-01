@@ -155,20 +155,22 @@ const ResidentDetail = ({ residentId }: { residentId: string }): JSX.Element => 
             <thead>
               <tr>
                 <th>Alerta</th>
-                <th>Severidad</th>
                 <th>Estado</th>
               </tr>
             </thead>
             <tbody>
-              {data.alerts.map((alert) => (
+              {data.alerts.map((alert) => {
+                const severityLabel = alert.severity === 'red' ? 'Roja' : 'Amarilla';
+                const dateLabel = new Date(alert.createdAt).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' });
+                return (
                 <tr key={alert.id}>
                   <td>
-                    <Link to={`/alertas/${alert.id}`}>{alert.id}</Link>
+                    <Link to={`/alertas/${alert.id}`}>Alerta {severityLabel} · {dateLabel}</Link>
                   </td>
-                  <td>{alert.severity === 'red' ? 'Roja' : 'Amarilla'}</td>
                   <td>{ALERT_STATUS_LABEL[alert.status]}</td>
                 </tr>
-              ))}
+                );
+              })}
             </tbody>
           </table>
         </div>
