@@ -36,9 +36,9 @@ import {
 } from '../data/repository';
 import type { Alert, ID } from '../domain/types';
 import type { AlertStatus, VerificationOutcome } from '../domain/taxonomy';
-import { ALERT_SEVERITY_LABEL, ALERT_STATUS_LABEL, INCIDENT_STATUS_LABEL, ROUND_TYPE_LABEL, VERIFICATION_OUTCOME_LABEL } from '../features/labels';
+import { ALERT_STATUS_LABEL, INCIDENT_STATUS_LABEL, ROUND_TYPE_LABEL, VERIFICATION_OUTCOME_LABEL } from '../features/labels';
+import { SeverityBadge } from '../components/SeverityBadge';
 
-const SEVERITY_LABEL = ALERT_SEVERITY_LABEL;
 const STATUS_LABEL = ALERT_STATUS_LABEL;
 
 interface AlertFilters {
@@ -180,10 +180,12 @@ const AlertList = (): JSX.Element => {
               {filteredAlerts.map((alert) => (
                 <tr key={alert.id}>
                   <td>
-                    <Link to={`/alertas/${alert.id}`}>{alert.id}</Link>
+                    <Link to={`/alertas/${alert.id}`}>
+                      Alerta {alert.severity === 'red' ? 'Roja' : 'Amarilla'} · {new Date(alert.createdAt).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' })}
+                    </Link>
                   </td>
                   <td>{getResidentById(alert.residentId)?.displayName ?? alert.residentId}</td>
-                  <td>{SEVERITY_LABEL[alert.severity] ?? alert.severity}</td>
+                  <td><SeverityBadge severity={alert.severity} /></td>
                   <td>{STATUS_LABEL[alert.status]}</td>
                   <td>
                     {alert.assignedStaffId === undefined ? (
@@ -306,7 +308,7 @@ const AlertDetail = ({ alertId }: { alertId: string }): JSX.Element => {
         <dt>Tiempo de retraso</dt>
         <dd>{delay ?? '—'}</dd>
         <dt>Severidad</dt>
-        <dd>{SEVERITY_LABEL[alert.severity] ?? alert.severity}</dd>
+        <dd><SeverityBadge severity={alert.severity} /></dd>
         <dt>Estado</dt>
         <dd>{STATUS_LABEL[alert.status]}</dd>
         <dt>Responsable actual</dt>

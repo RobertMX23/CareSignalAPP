@@ -15,6 +15,7 @@ import { getStaffMemberById, listAlerts, listAuditEvents, listIncidents, listRes
 import { StaffRosterTable } from '../components/StaffRosterTable';
 import { deriveResidentStatus, isAlertActive } from '../domain/rules';
 import { ALERT_STATUS_LABEL } from '../features/labels';
+import { SeverityBadge } from '../components/SeverityBadge';
 
 export const SupervisorDashboardPage = (): JSX.Element => {
   const { refreshToken } = useDemoSession();
@@ -143,10 +144,12 @@ export const SupervisorDashboardPage = (): JSX.Element => {
                 return (
                   <tr key={alert.id}>
                     <td>
-                      <Link to={`/alertas/${alert.id}`}>{alert.id}</Link>
+                      <Link to={`/alertas/${alert.id}`}>
+                        Alerta {alert.severity === 'red' ? 'Roja' : 'Amarilla'} · {new Date(alert.createdAt).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' })}
+                      </Link>
                     </td>
                     <td>{resident?.displayName ?? alert.residentId}</td>
-                    <td>{alert.severity === 'red' ? 'Roja' : 'Amarilla'}</td>
+                    <td><SeverityBadge severity={alert.severity} /></td>
                     <td>{ALERT_STATUS_LABEL[alert.status]}</td>
                     <td>
                       {alert.assignedStaffId === undefined ? (
