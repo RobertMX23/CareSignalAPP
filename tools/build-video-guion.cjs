@@ -1,24 +1,20 @@
 'use strict';
 const {
   Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
-  AlignmentType, WidthType, BorderStyle, ShadingType, PageBreak,
+  AlignmentType, WidthType, BorderStyle, ShadingType,
   convertMillimetersToTwip,
 } = require('docx');
 const fs   = require('fs');
 const path = require('path');
 
 const C = {
-  azul:     '1A5276',
-  azulCl:   'D6EAF8',
-  verde:    '1E8449',
-  verdeCl:  'D5F5E3',
-  naranja:  'CA6F1E',
-  morado:   '6C3483',
-  moradoCl: 'E8DAEF',
-  gris:     '424242',
-  grisCl:   'F2F3F4',
-  blanco:   'FFFFFF',
-  negro:    '000000',
+  azul:     '1A5276', azulCl:   'D6EAF8',
+  verde:    '1E8449', verdeCl:  'D5F5E3',
+  naranja:  'CA6F1E', naranjaCl:'FDEBD0',
+  morado:   '6C3483', moradoCl: 'E8DAEF',
+  rojo:     '922B21', rojoCl:   'FADBD8',
+  gris:     '424242', grisCl:   'F2F3F4',
+  blanco:   'FFFFFF', negro:    '000000',
 };
 
 const run  = (t, o = {}) => new TextRun({ text: t, font: 'Calibri', size: 22, color: C.negro, ...o });
@@ -28,13 +24,18 @@ const br   = () => new Paragraph({ children: [] });
 const h1 = (t, fill = C.azul) => new Paragraph({
   children: [new TextRun({ text: t, bold: true, size: 30, color: C.blanco, font: 'Calibri' })],
   shading: { type: ShadingType.CLEAR, fill },
-  spacing: { before: 360, after: 160 },
+  spacing: { before: 360, after: 180 },
 });
 
 const h2 = (t, fill = C.azulCl, color = C.azul) => new Paragraph({
   children: [new TextRun({ text: t, bold: true, size: 24, color, font: 'Calibri' })],
   shading: { type: ShadingType.CLEAR, fill },
   spacing: { before: 200, after: 100 },
+});
+
+const h3 = (t, color = C.azul) => new Paragraph({
+  children: [new TextRun({ text: t, bold: true, size: 22, color, font: 'Calibri' })],
+  spacing: { before: 160, after: 80 },
 });
 
 const divider = () => new Paragraph({
@@ -47,24 +48,29 @@ const nota = (t, c = C.naranja) => new Paragraph({
   spacing: { after: 70 },
 });
 
-// Prompt Gemini — fondo morado
-const gemini = (prompt) => new Paragraph({
-  children: [
-    new TextRun({ text: '✦ GEMINI PROMPT  ', bold: true, size: 18, color: C.morado, font: 'Calibri' }),
-    new TextRun({ text: prompt, size: 19, color: C.negro, font: 'Courier New' }),
-  ],
-  shading: { type: ShadingType.CLEAR, fill: C.moradoCl },
-  border: { left: { color: C.morado, size: 12, style: BorderStyle.SINGLE } },
-  indent: { left: convertMillimetersToTwip(8) },
-  spacing: { before: 100, after: 140, line: 320 },
-});
+// Prompt Gemini — morado
+const gemini = (titulo, prompt) => [
+  new Paragraph({
+    children: [new TextRun({ text: `✦ GEMINI  ·  ${titulo}`, bold: true, size: 20, color: C.morado, font: 'Calibri' })],
+    shading: { type: ShadingType.CLEAR, fill: C.moradoCl },
+    spacing: { before: 100, after: 0 },
+    indent: { left: convertMillimetersToTwip(6) },
+  }),
+  new Paragraph({
+    children: [new TextRun({ text: prompt, size: 19, color: C.negro, font: 'Courier New' })],
+    shading: { type: ShadingType.CLEAR, fill: C.moradoCl },
+    border: { left: { color: C.morado, size: 14, style: BorderStyle.SINGLE } },
+    indent: { left: convertMillimetersToTwip(8) },
+    spacing: { before: 0, after: 140, line: 320 },
+  }),
+];
 
-// Voz en off — fondo azul
+// Voz en off — azul
 const voz = (lines) => {
   const ch = [];
   lines.forEach((l, i) => {
     if (i > 0) ch.push(new TextRun({ text: '', break: 1 }));
-    ch.push(new TextRun({ text: l, size: 22, color: C.negro, font: 'Calibri', italics: true }));
+    ch.push(new TextRun({ text: l === '' ? ' ' : l, size: 23, color: C.negro, font: 'Calibri', italics: true }));
   });
   return new Paragraph({
     children: ch,
@@ -75,7 +81,7 @@ const voz = (lines) => {
   });
 };
 
-// Acción en pantalla — fondo verde
+// Acción pantalla — verde
 const pantalla = (lines) => {
   const ch = [];
   lines.forEach((l, i) => {
@@ -91,11 +97,87 @@ const pantalla = (lines) => {
   });
 };
 
-const bullet = (t, d = 0) => new Paragraph({
-  children: [run(`• ${t}`)],
-  indent: { left: convertMillimetersToTwip(6 + d * 8) },
-  spacing: { after: 55 },
-});
+// Ficha de personaje — naranja claro
+const fichaPersonaje = (nombre, rol, desc, geminiDesc) => [
+  new Paragraph({
+    children: [new TextRun({ text: `👤  ${nombre}  ·  ${rol}`, bold: true, size: 22, color: C.naranja, font: 'Calibri' })],
+    shading: { type: ShadingType.CLEAR, fill: C.naranjaCl },
+    spacing: { before: 160, after: 60 },
+    indent: { left: convertMillimetersToTwip(4) },
+  }),
+  new Paragraph({
+    children: [new TextRun({ text: desc, size: 20, color: C.negro, font: 'Calibri' })],
+    indent: { left: convertMillimetersToTwip(8) },
+    spacing: { after: 60 },
+  }),
+  new Paragraph({
+    children: [
+      new TextRun({ text: 'Descripción Gemini: ', bold: true, size: 19, color: C.morado, font: 'Calibri' }),
+      new TextRun({ text: geminiDesc, size: 19, color: C.negro, font: 'Courier New' }),
+    ],
+    shading: { type: ShadingType.CLEAR, fill: C.moradoCl },
+    indent: { left: convertMillimetersToTwip(8) },
+    spacing: { after: 120 },
+  }),
+];
+
+// Ficha de escenario — gris claro
+const fichaEscenario = (nombre, desc, geminiDesc) => [
+  new Paragraph({
+    children: [new TextRun({ text: `🏢  Escenario: ${nombre}`, bold: true, size: 22, color: C.gris, font: 'Calibri' })],
+    shading: { type: ShadingType.CLEAR, fill: C.grisCl },
+    spacing: { before: 140, after: 60 },
+    indent: { left: convertMillimetersToTwip(4) },
+  }),
+  new Paragraph({
+    children: [new TextRun({ text: desc, size: 20, color: C.negro, font: 'Calibri' })],
+    indent: { left: convertMillimetersToTwip(8) },
+    spacing: { after: 60 },
+  }),
+  new Paragraph({
+    children: [
+      new TextRun({ text: 'Descripción Gemini: ', bold: true, size: 19, color: C.morado, font: 'Calibri' }),
+      new TextRun({ text: geminiDesc, size: 19, color: C.negro, font: 'Courier New' }),
+    ],
+    shading: { type: ShadingType.CLEAR, fill: C.moradoCl },
+    indent: { left: convertMillimetersToTwip(8) },
+    spacing: { after: 120 },
+  }),
+];
+
+// Beat de la escena demo — fila de tiempo
+const beat = (tiempo, accion, narr, wowFlag) => {
+  const fillAc = wowFlag ? C.rojoCl : C.verdeCl;
+  const colorAc = wowFlag ? C.rojo : C.verde;
+  return new Table({
+    rows: [
+      new TableRow({
+        children: [
+          new TableCell({
+            children: [new Paragraph({ children: [new TextRun({ text: tiempo, bold: true, size: 22, color: C.blanco, font: 'Calibri' })], spacing: { before: 60, after: 60 } })],
+            shading: { type: ShadingType.CLEAR, fill: wowFlag ? C.rojo : C.azul },
+            width: { size: 900, type: WidthType.DXA },
+            margins: { left: 80, right: 80 },
+          }),
+          new TableCell({
+            children: [new Paragraph({ children: [new TextRun({ text: accion, bold: !!wowFlag, size: 20, color: colorAc, font: 'Calibri' })], spacing: { before: 60, after: 60 } })],
+            shading: { type: ShadingType.CLEAR, fill: fillAc },
+            width: { size: 5000, type: WidthType.DXA },
+            margins: { left: 80, right: 80 },
+          }),
+          new TableCell({
+            children: [new Paragraph({ children: [new TextRun({ text: narr || '(silencio)', italics: !narr, size: 19, color: narr ? C.azul : C.gris, font: 'Calibri' })], spacing: { before: 60, after: 60 } })],
+            shading: { type: ShadingType.CLEAR, fill: narr ? C.azulCl : C.grisCl },
+            width: { size: 3100, type: WidthType.DXA },
+            margins: { left: 80, right: 80 },
+          }),
+        ],
+      }),
+    ],
+    width: { size: 9000, type: WidthType.DXA },
+    margins: { top: 0, bottom: 60 },
+  });
+};
 
 function tabla(headers, rows, widths) {
   const mkC = (t, isH, ri) => new TableCell({
@@ -116,13 +198,13 @@ function tabla(headers, rows, widths) {
   });
 }
 
-// Estilo visual global Gemini
-const ESTILO = 'Style: clean editorial photography, soft pastel palette (warm ivory background, muted steel-blue accents), cinematic shallow depth of field, no text overlays, no logos, photorealistic, 16:9 aspect ratio, professional healthcare setting';
+// Estilo global Gemini
+const ESTILO = 'photorealistic, editorial photography, soft pastel palette (warm ivory #FAFAF8 background, muted steel-blue #5B8DB8 accents), cinematic shallow depth of field, no text overlays, no logos, no watermarks, 16:9 aspect ratio, professional Mexican elder-care setting, warm but slightly somber mood';
 
 async function main() {
   const doc = new Document({
     creator: 'Roberto García',
-    title: 'CareSignal — Guion de Video + Prompts Gemini (versión lean)',
+    title: 'CareSignal — Video: Personajes, Escenarios y Prompts Gemini',
     styles: { default: { document: { run: { font: 'Calibri', size: 22, color: C.negro } } } },
     sections: [{
       properties: {
@@ -142,11 +224,11 @@ async function main() {
           alignment: AlignmentType.CENTER, spacing: { after: 100 },
         }),
         new Paragraph({
-          children: [new TextRun({ text: 'Guion de video — versión lean  ·  ~3:00', bold: true, size: 36, color: C.gris, font: 'Calibri' })],
+          children: [new TextRun({ text: 'Video pitch · Personajes · Escenarios · Prompts Gemini', bold: true, size: 32, color: C.gris, font: 'Calibri' })],
           alignment: AlignmentType.CENTER, spacing: { after: 80 },
         }),
         new Paragraph({
-          children: [new TextRun({ text: '4 escenas · 4 prompts Gemini · narración mínima · demo como protagonista', size: 24, color: C.gris, font: 'Calibri', italics: true })],
+          children: [new TextRun({ text: 'Una escena demo  ·  Perspectiva del director  ·  Hook legal  ·  ~3:00 total', size: 24, color: C.gris, font: 'Calibri', italics: true })],
           alignment: AlignmentType.CENTER, spacing: { after: 80 },
         }),
         new Paragraph({
@@ -154,233 +236,215 @@ async function main() {
           alignment: AlignmentType.CENTER, spacing: { after: 400 },
         }),
 
-        // ── PRINCIPIO ESTRATÉGICO ────────────────────────────────────────────
-        new Paragraph({
-          children: [new TextRun({ text: 'Principio estratégico de este video', bold: true, size: 26, color: C.azul, font: 'Calibri' })],
-          spacing: { after: 100 },
-        }),
-        new Paragraph({
-          children: [new TextRun({
-            text: 'El demo ES el argumento. Todo lo demás es contexto.',
-            bold: true, size: 26, color: C.naranja, font: 'Calibri',
-          })],
-          spacing: { after: 80 },
-        }),
-        bullet('El juez decide en los primeros 20 segundos si le importa el problema.'),
-        bullet('Decide si confía en el producto en los 90 segundos del demo.'),
-        bullet('Los números de mercado y el precio se recuerdan solo si el demo ya convenció.'),
-        bullet('El nombre se retiene solo si lo vio hacer algo real.'),
-        br(),
-        nota('Regla de edición: si un segundo de video no muestra el producto funcionando NI el problema humano, córtalo.', C.azul),
-        divider(),
-
-        // ── RESUMEN ──────────────────────────────────────────────────────────
-        new Paragraph({ children: [bold('Estructura del video', 26, C.azul)], spacing: { before: 120, after: 100 } }),
+        // ── ESTRUCTURA ───────────────────────────────────────────────────────
+        new Paragraph({ children: [bold('Estructura del video (3:00 total)', 26, C.azul)], spacing: { after: 100 } }),
         tabla(
-          ['Escena', 'Qué muestra', 'Tipo de recurso', 'Duración'],
+          ['Segmento', 'Qué muestra', 'Recurso', 'Inicio', 'Dur.'],
           [
-            ['1 · Problema', 'Una imagen. Una oración. Sin datos.', 'Gemini × 1 + voz', '25 s'],
-            ['2 · Demo',     'El producto resolviendo el problema', 'Screencast MVP',   '1:50'],
-            ['3 · Números',  'Mercado + precio. Nada más.',         'Gemini × 1 + texto', '20 s'],
-            ['4 · Cierre',   'Founder. 2 oraciones. Nombre.',       'Cámara directa',   '10 s'],
+            ['Hook',  '"¿Tienes evidencia de que alguien fue a verla anoche?"', 'Gemini Img-1 + voz', '00:00', '25 s'],
+            ['Demo',  'Director ve ronda vencida → alerta → bitácora inmutable', 'Screencast MVP',    '00:25', '1:30'],
+            ['Cierre demo', '"Eso es lo que la NOM-031 exige."', 'Screencast + voz', '01:55', '15 s'],
+            ['Números', '+1,300 residencias · ~2M familias · $3,990/mes', 'Gemini Img-2 + texto', '02:10', '20 s'],
+            ['Founder', 'Roberto en cámara — 2 oraciones — nombre', 'Cámara directa', '02:30', '10 s'],
+            ['Créditos', 'Logo + contacto + disclaimer', 'Motion graphics', '02:40', '10 s'],
           ],
-          [2000, 3200, 2200, 1600]
+          [1600, 3200, 1800, 900, 800]
         ),
         br(),
-        new Paragraph({
-          children: [new TextRun({ text: 'Total: ~2:45 – 3:00. Bajo el límite. El tiempo sobrante es silencio — no lo llenes.', italics: true, size: 20, color: C.naranja, font: 'Calibri' })],
-          spacing: { after: 100 },
-        }),
         divider(),
 
-        // ── ESTILO GLOBAL GEMINI ─────────────────────────────────────────────
-        h1('Estilo visual global — aplica a todos los prompts'),
-        new Paragraph({ children: [run('Pega este bloque al inicio de cada prompt de imagen. Mantiene coherencia visual entre escenas.')], spacing: { after: 100 } }),
-        gemini(ESTILO),
+        // ── ESTILO GLOBAL ────────────────────────────────────────────────────
+        h1('Estilo visual global — aplica a todos los prompts Gemini'),
+        new Paragraph({ children: [run('Pega siempre este bloque AL INICIO de cada prompt. Garantiza coherencia de paleta y luz entre todas las imágenes.')], spacing: { after: 100 } }),
+        ...gemini('ESTILO GLOBAL', ESTILO),
         divider(),
 
-        // ══════════════════════════════════════════════════════════════════════
-        // ESCENA 1
-        // ══════════════════════════════════════════════════════════════════════
-        h1('ESCENA 1 · El problema   00:00 – 00:25   (25 s)'),
+        // ── PERSONAJES ───────────────────────────────────────────────────────
+        h1('Personajes', C.naranja),
+        new Paragraph({ children: [run('Tres personajes. Solo el Director aparece en imágenes Gemini. Los otros dos aparecen en el screencast como nombres/avatares del MVP.')], spacing: { after: 120 } }),
 
-        new Paragraph({
-          children: [
-            bold('Regla: ', 22, C.azul),
-            run('Una sola imagen. Una sola oración. El juez debe sentirlo, no entenderlo.'),
-          ],
-          spacing: { after: 120 },
-        }),
-
-        h2('Imagen 1  (00:00 – 00:22)  fade-in desde negro'),
-        gemini(
-          `${ESTILO}, elderly woman in her 80s sitting alone by a sunlit window in a care home room at night, soft bedside lamp, a paper logbook open on the nightstand with blank lines, intimate and slightly somber mood, no caregiver visible`
+        ...fichaPersonaje(
+          'El Director',
+          'Comprador · rol demo_admin en CareSignal',
+          'Hombre, ~52 años. Traje oscuro sin corbata, camisa blanca. Expresión seria y cansada — lleva años administrando sin herramientas. Mexicano. Está en su oficina dentro de la residencia, mirando una pantalla. Es el que firma el contrato. Su dolor: ser el responsable legal cuando algo falla y no tener evidencia.',
+          'Mexican man in his early 50s, dark blazer, white shirt, no tie, tired but professional expression, seated at a desk in a private care home office, looking at a computer screen with a soft blue dashboard glow on his face, warm desk lamp in the background'
         ),
-        bullet('Sin texto en pantalla. Solo imagen + silencio + música suave instrumental.'),
-        bullet('Transición: fade-in 1 s / hold / fade-out a negro 1 s antes de la voz.'),
+
+        ...fichaPersonaje(
+          'La Residente',
+          'Adulta mayor · aparece en imagen del hook',
+          'Mujer, ~82 años. Pijama claro. Habitación individual de residencia privada, noche. Sola junto a la ventana o en la cama. Ella no es una víctima — es una persona digna en una situación de vulnerabilidad. El cuaderno de registro en papel sobre la mesita es el símbolo del sistema roto.',
+          'Mexican elderly woman in her early 80s, light cotton pajamas, sitting alone by a dim bedside lamp in a private care home room at night, a paper logbook open on the nightstand with some blank lines visible, intimate and quietly somber mood, no caregiver in sight'
+        ),
+
+        ...fichaPersonaje(
+          'El Cuidador',
+          'Usuario operativo · aparece solo en el screencast',
+          'Aparece únicamente como nombre en el menú de asignación del dashboard de CareSignal. No necesita imagen Gemini. En el screencast se ve "Carlos M. — disponible" en la lista de asignación. El nombre debe coincidir con los datos ficticios del seed del MVP.',
+          '(no se genera imagen Gemini para este personaje)'
+        ),
+        divider(),
+
+        // ── ESCENARIOS ───────────────────────────────────────────────────────
+        h1('Escenarios', C.gris),
+
+        ...fichaEscenario(
+          'Oficina del director',
+          'Despacho moderno dentro de una residencia privada. Escritorio de madera oscura, pantalla de computadora con dashboard CareSignal visible. Lámpara de escritorio cálida. Cuadros o diplomas en la pared. Sin ventana exterior — el director está encerrado en su responsabilidad. Aparece en imágenes Gemini opcionales si se añade intro del director.',
+          'private care home director\'s office at night, dark wood desk, computer screen with a soft blue dashboard glow, warm desk lamp, diplomas on the wall, no window, enclosed professional atmosphere, sense of administrative responsibility'
+        ),
+
+        ...fichaEscenario(
+          'Habitación de la residente',
+          'Cuarto individual de residencia privada. Cama con ropa de cama clara, mesita de noche con lámpara pequeña y cuaderno de registro en papel abierto. Ventana con persiana, noche. Atmósfera íntima, silenciosa. Este escenario aparece SOLO en la imagen del hook — nunca en el screencast.',
+          'private elder-care room at night, single bed with light bedding, small nightstand with a dim lamp and an open paper logbook, window with closed blinds, quiet and intimate atmosphere, no medical equipment, warm ivory and soft shadow palette'
+        ),
+
+        ...fichaEscenario(
+          'Pantalla CareSignal (dashboard)',
+          'Este escenario es el screencast del MVP en localhost:5173. No usa Gemini. El dashboard debe mostrar: barra de alertas superior, lista de residentes con estados en color, columna de rondas programadas/vencidas. Reloj simulado visible en la esquina superior.',
+          '(screencast — no se genera imagen Gemini)'
+        ),
+        divider(),
+
+        // ── PROMPTS COMPLETOS ────────────────────────────────────────────────
+        h1('Prompts Gemini completos — listos para copiar y pegar'),
+        new Paragraph({ children: [run('Cada prompt ya incluye el estilo global integrado. Copia el bloque completo, pégalo directo en Gemini Imagen 3 (AI Studio o imagen.google.com).')], spacing: { after: 120 } }),
+
+        // ── PROMPT 1: HOOK ────────────────────────────────────────────────────
+        h2('Prompt 1 · Imagen del hook  (Escena 1 — 00:00 a 00:22)'),
+        new Paragraph({ children: [run('Propósito: activar empatía en los primeros 5 segundos. El juez debe sentir el riesgo antes de que la narración lo nombre.')], spacing: { after: 80 } }),
+        ...gemini('IMG-1 · HOOK',
+          `${ESTILO}, Mexican elderly woman in her early 80s, light cotton pajamas, sitting alone by a dim bedside lamp in a private care home room at 3 AM, a paper logbook open on the nightstand with several blank lines visible, soft shadow on the empty doorway behind her suggesting no caregiver has come, intimate and quietly somber mood, no medical equipment, shot from slightly above to emphasize solitude`
+        ),
+        nota('Genera 3 variantes. Elige la que muestre mejor el cuaderno en papel Y la soledad — ambos elementos son clave.'),
+        nota('Si el cuaderno no es legible, regénera. Las líneas en blanco son el símbolo del sistema roto.'),
         br(),
 
-        h2('🎙 Voz en off  (00:18 – 00:25)  — sobre fade a negro'),
+        // ── PROMPT 2: NÚMEROS ─────────────────────────────────────────────────
+        h2('Prompt 2 · Imagen de números  (Escena 3 — 02:10 a 02:30)'),
+        new Paragraph({ children: [run('Propósito: dar escala al mercado con una imagen que el editor pueda usar como fondo para texto animado.')], spacing: { after: 80 } }),
+        ...gemini('IMG-2 · MERCADO',
+          `${ESTILO}, aerial drone view of a mid-sized Mexican city at golden hour, several residential care buildings visible among modern urban blocks, warm amber and soft blue light, sense of scale and untapped opportunity, no people visible, clean geometric composition with open sky on the upper third for text overlay`
+        ),
+        nota('El tercio superior de la imagen debe quedar libre (cielo o fondo neutro) — el editor pondrá los números ahí.'),
+        nota('Genera en horizontal 16:9. Rechaza si hay logos, señales de tránsito o texto legible en fachadas.'),
+        br(),
+
+        // ── PROMPT 3 OPCIONAL: DIRECTOR (si se añade intro) ───────────────────
+        h2('Prompt 3 (opcional) · Director mirando el problema  —  para intro extendida'),
+        new Paragraph({ children: [run('Solo si se decide añadir 10 segundos antes del hook mostrando al director. No obligatorio en la versión lean.')], spacing: { after: 80 } }),
+        ...gemini('IMG-3 · DIRECTOR (opcional)',
+          `${ESTILO}, Mexican man in his early 50s, dark blazer, white shirt no tie, seated at his desk in a private care home office at night, looking with concern at a computer screen that casts a soft blue glow on his face, a paper logbook and pen on the desk beside him, warm desk lamp, sense of administrative burden and late-night worry`
+        ),
+        nota('Este prompt es complementario. Úsalo solo si el video tiene más de 3:00 de presupuesto de tiempo.'),
+        divider(),
+
+        // ── ESCENA DEMO — TIMING FRAME A FRAME ───────────────────────────────
+        h1('Escena demo · Timing segundo a segundo  (00:25 – 02:10)'),
+        new Paragraph({ children: [run('Screencast del MVP. La columna verde es lo que se ve en pantalla. La columna azul es lo que se dice. Las filas rojas son los momentos de mayor impacto — no los cortes ni aceleres.')], spacing: { after: 120 } }),
+        br(),
+
+        // Encabezado de tabla de beats
+        new Paragraph({ children: [bold('TIEMPO    PANTALLA (screencast)    VOZ EN OFF', 20, C.blanco)], shading: { type: ShadingType.CLEAR, fill: C.azul }, spacing: { after: 4 }, indent: { left: convertMillimetersToTwip(4) } }),
+
+        // Beats
+        beat('00:25', 'Fade desde negro. Dashboard completo aparece. Todos los residentes visibles. Reloj simulado: 02:55. Ronda de Habitación 3 en estado azul "Programada".', '"Este es el turno de noche."', false),
+        beat('00:37', 'Cursor se mueve lentamente sobre la fila de Habitación 3. Zoom suave 1.1×. El nombre del residente y la hora de ronda son visibles.', '(silencio — deja que el juez lea)', false),
+        beat('00:45', 'Clic en "▶ Avanzar reloj". Reloj salta de 02:55 a 03:07. Barra superior parpadea brevemente.', '"Pasan doce minutos."', false),
+        beat('00:52 ⚡ WOW', 'La fila de Habitación 3 CAMBIA a rojo "VENCIDA". Un chip amarillo de ALERTA aparece en la columna de alertas. Sucede solo — sin que nadie lo haga.', '"CareSignal lo detecta solo — sin llamadas, sin cuadernos."', true),
+        beat('01:05', 'Cursor se mueve a la alerta amarilla. Clic. Se abre modal con detalle: residente, tipo de ronda, hora de vencimiento, estado "Abierta".', '(silencio)', false),
+        beat('01:13', 'Clic en botón "Reconocer". Estado del modal cambia a "Reconocida". Badge de alertas en barra superior baja de 1 a 0.', '"El supervisor la reconoce."', false),
+        beat('01:21', 'Clic en "Asignar". Menú desplegable muestra lista de cuidadores: "Carlos M. — disponible". Clic en Carlos M. Confirmación verde aparece.', '"La asigna al cuidador en turno."', false),
+        beat('01:30', 'Clic en pestaña "Bitácora". Vista de auditoría con 4 filas generadas automáticamente. Cada fila: actor + timestamp + acción.', '(silencio — el juez lee)', false),
+        beat('01:38 ⚡ WOW', 'Zoom-in suave sobre la primera fila: "Sistema · 03:07 · Ronda vencida detectada · Habitación 3". Cursor quieto. Pausa 3 segundos.', '"Generado automáticamente. Sin papel. Sin transcripción."', true),
+        beat('01:48', 'Scroll lento por las 4 filas restantes. Actor distinto en cada una: Sistema → Supervisor → Supervisor → Cuidador.', '"Quién. Cuándo. Qué. Inmutable."', false),
+        beat('01:58', 'Zoom-out al dashboard completo. La fila de Habitación 3 ahora muestra estado "En verificación" — el ciclo sigue.', '(silencio)', false),
+        beat('02:05', 'Fade lento a negro. Última imagen: el dashboard quieto, todo bajo control.', '"Eso es lo que la NOM-031 exige.", pausa 1 s, "Listo para cualquier inspección."', false),
+
+        br(),
+        nota('Duración total de la escena demo: 1:45. Dentro del presupuesto de 1:30 + 15 s de cierre.'),
+        nota('WOW moments (rojo): NO cortes, NO zoom-out, NO música — silencio o voz mínima. El color rojo y el chip de alerta hacen el trabajo.'),
+        nota('Música de fondo en toda la escena: -20 dBFS o apagada. La alerta sonando en pantalla (si el MVP tiene sonido) reemplaza la música.'),
+        divider(),
+
+        // ── NARRACIÓN COMPLETA ────────────────────────────────────────────────
+        h1('Narración completa — guion de voz en off'),
+        nota('Graba en una sola sesión. Tono: informado, calmado, sin urgencia artificial. No es un comercial — es evidencia.', C.azul),
+        br(),
+
+        h3('Escena 1 · Hook  (00:00 – 00:25)'),
         voz([
-          '"¿Qué pasa si nadie fue a verla esta noche y nadie lo sabe?"',
+          '(silencio 4 s mientras aparece la imagen)',
+          '',
+          '"¿Tienes evidencia de que alguien fue a verla anoche?"',
+          '',
+          '(pausa 2 s  —  corte a negro  —  comienza el demo)',
         ]),
-        nota('Solo esa oración. Pausa de 2 s. Corte a la escena 2.'),
-        divider(),
-
-        // ══════════════════════════════════════════════════════════════════════
-        // ESCENA 2
-        // ══════════════════════════════════════════════════════════════════════
-        h1('ESCENA 2 · El demo   00:25 – 02:15   (1 min 50 s)'),
-
-        new Paragraph({
-          children: [
-            bold('Regla: ', 22, C.azul),
-            run('El screencast es el pitch. La narración es solo lo que NO se ve en pantalla.'),
-          ],
-          spacing: { after: 120 },
-        }),
-        nota('Graba con OBS Studio a 1080p. Cursor visible y grande. Sin ventanas extra. Zoom-in suave (1.15×) en cada clic.'),
         br(),
 
-        h2('🖥 Secuencia de 6 pasos'),
-        tabla(
-          ['Paso', 'Qué se ve en pantalla', 'Voz en off (solo si añade)', 'Seg'],
-          [
-            ['1', 'Dashboard completo — lista de rondas, Habitación 3 en "Programada", reloj en 02:55', '(silencio — deja que el juez lea la pantalla)', '12 s'],
-            ['2', 'Clic en "▶ Avanzar reloj" → reloj salta a 03:05, barra superior pulsa', '"Pasan cinco minutos."', '7 s'],
-            ['3', 'Fila Habitación 3 → rojo "VENCIDA". Chip de alerta amarilla aparece en columna de alertas.', '"CareSignal lo detecta solo."', '10 s'],
-            ['4', 'Clic en alerta → modal con detalle. Clic en "Reconocer". Estado cambia a "Reconocida".', '"El supervisor la reconoce."', '8 s'],
-            ['5', 'Clic en "Asignar" → menú de cuidadores disponibles → clic en nombre → confirmar.', '"La asigna al cuidador en turno."', '8 s'],
-            ['6', 'Pestaña "Bitácora" → 3 filas de auditoría con actor + timestamp + acción. Scroll lento.', '"Quién. Cuándo. Qué. Inmutable."', '15 s'],
-          ],
-          [600, 3200, 3000, 700]
-        ),
-        br(),
-        nota('Entre pasos 3 y 4: pausa visual de 1 s — deja que el juez procese el color rojo.'),
-        nota('Paso 6: la última frase ("Inmutable.") se dice mientras el cursor está quieto sobre la bitácora.'),
-        br(),
-
-        h2('Frase puente al final del demo  (02:05 – 02:15)'),
+        h3('Escena 2 · Demo  (00:25 – 02:20)'),
+        new Paragraph({ children: [run('La narración va intercalada con los beats — ver tabla anterior. Resumen lineal:')], spacing: { after: 80 } }),
         voz([
-          '"De ronda vencida a bitácora cerrada — menos de dos minutos.',
-          'Eso es lo que la NOM-031 exige. Eso es lo que CareSignal genera."',
+          '"Este es el turno de noche."',
+          '… (silencio mientras el juez lee el dashboard) …',
+          '"Pasan doce minutos."',
+          '"CareSignal lo detecta solo — sin llamadas, sin cuadernos."',
+          '… (silencio en el modal) …',
+          '"El supervisor la reconoce."',
+          '"La asigna al cuidador en turno."',
+          '… (silencio en la bitácora) …',
+          '"Generado automáticamente. Sin papel. Sin transcripción."',
+          '"Quién. Cuándo. Qué. Inmutable."',
+          '… (silencio — dashboard quieto) …',
+          '"Eso es lo que la NOM-031 exige."',
+          '(pausa 1 s)',
+          '"Listo para cualquier inspección."',
         ]),
-        nota('Corte a negro 0.5 s. Transición a Escena 3.'),
-        divider(),
-
-        // ══════════════════════════════════════════════════════════════════════
-        // ESCENA 3
-        // ══════════════════════════════════════════════════════════════════════
-        h1('ESCENA 3 · Los números   02:15 – 02:35   (20 s)'),
-
-        new Paragraph({
-          children: [
-            bold('Regla: ', 22, C.azul),
-            run('Tres números. Ni uno más. El juez no puede retener más en 20 segundos.'),
-          ],
-          spacing: { after: 120 },
-        }),
-
-        h2('Imagen 3  (02:15 – 02:35)'),
-        gemini(
-          `${ESTILO}, aerial view of a mid-sized Mexican city at golden hour, care home buildings visible among residential blocks, warm light, sense of scale and untapped opportunity, no people, clean geometric composition`
-        ),
         br(),
 
-        h2('Texto superpuesto — animado, aparece uno por uno'),
-        new Paragraph({
-          children: [
-            new TextRun({ text: '+1,300', bold: true, size: 48, color: C.azul, font: 'Calibri' }),
-            new TextRun({ text: '  residencias privadas en México', size: 26, color: C.negro, font: 'Calibri' }),
-          ],
-          spacing: { before: 80, after: 60 },
-        }),
-        new Paragraph({
-          children: [
-            new TextRun({ text: '~2M', bold: true, size: 48, color: C.azul, font: 'Calibri' }),
-            new TextRun({ text: '  familias coordinando cuidado a distancia', size: 26, color: C.negro, font: 'Calibri' }),
-          ],
-          spacing: { after: 60 },
-        }),
-        new Paragraph({
-          children: [
-            new TextRun({ text: '$3,990', bold: true, size: 48, color: C.verde, font: 'Calibri' }),
-            new TextRun({ text: '  MXN/mes · 80 % margen bruto', size: 26, color: C.negro, font: 'Calibri' }),
-          ],
-          spacing: { after: 80 },
-        }),
-        br(),
-
-        h2('🎙 Voz en off  (02:15 – 02:35)'),
+        h3('Escena 3 · Números  (02:20 – 02:40)'),
         voz([
           '"Más de 1,300 residencias en México. Dos millones de familias.',
           'Plan Profesional: 3,990 pesos al mes. Margen bruto del 80 %."',
         ]),
-        nota('Sin más datos. Sin competidores. Sin TAM/SAM/SOM.'),
-        divider(),
-
-        // ══════════════════════════════════════════════════════════════════════
-        // ESCENA 4
-        // ══════════════════════════════════════════════════════════════════════
-        h1('ESCENA 4 · El cierre   02:35 – 02:45   (10 s)'),
-
-        new Paragraph({
-          children: [
-            bold('Regla: ', 22, C.azul),
-            run('Founder en cámara. Dos oraciones. El nombre al final. Mirar directo.'),
-          ],
-          spacing: { after: 120 },
-        }),
-
-        h2('🎤 Founder en cámara  (02:35 – 02:45)'),
-        pantalla([
-          '→ Roberto García frente a cámara, fondo neutro o banner CareSignal',
-          '→ Luz frontal. Sin contraluz. Sin efectos.',
-          '→ Texto inferior: "Roberto García  ·  robertogarciaits@gmail.com  ·  844 588 1313"',
-          '→ Duración: 10 s exactos',
-        ]),
         br(),
 
-        h2('🎙 Voz en cámara — sin off, directo al lente'),
+        h3('Escena 4 · Cierre  (02:40 – 02:50)  — founder en cámara, sin off'),
+        pantalla([
+          '→ Roberto García frente a cámara, directo al lente',
+          '→ Fondo: pared neutra o banner CareSignal',
+          '→ Luz frontal. Sin efectos. Sin música.',
+          '→ Texto inferior: "Roberto García · robertogarciaits@gmail.com · 844 588 1313"',
+        ]),
         voz([
           '"Buscamos dos o tres residencias piloto para Q1 2027.',
           'Soy Roberto García — esto es CareSignal."',
         ]),
-        nota('La última sílaba coincide con el corte a negro. Sin música de salida.'),
         divider(),
 
-        // ── CHECKLIST LEAN ───────────────────────────────────────────────────
-        h1('Checklist de producción — versión mínima viable', C.gris),
-
-        new Paragraph({ children: [bold('Imágenes Gemini (2 prompts):',22,C.azul)], spacing:{after:60} }),
-        bullet('Genera en Gemini Imagen 3 (AI Studio o imagen.google.com)'),
-        bullet('Resolución: 1920×1080 px, PNG. Sin texto legible generado por la IA.'),
-        bullet('Rechaza si hay fondos blancos puros o colores saturados — busca marfil/beige + azul acero.'),
-        br(),
-
-        new Paragraph({ children: [bold('Screencast (Escena 2):',22,C.azul)], spacing:{after:60} }),
-        bullet('OBS Studio o QuickTime, 1080p, 30 fps'),
-        bullet('App abierta en localhost:5173, reloj en 02:55, pestaña fijada'),
-        bullet('Cursor visible al 150 %. Zoom-in 1.15× en cada clic (0.3 s de transición).'),
-        bullet('Graba en silencio — la voz en off se añade en edición, no en la grabación'),
-        br(),
-
-        new Paragraph({ children: [bold('Audio:',22,C.azul)], spacing:{after:60} }),
-        bullet('Micrófono USB o lavalier — nunca el micrófono de la laptop'),
-        bullet('Normaliza a -14 LUFS. Música de fondo (si la usas): -18 dBFS o menos'),
-        bullet('Graba la voz de las 4 escenas en una sola sesión para coherencia tonal'),
-        br(),
-
+        // ── CHECKLIST FINAL ───────────────────────────────────────────────────
+        h1('Checklist de producción', C.gris),
+        new Paragraph({ children: [bold('Antes de grabar el screencast:',22,C.azul)], spacing:{after:60} }),
+        new Paragraph({ children: [run('□  App corriendo en localhost:5173')], spacing:{after:40} }),
+        new Paragraph({ children: [run('□  Reloj simulado en 02:55 — ronda de Habitación 3 programada para 03:00')], spacing:{after:40} }),
+        new Paragraph({ children: [run('□  Cuidador "Carlos M." visible y en estado "disponible" en el seed')], spacing:{after:40} }),
+        new Paragraph({ children: [run('□  Pestaña Bitácora vacía (estado inicial limpio)')], spacing:{after:40} }),
+        new Paragraph({ children: [run('□  OBS Studio: 1920×1080, 30 fps, cursor visible al 150%')], spacing:{after:40} }),
+        new Paragraph({ children: [run('□  Sin otras ventanas o notificaciones en pantalla')], spacing:{after:80} }),
+        new Paragraph({ children: [bold('Imágenes Gemini:',22,C.azul)], spacing:{after:60} }),
+        new Paragraph({ children: [run('□  IMG-1 (Hook): cuaderno con líneas en blanco + soledad visible')], spacing:{after:40} }),
+        new Paragraph({ children: [run('□  IMG-2 (Mercado): tercio superior libre para texto animado')], spacing:{after:40} }),
+        new Paragraph({ children: [run('□  Ambas en 1920×1080 PNG, sin texto legible en la imagen')], spacing:{after:80} }),
         new Paragraph({ children: [bold('Video final:',22,C.azul)], spacing:{after:60} }),
-        bullet('1920×1080, 30 fps, H.264, bitrate ≥ 8 Mbps'),
-        bullet('MP4 < 500 MB para el formulario del concurso'),
-        bullet('Añade subtítulos SRT — muchos jurados ven sin audio'),
-        bullet('Verifica duración ≤ 3:00 antes de enviar'),
+        new Paragraph({ children: [run('□  Duración ≤ 3:00')], spacing:{after:40} }),
+        new Paragraph({ children: [run('□  MP4 H.264, ≥ 8 Mbps, < 500 MB')], spacing:{after:40} }),
+        new Paragraph({ children: [run('□  Subtítulos SRT incluidos')], spacing:{after:40} }),
+        new Paragraph({ children: [run('□  Disclaimer visible en créditos: "MVP operacional, no dispositivo médico · Datos ficticios"')], spacing:{after:80} }),
         br(),
-
         new Paragraph({
           children: [new TextRun({ text: 'MVP operacional, no dispositivo médico  ·  Datos ficticios  ·  Roberto García  ·  CareSignal 2026', italics: true, size: 18, color: C.gris, font: 'Calibri' })],
-          alignment: AlignmentType.CENTER, spacing: { before: 200 },
+          alignment: AlignmentType.CENTER,
         }),
       ],
     }],
