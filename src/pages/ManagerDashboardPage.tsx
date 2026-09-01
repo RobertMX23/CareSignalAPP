@@ -14,7 +14,8 @@ import {
   listStaffMembers,
 } from '../data/repository';
 import { deriveResidentStatus } from '../domain/rules';
-import { ALERT_STATUS_LABEL, INCIDENT_STATUS_LABEL } from '../features/labels';
+import { ALERT_STATUS_LABEL, INCIDENT_STATUS_LABEL, VERIFICATION_OUTCOME_LABEL } from '../features/labels';
+import type { VerificationOutcome } from '../domain/taxonomy';
 import { StaffRosterTable } from '../components/StaffRosterTable';
 import { StatusBadge } from '../components/StatusBadge';
 import { SeverityBadge } from '../components/SeverityBadge';
@@ -36,11 +37,13 @@ export const ManagerDashboardPage = (): JSX.Element => {
   );
 
   const metrics = {
-    alertsOpen:     alerts.filter((a) => a.status === 'open').length,
-    alertsActive:   alerts.filter((a) => !['resolved', 'closed'].includes(a.status)).length,
-    alertsResolved: alerts.filter((a) => a.status === 'resolved').length,
-    alertsClosed:   alerts.filter((a) => a.status === 'closed').length,
-    incidentsOpen:  incidents.filter((i) => i.status !== 'closed').length,
+    alertsOpen:      alerts.filter((a) => a.status === 'open').length,
+    alertsActive:    alerts.filter((a) => !['resolved', 'closed'].includes(a.status)).length,
+    alertsResolved:  alerts.filter((a) => a.status === 'resolved').length,
+    alertsClosed:    alerts.filter((a) => a.status === 'closed').length,
+    incidentsOpen:   incidents.filter((i) => i.status !== 'closed').length,
+    residentsRed:    residents.filter((r) => deriveResidentStatus(r.id, rounds, alerts) === 'red').length,
+    residentsYellow: residents.filter((r) => deriveResidentStatus(r.id, rounds, alerts) === 'yellow').length,
   };
 
   const handleCloseAlert = (alertId: string): void => {
@@ -71,6 +74,14 @@ export const ManagerDashboardPage = (): JSX.Element => {
       <h2>Métricas globales</h2>
       <div className="summary-cards">
         <div className="summary-card summary-card--red">
+          <span className="summary-card__value">{metrics.residentsRed}</span>
+          <span className="summary-card__label">Residentes urgentes</span>
+        </div>
+        <div className="summary-card summary-card--yellow">
+          <span className="summary-card__value">{metrics.residentsYellow}</span>
+          <span className="summary-card__label">Residentes en atención</span>
+        </div>
+        <div className="summary-card summary-card--red">
           <span className="summary-card__value">{metrics.alertsOpen}</span>
           <span className="summary-card__label">Alertas abiertas</span>
         </div>
@@ -79,16 +90,16 @@ export const ManagerDashboardPage = (): JSX.Element => {
           <span className="summary-card__label">Alertas activas</span>
         </div>
         <div className="summary-card">
+          <span className="summary-card__value">{metrics.incidentsOpen}</span>
+          <span className="summary-card__label">Incidentes abiertos</span>
+        </div>
+        <div className="summary-card">
           <span className="summary-card__value">{metrics.alertsResolved}</span>
           <span className="summary-card__label">Alertas resueltas (pendientes de cierre)</span>
         </div>
         <div className="summary-card">
           <span className="summary-card__value">{metrics.alertsClosed}</span>
           <span className="summary-card__label">Alertas cerradas</span>
-        </div>
-        <div className="summary-card">
-          <span className="summary-card__value">{metrics.incidentsOpen}</span>
-          <span className="summary-card__label">Incidentes abiertos</span>
         </div>
       </div>
 
@@ -180,10 +191,12 @@ export const ManagerDashboardPage = (): JSX.Element => {
               {incidents.map((incident) => (
                 <tr key={incident.id}>
                   <td>{incident.id}</td>
-                  <td><Link to={`/alertas/${incident.alertId}`}>{incident.alertId}</Link></td>
+                  <td>
+                    <Link to={`/alertas/${incident.alertId}`}>Ver alerta origen</Link>
+                  </td>
                   <td>{getResidentById(incident.residentId)?.displayName ?? incident.residentId}</td>
                   <td>{INCIDENT_STATUS_LABEL[incident.status]}</td>
-                  <td>{incident.outcome ?? '—'}</td>
+                  <td>{incident.outcome !== undefined ? (VERIFICATION_OUTCOME_LABEL[incident.outcome as VerificationOutcome] ?? incident.outcome) : '—'}</td>
                 </tr>
               ))}
             </tbody>
