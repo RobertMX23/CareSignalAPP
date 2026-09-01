@@ -498,76 +498,81 @@ function todoBand(s, texto) {
     x: 7.18, y: 2.3, w: 5.0, h: 0.28,
     fontFace: F, fontSize: 10, bold: true, color: DEEP_2, charSpacing: 1.5, margin: 0, valign: 'middle',
   });
-  s.addText('1.7 M', {
+  s.addText('~2 M', {
     x: 7.18, y: 2.62, w: 5.0, h: 0.62,
     fontFace: F, fontSize: 34, bold: true, color: DEEP_2, margin: 0, valign: 'top',
   });
-  s.addText('hogares con un adulto mayor viviendo solo. 96.8% de ellos con algún problema de salud.', {
+  s.addText('familias mexicanas con cuidado activo de adulto mayor. Freemium $199–$399 MXN/mes. Autoservicio — sin ciclo de venta.', {
     x: 7.18, y: 3.3, w: 5.0, h: 0.9,
     fontFace: F, fontSize: 12.5, color: INK_2, margin: 0, valign: 'top', lineSpacing: 16,
   });
 
-  s.addText('Una raíz distinta, no el mismo producto con otra piel', {
+  s.addText('🔄  El flywheel B2C → B2B', {
     x: M, y: 4.62, w: 8, h: 0.35,
     fontFace: F, fontSize: 15, bold: true, color: INK, margin: 0, valign: 'middle',
   });
-  s.addText('En la residencia el problema es probar hacia afuera un trabajo profesional. En el hogar es reconciliar dos necesidades legítimas en conflicto: la persona mayor quiere autonomía, la familia quiere certeza. Cambia quién emite la señal y cambia el motivo de compra.', {
+  s.addText('Familia adopta CareSignal en casa → familiar ingresa a una residencia → familia recomienda la plataforma al director → residencia contrata (B2B). Cada usuario B2C se convierte en un vendedor involuntario del canal institucional.', {
     x: M, y: 5.0, w: 7.2, h: 1.2,
     fontFace: F, fontSize: 12.5, color: INK_2, margin: 0, valign: 'top', lineSpacing: 17,
   });
 
   s.addShape(pres.ShapeType.roundRect, {
     x: 8.35, y: 4.9, w: 4.1, h: 1.3, rectRadius: 0.08,
-    fill: { color: RISK_BG }, line: { color: 'D9B566', width: 0.75 },
+    fill: { color: WASH }, line: { color: SOFT_2, width: 0.75 },
   });
   s.addText([
-    { text: 'Todavía no vendible. ', options: { bold: true, color: AMBER_D } },
-    { text: 'Depende de notificaciones externas, hoy fuera del alcance construido.' },
+    { text: 'Fase paralela en curso. ', options: { bold: true, color: DEEP_2 } },
+    { text: 'Freemium operativo. Notificaciones externas reservadas para v0.2.' },
   ], {
     x: 8.6, y: 5.08, w: 3.6, h: 0.95,
     fontFace: F, fontSize: 12, color: INK_2, margin: 0, valign: 'top', lineSpacing: 16,
   });
-  foot(s, 'Fuentes: INEGI · ENASIC 2022 · CEMLA');
-  s.addNotes('El ángulo de remesas: 11 millones de hogares reciben dinero del exterior. Falta validar el salto de "manda dinero" a "paga suscripción de tranquilidad".');
+  foot(s, 'Fuentes: CONAPO 2025 · INEGI · ENASIC 2022');
+  s.addNotes('B2C ya está en el modelo con freemium $0. La conversión a pago ($199–$399/mes) no requiere notificaciones externas — solo el flujo de rondas que ya existe en v0.1.0.');
 }
 
 // ============================================================
 // 9 · MODELO DE NEGOCIO (parcial)
 // ============================================================
 {
-  const s = lightSlide('Modelo de negocio', 'Suscripción por residencia o por plaza');
+  const s = lightSlide('Modelo de negocio', 'Freemium + SaaS B2B · por residencia / mes · margen bruto > 80%');
   const planes = [
-    ['Esencial', 'Rondas y alertas\nPanel del supervisor\nBitácora auditable'],
-    ['Profesional', 'Todo lo de Esencial\nReportes de turno\nFiltros y métricas'],
-    ['Institucional', 'Multi-residencia\nOnboarding dedicado\nAcuerdo de servicio'],
+    { nom: 'Demo Operacional', precio: '$0',     sub: 'sin tarjeta · sin límite',   det: 'Hasta 8 residentes\n1 usuario activo\nRondas básicas',              destacado: false, verde: true },
+    { nom: 'Esencial',         precio: '$1,990', sub: 'MXN / mes',                  det: 'Hasta 30 residentes\n3 usuarios · alertas\nAuditoría completa',     destacado: false, verde: false },
+    { nom: 'Profesional ⭐',   precio: '$3,990', sub: 'MXN / mes · sweet spot',     det: 'Hasta 80 residentes\n10 usuarios · dashboard\nSoporte prioritario', destacado: true,  verde: false },
+    { nom: 'Institucional',    precio: '$8,490', sub: 'MXN / mes',                  det: 'Sin límite · multi-sede\nSLA + soporte dedicado\nOnboarding incluido',destacado: false, verde: false },
   ];
-  planes.forEach(([nom, det], i) => {
-    const x = M + i * 3.95;
-    const destacado = i === 1;
+  planes.forEach((p, i) => {
+    const x = M + i * 2.98;
+    const fillColor = p.verde ? 'F0FAF4' : (p.destacado ? WASH : CARD);
+    const lineColor = p.verde ? '86c9a0' : (p.destacado ? SOFT_2 : RULE);
     s.addShape(pres.ShapeType.roundRect, {
-      x, y: 2.1, w: 3.65, h: 2.5, rectRadius: 0.08,
-      fill: { color: destacado ? WASH : CARD },
-      line: { color: destacado ? SOFT_2 : RULE, width: destacado ? 1.25 : 0.75 },
+      x, y: 2.1, w: 2.72, h: 2.6, rectRadius: 0.08,
+      fill: { color: fillColor },
+      line: { color: lineColor, width: p.destacado ? 1.25 : 0.75 },
     });
-    s.addText(nom, {
-      x: x + 0.28, y: 2.32, w: 3.1, h: 0.38,
-      fontFace: F, fontSize: 17, bold: true, color: destacado ? DEEP_2 : INK, margin: 0, valign: 'middle',
+    s.addText(p.nom, {
+      x: x + 0.18, y: 2.3, w: 2.36, h: 0.38,
+      fontFace: F, fontSize: 13, bold: true, color: p.verde ? '1a6b3c' : (p.destacado ? DEEP_2 : INK), margin: 0, valign: 'middle',
     });
-    s.addText('[ precio ] / mes', {
-      x: x + 0.28, y: 2.72, w: 3.1, h: 0.32,
-      fontFace: F, fontSize: 12.5, bold: true, color: AMBER_D, margin: 0, valign: 'middle',
+    s.addText(p.precio, {
+      x: x + 0.18, y: 2.7, w: 2.36, h: 0.48,
+      fontFace: F, fontSize: 24, bold: true, color: p.verde ? '1a6b3c' : (p.destacado ? DEEP_2 : AMBER_D), margin: 0, valign: 'middle',
     });
-    s.addText(det.split('\n').map((t, j, a) => ({ text: t, options: { bullet: true, breakLine: j < a.length - 1 } })), {
-      x: x + 0.28, y: 3.12, w: 3.1, h: 1.3,
-      fontFace: F, fontSize: 11.5, color: INK_2, paraSpaceAfter: 4, margin: 0, valign: 'top',
+    s.addText(p.sub, {
+      x: x + 0.18, y: 3.18, w: 2.36, h: 0.28,
+      fontFace: F, fontSize: 10, color: INK_3, margin: 0, valign: 'middle',
+    });
+    s.addText(p.det.split('\n').map((t, j, a) => ({ text: t, options: { bullet: true, breakLine: j < a.length - 1 } })), {
+      x: x + 0.18, y: 3.5, w: 2.36, h: 1.05,
+      fontFace: F, fontSize: 10.5, color: INK_2, paraSpaceAfter: 3, margin: 0, valign: 'top',
     });
   });
-  s.addText('Sin costo de hardware ni instalación. La migración parte del esquema actual del cliente: papel u hoja de cálculo.', {
-    x: M, y: 4.8, w: 11.6, h: 0.4,
-    fontFace: F, fontSize: 12.5, color: INK_2, margin: 0, valign: 'middle',
+  s.addText('Freemium $0 elimina fricción de entrada y reduce CAC · Breakeven con 21 clientes Profesional · Flywheel B2C → leads B2B', {
+    x: M, y: 4.88, w: 11.6, h: 0.35,
+    fontFace: F, fontSize: 11.5, color: INK_2, margin: 0, valign: 'middle',
   });
-  todoBand(s, 'PENDIENTE — Definir los montos de cada plan y la unidad de cobro (por residencia o por plaza). Es la lámina que un fondo examina con más cuidado.');
-  s.addNotes('Estructura tomada de tu Sales Deck. Los montos siguen sin definir: decídelos antes de presentar a un inversionista.');
+  s.addNotes('Precios validados contra mercado: Profesional $3,990 MXN (~$235 USD) es 6× más barato que CipherRounds. Breakeven: 21 clientes con mix estándar cubren equipo de 2 personas.');
 }
 
 // ============================================================
