@@ -7,7 +7,6 @@ import {
   getResidentById,
   getStaffMemberById,
   listAlerts,
-  listAuditEvents,
   listIncidents,
   listResidents,
   listRounds,
@@ -24,11 +23,10 @@ export const ManagerDashboardPage = (): JSX.Element => {
   const { activeStaff, refreshToken, refreshDemoData } = useDemoSession();
   const [message, setMessage] = useState<{ kind: 'success' | 'error'; text: string } | undefined>(undefined);
 
-  const { alerts, incidents, auditEvents, residents, rounds, staffMembers } = useMemo(
+  const { alerts, incidents, residents, rounds, staffMembers } = useMemo(
     () => ({
       alerts: listAlerts().sort((a, b) => b.createdAt.localeCompare(a.createdAt)),
       incidents: listIncidents().sort((a, b) => b.openedAt.localeCompare(a.openedAt)),
-      auditEvents: listAuditEvents().sort((a, b) => b.timestamp.localeCompare(a.timestamp)),
       residents: listResidents(),
       rounds: listRounds(),
       staffMembers: listStaffMembers(),
@@ -203,36 +201,6 @@ export const ManagerDashboardPage = (): JSX.Element => {
           </table>
         </div>
       )}
-
-      <h2>Bitácora de auditoría</h2>
-      <div className="table-scroll">
-        <table className="data-table">
-          <thead>
-            <tr>
-              <th>Hora</th>
-              <th>Entidad</th>
-              <th>Acción</th>
-              <th>Transición</th>
-              <th>Actor</th>
-            </tr>
-          </thead>
-          <tbody>
-            {auditEvents.map((event, i) => (
-              <tr key={`${event.id}-${i}`}>
-                <td>{new Date(event.timestamp).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' })}</td>
-                <td>{event.entityType} — {event.entityId}</td>
-                <td>{event.action}</td>
-                <td>
-                  {event.previousState !== undefined && event.nextState !== undefined
-                    ? `${event.previousState} → ${event.nextState}`
-                    : '—'}
-                </td>
-                <td>{getStaffMemberById(event.actorId)?.displayName ?? event.actorId}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
 
       <h2>Plantilla de personal</h2>
       <StaffRosterTable staffMembers={staffMembers} />

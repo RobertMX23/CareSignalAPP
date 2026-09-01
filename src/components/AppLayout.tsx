@@ -37,6 +37,7 @@ const NAV_ITEMS: { to: string; label: string; roles: Role[] }[] = [
   { to: '/residentes',   label: 'Residentes',      roles: ['supervisor', 'manager', 'demo_admin'] },
   { to: '/alertas',      label: 'Alertas',         roles: ['supervisor', 'manager', 'demo_admin'] },
   { to: '/manager',      label: 'Vista ejecutiva', roles: ['manager', 'demo_admin'] },
+  { to: '/bitacora',    label: 'Bitácora',        roles: ['manager', 'demo_admin'] },
   { to: '/control-demo', label: 'Control de demo', roles: ['demo_admin'] },
 ];
 
