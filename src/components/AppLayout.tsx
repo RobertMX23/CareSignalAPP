@@ -32,13 +32,12 @@ const SHIFT_LABELS: Record<Shift, string> = {
 };
 
 const NAV_ITEMS: { to: string; label: string; roles: Role[] }[] = [
-  { to: '/dashboard',    label: 'Dashboard',       roles: ['supervisor', 'manager', 'demo_admin'] },
+  { to: '/dashboard',    label: 'Dashboard',       roles: ['caregiver', 'supervisor', 'manager', 'demo_admin'] },
   { to: '/mis-rondas',   label: 'Mis rondas',      roles: ['caregiver', 'demo_admin'] },
   { to: '/residentes',   label: 'Residentes',      roles: ['supervisor', 'manager', 'demo_admin'] },
   { to: '/alertas',      label: 'Alertas',         roles: ['supervisor', 'manager', 'demo_admin'] },
-  { to: '/manager',      label: 'Vista ejecutiva', roles: ['manager', 'demo_admin'] },
-  { to: '/bitacora',    label: 'Bitácora',        roles: ['manager', 'demo_admin'] },
-  { to: '/personal',    label: 'Personal',        roles: ['supervisor', 'manager', 'demo_admin'] },
+  { to: '/personal',     label: 'Personal',        roles: ['supervisor', 'manager', 'demo_admin'] },
+  { to: '/bitacora',     label: 'Bitácora',        roles: ['manager', 'demo_admin'] },
   { to: '/control-demo', label: 'Control de demo', roles: ['demo_admin'] },
 ];
 
