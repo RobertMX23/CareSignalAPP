@@ -318,6 +318,17 @@ select {
   gap: 0.25rem;
 }
 
+.summary-card--link {
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  transition: filter 0.15s ease, box-shadow 0.15s ease;
+}
+.summary-card--link:hover {
+  filter: brightness(0.95);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+}
+
 .summary-card--red {
   border-color: var(--color-red-bd);
   background: var(--color-red-bg);
