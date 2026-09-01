@@ -16,6 +16,7 @@ import {
 import { deriveResidentStatus } from '../domain/rules';
 import { ALERT_STATUS_LABEL, INCIDENT_STATUS_LABEL } from '../features/labels';
 import { StaffRosterTable } from '../components/StaffRosterTable';
+import { StatusBadge } from '../components/StatusBadge';
 
 export const ManagerDashboardPage = (): JSX.Element => {
   const { activeStaff, refreshToken, refreshDemoData } = useDemoSession();
@@ -97,17 +98,26 @@ export const ManagerDashboardPage = (): JSX.Element => {
             <tr>
               <th>Residente</th>
               <th>Habitación</th>
-              <th>Estado derivado</th>
+              <th>Estado</th>
             </tr>
           </thead>
           <tbody>
-            {residents.map((resident) => (
-              <tr key={resident.id}>
-                <td><Link to={`/residentes/${resident.id}`}>{resident.displayName}</Link></td>
-                <td>{resident.room}</td>
-                <td>{deriveResidentStatus(resident.id, rounds, alerts)}</td>
-              </tr>
-            ))}
+            {[...residents]
+              .sort((a, b) => {
+                const p: Record<string, number> = { red: 0, yellow: 1, green: 2 };
+                return (p[deriveResidentStatus(a.id, rounds, alerts)] ?? 2) -
+                       (p[deriveResidentStatus(b.id, rounds, alerts)] ?? 2);
+              })
+              .map((resident) => {
+                const st = deriveResidentStatus(resident.id, rounds, alerts);
+                return (
+                  <tr key={resident.id} className={`row-${st}`}>
+                    <td><Link to={`/residentes/${resident.id}`}>{resident.displayName}</Link></td>
+                    <td>{resident.room}</td>
+                    <td><StatusBadge status={st} /></td>
+                  </tr>
+                );
+              })}
           </tbody>
         </table>
       </div>
@@ -128,7 +138,7 @@ export const ManagerDashboardPage = (): JSX.Element => {
           <tbody>
             {alerts.map((alert) => (
               <tr key={alert.id}>
-                <td><Link to={`/alertas/${alert.id}`}>{alert.id}</Link></td>
+                <td><Link to={`/alertas/${alert.id}`}>Alerta {alert.severity === 'red' ? 'Roja' : 'Amarilla'} · {new Date(alert.createdAt).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' })}</Link></td>
                 <td>{getResidentById(alert.residentId)?.displayName ?? alert.residentId}</td>
                 <td>{alert.severity === 'red' ? 'Roja' : 'Amarilla'}</td>
                 <td>{ALERT_STATUS_LABEL[alert.status]}</td>
