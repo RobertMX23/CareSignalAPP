@@ -242,8 +242,9 @@ async function main() {
         nota('El tamaño global ya se dijo en el bloque 1 — aquí solo el mercado accionable.'),
         quote([
           '"Son más de 1,300 residencias privadas en México, creciendo al 18% anual.',
+          'Y dos millones de familias mexicanas coordinan el cuidado de un adulto mayor — ese es nuestro segundo mercado.',
           'Nuestro objetivo en 3 años: 50 a 200 residencias.',
-          'A precio Profesional, entre 175,000 y 700,000 pesos mensuales recurrentes."',
+          'A precio Profesional, entre 199,000 y 798,000 pesos mensuales recurrentes."',
         ]),
         divider(),
 
@@ -266,8 +267,8 @@ async function main() {
         quote([
           '"El MVP está terminado hoy.',
           '38 pruebas automatizadas. 20 de aceptación del contrato. Cero bloqueantes. Auditoría PASS.',
-          'Tres planes desde 1,490 hasta 6,990 pesos por residencia al mes.',
-          'Margen bruto superior al 97%."',
+          'Freemium gratuito para capturar el mercado, más tres planes pagos desde 1,990 hasta 8,490 pesos al mes.',
+          'Margen bruto superior al 80%."',
         ]),
         divider(),
 
