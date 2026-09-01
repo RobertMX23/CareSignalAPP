@@ -14,8 +14,8 @@ import { useDemoSession } from './DemoSessionContext';
 import type { Role, Shift } from '../domain/taxonomy';
 import { getCurrentTime } from '../data/demoClock';
 import { resetDemo } from '../data/resetDemo';
-import { listAlerts, listResidents, listRounds } from '../data/repository';
-import { deriveResidentStatus } from '../domain/rules';
+import { listAlerts, listResidents, listRounds, listStaffMembers } from '../data/repository';
+import { deriveResidentStatus, isAlertActive } from '../domain/rules';
 
 const ROLE_LABELS: Record<string, string> = {
   caregiver:  'Cuidador/a',
@@ -51,7 +51,16 @@ export const AppLayout = (): JSX.Element => {
   const _residents = listResidents();
   const _rounds = listRounds();
   const _alerts = listAlerts();
-  const urgentCount = _residents.filter((r) => deriveResidentStatus(r.id, _rounds, _alerts) === 'red').length;
+  const _staff = listStaffMembers();
+  const urgentCount      = _residents.filter((r) => deriveResidentStatus(r.id, _rounds, _alerts) === 'red').length;
+  const activeAlertsCount = _alerts.filter((a) => isAlertActive(a.status)).length;
+  const availableStaff   = _staff.filter((s) => s.availability === 'available').length;
+
+  const NAV_BADGES: Record<string, number> = {
+    '/residentes': urgentCount,
+    '/alertas':    activeAlertsCount,
+    '/personal':   availableStaff,
+  };
 
   const availableRoles = useMemo(
     () => Array.from(new Set(staffMembers.map((s) => s.role))) as Role[],
@@ -182,8 +191,10 @@ export const AppLayout = (): JSX.Element => {
             onClick={() => setNavOpen(false)}
           >
             {item.label}
-            {item.to === '/residentes' && urgentCount > 0 && (
-              <span className="nav-urgent-badge">{urgentCount}</span>
+            {(NAV_BADGES[item.to] ?? 0) > 0 && (
+              <span className={`nav-urgent-badge${item.to === '/personal' ? ' nav-urgent-badge--green' : ''}`}>
+                {NAV_BADGES[item.to]}
+              </span>
             )}
           </NavLink>
         ))}

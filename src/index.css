@@ -242,6 +242,10 @@ select {
   vertical-align: middle;
 }
 
+.nav-urgent-badge--green {
+  background: var(--color-green);
+}
+
 .app-main {
   flex: 1;
   padding: 1.5rem;
