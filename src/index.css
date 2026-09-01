@@ -658,12 +658,20 @@ select {
   border-radius: 0;
   border: none;
   width: 100%;
+  table-layout: auto;
 }
 
 .roster-table th,
 .roster-table td {
   font-size: 0.875rem;
   padding: 0.45rem 0.75rem;
+  white-space: nowrap;
+}
+
+.roster-table td:first-child,
+.roster-table th:first-child {
+  white-space: normal;
+  width: 100%;
 }
 
 .availability-badge {
