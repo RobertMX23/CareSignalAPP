@@ -219,7 +219,7 @@ const ResidentDetail = ({ residentId }: { residentId: string }): JSX.Element => 
 
       {completeModal && (
         <CompleteRoundModal
-          round={completeModal}
+          residentName={data.resident.displayName}
           onConfirm={(outcome, note) => handleCompleteConfirm(completeModal, outcome, note)}
           onCancel={() => setCompleteModal(undefined)}
         />
