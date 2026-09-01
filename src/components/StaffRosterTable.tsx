@@ -1,6 +1,7 @@
 import type { StaffMember } from '../domain/types';
 import type { Role, Shift, StaffAvailability } from '../domain/taxonomy';
 import { SHIFTS } from '../domain/taxonomy';
+import { getCurrentTime } from '../data/demoClock';
 
 const ROLE_LABEL: Record<Role, string> = {
   caregiver:  'Cuidador/a',
@@ -29,20 +30,41 @@ const AVAILABILITY_CLASS: Record<StaffAvailability, string> = {
 };
 
 const ROLE_ORDER: Role[] = ['supervisor', 'caregiver', 'manager', 'demo_admin'];
+const AVAILABILITY_ORDER: Record<StaffAvailability, number> = { available: 0, busy: 1, off_shift: 2 };
+
+function currentShift(): Shift {
+  const hour = new Date(getCurrentTime()).getHours();
+  if (hour >= 6 && hour < 14) return 'morning';
+  if (hour >= 14 && hour < 22) return 'afternoon';
+  return 'night';
+}
+
+function shiftOrder(shift: Shift, active: Shift): number {
+  const order: Shift[] = [active, 'morning', 'afternoon', 'night', 'on_call'];
+  const seen = new Set<Shift>();
+  return order.filter((s) => { if (seen.has(s)) return false; seen.add(s); return true; }).indexOf(shift);
+}
 
 interface Props {
   staffMembers: StaffMember[];
 }
 
 export const StaffRosterTable = ({ staffMembers }: Props): JSX.Element => {
-  const shiftsWithStaff = SHIFTS.filter((shift) => staffMembers.some((s) => s.shift === shift));
+  const activeShift = currentShift();
+  const shiftsWithStaff = SHIFTS
+    .filter((shift) => staffMembers.some((s) => s.shift === shift))
+    .sort((a, b) => shiftOrder(a, activeShift) - shiftOrder(b, activeShift));
 
   return (
     <div className="roster-grid">
       {shiftsWithStaff.map((shift) => {
         const group = staffMembers
           .filter((s) => s.shift === shift)
-          .sort((a, b) => ROLE_ORDER.indexOf(a.role) - ROLE_ORDER.indexOf(b.role));
+          .sort((a, b) => {
+            const avail = AVAILABILITY_ORDER[a.availability] - AVAILABILITY_ORDER[b.availability];
+            if (avail !== 0) return avail;
+            return ROLE_ORDER.indexOf(a.role) - ROLE_ORDER.indexOf(b.role);
+          });
 
         const active   = group.filter((s) => s.availability === 'available').length;
         const busy     = group.filter((s) => s.availability === 'busy').length;
