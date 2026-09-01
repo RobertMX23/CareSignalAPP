@@ -33,11 +33,19 @@ const ResidentList = (): JSX.Element => {
     [refreshToken],
   );
 
+  const STATUS_PRIORITY: Record<string, number> = { red: 0, yellow: 1, green: 2 };
+
   const visibleResidents = useMemo(() => {
-    if (activeStaff.role !== 'caregiver') return residents;
-    const ids = assignedResidentIds(rounds, activeStaff.id);
-    return residents.filter((r) => ids.has(r.id));
-  }, [residents, rounds, activeStaff]);
+    const base =
+      activeStaff.role !== 'caregiver'
+        ? residents
+        : residents.filter((r) => assignedResidentIds(rounds, activeStaff.id).has(r.id));
+    return [...base].sort(
+      (a, b) =>
+        (STATUS_PRIORITY[deriveResidentStatus(a.id, rounds, alerts)] ?? 2) -
+        (STATUS_PRIORITY[deriveResidentStatus(b.id, rounds, alerts)] ?? 2),
+    );
+  }, [residents, rounds, alerts, activeStaff]);
 
   return (
     <section>
