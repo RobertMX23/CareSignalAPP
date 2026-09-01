@@ -14,6 +14,8 @@ import { useDemoSession } from './DemoSessionContext';
 import type { Role, Shift } from '../domain/taxonomy';
 import { getCurrentTime } from '../data/demoClock';
 import { resetDemo } from '../data/resetDemo';
+import { listAlerts, listResidents, listRounds } from '../data/repository';
+import { deriveResidentStatus } from '../domain/rules';
 
 const ROLE_LABELS: Record<string, string> = {
   caregiver:  'Cuidador/a',
@@ -43,6 +45,11 @@ export const AppLayout = (): JSX.Element => {
   const [navOpen, setNavOpen] = useState(false);
   const [filterRole, setFilterRole] = useState<Role | 'all'>('all');
   const [filterShift, setFilterShift] = useState<Shift | 'all'>('all');
+
+  const _residents = listResidents();
+  const _rounds = listRounds();
+  const _alerts = listAlerts();
+  const urgentCount = _residents.filter((r) => deriveResidentStatus(r.id, _rounds, _alerts) === 'red').length;
 
   const availableRoles = useMemo(
     () => Array.from(new Set(staffMembers.map((s) => s.role))) as Role[],
@@ -173,6 +180,9 @@ export const AppLayout = (): JSX.Element => {
             onClick={() => setNavOpen(false)}
           >
             {item.label}
+            {item.to === '/residentes' && urgentCount > 0 && (
+              <span className="nav-urgent-badge">{urgentCount}</span>
+            )}
           </NavLink>
         ))}
       </nav>
