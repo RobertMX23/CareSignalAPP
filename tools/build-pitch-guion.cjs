@@ -143,19 +143,19 @@ async function main() {
           ['Bloque', 'Contenido', 'Segundos', 'Acumulado'],
           [
             ['1', 'Hook / Problema', '55 s', '0:55'],
-            ['2', 'Solución', '45 s', '1:40'],
-            ['3', 'Mercado', '35 s', '2:15'],
-            ['4', 'Diferenciador', '25 s', '2:40'],
-            ['5', 'Tracción / Prueba', '25 s', '3:05'],
-            ['6', 'Modelo de negocio', '20 s', '3:25'],
-            ['7', 'IA y Ciberseguridad', '25 s', '3:50'],
-            ['8', 'Cierre', '20 s', '4:10'],
+            ['2', 'Solución', '30 s', '1:25'],
+            ['DEMO', '🖥  Escena demo en vivo', '45 s', '2:10'],
+            ['3', 'Mercado', '25 s', '2:35'],
+            ['4', 'Diferenciador', '20 s', '2:55'],
+            ['5', 'Tracción + Modelo', '25 s', '3:20'],
+            ['6', 'IA y Ciberseguridad', '20 s', '3:40'],
+            ['7', 'Cierre', '20 s', '4:00'],
           ],
-          [2000, 3500, 1500, 2000]
+          [1500, 3500, 1500, 2000]
         ),
         br(),
         new Paragraph({
-          children: [new TextRun({ text: 'Total: ~4:10 · margen aceptable. Si hay límite estricto de 4:00, recorta una oración del bloque 3 (mercado).', italics: true, size: 20, color: C.naranja, font: 'Calibri' })],
+          children: [new TextRun({ text: 'Total: 4:00 exactos. Si el juez interrumpe antes del bloque 6, salta directo al bloque 7 (Cierre).', italics: true, size: 20, color: C.naranja, font: 'Calibri' })],
           spacing: { after: 120 },
         }),
         divider(),
@@ -224,7 +224,7 @@ async function main() {
 
         // ── BLOQUE 2 ─────────────────────────────────────────────────────────
         h1('Bloque 2 · Solución'),
-        tiempoLabel('Objetivo: responder los dos fallos del bloque 1 en 30 segundos.', 30, '2:05'),
+        tiempoLabel('Objetivo: responder los dos fallos del bloque 1 en 30 segundos.', 30, '1:25'),
         nota('El bloque 1 ya plantó el problema — la solución va directa y rápida.'),
         quote([
           '"CareSignal resuelve los dos fallos.',
@@ -232,13 +232,54 @@ async function main() {
           'y alerta al supervisor en tiempo real.',
           'El administrativo: genera una bitácora inmutable — quién, cuándo, qué resultado —',
           'sin papel, sin transcripción, sin trabajo extra.',
-          'El director tiene evidencia lista ante cualquier inspección, queja o demanda."',
+          'El director tiene evidencia lista ante cualquier inspección, queja o demanda.',
+          'Y se los voy a mostrar en vivo."',
+        ]),
+        divider(),
+
+        // ── ESCENA DEMO ──────────────────────────────────────────────────────
+        h1('DEMO · Escena en vivo — 45 segundos'),
+        tiempoLabel('Objetivo: el juez ve la alerta nacer y cerrarse ante sus ojos.', 45, '2:10'),
+        nota('Pantalla compartida. Abre la app ANTES de subir al frente. Practica hasta que cada clic sea automático.'),
+        br(),
+
+        // Setup técnico
+        new Paragraph({ children: [bold('Setup antes de presentar:', 22, C.azul)], spacing: { after: 60 } }),
+        new Paragraph({ children: [run('1. App corriendo en localhost:5173 — pestaña fijada, sin otras pestañas.')], spacing: { after: 40 } }),
+        new Paragraph({ children: [run('2. Reloj simulado pausado en 02:55 — la ronda de Habitación 3 vence a las 03:00.')], spacing: { after: 40 } }),
+        new Paragraph({ children: [run('3. Resolución mínima: 1280 × 720. Fuente del sistema al 125 %.')], spacing: { after: 40 } }),
+        new Paragraph({ children: [run('4. Si usas proyector: prueba colores antes — el azul #5B8DB8 puede verse apagado.')], spacing: { after: 120 } }),
+
+        // Secuencia de pantallas
+        new Paragraph({ children: [bold('Secuencia de 6 pasos (45 s):', 22, C.azul)], spacing: { after: 80 } }),
+        tablaSimple(
+          ['Paso', 'Pantalla / acción', 'Narración en voz alta', 'Seg'],
+          [
+            ['1', 'Dashboard — lista de rondas activas, Habitación 3 en estado "Programada"', '"Este es el turno de noche. Son casi las 3 AM. La ronda de Habitación 3 está pendiente."', '8 s'],
+            ['2', 'Clic en el botón "▶ Avanzar reloj" — reloj salta a 03:05', '"Pasan cinco minutos. La ronda no ocurrió."', '5 s'],
+            ['3', 'La fila de Habitación 3 cambia a rojo "VENCIDA" — aparece chip de alerta amarilla en la columna de alertas', '"CareSignal la detecta solo — sin que nadie llame, sin que nadie revise un cuaderno."', '8 s'],
+            ['4', 'Clic en la alerta → modal de detalle. Clic en "Reconocer" (rol supervisor)', '"El supervisor la recibe al instante y la reconoce."', '6 s'],
+            ['5', 'Clic en "Asignar" → seleccionar cuidador disponible → confirmar', '"La asigna al cuidador disponible en turno."', '6 s'],
+            ['6', 'Pestaña Bitácora — fila de auditoría con actor + hora + acción para cada paso. Scroll rápido por 3 eventos.', '"Y aquí está la bitácora inmutable: quién hizo qué, a qué hora exacta. Esto es lo que la NOM-031 exige y lo que protege al director ante cualquier inspección."', '12 s'],
+          ],
+          [800, 2500, 3800, 900]
+        ),
+        br(),
+        nota('Si el proyector falla: describe la secuencia en voz alta — "el sistema haría X, luego Y". No te disculpes; sigue el ritmo.'),
+        nota('Si el reloj no avanza: usa el botón "Reset demo" para volver al estado inicial y repite desde paso 1.'),
+        br(),
+
+        // Frase puente al siguiente bloque
+        new Paragraph({ children: [bold('Frase de cierre del demo → puente al bloque de Mercado:', 22, C.azul)], spacing: { after: 80 } }),
+        quote([
+          '"Eso que acaban de ver — de ronda vencida a bitácora cerrada — ocurre en menos de dos minutos.',
+          'Y ese flujo existe hoy, en producción, para más de 1,300 residencias en México."',
         ]),
         divider(),
 
         // ── BLOQUE 3 ─────────────────────────────────────────────────────────
         h1('Bloque 3 · Mercado'),
-        tiempoLabel('Objetivo: SAM y potencial de ingresos en 25 segundos.', 25, '2:30'),
+        tiempoLabel('Objetivo: SAM y potencial de ingresos en 25 segundos.', 25, '2:35'),
         nota('El tamaño global ya se dijo en el bloque 1 — aquí solo el mercado accionable.'),
         quote([
           '"Son más de 1,300 residencias privadas en México, creciendo al 18% anual.',
@@ -250,7 +291,7 @@ async function main() {
 
         // ── BLOQUE 4 ─────────────────────────────────────────────────────────
         h1('Bloque 4 · Diferenciador'),
-        tiempoLabel('Objetivo: un golpe limpio — por qué nadie más lo hace.', 20, '2:50'),
+        tiempoLabel('Objetivo: un golpe limpio — por qué nadie más lo hace.', 20, '2:55'),
         nota('Nombra los competidores con confianza — los conoces mejor que el juez.'),
         quote([
           '"Los competidores — Cronos Care, GERIGES — son sistemas de expediente.',
@@ -262,7 +303,7 @@ async function main() {
 
         // ── BLOQUE 5 ─────────────────────────────────────────────────────────
         h1('Bloque 5 · Tracción + Modelo de negocio'),
-        tiempoLabel('Objetivo: producto terminado y precio en un solo bloque.', 25, '3:15'),
+        tiempoLabel('Objetivo: producto terminado y precio en un solo bloque.', 25, '3:20'),
         nota('Ritmo rápido y seguro — cada número refuerza la credibilidad.'),
         quote([
           '"El MVP está terminado hoy.',
@@ -274,7 +315,7 @@ async function main() {
 
         // ── BLOQUE 6 ─────────────────────────────────────────────────────────
         h1('Bloque 6 · IA y Ciberseguridad'),
-        tiempoLabel('Objetivo: alinear con el eje del concurso en 20 segundos.', 20, '3:35'),
+        tiempoLabel('Objetivo: alinear con el eje del concurso en 20 segundos.', 20, '3:40'),
         nota('Conecta directamente con los criterios 1 y 11 del concurso.'),
         quote([
           '"Los datos de adultos mayores son datos sensibles por ley — la LFPDPPP.',
@@ -286,7 +327,7 @@ async function main() {
 
         // ── BLOQUE 7 ─────────────────────────────────────────────────────────
         h1('Bloque 7 · Cierre'),
-        tiempoLabel('Objetivo: oportunidad + llamada a la acción. Mirando al juez.', 25, '4:00'),
+        tiempoLabel('Objetivo: oportunidad + llamada a la acción. Mirando al juez.', 20, '4:00'),
         nota('Baja el ritmo. "Gracias" se dice mirando al juez, no al guion.'),
         quote([
           '"El sector crece al 18% anual.',
