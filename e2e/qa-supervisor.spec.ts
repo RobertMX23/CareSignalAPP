@@ -41,8 +41,9 @@ test('T7 el supervisor puede abrir el detalle de una alerta', async ({ page }) =
   await page.locator('nav.app-nav a:has-text("Alertas")').click();
   await page.waitForLoadState('networkidle');
 
-  // Click en el primer link de detalle de alerta
-  const detailLink = page.locator('a[href*="alertas"], a:has-text("Ver"), a:has-text("Detalle")').first();
+  // Click en el primer link de la tabla (href="#/alertas/alert-xxx")
+  // Scoped a tbody para no coincidir con el nav link "/alertas"
+  const detailLink = page.locator('table.data-table tbody a').first();
   await expect(detailLink).toBeVisible();
   await detailLink.click();
 
