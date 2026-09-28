@@ -4,82 +4,92 @@
 > sigue siendo el contrato congelado; este archivo solo describe **dónde estamos** y
 > **qué sigue**. Autoridad: informativa (por debajo del contrato, `CLAUDE.md` y `docs/`).
 >
-> **Fecha de captura:** 2026-08-25 · **Posición:** build completo, track E en curso
+> **Fecha de captura:** 2026-09-18 · **Posición:** concurso terminado, producto evolucionado
 
 ---
 
 ## 1. Lo que ya está terminado
 
-**El MVP del producto está completo.** Las ocho fases del protocolo de construcción
-(C0–C8) cerraron con aprobación humana y el resultado se publicó como
-`v0.1.0-workshop` con auditoría de calidad **PASS**.
+### Producto (build C-track completo + extensiones post-gate)
 
-| Chunk | Descripción | Estado |
+El MVP base cerró como `v0.1.0-workshop` con auditoría **PASS**. Luego se aprobaron
+varios cambios de contrato (v0.1.1, v0.2.0) que extendieron el producto:
+
+| Chunk / Tarea | Descripción | Estado |
 |---|---|---|
-| C0 | Andamiaje + `CLAUDE.md` | ✅ |
-| C1 | Contrato, taxonomía, límites | ✅ Gate C1 |
-| C2 | Máquina de estados + modelo de dominio | ✅ Gate C2 |
-| C3 | Datos ficticios, repositorio, reloj simulado | ✅ Gate C3 |
-| C4 | Shell + navegación (5 páginas) | ✅ Gate C4 |
-| C5 | Flujo del cuidador | ✅ Gate C5 |
-| C6 | Dashboard y ciclo de alerta del supervisor | ✅ Gate C6 |
-| C7 | Motor temporal + escenarios deterministas | ✅ Gate C7 |
-| C8 | QA, accesibilidad, release | ✅ Gate C8 · **PASS** |
+| C0–C8 | Build original, 8 fases gateadas | ✅ PASS, 38/38 pruebas |
+| T5–T6 | SHIFTS enum, AuditEventAction literal | ✅ v0.1.1 |
+| T12 | `Resident.monitoringFrequency` → `careLevel: CareLevel` | ✅ contrato v0.1.1 |
+| T13 | `Round.completionOutcome` como enum canónico | ✅ contrato v0.1.1 |
+| T14 | `residenciaId` en las 6 interfaces — preparación multi-tenant | ✅ v0.2.0 |
+| P1–P6 §06 | Rol gerente, route guards, `ManagerDashboardPage`, vista ejecutiva | ✅ |
+| UX post-gate | Dashboard dinámico por rol, Mis Rondas móvil, Bitácora, Personal | ✅ |
+| Seed ampliada | 20 residentes · 14 personal · 42 rondas · 7 alertas · 3 incidentes | ✅ |
 
-Resultados de la auditoría: 20/20 pruebas de aceptación del contrato, 38/38 pruebas
-automatizadas, cero hallazgos `blocker`, un hallazgo `high` corregido (accesibilidad de
-teclado en diálogos), uno `medium` y uno `low` documentados en backlog.
+**Tests:** 38/38 · 6 archivos · sin cambios en la suite base.
 
-**No hay que reconstruir nada del producto.** Cualquier función nueva requiere una
-solicitud formal de cambio y una nueva versión del contrato (contrato §13).
+### E-track (preparación del concurso WomenCISO 4 / MenCISO 1)
 
-## 2. Lo que está en curso: el track E
-
-El trabajo activo es preparar la entrega para el concurso **WomenCISO 4 / MenCISO 1**
-(innovación en IA y ciberseguridad). No es desarrollo de producto.
-
-**Fechas:** registro el domingo 6 de septiembre · semifinalistas el viernes 11 ·
-presentación en vivo el jueves 17. Formato de semifinal: 4 minutos de pitch más 4 de
-preguntas.
+El concurso terminó el 17 de septiembre de 2026. Las fechas han pasado.
 
 | Fase | Contenido | Estado |
 |---|---|---|
-| **E0** | Higiene del repositorio: estado, árbol, generadores, índices | 🔄 en curso |
-| E1 | Decisiones humanas: eje de seguridad, precios, equipo, GitHub | ⏭ siguiente |
-| E2 | Contenido: seguridad, competencia, métricas, innovación, README | pendiente |
-| E3 | Ensamblado: cerrar deck, publicar en GitHub, grabar video | pendiente |
-| E4 | Preparación de semifinal | solo si avanza |
+| **E0** | Higiene del repositorio | ✅ Completa |
+| **E1** | Decisiones humanas | ✅ Todas tomadas excepto E1.4 |
+| **E2** | Contenido (11 criterios, seguridad, mercado, competencia, valor) | ✅ Completa |
+| **E3** | Deck 14 slides, guion pitch, storyboard de video | ✅ Materiales listos |
 
-### El hallazgo que ordena el track E
+### E1 — decisiones
 
-La convocatoria es de **IA y ciberseguridad**, y el MVP no tiene ninguna de las dos —
-el contrato prohíbe la IA de forma explícita (§5). Dos de los once criterios de
-evaluación lo exigen directamente. El diagnóstico completo, con la tabla de los once
-criterios y el plan de tareas, está en `docs/10-diagnostico-concurso.md`.
+| # | Decisión | Estado |
+|---|---|---|
+| E1.1 | Eje de IA y ciberseguridad — reposicionamiento + hashes en auditoría | ✅ |
+| E1.2 | Precios: Esencial $1,490 · Profesional $3,490 · Institucional $6,990 MXN/mes/residencia + B2C freemium | ✅ |
+| E1.3 | Proyecto individual — Roberto García como Fundador / PO / Arquitecto / UX | ✅ |
+| E1.4 | Cuenta de GitHub y nombre de carpeta | ⏳ **Pendiente** |
 
-### Las cuatro decisiones pendientes (E1)
+### E2 — contenido
 
-Bloquean buena parte del contenido de E2:
+Todos los 11 criterios de la convocatoria están documentados en
+`docs/10-diagnostico-concurso.md` (última versión), incluyendo:
+- E2.1: Framework de ciberseguridad NIST CSF — criterio 11 ✅
+- E2.2: Análisis de competencia (Cronos Care, GERIGES, StoriiCare) ✅
+- E2.3: Cuantificación de valor por usuario — criterio 10 ✅
+- E2.4: Reencuadre de innovación — criterio 8 ✅
+- E2.5: README de entrega y guion pitch de 4 min ✅
 
-1. **Eje de ciberseguridad:** reposicionar sin tocar el producto, añadir controles
-   demostrables (encadenamiento de hashes en la auditoría), o añadir IA. La opción de
-   IA contradice el contrato y exige nueva versión.
-2. **Precios** de los tres planes y unidad de cobro (por residencia o por plaza).
-3. **Equipo:** individual o colectivo, y roles.
-4. **Cuenta de GitHub** y nombre de la carpeta de entrega.
+### E3 — ensamblado (parcial)
+
+| Tarea | Estado |
+|---|---|
+| E3.1 Deck completo 14 slides + exportación PDF | ✅ `business/` |
+| E3.2 Publicar en GitHub + Pull Request | ❌ Sin remoto configurado — bloqueado por E1.4 |
+| E3.3 Video de 4 minutos (grabación) | ❌ Guion + storyboard listos, grabación pendiente |
+
+## 2. Pendientes reales
+
+Con el concurso terminado, quedan tres cosas sin cerrar:
+
+1. **GitHub (E3.2):** el repositorio nunca se publicó. Si hay intención de publicar el
+   proyecto o compartirlo (portfolio, inversores, siguiente etapa), E1.4 es el
+   único bloqueador humano.
+2. **Video (E3.3):** el guion de 8 bloques y el storyboard Veo 3 están en `docs/`. La
+   grabación requiere acción del autor — no hay código pendiente.
+3. **PDF en root:** `CareSignal_Resumen_Ejecutivo_v3.pdf` sigue en la raíz; moverlo a
+   `business/` es cosmético.
 
 ## 3. Inventario del repositorio
 
 ```
-contract/       Línea base congelada — FUENTE DE VERDAD
-docs/           00–06 documentación del producto · 07+ material de entrega
-business/       Decks y material comercial (binarios)
-tools/          Generadores de entregables (.docx, .pptx)
+contract/       Línea base congelada — FUENTE DE VERDAD (v0.1.0 + amendments v0.1.1, v0.2.0)
+docs/           00–06 producto · 07+ material de entrega · 09-datos-mercado · 10-diagnostico
+business/       Decks, dossier, pitch en PPTX/DOCX
+tools/          Generadores (.cjs)
 src/domain/     Dominio puro: taxonomy, types, rules, transitions
-src/data/       Persistencia: seed, repository, demoClock, temporalEngine, resetDemo
-src/features/   rounds · alerts · dashboard · demo
-src/components/ Layout, navegación, sesión ficticia, badges
-src/pages/      Las 5 páginas del contrato
+src/data/       Persistencia: seed (20 res), repository, demoClock, temporalEngine, resetDemo
+src/features/   rounds · alerts · incidents · dashboard · demo
+src/components/ Layout, nav, badges, sesión ficticia
+src/pages/      5 páginas + Manager Dashboard
 tests/          6 archivos, 38 pruebas
 ```
 
@@ -87,13 +97,19 @@ tests/          6 archivos, 38 pruebas
 
 ```bash
 npm install
-npm run typecheck    # TypeScript estricto, incluye tests/
-npm run test         # 38 pruebas
+npm run typecheck    # TypeScript estricto
+npm run test         # 38/38 pruebas
 npm run build        # compilación de producción
 npm run dev          # http://localhost:5173
 ```
 
 ## 5. Estado de git
 
-Siete commits, uno por fase más la línea base. **Sin remoto configurado** — publicarlo
-es parte de E3 y es requisito formal de la convocatoria.
+Branch `master`, sin remoto configurado. 100+ commits locales. Sin fork del repositorio
+oficial del concurso.
+
+## 6. Próximas decisiones (solo humanas)
+
+- ¿Publicar el repositorio en GitHub? → proveer cuenta de GitHub (E1.4)
+- ¿Grabar el video? → el guion está en `docs/` — solo necesita producción
+- ¿Continuar el desarrollo del producto? → requiere nueva versión del contrato (§13)
