@@ -1,6 +1,6 @@
 {
   "name": "CareSignal Dev",
-  "image": "mcr.microsoft.com/devcontainers/typescript-node:1-20-bullseye",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:1-20-bookworm",
 
   "features": {
     "ghcr.io/devcontainers/features/github-cli:1": {}
@@ -13,7 +13,7 @@
     "8080": { "label": "Cloud Run / API local", "onAutoForward": "notify" }
   },
 
-  "postCreateCommand": "npm install",
+  "postCreateCommand": "npm install && npx playwright install --with-deps chromium",
 
   "customizations": {
     "vscode": {
@@ -22,7 +22,8 @@
         "esbenp.prettier-vscode",
         "vitest.explorer",
         "eamodio.gitlens",
-        "github.vscode-pull-request-github"
+        "github.vscode-pull-request-github",
+        "ms-playwright.playwright"
       ],
       "settings": {
         "editor.formatOnSave": true,
