@@ -1,0 +1,663 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CareSignal — Inventario UC & Diagramas UML</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.24.7/babel.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #22263a;
+    --border: #2e3350;
+    --accent: #4f8ef7;
+    --accent2: #7c5cfc;
+    --green: #22c55e;
+    --yellow: #f59e0b;
+    --red: #ef4444;
+    --text: #e2e8f0;
+    --text2: #94a3b8;
+    --text3: #64748b;
+    --radius: 8px;
+    --font: 'Segoe UI', system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg: #f8fafc; --surface: #ffffff; --surface2: #f1f5f9;
+      --border: #e2e8f0; --text: #1e293b; --text2: #475569; --text3: #94a3b8;
+    }
+  }
+  :root[data-theme="light"] {
+    --bg: #f8fafc; --surface: #ffffff; --surface2: #f1f5f9;
+    --border: #e2e8f0; --text: #1e293b; --text2: #475569; --text3: #94a3b8;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 14px; }
+  body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; }
+  #root { max-width: 1300px; margin: 0 auto; padding: 1.5rem 1rem; }
+
+  .header { margin-bottom: 1.5rem; }
+  .header h1 { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
+  .header p { color: var(--text2); font-size: 0.875rem; margin-top: 0.25rem; }
+  .badge-mvp { display: inline-block; background: #1e3a5f; color: #93c5fd; border: 1px solid #3b82f6;
+    font-size: 0.7rem; padding: 2px 8px; border-radius: 20px; margin-left: 0.75rem; vertical-align: middle; }
+
+  .tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; flex-wrap: wrap; }
+  .tab-btn { background: none; border: 1px solid transparent; color: var(--text2); padding: 0.4rem 1rem;
+    border-radius: var(--radius); cursor: pointer; font-size: 0.875rem; transition: all 0.15s; }
+  .tab-btn:hover { background: var(--surface2); color: var(--text); }
+  .tab-btn.active { background: var(--surface2); border-color: var(--accent); color: var(--accent); font-weight: 600; }
+
+  /* UC table */
+  .filters { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; align-items: center; }
+  .filters label { color: var(--text2); font-size: 0.8rem; }
+  .filter-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text2);
+    padding: 0.3rem 0.75rem; border-radius: 20px; cursor: pointer; font-size: 0.8rem; transition: all 0.15s; }
+  .filter-btn:hover, .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  .uc-table-wrap { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+  thead th { background: var(--surface2); color: var(--text2); padding: 0.6rem 0.75rem;
+    text-align: left; white-space: nowrap; border-bottom: 1px solid var(--border); font-weight: 600; }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; cursor: pointer; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--surface2); }
+  tbody td { padding: 0.55rem 0.75rem; vertical-align: top; }
+  .uc-id { font-family: monospace; color: var(--accent2); font-weight: 600; white-space: nowrap; }
+  .pri { padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; white-space: nowrap; }
+  .pri-alta { background: #4c1d1d; color: #fca5a5; }
+  .pri-media { background: #44320a; color: #fcd34d; }
+  .pri-baja { background: #1e3a2a; color: #86efac; }
+  .role-badge { display: inline-block; padding: 1px 7px; border-radius: 10px; font-size: 0.72rem; margin: 1px;
+    background: var(--surface2); border: 1px solid var(--border); color: var(--text2); white-space: nowrap; }
+  .role-caregiver { background: #1e3a5f; border-color: #3b82f6; color: #93c5fd; }
+  .role-supervisor { background: #3a1e5f; border-color: #a855f7; color: #d8b4fe; }
+  .role-admin { background: #1e3a2a; border-color: #22c55e; color: #86efac; }
+  .role-system { background: #3a2a1e; border-color: #f59e0b; color: #fcd34d; }
+
+  /* Expand row */
+  .uc-expand { background: var(--surface); }
+  .uc-expand td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); }
+  .expand-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 0.75rem; }
+  .expand-block { background: var(--surface2); border-radius: var(--radius); padding: 0.65rem 0.75rem; border: 1px solid var(--border); }
+  .expand-block h4 { color: var(--text2); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem; }
+  .expand-block p, .expand-block ul { color: var(--text); font-size: 0.82rem; line-height: 1.5; }
+  .expand-block ul { padding-left: 1.1rem; }
+  .expand-block li { margin-bottom: 0.2rem; }
+  .step-num { display: inline-block; background: var(--accent); color: #fff; border-radius: 50%;
+    width: 18px; height: 18px; font-size: 0.7rem; text-align: center; line-height: 18px; margin-right: 4px; flex-shrink: 0; }
+  .steps-list { list-style: none; padding: 0; }
+  .steps-list li { display: flex; align-items: flex-start; gap: 0.25rem; margin-bottom: 0.3rem; font-size: 0.82rem; }
+
+  /* Diagrams */
+  .diagram-tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+  .diag-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text2);
+    padding: 0.4rem 1rem; border-radius: var(--radius); cursor: pointer; font-size: 0.82rem; transition: all 0.15s; }
+  .diag-btn:hover { background: var(--surface2); color: var(--text); }
+  .diag-btn.active { background: var(--surface2); border-color: var(--accent2); color: var(--accent2); font-weight: 600; }
+  .diagram-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; }
+  .diagram-card h3 { font-size: 1rem; margin-bottom: 0.35rem; color: var(--text); }
+  .diagram-card p { font-size: 0.8rem; color: var(--text2); margin-bottom: 1rem; line-height: 1.5; }
+  .mermaid-wrap { background: #fff; border-radius: var(--radius); padding: 1rem; overflow-x: auto; }
+  .mermaid-wrap svg { max-width: 100%; height: auto; }
+  .loading-diag { color: var(--text2); font-size: 0.875rem; padding: 2rem; text-align: center; }
+
+  @media (max-width: 768px) {
+    #root { padding: 1rem 0.75rem; }
+    .expand-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+
+// ─── UC DATA ───────────────────────────────────────────────────────────────
+const UCS = [
+  {
+    id:"UC-01", nombre:"Iniciar ronda",
+    actor:"caregiver", pri:"Alta",
+    disparador:"Cuidador selecciona ronda en estado due/scheduled",
+    pre:"Ronda en estado scheduled o due; cuidador autenticado",
+    flujo:["Cuidador abre Mis Rondas","Identifica ronda pendiente","Presiona Iniciar","Sistema transiciona ronda → in_progress","Sistema registra AuditEvent con actor y timestamp"],
+    outliers:["Ronda ya in_progress → botón deshabilitado","Ronda cancelada → no aparece en lista","Caregiver diferente intenta iniciar → no afecta estado"],
+    post:"Ronda en estado in_progress; AuditEvent registrado",
+    reglas:["Regla §6.1: ronda pertenece a un residente","Regla §6.4: toda transición registra actor+timestamp","Regla §6.7: completadas no pueden volverse overdue"]
+  },
+  {
+    id:"UC-02", nombre:"Completar ronda",
+    actor:"caregiver", pri:"Alta",
+    disparador:"Cuidador finaliza atención al residente",
+    pre:"Ronda en estado in_progress",
+    flujo:["Cuidador presiona Completar","Sistema valida que ronda está in_progress","Sistema transiciona → completed","Sistema actualiza estado visual del residente","Sistema registra AuditEvent"],
+    outliers:["Ronda no está in_progress → error controlado","Completar sin resultado de ronda → completionOutcome requerido"],
+    post:"Ronda en completed (terminal); residente status re-derivado",
+    reglas:["Regla §6.7: completed es estado terminal","Regla §6.6: status residente se deriva, no persiste"]
+  },
+  {
+    id:"UC-03", nombre:"Solicitar apoyo",
+    actor:"caregiver", pri:"Alta",
+    disparador:"Cuidador requiere asistencia adicional durante ronda",
+    pre:"Ronda en estado in_progress; cuidador autenticado",
+    flujo:["Cuidador presiona Solicitar Apoyo","Sistema crea alerta yellow con referencia a ronda","Sistema notifica (visual) al supervisor en dashboard","AuditEvent creado","Ronda continúa in_progress"],
+    outliers:["Alerta ya activa en esa ronda → no se crea segunda","Ronda no in_progress → acción no disponible"],
+    post:"Alerta yellow open asociada a ronda; cuidador puede continuar",
+    reglas:["Regla §6.2: ronda no puede tener dos alertas activas simultáneas"]
+  },
+  {
+    id:"UC-04", nombre:"Ver detalle de residente",
+    actor:"caregiver,supervisor", pri:"Media",
+    disparador:"Usuario selecciona residente en lista",
+    pre:"Usuario autenticado; residente existe en seed",
+    flujo:["Usuario navega a lista de residentes","Selecciona residente","Sistema muestra tarjeta con estado derivado, rondas activas, alertas"],
+    outliers:["Residente sin rondas → sección vacía","Residente con alerta red → badge visible"],
+    post:"Vista de detalle cargada; sin cambio de estado",
+    reglas:["Regla §6.6: status (green/yellow/red) derivado en tiempo real"]
+  },
+  {
+    id:"UC-05", nombre:"Cancelar ronda",
+    actor:"caregiver,supervisor", pri:"Baja",
+    disparador:"Ronda programada ya no es necesaria",
+    pre:"Ronda en estado scheduled o due",
+    flujo:["Usuario selecciona ronda","Elige Cancelar","Sistema transiciona → cancelled","AuditEvent registrado"],
+    outliers:["Ronda in_progress → no se puede cancelar directamente","Ronda completed/overdue → acción no disponible"],
+    post:"Ronda en cancelled (terminal); sin alerta generada",
+    reglas:["Regla §6.7: canceladas no generan alerta (§6.8: transiciones inválidas retornan error controlado)"]
+  },
+  {
+    id:"UC-06", nombre:"Ver alertas activas",
+    actor:"supervisor", pri:"Alta",
+    disparador:"Supervisor accede al módulo de Alertas",
+    pre:"Supervisor autenticado; existen alertas en seed",
+    flujo:["Supervisor navega a /alertas","Sistema renderiza tabla filtrada por estado","Supervisor ve severidad, residente, asignado, tiempo"],
+    outliers:["Sin alertas activas → tabla vacía con mensaje","Alerta escalada → badge distinto"],
+    post:"Lista cargada; sin cambio de estado",
+    reglas:["Alerta ≠ incidente; colores son derivados (no persisten)"]
+  },
+  {
+    id:"UC-07", nombre:"Reconocer alerta",
+    actor:"supervisor", pri:"Alta",
+    disparador:"Nueva alerta open aparece en dashboard",
+    pre:"Alerta en estado open",
+    flujo:["Supervisor abre detalle de alerta","Presiona Reconocer","Sistema transiciona open → acknowledged","AuditEvent registrado"],
+    outliers:["Alerta ya acknowledged → botón deshabilitado","Supervisor diferente reconoce → audit refleja actor correcto"],
+    post:"Alerta en acknowledged; owner asignado implícitamente",
+    reglas:["Regla §6.3: alerta tiene 0 o 1 dueño activo"]
+  },
+  {
+    id:"UC-08", nombre:"Asignar alerta a personal",
+    actor:"supervisor", pri:"Alta",
+    disparador:"Supervisor decide quién atiende la alerta",
+    pre:"Alerta en open o acknowledged; personal disponible",
+    flujo:["Supervisor abre alerta","Selecciona staff member disponible","Presiona Asignar","Sistema transiciona → assigned","AuditEvent con dueño previo y nuevo"],
+    outliers:["Staff no disponible (busy/off_shift) → advertencia","Reasignación → dueño previo queda en audit"],
+    post:"Alerta en assigned; owner actualizado",
+    reglas:["Regla §6.3: reasignación mantiene dueño previo en audit"]
+  },
+  {
+    id:"UC-09", nombre:"Escalar alerta",
+    actor:"supervisor", pri:"Media",
+    disparador:"Alerta no atendida en tiempo esperado",
+    pre:"Alerta en assigned",
+    flujo:["Supervisor presiona Escalar","Sistema cambia severidad a red (si era yellow)","Transiciona assigned → escalated","AuditEvent con razón"],
+    outliers:["Alerta ya red → solo cambia estado, no severidad","Alerta no assigned → escalar no disponible"],
+    post:"Alerta en escalated con severidad red",
+    reglas:["Severidad es derivada/calculada; escalar puede promoverla"]
+  },
+  {
+    id:"UC-10", nombre:"Iniciar verificación",
+    actor:"supervisor", pri:"Alta",
+    disparador:"Supervisor va a verificar condición que generó la alerta",
+    pre:"Alerta en assigned o escalated",
+    flujo:["Supervisor presiona Iniciar verificación","Sistema crea Incident vinculado a la alerta","Alerta transiciona → in_verification","Incident en verification_in_progress"],
+    outliers:["Incident ya existe para esa alerta → no crear duplicado"],
+    post:"Alerta in_verification; Incident creado con estado verification_in_progress",
+    reglas:["Alerta vs Incident: la alerta señala; el incident documenta verificación/resultado"]
+  },
+  {
+    id:"UC-11", nombre:"Registrar resultado de verificación",
+    actor:"supervisor", pri:"Alta",
+    disparador:"Supervisor terminó verificación en sitio",
+    pre:"Alerta in_verification; Incident en verification_in_progress",
+    flujo:["Supervisor abre incident","Elige outcome (operacional_normal / requiere_seguimiento / otro)","Presiona Registrar resultado","Incident transiciona → resolved","AuditEvent con outcome"],
+    outliers:["Outcome vacío → no se permite resolver","Outcome mal tipado → error controlado"],
+    post:"Incident en resolved; alerta lista para resolverse",
+    reglas:["Regla §6.5: alerta resuelta requiere verification outcome"]
+  },
+  {
+    id:"UC-12", nombre:"Resolver alerta",
+    actor:"supervisor", pri:"Alta",
+    disparador:"Verificación completada con resultado válido",
+    pre:"Alerta in_verification; Incident resolved",
+    flujo:["Supervisor abre alerta","Presiona Resolver","Sistema valida que hay outcome","Alerta transiciona → resolved","AuditEvent"],
+    outliers:["Sin outcome → sistema bloquea resolución","Alerta no in_verification → acción no disponible"],
+    post:"Alerta en resolved",
+    reglas:["Regla §6.5: resolved requiere verification outcome previo"]
+  },
+  {
+    id:"UC-13", nombre:"Cerrar alerta",
+    actor:"supervisor", pri:"Media",
+    disparador:"Ciclo administrativo de la alerta finalizado",
+    pre:"Alerta en resolved",
+    flujo:["Supervisor presiona Cerrar","Sistema valida que alerta fue resolved","Transiciona → closed","Incident transiciona → closed","AuditEvent final"],
+    outliers:["Alerta no resolved → no se puede cerrar","Cerrar sin outcome → bloqueado por UC-12 previo"],
+    post:"Alerta closed (terminal); Incident closed (terminal)",
+    reglas:["Regla §6.5: closed requiere haber sido resolved primero"]
+  },
+  {
+    id:"UC-14", nombre:"Ver bitácora de auditoría",
+    actor:"admin", pri:"Media",
+    disparador:"Admin accede al módulo Bitácora",
+    pre:"Usuario con rol demo_admin autenticado",
+    flujo:["Admin navega a /bitacora","Sistema renderiza log de AuditEvents ordenados por timestamp desc","Admin puede filtrar por tipo o entidad"],
+    outliers:["Rol supervisor o caregiver → ruta no visible en nav (route guard)"],
+    post:"Log cargado; sin cambio de estado",
+    reglas:["Regla §6.10: audit es append-only; no editable desde UI"]
+  },
+  {
+    id:"UC-15", nombre:"Resetear demo",
+    actor:"admin", pri:"Baja",
+    disparador:"Admin necesita reiniciar estado a seed inicial",
+    pre:"Usuario con rol demo_admin autenticado",
+    flujo:["Admin presiona Reset Demo","Sistema limpia localStorage","Re-carga seed determinista","Redirige a dashboard"],
+    outliers:["Seed corrupta → error visible; demo no se rompe silenciosamente"],
+    post:"Estado igual a seed inicial; todos los IDs estables",
+    reglas:["Regla §6.9: UI no toca localStorage directamente — solo vía repositorio"]
+  },
+  {
+    id:"UC-16", nombre:"Avanzar reloj de demostración",
+    actor:"system", pri:"Alta",
+    disparador:"Admin presiona avance de tiempo en panel demo",
+    pre:"Motor temporal inicializado; rondas con scheduledAt futuro",
+    flujo:["Admin elige paso de tiempo (15 min / 1 hr / 2 hr)","Motor avanza reloj simulado","Sistema re-evalúa estados de rondas","Rondas vencidas → overdue","Motor emite transiciones automáticas"],
+    outliers:["Reloj ya avanzado más allá de la ventana → no regresa","Ronda completada → no se vuelve overdue"],
+    post:"Reloj simulado en nuevo tiempo; estados re-derivados",
+    reglas:["Regla §6.7: completed no puede volverse overdue","Reloj es determinista y reproducible"]
+  },
+  {
+    id:"UC-17", nombre:"Generar alerta por ronda overdue",
+    actor:"system", pri:"Alta",
+    disparador:"Motor temporal detecta ronda con scheduledAt < now y estado due/scheduled",
+    pre:"Ronda en due o scheduled; sin alerta activa",
+    flujo:["Motor evalúa scheduledAt vs reloj simulado","Detecta vencimiento","Transiciona ronda → overdue","Crea alerta yellow (si no hay activa)","AuditEvent automático"],
+    outliers:["Ronda ya tiene alerta activa → no duplicar","Ronda cancelada → no genera alerta"],
+    post:"Ronda overdue; alerta yellow open",
+    reglas:["Regla §6.2: no dos alertas activas por ronda","Regla §6.7: completed no vuelve overdue"]
+  },
+  {
+    id:"UC-18", nombre:"Cambiar rol de sesión ficticia",
+    actor:"admin,system", pri:"Baja",
+    disparador:"Usuario selecciona rol diferente en selector de sesión",
+    pre:"App inicializada; seed cargada",
+    flujo:["Usuario abre selector de rol","Elige caregiver / supervisor / demo_admin","Sistema actualiza sesión ficticia en localStorage","Nav y route guards re-evalúan","Redirige a dashboard del rol"],
+    outliers:["Rol inválido → ignorado","Páginas protegidas por guard → redirigen a /dashboard"],
+    post:"Sesión ficticia actualizada; nav refleja permisos del rol",
+    reglas:["No hay auth real — solo simulación de roles para demo"]
+  }
+];
+
+const ROLE_COLORS = {
+  caregiver: "role-caregiver",
+  supervisor: "role-supervisor",
+  admin: "role-admin",
+  system: "role-system"
+};
+
+const ROLE_LABELS = {
+  caregiver: "Cuidador",
+  supervisor: "Supervisor",
+  admin: "Admin",
+  system: "Sistema"
+};
+
+// ─── MERMAID DIAGRAMS ──────────────────────────────────────────────────────
+const DIAGRAMS = [
+  {
+    id: "d1",
+    title: "UC-01/02 — Iniciar y completar ronda",
+    ucs: "UC-01, UC-02",
+    desc: "Flujo principal del cuidador: desde ronda programada hasta completada. Incluye registro de AuditEvent en cada transición.",
+    code: `sequenceDiagram
+    actor C as Cuidador
+    participant UI as CaregiverRoundsPage
+    participant R as RoundRepository
+    participant T as transitions.ts
+    participant A as AuditRepository
+
+    C->>UI: Abre Mis Rondas
+    UI->>R: getRoundsByCaregiver()
+    R-->>UI: [Round] scheduled/due
+    C->>UI: Presiona Iniciar
+    UI->>T: startRound(roundId, actorId)
+    T->>T: validar estado (scheduled|due)
+    T->>R: updateRound(status=in_progress)
+    T->>A: emit(ROUND_STARTED, actor, ts)
+    T-->>UI: {ok: true, round}
+    UI-->>C: Botón Completar visible
+
+    C->>UI: Presiona Completar
+    UI->>T: completeRound(roundId, outcome, actorId)
+    T->>T: validar estado (in_progress)
+    T->>R: updateRound(status=completed, completionOutcome)
+    T->>A: emit(ROUND_COMPLETED, actor, ts)
+    T-->>UI: {ok: true, round}
+    UI-->>C: Ronda marcada completada`
+  },
+  {
+    id: "d2",
+    title: "UC-06/07/08/10/11/12/13 — Ciclo completo de alerta",
+    ucs: "UC-06, UC-07, UC-08, UC-10, UC-11, UC-12, UC-13",
+    desc: "Ciclo de vida completo: desde alerta open hasta closed, pasando por acknowledged → assigned → in_verification → resolved → closed.",
+    code: `sequenceDiagram
+    actor S as Supervisor
+    participant UI as AlertDetailPage
+    participant T as alertTransitions.ts
+    participant AR as AlertRepository
+    participant IR as IncidentRepository
+    participant AU as AuditRepository
+
+    Note over S,AU: Alerta ya existe (open) — generada por UC-03 o UC-17
+
+    S->>UI: Ver detalle alerta
+    S->>UI: Presiona Reconocer
+    UI->>T: acknowledgeAlert(alertId, actorId)
+    T->>AR: update(status=acknowledged, owner=actorId)
+    T->>AU: emit(ALERT_ACKNOWLEDGED)
+    T-->>UI: {ok:true}
+
+    S->>UI: Asignar a staff
+    UI->>T: assignAlert(alertId, staffId, actorId)
+    T->>AR: update(status=assigned, owner=staffId)
+    T->>AU: emit(ALERT_ASSIGNED, prevOwner, newOwner)
+    T-->>UI: {ok:true}
+
+    S->>UI: Iniciar verificación
+    UI->>T: startVerification(alertId, actorId)
+    T->>IR: createIncident(alertId)
+    T->>AR: update(status=in_verification)
+    T->>AU: emit(VERIFICATION_STARTED)
+    T-->>UI: {ok:true, incidentId}
+
+    S->>UI: Registrar resultado
+    UI->>T: resolveIncident(incidentId, outcome, actorId)
+    T->>T: validar outcome ≠ vacío
+    T->>IR: update(status=resolved, outcome)
+    T->>AU: emit(INCIDENT_RESOLVED)
+    T-->>UI: {ok:true}
+
+    S->>UI: Resolver alerta
+    UI->>T: resolveAlert(alertId, actorId)
+    T->>T: verificar incident.status=resolved
+    T->>AR: update(status=resolved)
+    T->>AU: emit(ALERT_RESOLVED)
+    T-->>UI: {ok:true}
+
+    S->>UI: Cerrar alerta
+    UI->>T: closeAlert(alertId, actorId)
+    T->>AR: update(status=closed)
+    T->>IR: update(status=closed)
+    T->>AU: emit(ALERT_CLOSED)
+    T-->>UI: {ok:true}`
+  },
+  {
+    id: "d3",
+    title: "UC-03 — Solicitar apoyo",
+    ucs: "UC-03",
+    desc: "Cuidador solicita apoyo durante ronda activa. El sistema crea una alerta yellow y bloquea duplicados.",
+    code: `sequenceDiagram
+    actor C as Cuidador
+    participant UI as CaregiverRoundsPage
+    participant T as alertTransitions.ts
+    participant AR as AlertRepository
+    participant AU as AuditRepository
+    participant Dash as SupervisorDashboard
+
+    C->>UI: Presiona Solicitar Apoyo (ronda in_progress)
+    UI->>AR: getActiveAlertByRound(roundId)
+    AR-->>UI: null (no hay alerta activa)
+
+    UI->>T: createSupportAlert(roundId, residentId, actorId)
+    T->>T: validar: ronda in_progress && sin alerta activa
+    T->>AR: createAlert(severity=yellow, status=open, roundId)
+    T->>AU: emit(ALERT_CREATED, actor, ts)
+    T-->>UI: {ok:true, alertId}
+    UI-->>C: Confirmación visual
+
+    Note over Dash: Dashboard supervisor re-renderiza
+    Dash->>AR: getAlerts(status=open)
+    AR-->>Dash: [..., nuevaAlerta]
+    Dash-->>Dash: Badge contador +1
+
+    alt Alerta ya activa
+        C->>UI: Presiona Solicitar Apoyo de nuevo
+        UI->>AR: getActiveAlertByRound(roundId)
+        AR-->>UI: Alert (ya existe)
+        UI-->>C: Botón deshabilitado / mensaje
+    end`
+  },
+  {
+    id: "d4",
+    title: "UC-16/17 — Motor temporal y overdue automático",
+    ucs: "UC-16, UC-17",
+    desc: "El motor de tiempo simulado avanza el reloj y genera automáticamente estados overdue y alertas. Determinista y reproducible.",
+    code: `sequenceDiagram
+    actor A as Admin/Demo
+    participant UI as DemoControlPanel
+    participant Clock as DemoClock
+    participant TE as TemporalEngine
+    participant RR as RoundRepository
+    participant TR as transitions.ts
+    participant AL as AlertRepository
+    participant AU as AuditRepository
+
+    A->>UI: Selecciona +1 hora
+    UI->>Clock: advance(3600_seconds)
+    Clock-->>Clock: simNow = simNow + 3600s
+    Clock-->>TE: onTick(simNow)
+
+    TE->>RR: getRounds(status=[scheduled, due])
+    RR-->>TE: [Round, Round, ...]
+
+    loop Por cada ronda pendiente
+        TE->>TE: ronda.scheduledAt < simNow ?
+        alt Vencida
+            TE->>TR: markOverdue(roundId, systemActorId)
+            TR->>RR: update(status=overdue)
+            TR->>AU: emit(ROUND_OVERDUE, system, simNow)
+            TR->>AL: getActiveAlertByRound(roundId)
+            alt Sin alerta activa
+                TR->>AL: createAlert(severity=yellow, status=open)
+                TR->>AU: emit(ALERT_CREATED, system, simNow)
+            end
+        else Aún vigente
+            TE->>RR: update(status=due) if within window
+        end
+    end
+
+    TE-->>UI: {processed: N, overdue: M, alertsCreated: K}
+    UI-->>A: Dashboard actualizado`
+  }
+];
+
+// ─── MERMAID COMPONENT ─────────────────────────────────────────────────────
+function MermaidDiagram({ code, id }) {
+  const ref = useRef(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (!ref.current) return;
+    let cancelled = false;
+
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: 'dark',
+      securityLevel: 'loose',
+      fontFamily: 'Segoe UI, system-ui, sans-serif',
+      fontSize: 13,
+      sequence: { actorMargin: 50, width: 160, height: 55, boxTextMargin: 5, noteMargin: 10, messageMargin: 35 }
+    });
+
+    const elId = 'mmd-' + id + '-' + Date.now();
+
+    mermaid.render(elId, code).then(({ svg }) => {
+      if (!cancelled && ref.current) {
+        ref.current.innerHTML = svg;
+        setError(null);
+      }
+    }).catch(e => {
+      if (!cancelled) setError(String(e));
+    });
+
+    return () => { cancelled = true; };
+  }, [code, id]);
+
+  if (error) return React.createElement('div', { style: { color: 'var(--red)', padding: '1rem', fontSize: '0.8rem' } }, 'Error renderizando diagrama: ' + error);
+  return React.createElement('div', { ref, className: 'mermaid-wrap' });
+}
+
+// ─── UC ROW ────────────────────────────────────────────────────────────────
+function UCRow({ uc, expanded, onToggle }) {
+  const actors = uc.actor.split(',');
+  return React.createElement(React.Fragment, null,
+    React.createElement('tr', { onClick: onToggle },
+      React.createElement('td', { className: 'uc-id' }, uc.id),
+      React.createElement('td', null, uc.nombre),
+      React.createElement('td', null, actors.map(a =>
+        React.createElement('span', { key: a, className: 'role-badge ' + (ROLE_COLORS[a.trim()] || '') },
+          ROLE_LABELS[a.trim()] || a.trim())
+      )),
+      React.createElement('td', null,
+        React.createElement('span', { className: 'pri ' + (uc.pri === 'Alta' ? 'pri-alta' : uc.pri === 'Media' ? 'pri-media' : 'pri-baja') }, uc.pri)),
+      React.createElement('td', { style: { color: 'var(--text2)', maxWidth: 200 } }, uc.disparador),
+      React.createElement('td', { style: { color: 'var(--text2)' } }, uc.pre),
+      React.createElement('td', { style: { textAlign: 'center', color: 'var(--text3)' } }, expanded ? '▲' : '▼')
+    ),
+    expanded && React.createElement('tr', { className: 'uc-expand' },
+      React.createElement('td', { colSpan: 7 },
+        React.createElement('div', { className: 'expand-grid' },
+          React.createElement('div', { className: 'expand-block' },
+            React.createElement('h4', null, 'Flujo principal'),
+            React.createElement('ul', { className: 'steps-list' },
+              uc.flujo.map((s, i) =>
+                React.createElement('li', { key: i },
+                  React.createElement('span', { className: 'step-num' }, i + 1),
+                  s)))),
+          React.createElement('div', { className: 'expand-block' },
+            React.createElement('h4', null, 'Outliers / Guardas'),
+            React.createElement('ul', null,
+              uc.outliers.map((o, i) => React.createElement('li', { key: i }, o)))),
+          React.createElement('div', { className: 'expand-block' },
+            React.createElement('h4', null, 'Postcondición'),
+            React.createElement('p', null, uc.post)),
+          React.createElement('div', { className: 'expand-block' },
+            React.createElement('h4', null, 'Reglas de negocio'),
+            React.createElement('ul', null,
+              uc.reglas.map((r, i) => React.createElement('li', { key: i }, r))))
+        )
+      )
+    )
+  );
+}
+
+// ─── INVENTORY TAB ─────────────────────────────────────────────────────────
+function InventoryTab() {
+  const [roleFilter, setRoleFilter] = useState('all');
+  const [expanded, setExpanded] = useState(null);
+
+  const roles = [
+    { key: 'all', label: 'Todos' },
+    { key: 'caregiver', label: 'Cuidador' },
+    { key: 'supervisor', label: 'Supervisor' },
+    { key: 'admin', label: 'Admin' },
+    { key: 'system', label: 'Sistema' }
+  ];
+
+  const filtered = roleFilter === 'all' ? UCS
+    : UCS.filter(uc => uc.actor.split(',').map(a => a.trim()).includes(roleFilter));
+
+  return React.createElement('div', null,
+    React.createElement('div', { className: 'filters' },
+      React.createElement('span', { style: { color: 'var(--text2)', fontSize: '0.8rem' } }, 'Actor:'),
+      roles.map(r =>
+        React.createElement('button', {
+          key: r.key,
+          className: 'filter-btn' + (roleFilter === r.key ? ' active' : ''),
+          onClick: () => { setRoleFilter(r.key); setExpanded(null); }
+        }, r.label)
+      ),
+      React.createElement('span', { style: { color: 'var(--text3)', fontSize: '0.75rem', marginLeft: 'auto' } },
+        filtered.length + ' casos de uso · click en fila para expandir')
+    ),
+    React.createElement('div', { className: 'uc-table-wrap' },
+      React.createElement('table', null,
+        React.createElement('thead', null,
+          React.createElement('tr', null,
+            ['ID','Nombre','Actor','Prioridad','Disparador','Precondición',''].map(h =>
+              React.createElement('th', { key: h }, h)))),
+        React.createElement('tbody', null,
+          filtered.map(uc =>
+            React.createElement(UCRow, {
+              key: uc.id, uc,
+              expanded: expanded === uc.id,
+              onToggle: () => setExpanded(expanded === uc.id ? null : uc.id)
+            })
+          )
+        )
+      )
+    )
+  );
+}
+
+// ─── DIAGRAMS TAB ─────────────────────────────────────────────────────────
+function DiagramsTab() {
+  const [active, setActive] = useState('d1');
+  const diag = DIAGRAMS.find(d => d.id === active);
+
+  return React.createElement('div', null,
+    React.createElement('div', { className: 'diagram-tabs' },
+      DIAGRAMS.map(d =>
+        React.createElement('button', {
+          key: d.id,
+          className: 'diag-btn' + (active === d.id ? ' active' : ''),
+          onClick: () => setActive(d.id)
+        }, d.title.split(' — ')[0] + ' — ' + d.ucs)
+      )
+    ),
+    React.createElement('div', { className: 'diagram-card' },
+      React.createElement('h3', null, diag.title),
+      React.createElement('p', null, diag.desc),
+      React.createElement(MermaidDiagram, { key: diag.id, code: diag.code, id: diag.id })
+    )
+  );
+}
+
+// ─── APP ──────────────────────────────────────────────────────────────────
+function App() {
+  const [tab, setTab] = useState('uc');
+
+  return React.createElement('div', null,
+    React.createElement('div', { className: 'header' },
+      React.createElement('h1', null,
+        'CareSignal — Inventario UC & Diagramas UML',
+        React.createElement('span', { className: 'badge-mvp' }, 'MVP operacional, no dispositivo médico')),
+      React.createElement('p', null, 'Datos ficticios · v0.1.0-workshop · 18 casos de uso · 4 diagramas de secuencia')
+    ),
+    React.createElement('div', { className: 'tabs' },
+      React.createElement('button', { className: 'tab-btn' + (tab === 'uc' ? ' active' : ''), onClick: () => setTab('uc') },
+        '📋 Inventario UC (18)'),
+      React.createElement('button', { className: 'tab-btn' + (tab === 'diag' ? ' active' : ''), onClick: () => setTab('diag') },
+        '🔀 Diagramas de secuencia UML (4)')
+    ),
+    tab === 'uc' ? React.createElement(InventoryTab) : React.createElement(DiagramsTab)
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App));
+</script>
+</body>
+</html>
