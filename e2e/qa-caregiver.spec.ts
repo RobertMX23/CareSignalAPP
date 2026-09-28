@@ -20,8 +20,8 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('T1 completa una ronda en progreso con resultado "sin novedades"', async ({ page }) => {
-  // Busca el primer botón Completar visible (ronda in_progress)
-  const completarBtn = page.locator('button:has-text("Completar")').first();
+  // Scope al table-view (visible en desktop ≥768px); el cards-view está display:none
+  const completarBtn = page.locator('.rounds-table-view button:has-text("Completar")').first();
   await expect(completarBtn).toBeVisible();
   await completarBtn.click();
 
@@ -47,7 +47,7 @@ test('T1 completa una ronda en progreso con resultado "sin novedades"', async ({
 });
 
 test('T2 inicia una ronda pendiente (due → in_progress)', async ({ page }) => {
-  const iniciarBtn = page.locator('button:has-text("Iniciar")').first();
+  const iniciarBtn = page.locator('.rounds-table-view button:has-text("Iniciar")').first();
   await expect(iniciarBtn).toBeVisible();
   await iniciarBtn.click();
 
@@ -55,7 +55,7 @@ test('T2 inicia una ronda pendiente (due → in_progress)', async ({ page }) => 
 });
 
 test('T3 solicita apoyo amarillo en una ronda activa', async ({ page }) => {
-  const apoyoBtn = page.locator('button:has-text("Apoyo")').first();
+  const apoyoBtn = page.locator('.rounds-table-view button:has-text("Apoyo")').first();
   await expect(apoyoBtn).toBeVisible();
   await apoyoBtn.click();
 
@@ -74,7 +74,7 @@ test('T3 solicita apoyo amarillo en una ronda activa', async ({ page }) => {
 });
 
 test('T4 el modal exige un resultado antes de habilitar confirmar', async ({ page }) => {
-  const completarBtn = page.locator('button:has-text("Completar")').first();
+  const completarBtn = page.locator('.rounds-table-view button:has-text("Completar")').first();
   await completarBtn.click();
 
   const modal = page.locator('[role="dialog"]');

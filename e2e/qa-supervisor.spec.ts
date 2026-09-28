@@ -47,8 +47,8 @@ test('T7 el supervisor puede abrir el detalle de una alerta', async ({ page }) =
   await detailLink.click();
 
   await page.waitForLoadState('networkidle');
-  // La página de detalle debe mostrar el estado y severidad
-  await expect(page.locator('text=Severidad, text=Estado, text=Asignada, text=Abierta, text=open, text=Alerta').first()).toBeVisible();
+  // La página de detalle muestra dl.detail-list con dt "Severidad"
+  await expect(page.locator('dt:has-text("Severidad")').first()).toBeVisible();
 });
 
 test('T8 el supervisor no ve la opción Bitácora en el nav', async ({ page }) => {
