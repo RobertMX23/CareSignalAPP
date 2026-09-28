@@ -7,6 +7,51 @@ silenciosamente; toda modificación material aprobada crea una nueva versión (p
 
 ## [Unreleased]
 
+### Infraestructura de QA y CI (2026-09-28)
+
+No modifica el producto ni el contrato congelado. Añade la capa de calidad
+automatizada y el entorno de desarrollo en la nube.
+
+- **Añadido** `.devcontainer/devcontainer.json` — entorno GitHub Codespaces con imagen
+  `typescript-node:1-20-bookworm` (Debian 12), Node 20, GitHub CLI y Playwright
+  instalado automáticamente via `postCreateCommand`. Resuelve incompatibilidad de
+  Playwright 1.47+ con Debian 11 (Bullseye). Puerto 5173 abre el navegador al crear
+  el Codespace; puertos 4000 y 8080 reservados para Firebase Emulator y Cloud Run local.
+
+- **Añadido** `playwright.config.ts` + `e2e/` — suite de pruebas E2E con Playwright
+  1.44 y Chromium headless. 13 tests en 3 archivos:
+  - `qa-roles.spec.ts` (4) — visibilidad de nav por rol (cuidador, supervisor, gerente)
+  - `qa-caregiver.spec.ts` (4) — T1 completar ronda, T2 iniciar ronda, T3 solicitar
+    apoyo, T4 modal exige selección antes de habilitar confirmar
+  - `qa-supervisor.spec.ts` (5) — T5 métricas dashboard, T6 lista de alertas,
+    T7 detalle de alerta, T8 Bitácora oculta para supervisor, T9 banner MVP en todas
+    las páginas
+  - `e2e/helpers.ts` — utilidades compartidas: `resetSeed`, `selectRole`, `goTo`
+  - Resultado: **13/13 passed** en GitHub Codespaces
+
+- **Añadido** `.github/workflows/e2e.yml` — CI GitHub Actions que corre los 13 tests
+  E2E en cada `push` y `pull_request` a master (`ubuntu-latest`, Node 20, `npm ci`,
+  Chromium headless). Sube `test-results/` como artefacto con retención de 7 días
+  cuando hay fallos.
+
+- **Corregido** locators en `e2e/qa-caregiver.spec.ts` — `CaregiverRoundsPage` renderiza
+  los botones de acción en dos vistas paralelas (`.rounds-cards-view` móvil oculta a
+  ≥768px y `.rounds-table-view` visible). `button:has-text("Completar").first()` tomaba
+  el elemento del view móvil (`display:none`), causando `toBeVisible() failed`. Scoped
+  a `.rounds-table-view button:has-text(...)` para coincidir con el elemento del
+  viewport Desktop Chrome (1280px).
+
+- **Corregido** locator en `e2e/qa-supervisor.spec.ts` (T7) — selector con comas
+  `text=Severidad, text=Estado, ...` es sintaxis CSS inválida en Playwright (retorna
+  `element not found`). Cambiado a `dt:has-text("Severidad")` que coincide con el
+  `<dl class="detail-list">` real de `AlertDetailPage`. Además, `a[href*="alertas"]`
+  coincidía con el nav link `/alertas` antes que con los links de fila de la tabla;
+  scoped a `table.data-table tbody a` para apuntar sólo a links de datos.
+
+- **Conectado** repositorio a GitHub — remote `https://github.com/RobertMX23/CareSignalAPP.git`.
+  Cierra E1.4 (cuenta de GitHub) y E3.2 (publicación del repo). El primer push activó
+  automáticamente el workflow de CI.
+
 ### E0 — Higiene del repositorio (track de entrega)
 
 Preparación para la entrega al concurso WomenCISO 4 / MenCISO 1. **No modifica el
