@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CareSignal — Dashboard de Proyecto</title>
+<style>
+  :root {
+    --bg: #0a0d14;
+    --surface: #111827;
+    --surface2: #1f2937;
+    --surface3: #374151;
+    --border: #1f2937;
+    --border2: #374151;
+    --accent: #3b82f6;
+    --accent2: #8b5cf6;
+    --accent3: #06b6d4;
+    --green: #10b981;
+    --yellow: #f59e0b;
+    --orange: #f97316;
+    --red: #ef4444;
+    --text: #f1f5f9;
+    --text2: #94a3b8;
+    --text3: #64748b;
+    --radius: 10px;
+    --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 14px; }
+  body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; }
+
+  /* ── Layout ── */
+  .shell { display: grid; grid-template-rows: auto 1fr; min-height: 100vh; }
+
+  /* ── Top bar ── */
+  .topbar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border2);
+    padding: 0 1.5rem;
+    display: flex; align-items: center; gap: 1rem;
+    height: 52px; position: sticky; top: 0; z-index: 100;
+  }
+  .topbar-logo { font-weight: 800; font-size: 1rem; color: var(--accent); letter-spacing: -0.02em; }
+  .topbar-sub { font-size: 0.75rem; color: var(--text3); border-left: 1px solid var(--border2); padding-left: 1rem; margin-left: 0.25rem; }
+  .topbar-right { margin-left: auto; display: flex; gap: 0.5rem; align-items: center; }
+  .chip { display: inline-flex; align-items: center; gap: 0.3rem; padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 600; border: 1px solid transparent; }
+  .chip-green { background: #052e16; border-color: #16a34a; color: #4ade80; }
+  .chip-blue  { background: #0c1e3e; border-color: #3b82f6; color: #93c5fd; }
+  .chip-gray  { background: var(--surface2); border-color: var(--border2); color: var(--text3); }
+  .dot-live { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green); }
+
+  /* ── Main content ── */
+  .main { padding: 1.5rem; overflow-y: auto; }
+  .grid-main { display: grid; grid-template-columns: 280px 1fr; gap: 1.25rem; max-width: 1500px; margin: 0 auto; }
+  @media (max-width: 900px) { .grid-main { grid-template-columns: 1fr; } }
+
+  /* ── Sidebar panels ── */
+  .sidebar { display: flex; flex-direction: column; gap: 1rem; }
+  .panel { background: var(--surface); border: 1px solid var(--border2); border-radius: var(--radius); padding: 1rem; }
+  .panel-title { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.4rem; }
+  .panel-title-icon { font-size: 0.85rem; }
+
+  /* Metric row */
+  .metric-row { display: flex; justify-content: space-between; align-items: center; padding: 0.4rem 0; border-bottom: 1px solid var(--border); }
+  .metric-row:last-child { border-bottom: none; }
+  .metric-label { font-size: 0.8rem; color: var(--text2); }
+  .metric-val { font-size: 0.9rem; font-weight: 700; }
+  .val-green { color: var(--green); }
+  .val-yellow { color: var(--yellow); }
+  .val-blue { color: var(--accent); }
+  .val-purple { color: var(--accent2); }
+
+  /* Phase track */
+  .phase-item { display: flex; align-items: flex-start; gap: 0.6rem; padding: 0.4rem 0; position: relative; }
+  .phase-item + .phase-item::before {
+    content: ''; position: absolute; left: 8px; top: -6px; width: 1px; height: 12px; background: var(--border2);
+  }
+  .phase-icon { width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; margin-top: 1px; }
+  .phase-done { background: var(--green); color: #fff; }
+  .phase-pending { background: var(--surface3); color: var(--text3); }
+  .phase-name { font-size: 0.8rem; color: var(--text); line-height: 1.4; }
+  .phase-desc { font-size: 0.72rem; color: var(--text3); }
+
+  /* External links */
+  .ext-link { display: flex; align-items: center; gap: 0.5rem; padding: 0.45rem 0.6rem; border-radius: 6px; text-decoration: none; color: var(--text2); font-size: 0.8rem; transition: all 0.15s; border: 1px solid transparent; }
+  .ext-link:hover { background: var(--surface2); border-color: var(--border2); color: var(--text); }
+  .ext-link-icon { font-size: 1rem; }
+
+  /* ── Right panel: views ── */
+  .views-area { display: flex; flex-direction: column; gap: 1rem; }
+
+  /* View selector tabs */
+  .view-tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .view-tab { background: var(--surface); border: 1px solid var(--border2); color: var(--text2);
+    padding: 0.45rem 1rem; border-radius: var(--radius); cursor: pointer; font-size: 0.82rem; transition: all 0.15s; display: flex; align-items: center; gap: 0.4rem; }
+  .view-tab:hover { background: var(--surface2); color: var(--text); }
+  .view-tab.active { background: var(--surface2); border-color: var(--accent); color: var(--accent); font-weight: 600; }
+
+  /* Frame wrapper */
+  .frame-card { background: var(--surface); border: 1px solid var(--border2); border-radius: var(--radius); overflow: hidden; }
+  .frame-header { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border2); display: flex; align-items: center; justify-content: space-between; }
+  .frame-title { font-size: 0.85rem; font-weight: 600; color: var(--text); }
+  .frame-sub { font-size: 0.72rem; color: var(--text3); margin-top: 1px; }
+  .frame-actions { display: flex; gap: 0.4rem; }
+  .btn-sm { background: var(--surface2); border: 1px solid var(--border2); color: var(--text2); padding: 3px 10px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.3rem; transition: all 0.15s; }
+  .btn-sm:hover { background: var(--surface3); color: var(--text); }
+  iframe { width: 100%; border: none; display: block; background: #fff; }
+
+  /* Docs grid (when overview tab) */
+  .docs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 0.85rem; padding: 1rem; }
+  .doc-card { background: var(--surface2); border: 1px solid var(--border2); border-radius: var(--radius); padding: 0.9rem; cursor: pointer; transition: all 0.15s; text-decoration: none; display: block; }
+  .doc-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 4px 20px rgba(59,130,246,0.1); }
+  .doc-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+  .doc-name { font-size: 0.85rem; font-weight: 600; color: var(--text); margin-bottom: 0.25rem; }
+  .doc-desc { font-size: 0.75rem; color: var(--text3); line-height: 1.5; }
+  .doc-badge { display: inline-block; margin-top: 0.45rem; font-size: 0.68rem; padding: 1px 7px; border-radius: 10px; }
+  .db-interactive { background: #0c1e3e; color: #93c5fd; border: 1px solid #3b82f6; }
+  .db-frozen    { background: #2a1a00; color: #fcd34d; border: 1px solid #f59e0b; }
+  .db-doc       { background: #1a1a2e; color: #a5b4fc; border: 1px solid #6366f1; }
+  .db-script    { background: #0d2e1a; color: #6ee7b7; border: 1px solid #10b981; }
+
+  /* hidden util */
+  .hidden { display: none !important; }
+
+  .footer-bar { text-align: center; font-size: 0.72rem; color: var(--text3); padding: 1rem 0 0.5rem; }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- Top bar -->
+  <header class="topbar">
+    <span class="topbar-logo">CareSignal</span>
+    <span class="topbar-sub">Dashboard de Proyecto · v0.1.0-workshop</span>
+    <div class="topbar-right">
+      <span class="chip chip-green"><span class="dot-live"></span>Build PASS</span>
+      <span class="chip chip-blue">38/38 unit · 13/13 E2E</span>
+      <span class="chip chip-gray">MVP operacional, no dispositivo médico</span>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <div class="main">
+    <div class="grid-main">
+
+      <!-- Sidebar -->
+      <aside class="sidebar">
+
+        <!-- Métricas -->
+        <div class="panel">
+          <div class="panel-title"><span class="panel-title-icon">📊</span> Métricas del proyecto</div>
+          <div class="metric-row"><span class="metric-label">Pruebas unitarias</span><span class="metric-val val-green">38 / 38</span></div>
+          <div class="metric-row"><span class="metric-label">Pruebas E2E</span><span class="metric-val val-green">13 / 13</span></div>
+          <div class="metric-row"><span class="metric-label">Gates aprobados</span><span class="metric-val val-green">C0 → C8</span></div>
+          <div class="metric-row"><span class="metric-label">Casos de uso</span><span class="metric-val val-blue">18 UC</span></div>
+          <div class="metric-row"><span class="metric-label">Entidades dominio</span><span class="metric-val val-blue">6</span></div>
+          <div class="metric-row"><span class="metric-label">Residentes (seed)</span><span class="metric-val val-purple">20</span></div>
+          <div class="metric-row"><span class="metric-label">Personal (seed)</span><span class="metric-val val-purple">14</span></div>
+          <div class="metric-row"><span class="metric-label">Rondas (seed)</span><span class="metric-val val-purple">42</span></div>
+          <div class="metric-row"><span class="metric-label">Alertas (seed)</span><span class="metric-val val-purple">7</span></div>
+          <div class="metric-row"><span class="metric-label">Madurez global</span><span class="metric-val val-yellow">2.9 / 5</span></div>
+        </div>
+
+        <!-- C-track -->
+        <div class="panel">
+          <div class="panel-title"><span class="panel-title-icon">🏗️</span> C-track — Build</div>
+          <div class="phase-item"><div class="phase-icon phase-done">✓</div><div><div class="phase-name">C1 — Contrato & taxonomía</div><div class="phase-desc">Docs, sin React</div></div></div>
+          <div class="phase-item"><div class="phase-icon phase-done">✓</div><div><div class="phase-name">C2 — Dominio TypeScript</div><div class="phase-desc">types, rules, transitions</div></div></div>
+          <div class="phase-item"><div class="phase-icon phase-done">✓</div><div><div class="phase-name">C3 — Datos & repositorio</div><div class="phase-desc">Seed, demoClock, localStorage</div></div></div>
+          <div class="phase-item"><div class="phase-icon phase-done">✓</div><div><div class="phase-name">C4 — App shell & nav</div><div class="phase-desc">5 páginas, HashRouter</div></div></div>
+          <div class="phase-item"><div class="phase-icon phase-done">✓</div><div><div class="phase-name">C5 — Flujo cuidador</div><div class="phase-desc">Rondas end-to-end</div></div></div>
+          <div class="phase-item"><div class="phase-icon phase-done">✓</div><div><div class="phase-name">C6 — Dashboard supervisor</div><div class="phase-desc">Ciclo completo de alertas</div></div></div>
+          <div class="phase-item"><div class="phase-icon phase-done">✓</div><div><div class="phase-name">C7 — Motor temporal</div><div class="phase-desc">Escenarios deterministas</div></div></div>
+          <div class="phase-item"><div class="phase-icon phase-done">✓</div><div><div class="phase-name">C8 — QA & release</div><div class="phase-desc">PASS · v0.1.0-workshop</div></div></div>
+        </div>
+
+        <!-- E-track -->
+        <div class="panel">
+          <div class="panel-title"><span class="panel-title-icon">🚀</span> E-track — Entrega</div>
+          <div class="phase-item"><div class="phase-icon phase-done">✓</div><div><div class="phase-name">E0 — Higiene del repo</div><div class="phase-desc">State sync, indexes</div></div></div>
+          <div class="phase-item"><div class="phase-icon phase-done">✓</div><div><div class="phase-name">E1 — Decisiones humanas</div><div class="phase-desc">Seguridad, precios, equipo, GitHub</div></div></div>
+          <div class="phase-item"><div class="phase-icon phase-done">✓</div><div><div class="phase-name">E2 — Contenido</div><div class="phase-desc">11 criterios, seguridad, mercado</div></div></div>
+          <div class="phase-item"><div class="phase-icon phase-done">✓</div><div><div class="phase-name">E3 — Ensamblado</div><div class="phase-desc">Deck 14 slides · GitHub publicado</div></div></div>
+          <div class="phase-item"><div class="phase-icon phase-pending">⏳</div><div><div class="phase-name">E3.3 — Video 4 min</div><div class="phase-desc">Guion listo, grabación pendiente</div></div></div>
+        </div>
+
+        <!-- Links externos -->
+        <div class="panel">
+          <div class="panel-title"><span class="panel-title-icon">🔗</span> Links del proyecto</div>
+          <a class="ext-link" href="https://github.com/RobertMX23/CareSignalAPP" target="_blank">
+            <span class="ext-link-icon">🐙</span> GitHub — RobertMX23/CareSignalAPP
+          </a>
+          <a class="ext-link" href="https://github.com/RobertMX23/CareSignalAPP/actions" target="_blank">
+            <span class="ext-link-icon">⚙️</span> GitHub Actions CI
+          </a>
+          <a class="ext-link" href="https://github.com/RobertMX23/CareSignalAPP/blob/master/contract/CareSignal_MVP_Proyecto_Ejecutivo_Contrato_v0.1.0_FROZEN.md" target="_blank">
+            <span class="ext-link-icon">📜</span> Contrato congelado v0.1.0
+          </a>
+        </div>
+
+      </aside>
+
+      <!-- Right: views -->
+      <div class="views-area">
+
+        <!-- Tab selector -->
+        <div class="view-tabs">
+          <button class="view-tab active" onclick="showView('overview')" id="tab-overview">🗂️ Resumen docs</button>
+          <button class="view-tab" onclick="showView('maturity')" id="tab-maturity">📈 Diagnóstico de madurez</button>
+          <button class="view-tab" onclick="showView('uc')" id="tab-uc">📋 Inventario UC & UML</button>
+        </div>
+
+        <!-- Overview: doc cards -->
+        <div id="view-overview" class="frame-card">
+          <div class="frame-header">
+            <div>
+              <div class="frame-title">Inventario de documentación</div>
+              <div class="frame-sub">Todos los artefactos del proyecto — haz clic para abrir</div>
+            </div>
+          </div>
+          <div class="docs-grid">
+            <a class="doc-card" onclick="showView('maturity');return false;" href="#">
+              <div class="doc-icon">📈</div>
+              <div class="doc-name">Diagnóstico de Madurez</div>
+              <div class="doc-desc">Score 2.9/5 · 8 dimensiones · barras de progreso · hoja de ruta a producción</div>
+              <span class="doc-badge db-interactive">Interactivo</span>
+            </a>
+            <a class="doc-card" onclick="showView('uc');return false;" href="#">
+              <div class="doc-icon">📋</div>
+              <div class="doc-name">Inventario UC & Diagramas UML</div>
+              <div class="doc-desc">18 casos de uso con 10 columnas · 4 diagramas de secuencia Mermaid · filtros por actor</div>
+              <span class="doc-badge db-interactive">Interactivo</span>
+            </a>
+            <a class="doc-card" href="../contract/CareSignal_MVP_Proyecto_Ejecutivo_Contrato_v0.1.0_FROZEN.md" target="_blank">
+              <div class="doc-icon">📜</div>
+              <div class="doc-name">Contrato congelado v0.1.0</div>
+              <div class="doc-desc">Fuente de verdad. Estado: FROZEN / BASELINE APPROVED FOR BUILD. Versiones 0.1.1 y 0.2.0 como amendments.</div>
+              <span class="doc-badge db-frozen">FROZEN</span>
+            </a>
+            <a class="doc-card" href="00-product-contract.md" target="_blank">
+              <div class="doc-icon">📄</div>
+              <div class="doc-name">00 — Product Contract</div>
+              <div class="doc-desc">Resumen del contrato para uso diario. Autoridad #2 en la jerarquía.</div>
+              <span class="doc-badge db-doc">Docs</span>
+            </a>
+            <a class="doc-card" href="01-domain-taxonomy.yaml" target="_blank">
+              <div class="doc-icon">🏷️</div>
+              <div class="doc-name">01 — Taxonomía del dominio</div>
+              <div class="doc-desc">Entidades, roles, estados y transiciones en YAML. Fuente canónica de nomenclatura.</div>
+              <span class="doc-badge db-frozen">YAML canónico</span>
+            </a>
+            <a class="doc-card" href="02-state-machine.md" target="_blank">
+              <div class="doc-icon">🔄</div>
+              <div class="doc-name">02 — Máquina de estados</div>
+              <div class="doc-desc">Transiciones válidas para Round, Alert e Incident. Incluye guardas y eventos de auditoría.</div>
+              <span class="doc-badge db-doc">Docs</span>
+            </a>
+            <a class="doc-card" href="04-acceptance-tests.md" target="_blank">
+              <div class="doc-icon">✅</div>
+              <div class="doc-name">04 — Pruebas de aceptación</div>
+              <div class="doc-desc">20/20 criterios del contrato. Referencia para los 8 gates C0–C8.</div>
+              <span class="doc-badge db-doc">Docs</span>
+            </a>
+            <a class="doc-card" href="RESUME.md" target="_blank">
+              <div class="doc-icon">🗓️</div>
+              <div class="doc-name">RESUME — Estado actual</div>
+              <div class="doc-desc">Punto de reanudación: qué está terminado, pendientes reales, inventario del repo, cómo verificar.</div>
+              <span class="doc-badge db-doc">Continuidad</span>
+            </a>
+            <a class="doc-card" href="../CHANGELOG.md" target="_blank">
+              <div class="doc-icon">📝</div>
+              <div class="doc-name">CHANGELOG</div>
+              <div class="doc-desc">Historial de cambios por versión: C-track, E-track, QA, infra. Trazabilidad completa.</div>
+              <span class="doc-badge db-doc">Historial</span>
+            </a>
+            <a class="doc-card" href="../WORKSHOP_DEMO_SCRIPT.md" target="_blank">
+              <div class="doc-icon">🎬</div>
+              <div class="doc-name">Workshop Demo Script</div>
+              <div class="doc-desc">Guion paso a paso para la demo de 5 minutos. Secuencia reproducible con el motor temporal.</div>
+              <span class="doc-badge db-script">Script</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Maturity iframe -->
+        <div id="view-maturity" class="frame-card hidden">
+          <div class="frame-header">
+            <div>
+              <div class="frame-title">Diagnóstico de Madurez — CareSignal MVP</div>
+              <div class="frame-sub">Score 2.9/5 · 8 dimensiones · hoja de ruta hacia producción</div>
+            </div>
+            <div class="frame-actions">
+              <a class="btn-sm" href="maturity-assessment.html" target="_blank">↗ Abrir en tab</a>
+            </div>
+          </div>
+          <iframe id="frame-maturity" src="" height="780" title="Diagnóstico de Madurez"></iframe>
+        </div>
+
+        <!-- UC iframe -->
+        <div id="view-uc" class="frame-card hidden">
+          <div class="frame-header">
+            <div>
+              <div class="frame-title">Inventario UC & Diagramas UML</div>
+              <div class="frame-sub">18 casos de uso · 4 diagramas de secuencia Mermaid · filtros por actor</div>
+            </div>
+            <div class="frame-actions">
+              <a class="btn-sm" href="uc-diagrams.html" target="_blank">↗ Abrir en tab</a>
+            </div>
+          </div>
+          <iframe id="frame-uc" src="" height="780" title="Inventario UC y Diagramas UML"></iframe>
+        </div>
+
+      </div><!-- end views-area -->
+    </div><!-- end grid-main -->
+
+    <div class="footer-bar">
+      CareSignal MVP · Datos ficticios · No dispositivo médico · Dashboard generado 2026-09-28
+    </div>
+  </div><!-- end main -->
+</div><!-- end shell -->
+
+<script>
+  const FRAMES = {
+    maturity: { src: 'maturity-assessment.html', loaded: false },
+    uc:       { src: 'uc-diagrams.html',         loaded: false }
+  };
+
+  function showView(view) {
+    // Hide all
+    ['overview','maturity','uc'].forEach(v => {
+      document.getElementById('view-' + v).classList.add('hidden');
+      document.getElementById('tab-' + v).classList.remove('active');
+    });
+
+    // Show selected
+    document.getElementById('view-' + view).classList.remove('hidden');
+    document.getElementById('tab-' + view).classList.add('active');
+
+    // Lazy-load iframe
+    if (FRAMES[view] && !FRAMES[view].loaded) {
+      document.getElementById('frame-' + view).src = FRAMES[view].src;
+      FRAMES[view].loaded = true;
+    }
+  }
+</script>
+</body>
+</html>
