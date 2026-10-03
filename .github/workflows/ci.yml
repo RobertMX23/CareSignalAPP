@@ -1,0 +1,146 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  # ── 1. TypeScript ────────────────────────────────────────────────────────────
+  typecheck:
+    name: TypeScript check
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - name: tsc --noEmit
+        run: npm run typecheck
+
+  # ── 2. Unit tests (Vitest) ───────────────────────────────────────────────────
+  unit:
+    name: Unit tests (Vitest)
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - name: vitest run
+        run: npm test
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: vitest-results
+          path: test-results/
+          retention-days: 7
+
+  # ── 3. Build verification (Vite) ─────────────────────────────────────────────
+  build:
+    name: Build (vite build)
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - name: vite build
+        run: npm run build
+
+  # ── 4. E2E — Chromium ────────────────────────────────────────────────────────
+  e2e-chromium:
+    name: E2E (Chromium)
+    needs: [typecheck, unit, build]
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-1.44.0-chromium
+      - name: Install Playwright (chromium)
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+      - name: Run E2E tests (Chromium)
+        run: npm run test:e2e -- --project=chromium
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report-chromium
+          path: test-results/
+          retention-days: 7
+
+  # ── 5. E2E — Firefox ─────────────────────────────────────────────────────────
+  e2e-firefox:
+    name: E2E (Firefox)
+    needs: [typecheck, unit, build]
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-1.44.0-firefox
+      - name: Install Playwright (firefox)
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps firefox
+      - name: Run E2E tests (Firefox)
+        run: npm run test:e2e -- --project=firefox
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report-firefox
+          path: test-results/
+          retention-days: 7
+
+  # ── 6. E2E — Mobile Chrome (375px) ───────────────────────────────────────────
+  e2e-mobile:
+    name: E2E (Mobile 375px)
+    needs: [typecheck, unit, build]
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-1.44.0-chromium
+      - name: Install Playwright (chromium for mobile)
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+      - name: Run E2E tests (Mobile)
+        run: npm run test:e2e -- --project=mobile
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report-mobile
+          path: test-results/
+          retention-days: 7
