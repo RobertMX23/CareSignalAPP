@@ -64,10 +64,17 @@ E1 → Human decisions (security, pricing, team, GitHub)  ✅ done
 E2 → Content (security doc, market, value metrics)      ✅ done
 E3 → Assembly (deck, GitHub publish, 4-min video)       ✅ materials ready / video pending
 E4 → QA/CI infrastructure (6-job CI, 47 unit tests, E2E suites)  ✅ PR #1
-E5 → Next phases — TBD until further notice
+E5 → Demo layers: L-01 Toasts · L-02 Metrics · L-03 PWA · L-04 Calendar
+     Contract: docs/13-capas-demo.md  |  Current: L-01 pending gate
 ```
 
 Same rule as the C track: **one phase at a time, each closes with human approval.**
+
+**E5 layer gates** (defined in `docs/13-capas-demo.md`):
+- **L-01**: toast appears on alert create/escalate, auto-dismisses, max 3 visible, no E2E regressions.
+- **L-02**: `/metricas` page loads, 5 KPIs shown, 2 charts render, caregiver blocked by RoleGuard.
+- **L-03**: Lighthouse PWA ≥ 80, install banner visible on Android, standalone mode works.
+- **L-04**: calendar view renders all 20 seed residents, colors match state, toggle works at 375 px.
 
 Gate summaries:
 - **C1**: alert ≠ incident; colors are derived; no medical language; no extra features.
