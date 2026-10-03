@@ -43,7 +43,7 @@ test('S-01 app arranca y el dashboard muestra al menos 1 residente', async ({ pa
 
 test('S-02 banner "MVP operacional, no dispositivo médico" en todas las rutas', async ({ page }) => {
   // Necesitamos demo_admin para acceder a todas las rutas
-  await selectRole(page, 'demo_admin');
+  await selectRole(page, 'manager'); // demo_admin no existe en la semilla; manager accede a todas las rutas
 
   for (const route of ALL_ROUTES) {
     await page.goto(`http://localhost:5173/#${route}`);

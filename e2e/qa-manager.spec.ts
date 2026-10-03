@@ -94,13 +94,13 @@ test('T-15 supervisor es redirigido al intentar acceder a /bitacora directamente
   await expect(page).toHaveURL(/#\/(dashboard|$)/);
 });
 
-test('T-16 cuidador es redirigido al intentar acceder a /residentes directamente', async ({ page }) => {
+test('T-16 cuidador es redirigido al intentar acceder a /alertas directamente', async ({ page }) => {
   // Cambiar a caregiver
   await selectRole(page, 'caregiver');
   await page.waitForLoadState('networkidle');
 
-  // Navegar directamente a /residentes — debe ser bloqueado por RoleGuard
-  await page.goto('http://localhost:5173/#/residentes');
+  // /alertas permite solo supervisor, manager, demo_admin — caregiver debe ser bloqueado
+  await page.goto('http://localhost:5173/#/alertas');
   await page.waitForLoadState('networkidle');
 
   await expect(page).toHaveURL(/#\/(dashboard|$)/);
