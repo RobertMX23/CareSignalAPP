@@ -6,7 +6,7 @@
  */
 
 import { test, expect } from '@playwright/test';
-import { goTo, resetSeed, selectRole } from './helpers';
+import { goTo, openNav, resetSeed, selectRole } from './helpers';
 
 test.beforeEach(async ({ page }) => {
   await goTo(page, '/dashboard');
@@ -15,6 +15,7 @@ test.beforeEach(async ({ page }) => {
 
 test('cuidador solo ve Dashboard y Mis rondas', async ({ page }) => {
   await selectRole(page, 'caregiver');
+  await openNav(page);
 
   const nav = page.locator('nav.app-nav');
   await expect(nav.locator('a:has-text("Dashboard")')).toBeVisible();
@@ -28,6 +29,7 @@ test('cuidador solo ve Dashboard y Mis rondas', async ({ page }) => {
 
 test('supervisor ve Dashboard, Residentes, Alertas y Personal — no Bitácora', async ({ page }) => {
   await selectRole(page, 'supervisor');
+  await openNav(page);
 
   const nav = page.locator('nav.app-nav');
   await expect(nav.locator('a:has-text("Dashboard")')).toBeVisible();
@@ -41,6 +43,7 @@ test('supervisor ve Dashboard, Residentes, Alertas y Personal — no Bitácora',
 
 test('gerente ve todas las secciones incluyendo Bitácora', async ({ page }) => {
   await selectRole(page, 'manager');
+  await openNav(page);
 
   const nav = page.locator('nav.app-nav');
   await expect(nav.locator('a:has-text("Dashboard")')).toBeVisible();

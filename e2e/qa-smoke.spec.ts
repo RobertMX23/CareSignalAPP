@@ -15,7 +15,7 @@
  */
 
 import { test, expect } from '@playwright/test';
-import { goTo, resetSeed, selectRole } from './helpers';
+import { goTo, openNav, resetSeed, selectRole } from './helpers';
 
 // Rutas accesibles por demo_admin (ve todo)
 const ALL_ROUTES = [
@@ -63,19 +63,21 @@ test('S-03 indicador "Datos ficticios" visible en el dashboard', async ({ page }
 
 test('S-04 los 3 roles se pueden seleccionar y cada uno ve su sección principal', async ({ page }) => {
   await selectRole(page, 'caregiver');
+  await openNav(page);
   await expect(page.locator('nav.app-nav a:has-text("Mis rondas")')).toBeVisible();
 
   await selectRole(page, 'supervisor');
+  await openNav(page);
   await expect(page.locator('nav.app-nav a:has-text("Alertas")')).toBeVisible();
 
   await selectRole(page, 'manager');
+  await openNav(page);
   await expect(page.locator('nav.app-nav a:has-text("Bitácora")')).toBeVisible();
 });
 
 test('S-05 semilla carga al menos 20 residentes', async ({ page }) => {
   await selectRole(page, 'supervisor');
-  await page.locator('nav.app-nav a:has-text("Residentes")').click();
-  await page.waitForLoadState('networkidle');
+  await goTo(page, '/residentes');
 
   // Contar cards o filas de residentes — la semilla tiene exactamente 20
   const residentItems = page.locator('.resident-card, table.data-table tbody tr, [data-testid="resident-item"]');
@@ -87,8 +89,7 @@ test('S-06 botón "restablecer demo" repone los datos de semilla', async ({ page
   await selectRole(page, 'supervisor');
 
   // Registrar conteo inicial de alertas
-  await page.locator('nav.app-nav a:has-text("Alertas")').click();
-  await page.waitForLoadState('networkidle');
+  await goTo(page, '/alertas');
   const alertsBefore = await page.locator('table.data-table tbody tr, .alert-card').count();
 
   // Restablecer demo
@@ -101,8 +102,7 @@ test('S-06 botón "restablecer demo" repone los datos de semilla', async ({ page
 
   // El conteo de alertas debe volver al valor de semilla (>= 1)
   await selectRole(page, 'supervisor');
-  await page.locator('nav.app-nav a:has-text("Alertas")').click();
-  await page.waitForLoadState('networkidle');
+  await goTo(page, '/alertas');
   const alertsAfter = await page.locator('table.data-table tbody tr, .alert-card').count();
   expect(alertsAfter).toBeGreaterThanOrEqual(1);
   // El reset siempre debe tener al menos tantas alertas activas como la semilla original
