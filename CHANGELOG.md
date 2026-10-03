@@ -7,6 +7,25 @@ silenciosamente; toda modificación material aprobada crea una nueva versión (p
 
 ## [Unreleased]
 
+### E5 — Cobertura E2E del ciclo de alertas (2026-10-03)
+
+No modifica el producto ni el contrato congelado. Amplía la cobertura E2E
+de criterios de aceptación 4-10 (flujo completo de alerta, §6 reglas 2-5).
+
+- **Añadido** `e2e/qa-alert-lifecycle.spec.ts` — 9 tests que cubren el ciclo
+  completo de una alerta (criterios de aceptación del contrato A-01 a A-09):
+  - A-01  Reconocer alerta (open → acknowledged)
+  - A-02  Asignar alerta desde estado open (modal + confirmación)
+  - A-03  Escalar alerta (assigned → escalated)
+  - A-04  Reasignar alerta con modal (estado no cambia, nuevo responsable)
+  - A-05  Iniciar verificación — crea incidente asociado visible en UI
+  - A-06  Impedir cierre sin resolución (botón "Cerrar" ausente en open/assigned/escalated)
+  - A-07  Registrar resultado y resolver (modal exige selección de outcome antes de habilitar confirmar)
+  - A-08  Cerrar alerta resuelta (solo manager; resolved → closed)
+  - A-09  Línea de tiempo auditable — muestra ≥ 3 eventos históricos en alerta closed
+  - Cada test ancla al alert de semilla ya en el estado necesario (no encadenamiento).
+  - Cobertura ahora: 5 specs, 22 tests E2E frente a 13 en E4.
+
 ### Infraestructura de QA y CI (2026-09-28)
 
 No modifica el producto ni el contrato congelado. Añade la capa de calidad
