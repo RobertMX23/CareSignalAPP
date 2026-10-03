@@ -22,19 +22,28 @@ export async function goTo(page: Page, hash: string): Promise<void> {
 }
 
 /**
- * Avanza el reloj simulado N minutos ejecutando `advanceByMinutes` en el contexto
- * del navegador (Vite dev server sirve los módulos fuente) y recarga la página para
- * que React reinicialice desde el localStorage actualizado por el motor temporal.
- *
- * Solo funciona contra el servidor Vite (dev mode). Llamadas consecutivas son
- * aditivas: el módulo lee el offset actual de localStorage y suma N.
+ * Avanza el reloj simulado N minutos usando los botones de /control-demo.
+ * Requiere que exista un staff con role 'demo_admin' en la semilla.
+ * Llamadas consecutivas son aditivas. Deja la página en /control-demo;
+ * el test debe navegar al destino deseado después de llamar a esta función.
  */
 export async function advanceClock(page: Page, minutes: number): Promise<void> {
-  await page.evaluate(async (mins: number) => {
-    const mod = await import('/src/data/demoClock.ts');
-    mod.advanceByMinutes(mins);
-  }, minutes);
-  await page.reload({ waitUntil: 'networkidle' });
+  await selectRole(page, 'demo_admin');
+  await goTo(page, '/control-demo');
+
+  let remaining = minutes;
+  while (remaining >= 15) {
+    await page.locator('button:has-text("Avanzar 15 minutos")').click();
+    remaining -= 15;
+  }
+  while (remaining >= 5) {
+    await page.locator('button:has-text("Avanzar 5 minutos")').click();
+    remaining -= 5;
+  }
+  while (remaining >= 1) {
+    await page.locator('button:has-text("Avanzar 1 minuto")').click();
+    remaining -= 1;
+  }
 }
 
 /**

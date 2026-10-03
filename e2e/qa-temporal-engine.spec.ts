@@ -6,11 +6,10 @@
  *   Criterio 3  Evitar alerta duplicada (idempotencia del motor)
  *
  * Estrategia de avance de reloj:
- *   La página `/control-demo` requiere rol `demo_admin`, que no existe en la semilla.
- *   En su lugar, cada test llama a `advanceClock(page, N)` (e2e/helpers.ts) que
- *   invoca `advanceByMinutes(N)` en el contexto del navegador mediante dynamic import
- *   del módulo fuente Vite, y luego recarga la página para que React reinicialice
- *   desde el localStorage actualizado por el motor temporal.
+ *   `advanceClock(page, N)` selecciona el rol `demo_admin` (staff-demo-admin-01 en la
+ *   semilla), navega a `/control-demo` y hace clic en los botones de avance de la UI
+ *   real (Avanzar 15 / 5 / 1 minutos) hasta completar N minutos. Cada test navega
+ *   a la ruta de destino después de llamar a `advanceClock`.
  *
  * Rondas relevantes de la semilla (src/data/seed.ts):
  *   round-02  Antonio Salas   (res-02)  due   dueAt = T+15 min

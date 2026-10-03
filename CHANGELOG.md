@@ -19,9 +19,10 @@ regla de no-duplicidad de alertas (criterios de aceptación 2-3, §6 regla 2).
   - T-M-03  Motor idempotente — dos avances consecutivos no duplican la alerta
   - T-M-04  Ronda cancelada no genera alerta aunque el reloj la supere
   - T-M-05  Alerta amarilla escala a roja en segundo paso (path de escalada, distinto de T-M-02)
-  - Estrategia: `advanceClock(page, N)` via `page.evaluate` + `import('/src/data/demoClock.ts')`
-    (acceso directo al módulo Vite; evita la ruta `/control-demo` que exige `demo_admin`).
-- **Modificado** `e2e/helpers.ts` — añadida función `advanceClock(page, minutes)`.
+  - Estrategia: `advanceClock(page, N)` navega a `/control-demo` y hace clic en los
+    botones de la UI real (requiere `demo_admin` en semilla, ver `staff-demo-admin-01`).
+- **Modificado** `e2e/helpers.ts` — `advanceClock` usa `/control-demo` (UI real).
+- **Modificado** `src/data/seed.ts` — añadido `staff-demo-admin-01` (rol `demo_admin`).
 - Cobertura ahora: 6 specs, 27 tests E2E frente a 22 en E5-Bloque-1.
 
 ### E5 — Cobertura E2E del ciclo de alertas (2026-10-03)

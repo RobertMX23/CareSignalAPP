@@ -169,6 +169,8 @@ export const buildStaffMembers = (): StaffMember[] => {
     // Gerentes (autoridad transversal de turno)
     { id: 'staff-manager-01',  residenciaId: R, displayName: 'Daniela Escobedo',   role: 'manager',    shift: SHIFT.morning,   availability: 'available',  isActive: true },
     { id: 'staff-manager-02',  residenciaId: R, displayName: 'Ricardo Paz',        role: 'manager',    shift: SHIFT.afternoon, availability: 'off_shift',  isActive: true },
+    // Admin demo (acceso a /control-demo — reloj simulado y escenarios)
+    { id: 'staff-demo-admin-01', residenciaId: R, displayName: 'Admin Demo',       role: 'demo_admin', shift: SHIFT.morning,   availability: 'available',  isActive: true },
   ];
   staff.forEach((s) => recordCreation('staff_member', s.id, 'STAFF_MEMBER_CREATED', 'active', SYSTEM_SEED_ACTOR, atOffset(-2880)));
   return staff;
