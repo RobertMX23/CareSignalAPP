@@ -54,16 +54,17 @@ Prompt 0 (master instruction)
 released as `v0.1.0-workshop`, with a `PASS` QA audit (20/20 contract acceptance tests,
 38/38 automated tests, zero blockers). The product MVP is **finished**; do not rebuild it.
 
-Active work is now the **E track (entrega/delivery)** — preparing the project for the
-WomenCISO 4 / MenCISO 1 competition. It is NOT product development and does not modify
-the frozen contract. See `docs/RESUME.md` for exact position and next step.
+Active work is now the **E track (evolución continua — sin fecha límite activa)**. It is
+NOT product development and does not modify the frozen contract. See `docs/RESUME.md`
+for exact position and next step.
 
 ```
-E0 → Repo hygiene: state sync, tree order, generators, indexes
-E1 → Human decisions: security angle, pricing, team, GitHub account
-E2 → Content: security doc, competition, value metrics, innovation, delivery README
-E3 → Assembly: finish deck, publish to GitHub, record 4-min video
-E4 → Semifinal prep (only if selected)
+E0 → Repo hygiene                          ✅ done
+E1 → Human decisions (security, pricing, team, GitHub)  ✅ done
+E2 → Content (security doc, market, value metrics)      ✅ done
+E3 → Assembly (deck, GitHub publish, 4-min video)       ✅ materials ready / video pending
+E4 → QA/CI infrastructure (6-job CI, 47 unit tests, E2E suites)  ✅ PR #1
+E5 → Next phases — TBD until further notice
 ```
 
 Same rule as the C track: **one phase at a time, each closes with human approval.**
@@ -174,3 +175,24 @@ Make minimal, traceable changes. Never auto-advance to another phase or add unre
 features. Use the control prompts in contract §16 for repairs, scope guarding, change
 requests, gate resumption, and red-teaming. Log every change in `CHANGELOG.md`; a frozen
 version is never edited silently — an approved change creates a new version (e.g. `0.1.1`).
+
+## AI agent — Testing & CI rules (mandatory checklist)
+
+> Full rationale + examples in `docs/12-ai-agent-rules.md`.
+> Read that file before writing any test or modifying CI workflows.
+
+**Before writing any test:**
+1. Read the actual source types and implementation — never infer function names or field names.
+2. Read `src/data/seed.ts` — only reference roles, IDs, and entities that exist there.
+3. Read `src/App.tsx` (RoleGuard `allowedRoles`) before writing any access-control assertion.
+4. Read the component's CSS media queries — identify conditionally hidden elements.
+
+**When writing tests:**
+5. Add `localStorage.clear()` + `vi.resetModules()` in every `beforeEach` that touches the repository.
+6. Handle `window.confirm()` / dialogs explicitly — Playwright dismisses them silently by default.
+7. Never click a nav link that may be hidden behind a CSS breakpoint — use `goTo()` instead, or call `openNav()` first.
+
+**When creating or modifying CI:**
+8. Each browser/platform in its own job with its own `npx playwright install --with-deps <browser>`.
+9. A job that installs browser X must only run `--project=X` — never all projects.
+10. When a new workflow supersedes an old one, delete the old one in the same commit.
