@@ -22,6 +22,22 @@ export async function goTo(page: Page, hash: string): Promise<void> {
 }
 
 /**
+ * Avanza el reloj simulado N minutos ejecutando `advanceByMinutes` en el contexto
+ * del navegador (Vite dev server sirve los módulos fuente) y recarga la página para
+ * que React reinicialice desde el localStorage actualizado por el motor temporal.
+ *
+ * Solo funciona contra el servidor Vite (dev mode). Llamadas consecutivas son
+ * aditivas: el módulo lee el offset actual de localStorage y suma N.
+ */
+export async function advanceClock(page: Page, minutes: number): Promise<void> {
+  await page.evaluate(async (mins: number) => {
+    const mod = await import('/src/data/demoClock.ts');
+    mod.advanceByMinutes(mins);
+  }, minutes);
+  await page.reload({ waitUntil: 'networkidle' });
+}
+
+/**
  * Abre el menú de navegación en mobile (≤720 px) si el botón de hamburguesa
  * está visible y el menú aún no está abierto. En desktop es un no-op.
  */

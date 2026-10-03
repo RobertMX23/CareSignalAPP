@@ -7,6 +7,23 @@ silenciosamente; toda modificación material aprobada crea una nueva versión (p
 
 ## [Unreleased]
 
+### E5 — Motor temporal: cobertura E2E de criterios 2-3 (2026-10-03)
+
+No modifica el producto ni el contrato congelado. Añade cobertura E2E
+del motor temporal (`temporalEngine.ts`): detección de vencimientos y
+regla de no-duplicidad de alertas (criterios de aceptación 2-3, §6 regla 2).
+
+- **Añadido** `e2e/qa-temporal-engine.spec.ts` — 5 tests que cubren el motor temporal:
+  - T-M-01  Reloj avanzado 15 min → round-02 vence, crea alerta amarilla para Antonio Salas
+  - T-M-02  Retraso ≥ 15 min (`CRITICAL_DELAY_MINUTES`) → alerta creada directamente como roja
+  - T-M-03  Motor idempotente — dos avances consecutivos no duplican la alerta
+  - T-M-04  Ronda cancelada no genera alerta aunque el reloj la supere
+  - T-M-05  Alerta amarilla escala a roja en segundo paso (path de escalada, distinto de T-M-02)
+  - Estrategia: `advanceClock(page, N)` via `page.evaluate` + `import('/src/data/demoClock.ts')`
+    (acceso directo al módulo Vite; evita la ruta `/control-demo` que exige `demo_admin`).
+- **Modificado** `e2e/helpers.ts` — añadida función `advanceClock(page, minutes)`.
+- Cobertura ahora: 6 specs, 27 tests E2E frente a 22 en E5-Bloque-1.
+
 ### E5 — Cobertura E2E del ciclo de alertas (2026-10-03)
 
 No modifica el producto ni el contrato congelado. Amplía la cobertura E2E
