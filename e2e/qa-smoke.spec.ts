@@ -43,7 +43,7 @@ test('S-01 app arranca y el dashboard muestra al menos 1 residente', async ({ pa
 
 test('S-02 banner "MVP operacional, no dispositivo médico" en todas las rutas', async ({ page }) => {
   // Necesitamos demo_admin para acceder a todas las rutas
-  await selectRole(page, 'demo_admin' as never);
+  await selectRole(page, 'demo_admin');
 
   for (const route of ALL_ROUTES) {
     await page.goto(`http://localhost:5173/#${route}`);
@@ -95,6 +95,7 @@ test('S-06 botón "restablecer demo" repone los datos de semilla', async ({ page
   await goTo(page, '/dashboard');
   const resetBtn = page.locator('button:has-text("Restablecer demo")');
   await expect(resetBtn).toBeVisible();
+  page.once('dialog', (dialog) => void dialog.accept());
   await resetBtn.click();
   await page.waitForLoadState('networkidle');
 
