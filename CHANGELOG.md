@@ -7,6 +7,26 @@ silenciosamente; toda modificación material aprobada crea una nueva versión (p
 
 ## [Unreleased]
 
+### E5 L-01 — Toast de notificaciones simuladas (2026-10-03)
+
+No modifica el contrato congelado ni la lógica de dominio. Añade una capa
+de notificaciones visuales que aparecen en pantalla cuando el motor temporal
+crea o escala una alerta. Cubre todos los criterios de aceptación L01-01 a L01-07.
+
+- **Añadido** `src/components/ToastContext.tsx` — contexto React con `pushToast`,
+  auto-dismiss a 5 s, máximo 3 toasts simultáneos (los más nuevos desplazan los viejos).
+- **Añadido** `src/components/ToastContainer.tsx` — escucha `CustomEvent('caresignal:alert')`
+  en `window`, resuelve el nombre del residente desde el repositorio y renderiza los toasts.
+- **Modificado** `src/data/demoClock.ts` — `advanceByMinutes` despacha `caresignal:alert`
+  con `type: 'created' | 'escalated'`, `severity` y `residentId` tras ejecutar el motor temporal.
+  La capa de datos nunca importa React; el puente es el DOM event.
+- **Modificado** `src/App.tsx` — monta `ToastProvider` y `ToastContainer` globalmente.
+- **Modificado** `src/data/seed.ts` — añadido `staff-demo-admin-01` (rol `demo_admin`)
+  para que `/control-demo` sea accesible desde el selector de usuario.
+- **Modificado** `src/index.css` — estilos de toast con colores del sistema de diseño,
+  animación slide-in, responsive (media query ≤ 420 px: `left/right: 0.75rem`).
+- **Modificado** `tests/seed-integrity.test.ts` — actualizado conteo de staff a 15.
+
 ### E5 — Cobertura E2E del ciclo de alertas (2026-10-03)
 
 No modifica el producto ni el contrato congelado. Amplía la cobertura E2E
