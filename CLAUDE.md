@@ -54,16 +54,17 @@ Prompt 0 (master instruction)
 released as `v0.1.0-workshop`, with a `PASS` QA audit (20/20 contract acceptance tests,
 38/38 automated tests, zero blockers). The product MVP is **finished**; do not rebuild it.
 
-Active work is now the **E track (entrega/delivery)** — preparing the project for the
-WomenCISO 4 / MenCISO 1 competition. It is NOT product development and does not modify
-the frozen contract. See `docs/RESUME.md` for exact position and next step.
+Active work is now the **E track (evolución continua — sin fecha límite activa)**. It is
+NOT product development and does not modify the frozen contract. See `docs/RESUME.md`
+for exact position and next step.
 
 ```
-E0 → Repo hygiene: state sync, tree order, generators, indexes
-E1 → Human decisions: security angle, pricing, team, GitHub account
-E2 → Content: security doc, competition, value metrics, innovation, delivery README
-E3 → Assembly: finish deck, publish to GitHub, record 4-min video
-E4 → Semifinal prep (only if selected)
+E0 → Repo hygiene                          ✅ done
+E1 → Human decisions (security, pricing, team, GitHub)  ✅ done
+E2 → Content (security doc, market, value metrics)      ✅ done
+E3 → Assembly (deck, GitHub publish, 4-min video)       ✅ materials ready / video pending
+E4 → QA/CI infrastructure (6-job CI, 47 unit tests, E2E suites)  ✅ PR #1
+E5 → Next phases — TBD until further notice
 ```
 
 Same rule as the C track: **one phase at a time, each closes with human approval.**

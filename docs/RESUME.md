@@ -4,7 +4,7 @@
 > sigue siendo el contrato congelado; este archivo solo describe **dónde estamos** y
 > **qué sigue**. Autoridad: informativa (por debajo del contrato, `CLAUDE.md` y `docs/`).
 >
-> **Fecha de captura:** 2026-09-28 · **Posición:** infraestructura de QA completa, CI activo
+> **Fecha de captura:** 2026-10-03 · **Posición:** suite QA/CI ampliada, PR #1 en revisión · **Sin fecha límite activa — continúa hasta nuevo aviso**
 
 ---
 
@@ -26,18 +26,21 @@ varios cambios de contrato (v0.1.1, v0.2.0) que extendieron el producto:
 | UX post-gate | Dashboard dinámico por rol, Mis Rondas móvil, Bitácora, Personal | ✅ |
 | Seed ampliada | 20 residentes · 14 personal · 42 rondas · 7 alertas · 3 incidentes | ✅ |
 
-**Tests unitarios:** 38/38 · 6 archivos · sin cambios en la suite base.
+**Tests unitarios:** 47/47 · 7 archivos · incluye nuevo `repository.test.ts` (U-10–U-14).
 
-### E-track (preparación del concurso WomenCISO 4 / MenCISO 1)
+### E-track (evolución continua — sin fecha límite activa)
 
-El concurso terminó el 17 de septiembre de 2026. Las fechas han pasado.
+El E-track ya no está atado al concurso WomenCISO/MenCISO (cerrado sept 2026).
+Continúa como hoja de ruta de madurez del proyecto hasta nuevo aviso.
 
 | Fase | Contenido | Estado |
 |---|---|---|
 | **E0** | Higiene del repositorio | ✅ Completa |
-| **E1** | Decisiones humanas | ✅ Todas tomadas (incluyendo E1.4) |
+| **E1** | Decisiones estratégicas (eje seguridad, precios, equipo, GitHub) | ✅ Todas tomadas |
 | **E2** | Contenido (11 criterios, seguridad, mercado, competencia, valor) | ✅ Completa |
-| **E3** | Deck 14 slides, guion pitch, storyboard de video | ✅ Materiales listos |
+| **E3** | Deck 14 slides, guion pitch, storyboard de video | ✅ Materiales listos (video pendiente) |
+| **E4** | Infraestructura de calidad: CI 6-job, 47 unit tests, 3 suites E2E | ✅ PR #1 en revisión |
+| **E5** | Próximas fases — a definir hasta nuevo aviso | ⏳ Sin fecha |
 
 ### E1 — decisiones
 
@@ -56,23 +59,25 @@ El concurso terminó el 17 de septiembre de 2026. Las fechas han pasado.
 | E3.2 Publicar en GitHub | ✅ `https://github.com/RobertMX23/CareSignalAPP` (master) |
 | E3.3 Video de 4 minutos (grabación) | ⏳ Guion + storyboard listos en `docs/`, grabación pendiente |
 
-### Infraestructura de calidad (sesión 2026-09-28)
+### Infraestructura de calidad
 
 | Componente | Descripción | Estado |
 |---|---|---|
 | `.devcontainer/devcontainer.json` | Codespaces con Debian 12 Bookworm + Node 20 + Playwright auto-instalado | ✅ |
-| `e2e/` | Suite Playwright: 13 tests en 3 archivos (roles, cuidador, supervisor) | ✅ 13/13 |
-| `playwright.config.ts` | Headless Chromium · reuseExistingServer · retries=1 | ✅ |
-| `.github/workflows/e2e.yml` | CI GitHub Actions — corre en cada push/PR a master | ✅ activo |
+| `e2e/` | Suite Playwright: 5 archivos — roles, cuidador, supervisor, smoke, gerente | ✅ |
+| `playwright.config.ts` | 4 proyectos: Chromium, Firefox, WebKit, Mobile (Pixel 5 375px) | ✅ |
+| `.github/workflows/ci.yml` | CI 6 jobs: typecheck + unit + build → e2e-chromium + e2e-firefox + e2e-mobile | ✅ PR #1 |
+| `tests/repository.test.ts` | U-10–U-14: round-trip, auditoría append-only, filtrado, auto-seed | ✅ 9/9 |
 
 ---
 
 ## 2. Pendientes reales
 
-Solo queda una tarea sustantiva:
-
-1. **Video (E3.3):** el guion de 8 bloques y el storyboard Veo 3 están en `docs/`.
-   La grabación requiere acción del autor — no hay código pendiente.
+| # | Tarea | Tipo | Responsable |
+|---|---|---|---|
+| 1 | Merge PR #1 (`qa/ci-pipeline-and-tests`) tras aprobación CI | Técnico | Humano |
+| 2 | Video E3.3: el guion y storyboard están en `docs/` — solo falta grabar | Producción | Humano |
+| 3 | E5 — definir próximas fases (roadmap post-demo) | Estratégico | Hasta nuevo aviso |
 
 Tareas cosméticas (opcionales):
 - Mover `CareSignal_Resumen_Ejecutivo_v3.pdf` de la raíz a `business/`.
@@ -103,14 +108,14 @@ e2e/            3 archivos, 13 pruebas E2E (Playwright)
 
 ```bash
 npm install
-npm run typecheck       # TypeScript estricto
-npm run test            # 38/38 pruebas unitarias
-npm run test:e2e        # 13/13 pruebas E2E (requiere npm run dev corriendo o auto-start)
+npm run typecheck       # TypeScript estricto — 0 errores
+npm run test            # 47/47 pruebas unitarias (Vitest)
+npm run test:e2e        # suites E2E (Playwright — requiere dev server o auto-start)
 npm run build           # compilación de producción
 npm run dev             # http://localhost:5173
 ```
 
-**CI automático:** cada push a master dispara `.github/workflows/e2e.yml`.
+**CI automático:** cada push/PR a master dispara `.github/workflows/ci.yml` (6 jobs).
 Ver resultados en: `https://github.com/RobertMX23/CareSignalAPP/actions`
 
 ---
@@ -124,6 +129,8 @@ GitHub Codespaces disponible desde el repo (botón verde → Code → Codespaces
 
 ## 6. Próximas decisiones (solo humanas)
 
+- ¿Hacer merge del PR #1? → revisar CI verde en GitHub Actions.
 - ¿Grabar el video E3.3? → el guion está en `docs/` — solo necesita producción.
-- ¿Continuar el desarrollo del producto hacia producción? → requiere nueva versión
-  del contrato (§13) y decisión sobre backend (Google Cloud Run + Firebase).
+- ¿Definir E5? → alcance abierto hasta nuevo aviso (producto, negocio, infraestructura).
+- ¿Continuar hacia producción? → requiere nueva versión del contrato (§13) y decisión
+  sobre backend (Google Cloud Run + Firebase).
