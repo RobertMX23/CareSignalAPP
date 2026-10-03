@@ -175,3 +175,24 @@ Make minimal, traceable changes. Never auto-advance to another phase or add unre
 features. Use the control prompts in contract §16 for repairs, scope guarding, change
 requests, gate resumption, and red-teaming. Log every change in `CHANGELOG.md`; a frozen
 version is never edited silently — an approved change creates a new version (e.g. `0.1.1`).
+
+## AI agent — Testing & CI rules (mandatory checklist)
+
+> Full rationale + examples in `docs/11-ai-agent-rules.md`.
+> Read that file before writing any test or modifying CI workflows.
+
+**Before writing any test:**
+1. Read the actual source types and implementation — never infer function names or field names.
+2. Read `src/data/seed.ts` — only reference roles, IDs, and entities that exist there.
+3. Read `src/App.tsx` (RoleGuard `allowedRoles`) before writing any access-control assertion.
+4. Read the component's CSS media queries — identify conditionally hidden elements.
+
+**When writing tests:**
+5. Add `localStorage.clear()` + `vi.resetModules()` in every `beforeEach` that touches the repository.
+6. Handle `window.confirm()` / dialogs explicitly — Playwright dismisses them silently by default.
+7. Never click a nav link that may be hidden behind a CSS breakpoint — use `goTo()` instead, or call `openNav()` first.
+
+**When creating or modifying CI:**
+8. Each browser/platform in its own job with its own `npx playwright install --with-deps <browser>`.
+9. A job that installs browser X must only run `--project=X` — never all projects.
+10. When a new workflow supersedes an old one, delete the old one in the same commit.
