@@ -178,7 +178,7 @@ version is never edited silently — an approved change creates a new version (e
 
 ## AI agent — Testing & CI rules (mandatory checklist)
 
-> Full rationale + examples in `docs/11-ai-agent-rules.md`.
+> Full rationale + examples in `docs/12-ai-agent-rules.md`.
 > Read that file before writing any test or modifying CI workflows.
 
 **Before writing any test:**

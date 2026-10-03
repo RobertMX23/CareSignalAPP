@@ -29,7 +29,7 @@
 - [ ] El PR tiene título en formato convencional (`feat:`, `fix:`, etc.)
 - [ ] El template del PR está lleno completamente
 - [ ] El PR tiene **1 aprobación** del reviewer (Roberto García)
-- [ ] El CI (E2E Tests) está en ✅ verde
+- [ ] El CI (workflow **CI** en GitHub Actions — 6 jobs) está en ✅ verde
 - [ ] No hay comentarios sin resolver en el PR
 
 ### Documentación

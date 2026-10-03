@@ -1,7 +1,7 @@
 # E2E Testing Rules — CareSignal
 
 > Checklist operativo para escribir o modificar tests E2E en este directorio.
-> Detalle completo en `docs/11-ai-agent-rules.md`.
+> Detalle completo en `docs/12-ai-agent-rules.md`.
 
 ## Antes de escribir
 
