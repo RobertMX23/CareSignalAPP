@@ -30,7 +30,7 @@ interface ToastItemProps {
   onDismiss: (id: string) => void;
 }
 
-const ToastItem = ({ toast, onDismiss }: ToastItemProps): JSX.Element => {
+export const ToastItem = ({ toast, onDismiss }: ToastItemProps): JSX.Element => {
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const start = useCallback((): void => {
