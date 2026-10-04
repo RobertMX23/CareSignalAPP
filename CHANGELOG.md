@@ -7,6 +7,20 @@ silenciosamente; toda modificación material aprobada crea una nueva versión (p
 
 ## [Unreleased]
 
+### E5 L-01 — Pruebas unitarias toast (12 casos) (2026-10-04)
+
+No modifica el contrato congelado. Añade cobertura unitaria completa del sistema
+de notificaciones L-01 (U-T01 a U-T12). Suite total: 59/59 tests pasan.
+
+- **Añadido** `tests/toast.test.tsx` — 12 pruebas unitarias (4 bloques: constantes,
+  pushToast/dismissToast, timer con fake timers, ARIA por severidad). Cubre L01-03 y
+  L01-04 con `vi.useFakeTimers()` + `@testing-library/react`.
+- **Añadido** `@testing-library/react` en `devDependencies`.
+- **Modificado** `src/components/ToastContainer.tsx` — `ToastItem` exportado para
+  permitir tests unitarios directos sin romper la API del contenedor.
+- **Modificado** `vite.config.ts` — `include` ampliado a `*.test.{ts,tsx}` para
+  recoger archivos de test con JSX.
+
 ### E5 L-01 — Accesibilidad WCAG 2.2 y política de diseño UI (2026-10-04)
 
 No modifica el contrato congelado. Corrige brechas de accesibilidad detectadas
