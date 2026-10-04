@@ -36,7 +36,7 @@ Aplican a **todas** las capas sin excepción:
 
 ## L-01 — Toast de notificaciones simuladas
 
-### Estado: `pendiente`
+### Estado: `aprobada` — gate cerrado 2026-10-04 (PR #3 + PR #4 mergeados, 59/59 tests)
 
 ### Qué hace
 Cuando el motor temporal (`temporalEngine.ts`) crea o escala una alerta, el usuario
@@ -88,7 +88,7 @@ Ninguna. Implementación pura React + CSS.
 
 ## L-02 — Dashboard de métricas / KPIs
 
-### Estado: `pendiente`
+### Estado: `en desarrollo` — rama feature/l02-metricas-dashboard
 
 ### Qué hace
 Una nueva página `/metricas` (accesible para `supervisor`, `manager`, `demo_admin`)
