@@ -40,7 +40,7 @@ Continúa como hoja de ruta de madurez del proyecto hasta nuevo aviso.
 | **E2** | Contenido (11 criterios, seguridad, mercado, competencia, valor) | ✅ Completa |
 | **E3** | Deck 14 slides, guion pitch, storyboard de video | ✅ Materiales listos (video pendiente) |
 | **E4** | Infraestructura de calidad: CI 6-job, 47 unit tests, 3 suites E2E | ✅ PR #1 en revisión |
-| **E5** | Próximas fases — a definir hasta nuevo aviso | ⏳ Sin fecha |
+| **E5** | Capas demo: toasts, métricas, PWA, calendario — ver `docs/13-capas-demo.md` | 🔵 En progreso (L-01 siguiente) |
 
 ### E1 — decisiones
 
@@ -77,7 +77,8 @@ Continúa como hoja de ruta de madurez del proyecto hasta nuevo aviso.
 |---|---|---|---|
 | 1 | Merge PR #1 (`qa/ci-pipeline-and-tests`) tras aprobación CI | Técnico | Humano |
 | 2 | Video E3.3: el guion y storyboard están en `docs/` — solo falta grabar | Producción | Humano |
-| 3 | E5 — definir próximas fases (roadmap post-demo) | Estratégico | Hasta nuevo aviso |
+| 3 | Merge PR #2 (`e2e/temporal-engine-tests`) tras revisión | Técnico | Humano |
+| 4 | E5 L-01 — Toast de notificaciones simuladas (ver `docs/13-capas-demo.md`) | Técnico | IA + Humano |
 
 Tareas cosméticas (opcionales):
 - Mover `CareSignal_Resumen_Ejecutivo_v3.pdf` de la raíz a `business/`.

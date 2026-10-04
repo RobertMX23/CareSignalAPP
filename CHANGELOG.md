@@ -7,6 +7,25 @@ silenciosamente; toda modificación material aprobada crea una nueva versión (p
 
 ## [Unreleased]
 
+### E5 L-01 — Accesibilidad WCAG 2.2 y política de diseño UI (2026-10-04)
+
+No modifica el contrato congelado. Corrige brechas de accesibilidad detectadas
+en auditoría contra WCAG 2.2 (Rec. 12 dic 2024) y WAI-ARIA APG.
+
+- **Modificado** `src/components/ToastContainer.tsx` — `ToastItem` con `role="alert"` +
+  `aria-live="assertive"` para alertas rojas (urgentes) y `role="status"` + `polite`
+  para amarillas (WAI-ARIA APG Alert pattern). Auto-dismiss pausado en `mouseenter` /
+  `onFocus` y reanudado en `mouseleave` / `onBlur` (WCAG 2.2.2 Level A). Timer movido
+  de contexto al componente para control por item.
+- **Modificado** `src/components/ToastContext.tsx` — timer eliminado de `pushToast`;
+  `TOAST_DURATION_MS` exportado para uso en `ToastItem`.
+- **Modificado** `index.html` — `lang="es"` → `lang="es-MX"` (WCAG 3.1.1 Level A).
+- **Añadido** `docs/14-design-policy.md` — política normativa de diseño UI: tokens de
+  color con ratios de contraste verificados (WCAG 1.4.3/1.4.11), tipografía, iconos,
+  interacciones (áreas de toque 44 px), navegación por teclado (WCAG 2.1.1), copy
+  policy e inventario de componentes CSS. Incluye auditoría de 13 criterios contra
+  WCAG 2.2 Level AA, IBM Carbon y WAI-ARIA APG.
+
 ### E5 L-01 — Toast de notificaciones simuladas (2026-10-03)
 
 No modifica el contrato congelado ni la lógica de dominio. Añade una capa
@@ -26,6 +45,24 @@ crea o escala una alerta. Cubre todos los criterios de aceptación L01-01 a L01-
 - **Modificado** `src/index.css` — estilos de toast con colores del sistema de diseño,
   animación slide-in, responsive (media query ≤ 420 px: `left/right: 0.75rem`).
 - **Modificado** `tests/seed-integrity.test.ts` — actualizado conteo de staff a 15.
+
+### E5 — Motor temporal: cobertura E2E de criterios 2-3 (2026-10-03)
+
+No modifica el producto ni el contrato congelado. Añade cobertura E2E
+del motor temporal (`temporalEngine.ts`): detección de vencimientos y
+regla de no-duplicidad de alertas (criterios de aceptación 2-3, §6 regla 2).
+
+- **Añadido** `e2e/qa-temporal-engine.spec.ts` — 5 tests que cubren el motor temporal:
+  - T-M-01  Reloj avanzado 15 min → round-02 vence, crea alerta amarilla para Antonio Salas
+  - T-M-02  Retraso ≥ 15 min (`CRITICAL_DELAY_MINUTES`) → alerta creada directamente como roja
+  - T-M-03  Motor idempotente — dos avances consecutivos no duplican la alerta
+  - T-M-04  Ronda cancelada no genera alerta aunque el reloj la supere
+  - T-M-05  Alerta amarilla escala a roja en segundo paso (path de escalada, distinto de T-M-02)
+  - Estrategia: `advanceClock(page, N)` navega a `/control-demo` y hace clic en los
+    botones de la UI real (requiere `demo_admin` en semilla, ver `staff-demo-admin-01`).
+- **Modificado** `e2e/helpers.ts` — `advanceClock` usa `/control-demo` (UI real).
+- **Modificado** `src/data/seed.ts` — añadido `staff-demo-admin-01` (rol `demo_admin`).
+- Cobertura ahora: 6 specs, 27 tests E2E frente a 22 en E5-Bloque-1.
 
 ### E5 — Cobertura E2E del ciclo de alertas (2026-10-03)
 
