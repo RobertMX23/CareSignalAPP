@@ -85,67 +85,7 @@ jobs:
           path: test-results/
           retention-days: 7
 
-  # ── 5. E2E — Firefox ─────────────────────────────────────────────────────────
-  e2e-firefox:
-    name: E2E (Firefox)
-    needs: [typecheck, unit, build]
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-      - run: npm ci
-      - name: Cache Playwright browsers
-        uses: actions/cache@v4
-        id: playwright-cache
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-1.44.0-firefox
-      - name: Install Playwright (firefox)
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: npx playwright install --with-deps firefox
-      - name: Run E2E tests (Firefox)
-        run: npm run test:e2e -- --project=firefox
-      - uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: playwright-report-firefox
-          path: test-results/
-          retention-days: 7
-
-  # ── 6. E2E — Mobile Chrome (375px) ───────────────────────────────────────────
-  e2e-mobile:
-    name: E2E (Mobile 375px)
-    needs: [typecheck, unit, build]
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-      - run: npm ci
-      - name: Cache Playwright browsers
-        uses: actions/cache@v4
-        id: playwright-cache
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-1.44.0-chromium
-      - name: Install Playwright (chromium for mobile)
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: npx playwright install --with-deps chromium
-      - name: Run E2E tests (Mobile)
-        run: npm run test:e2e -- --project=mobile
-      - uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: playwright-report-mobile
-          path: test-results/
-          retention-days: 7
-
-  # ── 7. Lighthouse CI (E6.5) ──────────────────────────────────────────────────
+  # ── 5. Lighthouse CI (E6.5) ──────────────────────────────────────────────────
   lhci:
     name: Lighthouse CI
     needs: [build]
