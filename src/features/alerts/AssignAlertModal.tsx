@@ -5,6 +5,7 @@
 import { useState } from 'react';
 import { useAutoFocusModal } from '../../components/useAutoFocusModal';
 import type { ID, StaffMember } from '../../domain/types';
+import { ROLE_LABEL } from '../../features/labels';
 
 interface AssignAlertModalProps {
   title: string;
@@ -29,7 +30,7 @@ export const AssignAlertModal = ({ title, staffMembers, currentStaffId, onCancel
           <select value={staffId} onChange={(event) => setStaffId(event.target.value)}>
             {staffMembers.map((staff) => (
               <option key={staff.id} value={staff.id}>
-                {staff.displayName} ({staff.role === 'supervisor' ? 'Supervisor/a' : 'Cuidador/a'})
+                {staff.displayName} ({ROLE_LABEL[staff.role]})
               </option>
             ))}
           </select>

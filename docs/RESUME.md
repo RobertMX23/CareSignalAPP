@@ -1,107 +1,130 @@
 # RESUME — Estado actual y punto de reanudación
 
 > Nota de continuidad para retomar el proyecto en una sesión nueva. La fuente de verdad
-> sigue siendo el contrato congelado; este archivo solo describe **dónde estamos** y
+> sigue siendo el contrato congelado; este archivo describe **dónde estamos** y
 > **qué sigue**. Autoridad: informativa (por debajo del contrato, `CLAUDE.md` y `docs/`).
 >
-> **Fecha de captura:** 2026-10-03 · **Posición:** suite QA/CI ampliada, PR #1 en revisión · **Sin fecha límite activa — continúa hasta nuevo aviso**
+> **Fecha de captura:** 2026-10-04 · **Posición:** E5 L-01 en gate (PR #4 en CI)
+> **Sin fecha límite activa — continúa hasta nuevo aviso**
 
 ---
 
 ## 1. Lo que ya está terminado
 
-### Producto (build C-track completo + extensiones post-gate)
+### Producto (C-track completo + extensiones post-gate)
 
 El MVP base cerró como `v0.1.0-workshop` con auditoría **PASS**. Luego se aprobaron
-varios cambios de contrato (v0.1.1, v0.2.0) que extendieron el producto:
+cambios de contrato (v0.1.1, v0.2.0) que extendieron el producto.
 
 | Chunk / Tarea | Descripción | Estado |
 |---|---|---|
 | C0–C8 | Build original, 8 fases gateadas | ✅ PASS, 38/38 pruebas |
 | T5–T6 | SHIFTS enum, AuditEventAction literal | ✅ v0.1.1 |
-| T12 | `Resident.monitoringFrequency` → `careLevel: CareLevel` | ✅ contrato v0.1.1 |
-| T13 | `Round.completionOutcome` como enum canónico | ✅ contrato v0.1.1 |
+| T12 | `Resident.monitoringFrequency` → `careLevel: CareLevel` | ✅ v0.1.1 |
+| T13 | `Round.completionOutcome` como enum canónico | ✅ v0.1.1 |
 | T14 | `residenciaId` en las 6 interfaces — preparación multi-tenant | ✅ v0.2.0 |
-| P1–P6 §06 | Rol gerente, route guards, `ManagerDashboardPage`, vista ejecutiva | ✅ |
+| P1–P6 §06 | Rol `manager`, route guards, `ManagerDashboardPage` | ✅ |
 | UX post-gate | Dashboard dinámico por rol, Mis Rondas móvil, Bitácora, Personal | ✅ |
-| Seed ampliada | 20 residentes · 14 personal · 42 rondas · 7 alertas · 3 incidentes | ✅ |
+| Seed ampliada | 20 residentes · 15 personal · 20 rondas · 6 alertas · 2 incidentes | ✅ |
 
-**Tests unitarios:** 47/47 · 7 archivos · incluye nuevo `repository.test.ts` (U-10–U-14).
-
-### E-track (evolución continua — sin fecha límite activa)
-
-El E-track ya no está atado al concurso WomenCISO/MenCISO (cerrado sept 2026).
-Continúa como hoja de ruta de madurez del proyecto hasta nuevo aviso.
+### E-track (evolución continua)
 
 | Fase | Contenido | Estado |
 |---|---|---|
 | **E0** | Higiene del repositorio | ✅ Completa |
-| **E1** | Decisiones estratégicas (eje seguridad, precios, equipo, GitHub) | ✅ Todas tomadas |
-| **E2** | Contenido (11 criterios, seguridad, mercado, competencia, valor) | ✅ Completa |
-| **E3** | Deck 14 slides, guion pitch, storyboard de video | ✅ Materiales listos (video pendiente) |
-| **E4** | Infraestructura de calidad: CI 6-job, 47 unit tests, 3 suites E2E | ✅ PR #1 en revisión |
-| **E5** | Capas demo: toasts, métricas, PWA, calendario — ver `docs/13-capas-demo.md` | 🔵 En progreso (L-01 siguiente) |
+| **E1** | Decisiones estratégicas (seguridad, precios, equipo, GitHub) | ✅ Completa |
+| **E2** | Contenido (seguridad, mercado, competencia, valor) | ✅ Completa |
+| **E3** | Deck 14 slides, dossier, lámina, guion pitch, storyboard | ✅ Materiales listos (video E3.3 pendiente) |
+| **E4** | CI 6-job, 47→59 unit tests, 3 suites E2E (PR #1 mergeado) | ✅ Completa |
+| **E5 L-01** | Toast simulados + WCAG 2.2 a11y + policy UI + 12 unit tests | ✅ PR #4 mergeado — gate cerrado 2026-10-04 |
+| **E6 — A-01** | Dependabot npm semanal (`.github/dependabot.yml`) | ✅ PR #5 mergeado |
+| **E6 — E6.1** | 5 ADRs producción (`docs/15-adr.md`) | ✅ PR #6 mergeado |
+| **E5 L-02** | Dashboard métricas `/metricas` — 5 KPIs, 2 charts, RoleGuard | ✅ PR #7 mergeado — gate cerrado 2026-10-04 |
+| **E5 L-03 + E6.5** | PWA manifest + íconos + Lighthouse CI job | ⏳ En desarrollo — rama feature/l03-pwa-lighthouse |
+| **E5 L-04** | Vista calendario — 20 residentes, colores por estado, 375 px | 🔵 Pendiente L-03 |
 
-### E1 — decisiones
+### E1 — Decisiones tomadas
 
-| # | Decisión | Estado |
+| # | Decisión | Valor |
 |---|---|---|
-| E1.1 | Eje de IA y ciberseguridad — reposicionamiento + hashes en auditoría | ✅ |
-| E1.2 | Precios: Esencial $1,490 · Profesional $3,490 · Institucional $6,990 MXN/mes/residencia + B2C freemium | ✅ |
-| E1.3 | Proyecto individual — Roberto García como Fundador / PO / Arquitecto / UX | ✅ |
-| E1.4 | Cuenta de GitHub: **RobertMX23** · Repo: `https://github.com/RobertMX23/CareSignalAPP` | ✅ |
+| E1.1 | Eje IA + ciberseguridad | Reposicionamiento aprobado |
+| E1.2 | Precios | Esencial $1,490 · Profesional $3,490 · Institucional $6,990 MXN/mes/residencia |
+| E1.3 | Equipo | Roberto García — Fundador / PO / Arquitecto / UX (proyecto individual) |
+| E1.4 | GitHub | RobertMX23/CareSignalAPP (privado, Free plan) |
 
-### E3 — ensamblado
+### PRs y ramas
 
-| Tarea | Estado |
-|---|---|
-| E3.1 Deck completo 14 slides + exportación PDF | ✅ `business/` |
-| E3.2 Publicar en GitHub | ✅ `https://github.com/RobertMX23/CareSignalAPP` (master) |
-| E3.3 Video de 4 minutos (grabación) | ⏳ Guion + storyboard listos en `docs/`, grabación pendiente |
+| PR | Rama | Contenido | Estado |
+|----|------|-----------|--------|
+| #1 | `qa/ci-pipeline-and-tests` | CI 6-job + 47 unit tests | ✅ mergeado |
+| #2 | `e2e/temporal-engine-tests` | Tests E2E motor temporal, fix selectores A-06/A-08 | ✅ mergeado |
+| #3 | `feature/l01-toast-notifications` (primera parte) | Toast + WCAG a11y | ✅ mergeado |
+| #4 | `feature/l01-toast-notifications` | 12 unit tests U-T01/U-T12 + @testing-library/react | ✅ mergeado |
+| #5 | `chore/dependabot-config` | Dependabot npm semanal — A-01 E6 | ✅ mergeado |
+| #6 | `docs/e6-adr-produccion` | 5 ADRs producción (auth, DB, Cloud Run, obs, API) | ✅ mergeado |
+| #7 | `feature/l02-metricas-dashboard` | E5 L-02: /metricas, 5 KPIs, recharts, RoleGuard | ✅ mergeado — gate cerrado |
+| **#8–#11** | `dependabot/*` | **Bumps automáticos Dependabot (major: vite 8, ts 7, jsdom 30, plugin-react 6)** | **⚠️ NO mergear — major bumps** |
+
+---
+
+## 2. Inventario técnico actual
+
+### Tests
+
+| Archivo | Pruebas | Cubre |
+|---------|---------|-------|
+| `tests/domain-rules.test.ts` | 9 | Reglas de negocio congeladas |
+| `tests/domain-transitions.test.ts` | 12 | Máquina de estados |
+| `tests/seed-integrity.test.ts` | 5 | Integridad de semilla |
+| `tests/alert-operations.test.ts` | 2 | Flujo supervisor ciclo completo |
+| `tests/round-operations.test.ts` | 4 | Operaciones de ronda |
+| `tests/temporal-engine.test.ts` | 6 | Motor temporal |
+| `tests/repository.test.ts` | 9 | Repository layer |
+| `tests/toast.test.tsx` | 12 | Toast L-01 (U-T01/U-T12) |
+| **Total** | **59/59** | |
+
+### Roles (congelados en `src/domain/taxonomy.ts`)
+
+| Rol | Staff en seed | Acceso |
+|-----|---------------|--------|
+| `caregiver` | 9 (3/turno) | `/dashboard` · `/mis-rondas` · `/residentes` |
+| `supervisor` | 3 (1/turno) | `/dashboard` · `/alertas` · `/residentes` · `/personal` |
+| `manager` | 2 (mañana/tarde) | Todo lo de supervisor + `/bitacora` + `closeAlert()` |
+| `demo_admin` | 1 | Todas las rutas + `/control-demo` |
+
+### Páginas (`src/pages/`)
+
+| Página | Ruta | Rol mínimo |
+|--------|------|------------|
+| `DashboardPage` | `/dashboard` | todos |
+| `CaregiverRoundsPage` | `/mis-rondas` | caregiver |
+| `AlertDetailPage` | `/alertas/:alertId` | supervisor |
+| `ResidentDetailPage` | `/residentes/:residentId` | todos |
+| `PersonalPage` | `/personal` | supervisor |
+| `BitacoraPage` | `/bitacora` | manager |
+| `DemoControlPage` | `/control-demo` | demo_admin |
+| `SupervisorDashboardPage` | (hijo de Dashboard) | supervisor |
+| `ManagerDashboardPage` | (hijo de Dashboard) | manager |
 
 ### Infraestructura de calidad
 
-| Componente | Descripción | Estado |
-|---|---|---|
-| `.devcontainer/devcontainer.json` | Codespaces con Debian 12 Bookworm + Node 20 + Playwright auto-instalado | ✅ |
-| `e2e/` | Suite Playwright: 5 archivos — roles, cuidador, supervisor, smoke, gerente | ✅ |
-| `playwright.config.ts` | 4 proyectos: Chromium, Firefox, WebKit, Mobile (Pixel 5 375px) | ✅ |
-| `.github/workflows/ci.yml` | CI 6 jobs: typecheck + unit + build → e2e-chromium + e2e-firefox + e2e-mobile | ✅ PR #1 |
-| `tests/repository.test.ts` | U-10–U-14: round-trip, auditoría append-only, filtrado, auto-seed | ✅ 9/9 |
+| Componente | Estado |
+|------------|--------|
+| `.github/workflows/ci.yml` — 6 jobs (typecheck, unit, build, e2e-chromium, e2e-firefox, e2e-mobile) | ✅ |
+| `playwright.config.ts` — 4 proyectos (Chromium, Firefox, WebKit, Mobile 375 px) | ✅ |
+| `.devcontainer/devcontainer.json` — Codespaces Debian 12 + Node 20 + Playwright | ✅ |
+| `docs/14-design-policy.md` — política UI normativa (WCAG 2.2, IBM Carbon, WAI-ARIA APG) | ✅ |
 
 ---
 
-## 2. Pendientes reales
+## 3. Pendientes reales
 
-| # | Tarea | Tipo | Responsable |
-|---|---|---|---|
-| 1 | Merge PR #1 (`qa/ci-pipeline-and-tests`) tras aprobación CI | Técnico | Humano |
-| 2 | Video E3.3: el guion y storyboard están en `docs/` — solo falta grabar | Producción | Humano |
-| 3 | Merge PR #2 (`e2e/temporal-engine-tests`) tras revisión | Técnico | Humano |
-| 4 | E5 L-01 — Toast de notificaciones simuladas (ver `docs/13-capas-demo.md`) | Técnico | IA + Humano |
-
-Tareas cosméticas (opcionales):
-- Mover `CareSignal_Resumen_Ejecutivo_v3.pdf` de la raíz a `business/`.
-
----
-
-## 3. Inventario del repositorio
-
-```
-contract/       Línea base congelada — FUENTE DE VERDAD (v0.1.0 + amendments v0.1.1, v0.2.0)
-docs/           00–06 producto · 07+ material de entrega · 09-datos-mercado · 10-diagnostico
-business/       Decks, dossier, pitch en PPTX/DOCX
-tools/          Generadores (.cjs)
-src/domain/     Dominio puro: taxonomy, types, rules, transitions
-src/data/       Persistencia: seed (20 res), repository, demoClock, temporalEngine, resetDemo
-src/features/   rounds · alerts · incidents · dashboard · demo
-src/components/ Layout, nav, badges, sesión ficticia
-src/pages/      5 páginas + Manager Dashboard
-tests/          6 archivos, 38 pruebas unitarias
-e2e/            3 archivos, 13 pruebas E2E (Playwright)
-.devcontainer/  Codespaces — Bookworm + Playwright auto-instalado
-.github/        workflows/e2e.yml — CI automático
-```
+| # | Tarea | Responsable |
+|---|-------|-------------|
+| 1 | Merge PR #4 — bypass rules → merge en GitHub | Humano |
+| 2 | Cerrar gate L-01 (actualizar estado en `docs/13-capas-demo.md`) | IA + Humano |
+| 3 | Implementar E5 L-02 — `/metricas` (5 KPIs, 2 charts, RoleGuard) | IA + Humano |
+| 4 | Video E3.3 — guion y storyboard listos en `docs/`, solo falta grabar | Humano |
 
 ---
 
@@ -110,28 +133,44 @@ e2e/            3 archivos, 13 pruebas E2E (Playwright)
 ```bash
 npm install
 npm run typecheck       # TypeScript estricto — 0 errores
-npm run test            # 47/47 pruebas unitarias (Vitest)
-npm run test:e2e        # suites E2E (Playwright — requiere dev server o auto-start)
+npm run test            # 59/59 pruebas unitarias (Vitest)
+npm run test:e2e        # suites E2E (Playwright)
 npm run build           # compilación de producción
 npm run dev             # http://localhost:5173
 ```
 
-**CI automático:** cada push/PR a master dispara `.github/workflows/ci.yml` (6 jobs).
-Ver resultados en: `https://github.com/RobertMX23/CareSignalAPP/actions`
+CI automático: cada push/PR dispara `.github/workflows/ci.yml`.
+Resultados: `https://github.com/RobertMX23/CareSignalAPP/actions`
 
 ---
 
-## 5. Estado de git
+## 5. Contexto de negocio
 
-Branch `master` · remoto: `https://github.com/RobertMX23/CareSignalAPP.git`
-GitHub Codespaces disponible desde el repo (botón verde → Code → Codespaces).
+| Item | Valor |
+|------|-------|
+| Producto | Demo web MVP para residencias de adultos mayores |
+| Aviso legal obligatorio | "MVP operacional, no dispositivo médico" + "Datos ficticios" |
+| Segmento | ~1,297 residencias privadas en México (DENUE) |
+| Producción (si aplica) | Google Cloud Run + Firebase + BigQuery (fuera del MVP actual) |
+| Repo | `https://github.com/RobertMX23/CareSignalAPP` |
+| Codespaces | Botón verde → Code → Codespaces |
 
 ---
 
-## 6. Próximas decisiones (solo humanas)
+## 6. Materiales de referencia
 
-- ¿Hacer merge del PR #1? → revisar CI verde en GitHub Actions.
-- ¿Grabar el video E3.3? → el guion está en `docs/` — solo necesita producción.
-- ¿Definir E5? → alcance abierto hasta nuevo aviso (producto, negocio, infraestructura).
-- ¿Continuar hacia producción? → requiere nueva versión del contrato (§13) y decisión
-  sobre backend (Google Cloud Run + Firebase).
+| Material | URL / Ruta | Descripción |
+|----------|-----------|-------------|
+| Matriz SDLC (Artifact) | https://claude.ai/artifact/DshceZx3wdUNy5k6wGpTWA | Roles × Skills × Tools × Metodologías × Gaps — artefacto interactivo |
+| Contrato congelado | `contract/CareSignal_MVP_...FROZEN.md` | Fuente de verdad del producto |
+| Design Policy | `docs/14-design-policy.md` | Norma UI WCAG 2.2 / IBM Carbon |
+| Capas demo E5 | `docs/13-capas-demo.md` | Contrato L-01 a L-04 |
+
+---
+
+## 7. Próximas decisiones (solo humanas)
+
+- ¿Merge PR #4 + cerrar gate L-01? → CI verde → bypass rules → merge.
+- ¿Arrancar L-02 (métricas)? → requiere gate L-01 cerrado.
+- ¿Grabar video E3.3? → guion en `docs/` listo.
+- ¿Continuar hacia producción? → nueva versión contrato (§13) + decisión backend.

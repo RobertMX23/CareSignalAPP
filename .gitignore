@@ -29,3 +29,6 @@ Thumbs.db
 *.log
 npm-debug.log*
 coverage/
+
+# Lighthouse CI reports (generated locally; the CI job uploads them)
+.lighthouseci/

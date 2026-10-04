@@ -35,8 +35,8 @@ import {
   listStaffMembers,
 } from '../data/repository';
 import type { Alert, ID } from '../domain/types';
-import type { AlertStatus, VerificationOutcome } from '../domain/taxonomy';
-import { ALERT_STATUS_LABEL, INCIDENT_STATUS_LABEL, ROUND_TYPE_LABEL, VERIFICATION_OUTCOME_LABEL } from '../features/labels';
+import type { AlertStatus, Shift, VerificationOutcome } from '../domain/taxonomy';
+import { ALERT_STATUS_LABEL, INCIDENT_STATUS_LABEL, ROUND_TYPE_LABEL, SHIFT_LABEL, VERIFICATION_OUTCOME_LABEL } from '../features/labels';
 import { SeverityBadge } from '../components/SeverityBadge';
 
 const STATUS_LABEL = ALERT_STATUS_LABEL;
@@ -146,7 +146,7 @@ const AlertList = (): JSX.Element => {
             <option value="all">Todos</option>
             {shifts.map((shift) => (
               <option key={shift} value={shift}>
-                {shift}
+                {SHIFT_LABEL[shift as Shift] ?? shift}
               </option>
             ))}
           </select>

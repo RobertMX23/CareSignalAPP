@@ -2,11 +2,27 @@ import type {
   AlertSeverity,
   AlertStatus,
   IncidentStatus,
+  Role,
   RoundOutcome,
   RoundStatus,
   RoundType,
+  Shift,
   VerificationOutcome,
 } from '../domain/taxonomy';
+
+export const ROLE_LABEL: Record<Role, string> = {
+  caregiver:  'Cuidador/a',
+  supervisor: 'Supervisor/a',
+  manager:    'Gerente',
+  demo_admin: 'Administrador/a de demo',
+};
+
+export const SHIFT_LABEL: Record<Shift, string> = {
+  morning:   'Mañana',
+  afternoon: 'Tarde',
+  night:     'Noche',
+  on_call:   'Guardia',
+};
 
 export const ROUND_TYPE_LABEL: Record<RoundType, string> = {
   routine_check:            'Revisión de rutina',

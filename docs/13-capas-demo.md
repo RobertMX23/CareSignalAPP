@@ -88,7 +88,7 @@ Ninguna. Implementación pura React + CSS.
 
 ## L-02 — Dashboard de métricas / KPIs
 
-### Estado: `en desarrollo` — rama feature/l02-metricas-dashboard
+### Estado: `aprobada` — gate cerrado 2026-10-04 (PR #7 mergeado, 59/59 tests, 7/7 criterios verificados en browser)
 
 ### Qué hace
 Una nueva página `/metricas` (accesible para `supervisor`, `manager`, `demo_admin`)
@@ -143,7 +143,7 @@ Verificar antes de instalar que no esté ya en `package.json`.
 
 ## L-03 — PWA instalable
 
-### Estado: `pendiente`
+### Estado: `en desarrollo` — rama feature/l03-pwa-lighthouse
 
 ### Qué hace
 Convierte el app en una Progressive Web App instalable en iOS y Android.
@@ -241,9 +241,9 @@ de instalarla y documentarlo en un PR separado.
 
 | Capa | ID | Estado | PR | Gate aprobado |
 |------|----|--------|-----|---------------|
-| Toast de notificaciones | L-01 | `pendiente` | — | — |
-| Dashboard de métricas | L-02 | `pendiente` | — | — |
-| PWA instalable | L-03 | `pendiente` | — | — |
+| Toast de notificaciones | L-01 | `aprobada` | #3 #4 | 2026-10-04 |
+| Dashboard de métricas | L-02 | `aprobada` | #7 | 2026-10-04 |
+| PWA instalable | L-03 | `en desarrollo` | — | — |
 | Vista de calendario | L-04 | `pendiente` | — | — |
 
 ---

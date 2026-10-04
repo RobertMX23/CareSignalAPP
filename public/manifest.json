@@ -1,0 +1,25 @@
+{
+  "name": "CareSignal — MVP operacional",
+  "short_name": "CareSignal",
+  "description": "Gestión operativa de rondas y alertas para residencias de adultos mayores.",
+  "start_url": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#1a6b5c",
+  "background_color": "#f7f4f0",
+  "lang": "es-MX",
+  "icons": [
+    {
+      "src": "icons/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
