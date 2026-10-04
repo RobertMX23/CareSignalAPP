@@ -7,6 +7,21 @@ silenciosamente; toda modificación material aprobada crea una nueva versión (p
 
 ## [Unreleased]
 
+### feat(L04): vista de calendario de rondas (2026-10-04)
+
+Nueva página `/rondas` accesible para todos los roles con toggle Lista/Calendario
+y filtro por turno. Criterios del contrato `docs/13-capas-demo.md` L-04.
+
+- **Agregado** `src/features/rounds/RoundsCalendarView.tsx` — vista de agenda con
+  agrupación por turno (mañana/tarde/noche), colores por estado y hora de la ronda
+- **Agregado** `src/pages/RoundsPage.tsx` — página con toggle Lista↔Calendario,
+  filtro de turno y conteo total; toggle persiste en `sessionStorage`
+- **Modificado** `src/App.tsx` — ruta `/rondas` para `caregiver|supervisor|manager|demo_admin`
+- **Modificado** `src/components/AppLayout.tsx` — enlace "Rondas" en nav para todos los roles
+- **Modificado** `src/index.css` — estilos `.cal-*`, `.rounds-toolbar`, `.view-toggle`
+  responsive hasta 375 px
+- Colores: verde=scheduled/in_progress · amarillo=due · rojo=overdue · gris=cancelled/completed
+
 ### fix(caregiver): alinear conteo de KPI cards con filtro de estado (2026-10-04)
 
 El dashboard mostraba "En progreso: 1" pero al hacer clic el filtro mostraba
