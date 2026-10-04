@@ -11,6 +11,7 @@ import { AlertDetailPage } from './pages/AlertDetailPage';
 import { DemoControlPage } from './pages/DemoControlPage';
 import { BitacoraPage } from './pages/BitacoraPage';
 import { PersonalPage } from './pages/PersonalPage';
+import { MetricasDashboardPage } from './pages/MetricasDashboardPage';
 
 function defaultRouteForRole(_role: Role): string {
   return '/dashboard';
@@ -49,6 +50,7 @@ const App = (): JSX.Element => (
             <Route path="alertas" element={<AlertDetailPage />} />
             <Route path="alertas/:alertId" element={<AlertDetailPage />} />
             <Route path="personal" element={<PersonalPage />} />
+            <Route path="metricas" element={<MetricasDashboardPage />} />
           </Route>
 
           <Route element={<RoleGuard allowedRoles={['caregiver', 'supervisor', 'manager', 'demo_admin']} />}>
