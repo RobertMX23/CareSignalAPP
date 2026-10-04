@@ -7,6 +7,45 @@ silenciosamente; toda modificación material aprobada crea una nueva versión (p
 
 ## [Unreleased]
 
+### E5 L-01 — Accesibilidad WCAG 2.2 y política de diseño UI (2026-10-04)
+
+No modifica el contrato congelado. Corrige brechas de accesibilidad detectadas
+en auditoría contra WCAG 2.2 (Rec. 12 dic 2024) y WAI-ARIA APG.
+
+- **Modificado** `src/components/ToastContainer.tsx` — `ToastItem` con `role="alert"` +
+  `aria-live="assertive"` para alertas rojas (urgentes) y `role="status"` + `polite`
+  para amarillas (WAI-ARIA APG Alert pattern). Auto-dismiss pausado en `mouseenter` /
+  `onFocus` y reanudado en `mouseleave` / `onBlur` (WCAG 2.2.2 Level A). Timer movido
+  de contexto al componente para control por item.
+- **Modificado** `src/components/ToastContext.tsx` — timer eliminado de `pushToast`;
+  `TOAST_DURATION_MS` exportado para uso en `ToastItem`.
+- **Modificado** `index.html` — `lang="es"` → `lang="es-MX"` (WCAG 3.1.1 Level A).
+- **Añadido** `docs/14-design-policy.md` — política normativa de diseño UI: tokens de
+  color con ratios de contraste verificados (WCAG 1.4.3/1.4.11), tipografía, iconos,
+  interacciones (áreas de toque 44 px), navegación por teclado (WCAG 2.1.1), copy
+  policy e inventario de componentes CSS. Incluye auditoría de 13 criterios contra
+  WCAG 2.2 Level AA, IBM Carbon y WAI-ARIA APG.
+
+### E5 L-01 — Toast de notificaciones simuladas (2026-10-03)
+
+No modifica el contrato congelado ni la lógica de dominio. Añade una capa
+de notificaciones visuales que aparecen en pantalla cuando el motor temporal
+crea o escala una alerta. Cubre todos los criterios de aceptación L01-01 a L01-07.
+
+- **Añadido** `src/components/ToastContext.tsx` — contexto React con `pushToast`,
+  auto-dismiss a 5 s, máximo 3 toasts simultáneos (los más nuevos desplazan los viejos).
+- **Añadido** `src/components/ToastContainer.tsx` — escucha `CustomEvent('caresignal:alert')`
+  en `window`, resuelve el nombre del residente desde el repositorio y renderiza los toasts.
+- **Modificado** `src/data/demoClock.ts` — `advanceByMinutes` despacha `caresignal:alert`
+  con `type: 'created' | 'escalated'`, `severity` y `residentId` tras ejecutar el motor temporal.
+  La capa de datos nunca importa React; el puente es el DOM event.
+- **Modificado** `src/App.tsx` — monta `ToastProvider` y `ToastContainer` globalmente.
+- **Modificado** `src/data/seed.ts` — añadido `staff-demo-admin-01` (rol `demo_admin`)
+  para que `/control-demo` sea accesible desde el selector de usuario.
+- **Modificado** `src/index.css` — estilos de toast con colores del sistema de diseño,
+  animación slide-in, responsive (media query ≤ 420 px: `left/right: 0.75rem`).
+- **Modificado** `tests/seed-integrity.test.ts` — actualizado conteo de staff a 15.
+
 ### E5 — Motor temporal: cobertura E2E de criterios 2-3 (2026-10-03)
 
 No modifica el producto ni el contrato congelado. Añade cobertura E2E

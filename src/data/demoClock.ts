@@ -12,8 +12,27 @@
  */
 
 import type { ISODateTime } from '../domain/types';
-import { getClockOffsetMinutes, getClockStartTime, setClockOffsetMinutes } from './repository';
-import { runTemporalEngine } from './temporalEngine';
+import { getClockOffsetMinutes, getClockStartTime, listAlerts, setClockOffsetMinutes } from './repository';
+import { runTemporalEngine, type TemporalEngineResult } from './temporalEngine';
+
+const dispatchAlertEvents = (result: TemporalEngineResult): void => {
+  if (typeof window === 'undefined') return;
+  const alerts = listAlerts();
+  for (const alertId of result.alertsCreated) {
+    const alert = alerts.find((a) => a.id === alertId);
+    if (!alert) continue;
+    window.dispatchEvent(new CustomEvent('caresignal:alert', {
+      detail: { type: 'created', severity: alert.severity, residentId: alert.residentId },
+    }));
+  }
+  for (const alertId of result.alertsEscalatedBySeverity) {
+    const alert = alerts.find((a) => a.id === alertId);
+    if (!alert) continue;
+    window.dispatchEvent(new CustomEvent('caresignal:alert', {
+      detail: { type: 'escalated', severity: 'red', residentId: alert.residentId },
+    }));
+  }
+};
 
 const computeTime = (startTime: ISODateTime, offsetMinutes: number): ISODateTime =>
   new Date(Date.parse(startTime) + offsetMinutes * 60_000).toISOString();
@@ -26,7 +45,8 @@ export const getCurrentTime = (): ISODateTime =>
 export const advanceByMinutes = (minutes: number): ISODateTime => {
   setClockOffsetMinutes(getClockOffsetMinutes() + minutes);
   const now = getCurrentTime();
-  runTemporalEngine(now);
+  const result = runTemporalEngine(now);
+  dispatchAlertEvents(result);
   return now;
 };
 
