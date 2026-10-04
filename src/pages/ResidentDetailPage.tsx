@@ -58,7 +58,7 @@ const ResidentList = (): JSX.Element => {
             <tr>
               <th>Residente</th>
               <th>Habitación</th>
-              <th>Frecuencia de monitoreo</th>
+              <th>Nivel de cuidado</th>
               <th>Estado</th>
             </tr>
           </thead>

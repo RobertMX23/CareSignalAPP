@@ -2,20 +2,7 @@ import type { StaffMember } from '../domain/types';
 import type { Role, Shift, StaffAvailability } from '../domain/taxonomy';
 import { SHIFTS } from '../domain/taxonomy';
 import { getCurrentTime } from '../data/demoClock';
-
-const ROLE_LABEL: Record<Role, string> = {
-  caregiver:  'Cuidador/a',
-  supervisor: 'Supervisor/a',
-  manager:    'Gerente',
-  demo_admin: 'Admin demo',
-};
-
-const SHIFT_LABEL: Record<Shift, string> = {
-  morning:   'Mañana',
-  afternoon: 'Tarde',
-  night:     'Noche',
-  on_call:   'Guardia',
-};
+import { ROLE_LABEL, SHIFT_LABEL } from '../features/labels';
 
 const AVAILABILITY_LABEL: Record<StaffAvailability, string> = {
   available: 'Activo/a',

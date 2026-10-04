@@ -7,6 +7,28 @@ silenciosamente; toda modificación material aprobada crea una nueva versión (p
 
 ## [Unreleased]
 
+### fix: bugs de labels en filtros y etiquetas de rol (2026-10-04)
+
+Corrección de 4 defectos visuales sin modificar contrato congelado.
+Causa raíz: cada componente definía sus propias etiquetas de rol/turno con
+valores distintos. Solución: `ROLE_LABEL` y `SHIFT_LABEL` centralizados
+en `src/features/labels.ts` como única fuente de verdad.
+
+- **Bug #1 corregido** `src/pages/AlertDetailPage.tsx` — filtro "Turno" mostraba
+  `morning/afternoon/night` (valores crudos). Ahora usa `SHIFT_LABEL` de
+  `labels.ts` → "Mañana/Tarde/Noche/Guardia".
+- **Bug #2 corregido** `src/features/alerts/AssignAlertModal.tsx` — etiqueta de
+  rol en el select de asignación: ternario `supervisor ? ... : 'Cuidador/a'`
+  dejaba manager y demo_admin con etiqueta incorrecta. Reemplazado con
+  `ROLE_LABEL[staff.role]`.
+- **Bug #3 corregido** `src/components/StaffRosterTable.tsx` — `demo_admin: 'Admin
+  demo'` inconsistente con AppLayout. Ahora importa `ROLE_LABEL` de `labels.ts`.
+- **Bug #4 corregido** `src/pages/ResidentDetailPage.tsx` — cabecera de columna
+  "Frecuencia de monitoreo" no reflejaba el renombre T12 (`careLevel`).
+  Actualizada a "Nivel de cuidado".
+- **Añadido** `ROLE_LABEL` y `SHIFT_LABEL` a `src/features/labels.ts` como
+  fuente canónica (importa tipos `Role`, `Shift` de `domain/taxonomy`).
+
 ### E5 L-03 + E6.5 — PWA instalable + Lighthouse CI (2026-10-04)
 
 No modifica el contrato congelado. Implementa el manifiesto PWA, íconos SVG y metas
