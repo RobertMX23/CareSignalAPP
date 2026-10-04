@@ -1,6 +1,8 @@
 import { Navigate, Outlet, Route, HashRouter as Router, Routes } from 'react-router-dom';
 import { AppLayout } from './components/AppLayout';
 import { DemoSessionProvider, useDemoSession } from './components/DemoSessionContext';
+import { ToastProvider } from './components/ToastContext';
+import { ToastContainer } from './components/ToastContainer';
 import type { Role } from './domain/taxonomy';
 import { DashboardPage } from './pages/DashboardPage';
 import { CaregiverRoundsPage } from './pages/CaregiverRoundsPage';
@@ -29,6 +31,7 @@ function DefaultRedirect(): JSX.Element {
 
 const App = (): JSX.Element => (
   <DemoSessionProvider>
+    <ToastProvider>
     <Router>
       <Routes>
         <Route element={<AppLayout />}>
@@ -65,6 +68,8 @@ const App = (): JSX.Element => (
         </Route>
       </Routes>
     </Router>
+    <ToastContainer />
+    </ToastProvider>
   </DemoSessionProvider>
 );
 

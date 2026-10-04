@@ -132,19 +132,19 @@ test('A-06 botón "Cerrar" ausente cuando la alerta no está resuelta', async ({
 
   // alert-01 está open — no debe mostrar "Cerrar"
   await goTo(page, '/alertas/alert-01');
-  await expect(page.locator('button:has-text("Cerrar")')).not.toBeVisible();
+  await expect(page.locator('button.button:has-text("Cerrar")')).not.toBeVisible();
 
   // alert-02 está assigned — tampoco
   await goTo(page, '/alertas/alert-02');
-  await expect(page.locator('button:has-text("Cerrar")')).not.toBeVisible();
+  await expect(page.locator('button.button:has-text("Cerrar")')).not.toBeVisible();
 
   // alert-03 está escalated — tampoco
   await goTo(page, '/alertas/alert-03');
-  await expect(page.locator('button:has-text("Cerrar")')).not.toBeVisible();
+  await expect(page.locator('button.button:has-text("Cerrar")')).not.toBeVisible();
 
   // alert-05 está resolved — SÍ debe mostrarlo (valida la regla por contraste)
   await goTo(page, '/alertas/alert-05');
-  await expect(page.locator('button:has-text("Cerrar")')).toBeVisible();
+  await expect(page.locator('button.button:has-text("Cerrar")')).toBeVisible();
 });
 
 // ─── A-07 ────────────────────────────────────────────────────────────────────
@@ -182,7 +182,7 @@ test('A-08 manager cierra alerta resuelta (resolved → closed)', async ({ page 
   // alert-05 está resolved en la semilla
   await goTo(page, '/alertas/alert-05');
 
-  const cerrarBtn = page.locator('button:has-text("Cerrar")');
+  const cerrarBtn = page.locator('button.button:has-text("Cerrar")');
   await expect(cerrarBtn).toBeVisible();
   await cerrarBtn.click();
 
