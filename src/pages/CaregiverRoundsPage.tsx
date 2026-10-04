@@ -6,7 +6,7 @@
  */
 
 import { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useDemoSession } from '../components/DemoSessionContext';
 import { CompleteRoundModal } from '../features/rounds/CompleteRoundModal';
 import { RequestSupportModal } from '../features/rounds/RequestSupportModal';
@@ -25,6 +25,15 @@ import { isAlertActive } from '../domain/rules';
 import type { Alert, Round } from '../domain/types';
 import type { AlertSeverity } from '../domain/taxonomy';
 import { ROUND_TYPE_LABEL } from '../features/labels';
+
+type StatusFilter = 'overdue' | 'in_progress' | 'pending' | 'completed';
+
+const FILTER_LABEL: Record<StatusFilter, string> = {
+  overdue:     'Vencidas',
+  in_progress: 'En progreso',
+  pending:     'Pendientes',
+  completed:   'Completadas',
+};
 
 type ModalState = { kind: 'complete'; round: Round } | { kind: 'support'; round: Round } | undefined;
 
@@ -54,6 +63,9 @@ export const CaregiverRoundsPage = (): JSX.Element => {
   const { activeStaff, refreshToken, refreshDemoData } = useDemoSession();
   const [modal, setModal] = useState<ModalState>(undefined);
   const [message, setMessage] = useState<{ kind: 'success' | 'error'; text: string } | undefined>(undefined);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const activeFilter = searchParams.get('filter') as StatusFilter | null;
 
   const currentTime = getCurrentTime();
 
@@ -78,6 +90,19 @@ export const CaregiverRoundsPage = (): JSX.Element => {
       })
       .sort(compareByPriority);
   }, [activeStaff.id, refreshToken]);
+
+  const displayRows = useMemo((): RowData[] => {
+    if (!activeFilter) return rows;
+    return rows.filter(({ round }) => {
+      switch (activeFilter) {
+        case 'overdue':     return round.status === 'overdue';
+        case 'in_progress': return round.status === 'in_progress';
+        case 'pending':     return round.status === 'scheduled' || round.status === 'due';
+        case 'completed':   return round.status === 'completed';
+        default:            return true;
+      }
+    });
+  }, [rows, activeFilter]);
 
   const handleStart = (round: Round): void => {
     const result = startRound(round, activeStaff.id, getCurrentTime());
@@ -152,13 +177,31 @@ export const CaregiverRoundsPage = (): JSX.Element => {
         </p>
       )}
 
-      {rows.length === 0 ? (
-        <p>No hay rondas ni alertas relevantes para este usuario en este momento.</p>
+      {activeFilter !== null && (
+        <p className="filter-active-banner">
+          Mostrando: <strong>{FILTER_LABEL[activeFilter]}</strong>{' '}
+          ({displayRows.length} {displayRows.length === 1 ? 'ronda' : 'rondas'}){' '}
+          <button
+            type="button"
+            className="link-button"
+            onClick={() => setSearchParams({})}
+          >
+            × Ver todas
+          </button>
+        </p>
+      )}
+
+      {displayRows.length === 0 ? (
+        <p>
+          {activeFilter !== null
+            ? `No hay rondas en estado "${FILTER_LABEL[activeFilter]}" en este momento.`
+            : 'No hay rondas ni alertas relevantes para este usuario en este momento.'}
+        </p>
       ) : (
         <>
           {/* ── Móvil: cards ── */}
           <div className="rounds-cards-view">
-            {rows.map(({ round, bucket, openAlert, roundAlerts }) => {
+            {displayRows.map(({ round, bucket, openAlert, roundAlerts }) => {
               const resident = getResidentById(round.residentId);
               const delay    = describeDelay(round, currentTime);
               const time     = new Date(round.scheduledAt).toLocaleTimeString('es-ES', { timeStyle: 'short' });
@@ -197,7 +240,7 @@ export const CaregiverRoundsPage = (): JSX.Element => {
                 </tr>
               </thead>
               <tbody>
-                {rows.map(({ round, roundAlerts, openAlert, bucket }) => {
+                {displayRows.map(({ round, roundAlerts, openAlert, bucket }) => {
                   const resident = getResidentById(round.residentId);
                   const delay    = describeDelay(round, currentTime);
                   const time     = new Date(round.scheduledAt).toLocaleTimeString('es-ES', { timeStyle: 'short' });
