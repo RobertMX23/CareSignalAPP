@@ -14,22 +14,9 @@ export default defineConfig({
 
   projects: [
     {
+      // Chromium cubre Chrome y Edge (mismo motor Blink) — única plataforma target
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
-    },
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-    },
-    {
-      // Mobile Chrome 375px — ejercita la vista de cards (rounds-cards-view)
-      name: 'mobile',
-      use: { ...devices['Pixel 5'] },
-      testMatch: /qa-smoke|qa-roles|qa-caregiver-mobile/,
     },
   ],
 

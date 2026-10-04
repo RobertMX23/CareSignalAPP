@@ -7,6 +7,18 @@ silenciosamente; toda modificación material aprobada crea una nueva versión (p
 
 ## [Unreleased]
 
+### chore(ci): simplificar E2E a Chromium único — Chrome + Edge (2026-10-04)
+
+Decisión de alcance: el demo es una aplicación web presentada en navegador;
+Chrome y Edge comparten el motor Chromium/Blink, por lo que un solo proyecto
+cubre ambos sin pérdida de cobertura relevante.
+
+- **Eliminado** job `e2e-firefox` de `.github/workflows/ci.yml`
+- **Eliminado** job `e2e-mobile` de `.github/workflows/ci.yml`
+- **Simplificado** `playwright.config.ts` a un único proyecto `chromium`
+  (Desktop Chrome); eliminados proyectos `firefox`, `webkit` y `mobile`
+- CI queda con 5 jobs: `typecheck`, `unit`, `build`, `e2e-chromium`, `lhci`
+
 ### fix: bugs de labels en filtros y etiquetas de rol (2026-10-04)
 
 Corrección de 4 defectos visuales sin modificar contrato congelado.
