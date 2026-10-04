@@ -22,7 +22,7 @@ export const useToast = (): ToastContextValue => {
 };
 
 const MAX_TOASTS = 3;
-const TOAST_DURATION_MS = 5_000;
+export const TOAST_DURATION_MS = 5_000;
 
 export const ToastProvider = ({ children }: { children: ReactNode }): JSX.Element => {
   const [toasts, setToasts] = useState<Toast[]>([]);
@@ -35,7 +35,7 @@ export const ToastProvider = ({ children }: { children: ReactNode }): JSX.Elemen
     (toast: Omit<Toast, 'id'>): void => {
       const id = `toast-${Date.now()}-${Math.random().toString(36).slice(2)}`;
       setToasts((prev) => [{ ...toast, id }, ...prev].slice(0, MAX_TOASTS));
-      setTimeout(() => setToasts((prev) => prev.filter((t) => t.id !== id)), TOAST_DURATION_MS);
+      // Auto-dismiss timer is owned by ToastItem to allow pause-on-hover/focus.
     },
     [],
   );
