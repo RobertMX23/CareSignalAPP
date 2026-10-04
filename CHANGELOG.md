@@ -7,6 +7,17 @@ silenciosamente; toda modificación material aprobada crea una nueva versión (p
 
 ## [Unreleased]
 
+### fix(caregiver): alinear conteo de KPI cards con filtro de estado (2026-10-04)
+
+El dashboard mostraba "En progreso: 1" pero al hacer clic el filtro mostraba
+"2 rondas". Causa: `CaregiverRoundsPage.displayRows` usaba `isRelevant()` (incluye
+rondas con alertas abiertas sin asignar), mientras el dashboard contaba solo rondas
+con `assignedStaffId === activeStaff.id`. Fix: al activar un filtro de estado via
+query param, aplicar la misma base estricta que el dashboard.
+
+- **Modificado** `src/pages/CaregiverRoundsPage.tsx` — `displayRows` usa
+  `round.assignedStaffId === activeStaff.id` como base cuando hay filtro activo
+
 ### docs: agregar dashboard de seguimiento de funciones (2026-10-04)
 
 Nuevo archivo `docs/seguimiento-funciones.html` — dashboard interactivo standalone

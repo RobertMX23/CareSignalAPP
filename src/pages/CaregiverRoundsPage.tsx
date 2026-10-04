@@ -93,7 +93,10 @@ export const CaregiverRoundsPage = (): JSX.Element => {
 
   const displayRows = useMemo((): RowData[] => {
     if (!activeFilter) return rows;
-    return rows.filter(({ round }) => {
+    // When navigating from a dashboard KPI card, show only directly-assigned rounds
+    // so the count in the banner matches the number shown on the card.
+    const base = rows.filter(({ round }) => round.assignedStaffId === activeStaff.id);
+    return base.filter(({ round }) => {
       switch (activeFilter) {
         case 'overdue':     return round.status === 'overdue';
         case 'in_progress': return round.status === 'in_progress';
@@ -102,7 +105,7 @@ export const CaregiverRoundsPage = (): JSX.Element => {
         default:            return true;
       }
     });
-  }, [rows, activeFilter]);
+  }, [rows, activeFilter, activeStaff.id]);
 
   const handleStart = (round: Round): void => {
     const result = startRound(round, activeStaff.id, getCurrentTime());
