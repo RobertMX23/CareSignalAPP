@@ -7,6 +7,30 @@ silenciosamente; toda modificación material aprobada crea una nueva versión (p
 
 ## [Unreleased]
 
+### E5 L-03 + E6.5 — PWA instalable + Lighthouse CI (2026-10-04)
+
+No modifica el contrato congelado. Implementa el manifiesto PWA, íconos SVG y metas
+`<head>` para instalabilidad en Android/iOS. Añade job `lhci` al pipeline CI para
+auditar Performance ≥ 90, Accessibility ≥ 90 y PWA ≥ 80 (nivel `warn`).
+
+- **Añadido** `public/manifest.json` — manifiesto PWA: `name`, `short_name`,
+  `start_url: "./"`, `display: standalone`, `theme_color: #1a6b5c`,
+  `background_color: #f7f4f0`, íconos 192 × 192 y 512 × 512.
+- **Añadido** `public/icons/icon-192.svg` — ícono SVG 192 px (iniciales CS,
+  color primario `#1a6b5c`, sin dependencias externas).
+- **Añadido** `public/icons/icon-512.svg` — ícono SVG 512 px, `purpose: maskable`.
+- **Modificado** `index.html` — `<link rel="manifest">`, `<meta name="theme-color">`,
+  `<meta name="apple-mobile-web-app-capable">`, `<meta name="apple-mobile-web-app-title">`,
+  `<link rel="apple-touch-icon">`.
+- **Añadido** `.lighthouserc.json` — configuración Lighthouse CI: `staticDistDir: ./dist`,
+  assertions `warn` (performance ≥ 0.9, accessibility ≥ 0.9, pwa ≥ 0.8),
+  upload target `filesystem` → `.lighthouseci/`.
+- **Modificado** `.github/workflows/ci.yml` — job 7 `lhci`: `needs: [build]`,
+  `npm run build` + `npx @lhci/cli@0.14.x autorun`; sube reporte como artifact.
+- **Modificado** `.gitignore` — agrega `.lighthouseci/`.
+- **Modificado** `docs/13-capas-demo.md` — gate L-02 cerrado; L-03 → `en desarrollo`.
+- **Modificado** `docs/RESUME.md` — PRs #5–#7 marcados mergeados; L-03 en progreso.
+
 ### E5 L-01 — Pruebas unitarias toast (12 casos) (2026-10-04)
 
 No modifica el contrato congelado. Añade cobertura unitaria completa del sistema
