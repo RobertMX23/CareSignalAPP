@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CareSignal — Seguimiento de funciones</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600&display=swap">
+<style>
+/* Layout: header · KPI cards · filterable matrix + edit engine */
+:root {
+  --bg: #f4f6fb; --surface: #ffffff; --raised: #eef0f7;
+  --border: rgba(30,41,59,.09); --border-s: rgba(30,41,59,.17);
+  --text: #0f172a; --muted: #5e6e8a; --subtle: #96a5bb;
+  --accent: #1a56db; --accent-bg: #eff6ff;
+  --ok: #166534;  --ok-chip: #dcfce7;
+  --warn: #854d0e; --warn-chip: #fef9c3;
+  --danger: #991b1b; --danger-bg: #fee2e2;
+  --r-cg: #1e40af; --r-cg-bg: #dbeafe;
+  --r-sv: #166534; --r-sv-bg: #dcfce7;
+  --r-mg: #713f12; --r-mg-bg: #fef3c7;
+  --r-adm: #7f1d1d; --r-adm-bg: #fee2e2;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:#0d1424; --surface:#1a2436; --raised:#141e2e;
+    --border:rgba(255,255,255,.07); --border-s:rgba(255,255,255,.13);
+    --text:#e8edf5; --muted:#7a8fa8; --subtle:#3d5068;
+    --accent:#60a5fa; --accent-bg:#0d2245;
+    --ok:#86efac; --ok-chip:#134025;
+    --warn:#fcd34d; --warn-chip:#3d2000;
+    --danger:#fca5a5; --danger-bg:#3d0808;
+    --r-cg:#93c5fd; --r-cg-bg:#0d2245; --r-sv:#86efac; --r-sv-bg:#134025;
+    --r-mg:#fcd34d; --r-mg-bg:#3d2000; --r-adm:#fca5a5; --r-adm-bg:#3d0808;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg:#0d1424; --surface:#1a2436; --raised:#141e2e;
+  --border:rgba(255,255,255,.07); --border-s:rgba(255,255,255,.13);
+  --text:#e8edf5; --muted:#7a8fa8; --subtle:#3d5068;
+  --accent:#60a5fa; --accent-bg:#0d2245;
+  --ok:#86efac; --ok-chip:#134025;
+  --warn:#fcd34d; --warn-chip:#3d2000;
+  --danger:#fca5a5; --danger-bg:#3d0808;
+  --r-cg:#93c5fd; --r-cg-bg:#0d2245; --r-sv:#86efac; --r-sv-bg:#134025;
+  --r-mg:#fcd34d; --r-mg-bg:#3d2000; --r-adm:#fca5a5; --r-adm-bg:#3d0808;
+  color-scheme: dark;
+}
+
+*,*::before,*::after{box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Sora',system-ui,sans-serif;font-size:13px;line-height:1.5;margin:0;padding:0 16px 48px;max-width:960px;margin-inline:auto;}
+
+/* ── Header ── */
+.hdr{display:flex;align-items:center;gap:10px;padding:18px 0 14px;border-bottom:1px solid var(--border-s);margin-bottom:14px;flex-wrap:wrap;}
+.logo{width:34px;height:34px;background:var(--accent);border-radius:9px;display:grid;place-items:center;flex-shrink:0;}
+.logo svg{width:18px;height:18px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.hdr-text{flex:1;min-width:0;}
+.hdr-title{font-size:14px;font-weight:600;letter-spacing:-.2px;}
+.hdr-sub{font-size:11px;color:var(--muted);}
+.hdr-right{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+.badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:500;}
+.b-v{background:var(--accent-bg);color:var(--accent);}
+.b-frozen{background:var(--raised);color:var(--muted);border:1px solid var(--border-s);}
+.b-date{background:var(--raised);color:var(--subtle);border:1px solid var(--border);}
+.b-modified{background:#fef9c3;color:#854d0e;border:1px solid #fcd34d;}
+.b-modified-dark{background:#3d2000;color:#fcd34d;border:1px solid #854d0e;}
+
+/* ── Buttons ── */
+.btn{display:inline-flex;align-items:center;gap:5px;padding:6px 13px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border-s);transition:all .12s;font-family:inherit;}
+.btn-edit{background:var(--surface);color:var(--muted);}
+.btn-edit:hover{border-color:var(--accent);color:var(--accent);}
+.btn-edit.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+.btn-sm{padding:4px 10px;font-size:11px;border-radius:7px;}
+.btn-primary{background:var(--accent);color:#fff;border-color:var(--accent);}
+.btn-primary:hover{opacity:.9;}
+.btn-secondary{background:var(--surface);color:var(--muted);}
+.btn-secondary:hover{border-color:var(--border-s);color:var(--text);}
+.btn-danger{background:var(--danger-bg);color:var(--danger);border-color:var(--danger);}
+.btn-danger:hover{opacity:.85;}
+.btn-outline{background:transparent;color:var(--accent);border-color:var(--accent);}
+.btn-outline:hover{background:var(--accent-bg);}
+
+/* ── Edit toolbar ── */
+.edit-bar{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--accent-bg);border:1px solid var(--accent);border-radius:9px;margin-bottom:14px;flex-wrap:wrap;}
+.edit-bar-label{font-size:11px;font-weight:600;color:var(--accent);flex:1;min-width:120px;}
+.modified-dot{width:7px;height:7px;border-radius:50%;background:var(--warn);display:inline-block;margin-right:4px;}
+
+/* ── KPI cards ── */
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-bottom:18px;}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;}
+.kpi-n{font-size:28px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums;}
+.kpi-l{font-size:10px;color:var(--muted);margin-top:3px;font-weight:500;}
+.kpi--total .kpi-n{color:var(--accent);}
+.kpi--ok    .kpi-n{color:var(--ok);}
+.kpi--warn  .kpi-n{color:var(--warn);}
+.kpi--code  .kpi-n{color:var(--text);}
+
+/* ── Filter bar ── */
+.filter-bar{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;align-items:center;}
+.fl{font-size:10px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;color:var(--subtle);margin-right:2px;}
+.pill{padding:4px 11px;border-radius:20px;font-size:11px;font-weight:500;cursor:pointer;border:1px solid var(--border-s);background:var(--surface);color:var(--muted);transition:background .12s,color .12s,border-color .12s;user-select:none;}
+.pill:hover{border-color:var(--accent);color:var(--accent);}
+.pill.on{background:var(--accent);color:#fff;border-color:var(--accent);}
+.vsep{width:1px;height:18px;background:var(--border-s);flex-shrink:0;align-self:center;}
+.count-row{font-size:11px;color:var(--muted);margin-bottom:10px;}
+.count-row b{color:var(--text);}
+
+/* ── Table ── */
+.tbl-outer{overflow-x:auto;border:1px solid var(--border);border-radius:10px;background:var(--surface);transition:border-color .2s;}
+body.edit-mode .tbl-outer{border-color:var(--accent);}
+.swipe-hint{font-size:10px;color:var(--subtle);margin-bottom:6px;display:none;}
+@media(max-width:620px){.swipe-hint{display:block;}}
+
+table{width:100%;border-collapse:collapse;table-layout:fixed;min-width:660px;}
+thead th{background:var(--raised);font-size:9.5px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);padding:7px 5px;text-align:center;border-bottom:1px solid var(--border-s);}
+thead th.fn-h{text-align:left;padding-left:13px;width:31%;}
+thead .th-g{font-size:9.5px;letter-spacing:.3px;background:var(--surface);color:var(--subtle);border-bottom:1px solid var(--border);}
+thead tr:first-child th{border-bottom:none;padding-bottom:2px;}
+thead tr:last-child  th{padding-top:2px;}
+.col-cg,.col-sv,.col-mg,.col-adm{width:7%;}
+.col-tests{width:13%;}
+.col-gate{width:9%;}
+.col-estado{width:11%;}
+.col-actions{width:5%;}
+
+tbody tr{border-bottom:1px solid var(--border);}
+tbody tr:last-child{border-bottom:none;}
+tbody tr:hover td{background:var(--raised);}
+tbody tr.hide{display:none;}
+td{padding:7px 5px;text-align:center;vertical-align:middle;}
+td.fn-c{text-align:left;padding-left:13px;}
+.fn-name{font-size:12px;font-weight:500;}
+.fn-sub{font-size:10px;color:var(--muted);display:block;margin-top:1px;font-family:'Courier New',monospace;}
+.cat-row td{background:var(--raised);font-size:9px;font-weight:600;letter-spacing:.6px;color:var(--subtle);text-transform:uppercase;padding:5px 13px;text-align:left;border-bottom:1px solid var(--border);}
+.add-row td{background:var(--surface);text-align:left;padding:5px 13px;}
+.add-btn{font-size:10px;color:var(--accent);background:none;border:1px dashed var(--accent);border-radius:7px;padding:2px 10px;cursor:pointer;font-family:inherit;font-weight:500;transition:background .12s;}
+.add-btn:hover{background:var(--accent-bg);}
+
+/* role cells */
+.r-y{width:18px;height:18px;border-radius:50%;background:var(--ok-chip);display:inline-grid;place-items:center;}
+.r-y svg{width:10px;height:10px;stroke:var(--ok);stroke-width:2.5;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.r-n{color:var(--subtle);font-size:12px;}
+.r-p{font-size:9px;font-weight:600;color:var(--warn);background:var(--warn-chip);padding:1px 5px;border-radius:7px;}
+.rh{display:inline-flex;align-items:center;padding:2px 6px;border-radius:8px;font-size:9px;font-weight:600;}
+.rh-cg{background:var(--r-cg-bg);color:var(--r-cg);}
+.rh-sv{background:var(--r-sv-bg);color:var(--r-sv);}
+.rh-mg{background:var(--r-mg-bg);color:var(--r-mg);}
+.rh-adm{background:var(--r-adm-bg);color:var(--r-adm);}
+
+/* quality cells */
+.t-ok{display:inline-flex;align-items:center;gap:3px;font-size:9.5px;font-weight:600;color:var(--ok);background:var(--ok-chip);padding:2px 6px;border-radius:8px;}
+.t-par{display:inline-flex;align-items:center;gap:3px;font-size:9.5px;font-weight:600;color:var(--warn);background:var(--warn-chip);padding:2px 6px;border-radius:8px;}
+.gate-tag{font-family:'Courier New',monospace;font-size:9.5px;font-weight:600;padding:2px 6px;border-radius:6px;background:var(--raised);color:var(--muted);border:1px solid var(--border-s);}
+.e-ok{font-size:10px;font-weight:600;color:var(--ok);background:var(--ok-chip);padding:2px 8px;border-radius:20px;}
+.e-par{font-size:10px;font-weight:600;color:var(--warn);background:var(--warn-chip);padding:2px 8px;border-radius:20px;}
+
+/* edit action cell */
+.edit-row-btn{width:22px;height:22px;border-radius:6px;border:1px solid var(--border-s);background:var(--surface);cursor:pointer;display:none;align-items:center;justify-content:center;color:var(--muted);font-size:13px;transition:all .12s;}
+.edit-row-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-bg);}
+body.edit-mode .edit-row-btn{display:inline-flex;}
+
+/* footer */
+.foot{margin-top:14px;display:flex;gap:16px;flex-wrap:wrap;font-size:10.5px;color:var(--muted);}
+.foot span{display:flex;align-items:center;gap:4px;}
+
+/* ── Modal ── */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:100;padding:16px;}
+.modal{background:var(--surface);border-radius:14px;border:1px solid var(--border-s);width:100%;max-width:500px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 40px rgba(0,0,0,.2);}
+.modal-hdr{display:flex;align-items:center;gap:8px;padding:16px 18px 12px;border-bottom:1px solid var(--border);}
+.modal-hdr-title{font-size:13px;font-weight:600;flex:1;}
+.modal-close{width:26px;height:26px;border-radius:6px;border:1px solid var(--border-s);background:var(--raised);cursor:pointer;font-size:14px;color:var(--muted);display:grid;place-items:center;transition:all .12s;}
+.modal-close:hover{border-color:var(--danger);color:var(--danger);}
+.modal-body{padding:14px 18px;display:flex;flex-direction:column;gap:12px;}
+.field-row{display:flex;flex-direction:column;gap:4px;}
+.field-row label{font-size:10px;font-weight:600;letter-spacing:.3px;text-transform:uppercase;color:var(--subtle);}
+.field-row input,.field-row select{padding:6px 9px;border-radius:7px;border:1px solid var(--border-s);background:var(--raised);color:var(--text);font-family:'Sora',system-ui,sans-serif;font-size:12px;width:100%;transition:border-color .12s;outline:none;}
+.field-row input:focus,.field-row select:focus{border-color:var(--accent);}
+.field-row input.mono{font-family:'Courier New',monospace;}
+.field-group{font-size:10px;font-weight:600;letter-spacing:.3px;text-transform:uppercase;color:var(--subtle);margin-top:4px;padding-top:10px;border-top:1px solid var(--border);}
+.roles-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.quality-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.modal-footer{display:flex;justify-content:space-between;align-items:center;padding:12px 18px 16px;border-top:1px solid var(--border);gap:8px;}
+.modal-footer-left{display:flex;gap:6px;}
+.modal-footer-right{display:flex;gap:6px;}
+
+/* ── JSON panel ── */
+.json-panel{background:var(--raised);border:1px solid var(--border-s);border-radius:10px;padding:14px 16px;margin-top:16px;}
+.json-panel pre{font-family:'Courier New',monospace;font-size:10px;color:var(--text);white-space:pre-wrap;word-break:break-all;max-height:240px;overflow-y:auto;margin:8px 0;}
+.json-hdr{display:flex;align-items:center;gap:8px;margin-bottom:4px;}
+.json-hdr-title{font-size:11px;font-weight:600;flex:1;color:var(--muted);}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="hdr">
+  <div class="logo">
+    <svg viewBox="0 0 24 24">
+      <path d="M12 21C12 21 3 15 3 9a6 6 0 0 1 12 0"/>
+      <circle cx="15.5" cy="15.5" r="5.5"/>
+      <path d="m13 15.5 2 2 3.5-3.5"/>
+    </svg>
+  </div>
+  <div class="hdr-text">
+    <div class="hdr-title">CareSignal MVP — Seguimiento de funciones</div>
+    <div class="hdr-sub">Matriz de acceso por rol · Estado de calidad · Gates del contrato</div>
+  </div>
+  <div class="hdr-right">
+    <span class="badge b-v">v0.1.0-workshop</span>
+    <span class="badge b-frozen">FROZEN ✓</span>
+    <span class="badge b-date" id="badge-date">2026-10-04</span>
+    <span class="badge b-modified" id="badge-modified" hidden>● modificado</span>
+    <button class="btn btn-edit" id="btn-edit" onclick="toggleEdit()">✏ Editar</button>
+  </div>
+</header>
+
+<!-- Edit toolbar -->
+<div class="edit-bar" id="edit-bar" hidden>
+  <span class="edit-bar-label">Modo edición activo — los cambios se guardan en el navegador</span>
+  <button class="btn btn-sm btn-outline" onclick="showJSON()">{ } Exportar JSON</button>
+  <button class="btn btn-sm btn-secondary" onclick="resetData()">↺ Restablecer</button>
+</div>
+
+<!-- KPI row -->
+<div class="kpi-row">
+  <div class="kpi kpi--total"><div class="kpi-n" id="k-total">20</div><div class="kpi-l">Total funciones</div></div>
+  <div class="kpi kpi--ok">  <div class="kpi-n" id="k-ok">12</div>  <div class="kpi-l">Completo</div></div>
+  <div class="kpi kpi--warn"><div class="kpi-n" id="k-par">8</div>   <div class="kpi-l">Tests parciales</div></div>
+  <div class="kpi kpi--code"><div class="kpi-n">20</div>              <div class="kpi-l">Código en main</div></div>
+</div>
+
+<!-- Filters -->
+<div class="filter-bar">
+  <span class="fl">Categoría</span>
+  <button class="pill on" data-cat="all">Todas</button>
+  <button class="pill" data-cat="nav">Navegación</button>
+  <button class="pill" data-cat="rounds">Rondas</button>
+  <button class="pill" data-cat="alerts">Alertas</button>
+  <button class="pill" data-cat="demo">Demo</button>
+  <span class="vsep"></span>
+  <span class="fl">Estado</span>
+  <button class="pill on" data-est="all">Todos</button>
+  <button class="pill" data-est="ok">Completo</button>
+  <button class="pill" data-est="partial">Parcial</button>
+</div>
+<div class="count-row">Mostrando <b id="vis-n">20</b> de 20 funciones</div>
+
+<!-- Table -->
+<div class="swipe-hint">← desliza para ver todas las columnas</div>
+<div class="tbl-outer">
+  <table>
+    <thead>
+      <tr>
+        <th class="fn-h" rowspan="2">Función</th>
+        <th colspan="4" class="th-g" style="border-left:1px solid var(--border-s);">Acceso por rol</th>
+        <th colspan="3" class="th-g" style="border-left:1px solid var(--border-s);">Calidad</th>
+        <th rowspan="2" class="col-actions"></th>
+      </tr>
+      <tr>
+        <th class="col-cg"  style="border-left:1px solid var(--border-s);"><span class="rh rh-cg">CG</span></th>
+        <th class="col-sv"><span class="rh rh-sv">SV</span></th>
+        <th class="col-mg"><span class="rh rh-mg">MG</span></th>
+        <th class="col-adm"><span class="rh rh-adm">ADM</span></th>
+        <th class="col-tests" style="border-left:1px solid var(--border-s);">Tests</th>
+        <th class="col-gate">Gate</th>
+        <th class="col-estado">Estado</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+</div>
+
+<!-- Legend -->
+<div class="foot">
+  <span><span class="rh rh-cg">CG</span> caregiver</span>
+  <span><span class="rh rh-sv">SV</span> supervisor</span>
+  <span><span class="rh rh-mg">MG</span> manager</span>
+  <span><span class="rh rh-adm">ADM</span> demo_admin</span>
+  <span style="margin-left:6px;"><span class="t-ok">E2E</span> spec dedicado</span>
+  <span><span class="t-par">⚠</span> cubierto indirectamente</span>
+  <span>Código: <b>todos en main</b> — gates C1–C8 aprobados</span>
+</div>
+
+<!-- JSON export panel -->
+<div class="json-panel" id="json-panel" hidden>
+  <div class="json-hdr">
+    <span class="json-hdr-title">Array ROWS actualizado — reemplaza en el &lt;script&gt; del archivo HTML</span>
+    <button class="btn btn-sm btn-primary" onclick="copyJSON()">Copiar</button>
+    <button class="btn btn-sm btn-secondary" onclick="document.getElementById('json-panel').hidden=true">✕</button>
+  </div>
+  <pre id="json-pre"></pre>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal-ov" id="modal-ov" hidden>
+  <div class="modal">
+    <div class="modal-hdr">
+      <span class="modal-hdr-title" id="modal-title">Editar función</span>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field-row">
+        <label>Nombre de la función</label>
+        <input type="text" id="f-fn" placeholder="Ej: Iniciar ronda">
+      </div>
+      <div class="field-row">
+        <label>Descripción / transición</label>
+        <input type="text" id="f-sub" placeholder="Ej: due → in_progress" class="mono">
+      </div>
+      <div class="field-row">
+        <label>Categoría</label>
+        <select id="f-cat">
+          <option value="nav">Navegación</option>
+          <option value="rounds">Acciones de ronda</option>
+          <option value="alerts">Ciclo de alertas</option>
+          <option value="demo">Control de demo</option>
+        </select>
+      </div>
+      <div class="field-group">Acceso por rol</div>
+      <div class="roles-grid">
+        <div class="field-row">
+          <label><span class="rh rh-cg">CG</span> caregiver</label>
+          <select id="f-cg">
+            <option value="y">✓ acceso completo</option>
+            <option value="n">— sin acceso</option>
+            <option value="a">solo residentes asignados</option>
+          </select>
+        </div>
+        <div class="field-row">
+          <label><span class="rh rh-sv">SV</span> supervisor</label>
+          <select id="f-sv">
+            <option value="y">✓ acceso completo</option>
+            <option value="n">— sin acceso</option>
+            <option value="a">parcial</option>
+          </select>
+        </div>
+        <div class="field-row">
+          <label><span class="rh rh-mg">MG</span> manager</label>
+          <select id="f-mg">
+            <option value="y">✓ acceso completo</option>
+            <option value="n">— sin acceso</option>
+            <option value="a">parcial</option>
+          </select>
+        </div>
+        <div class="field-row">
+          <label><span class="rh rh-adm">ADM</span> demo_admin</label>
+          <select id="f-adm">
+            <option value="y">✓ acceso completo</option>
+            <option value="n">— sin acceso</option>
+            <option value="a">parcial</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-group">Calidad</div>
+      <div class="quality-grid">
+        <div class="field-row">
+          <label>Tests</label>
+          <select id="f-tests">
+            <option value="f">E2E dedicado</option>
+            <option value="p">Parcial / indirecto</option>
+          </select>
+        </div>
+        <div class="field-row">
+          <label>Gate</label>
+          <input type="text" id="f-gate" placeholder="C5" class="mono" style="width:100%">
+        </div>
+        <div class="field-row">
+          <label>Estado</label>
+          <select id="f-est">
+            <option value="ok">Completo</option>
+            <option value="p">Parcial</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="modal-footer-left">
+        <button class="btn btn-sm btn-danger" id="btn-del" onclick="deleteRow()">Eliminar fila</button>
+      </div>
+      <div class="modal-footer-right">
+        <button class="btn btn-sm btn-secondary" onclick="closeModal()">Cancelar</button>
+        <button class="btn btn-sm btn-primary" onclick="saveRow()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── Datos originales (baseline) ── */
+const DEFAULTS = [
+  {cat:'nav',    fn:'Dashboard',                     sub:'Resumen + badges de turno',        cg:'y',sv:'y',mg:'y', adm:'y',tests:'p',gate:'C4/C6',est:'p'},
+  {cat:'nav',    fn:'Mis rondas',                    sub:'Cola de rondas asignadas',          cg:'y',sv:'n',mg:'n', adm:'y',tests:'f',gate:'C5',  est:'ok'},
+  {cat:'nav',    fn:'Residentes',                    sub:'Listado del piso',                  cg:'a',sv:'y',mg:'y', adm:'y',tests:'p',gate:'C5',  est:'p'},
+  {cat:'nav',    fn:'Alertas',                       sub:'Panel de alertas activas',          cg:'n',sv:'y',mg:'y', adm:'y',tests:'f',gate:'C6',  est:'ok'},
+  {cat:'nav',    fn:'Métricas',                      sub:'KPIs + gráficas de turno',          cg:'n',sv:'y',mg:'y', adm:'y',tests:'f',gate:'L-02',est:'ok'},
+  {cat:'nav',    fn:'Personal',                      sub:'Roster de turno y disponibilidad',  cg:'n',sv:'y',mg:'y', adm:'y',tests:'p',gate:'C6',  est:'p'},
+  {cat:'nav',    fn:'Bitácora',                      sub:'Audit log completo e inmutable',    cg:'n',sv:'n',mg:'y', adm:'y',tests:'p',gate:'C6',  est:'p'},
+  {cat:'nav',    fn:'Control de demo',               sub:'Reloj simulado, escenarios, reset', cg:'n',sv:'n',mg:'n', adm:'y',tests:'p',gate:'C7',  est:'p'},
+  {cat:'rounds', fn:'Iniciar ronda',                 sub:'due → in_progress',                 cg:'y',sv:'n',mg:'n', adm:'y',tests:'f',gate:'C5',  est:'ok'},
+  {cat:'rounds', fn:'Completar ronda',               sub:'in_progress → completed',           cg:'y',sv:'n',mg:'n', adm:'y',tests:'f',gate:'C5',  est:'ok'},
+  {cat:'rounds', fn:'Solicitar apoyo',               sub:'Genera alerta amarilla',            cg:'y',sv:'n',mg:'n', adm:'y',tests:'f',gate:'C5',  est:'ok'},
+  {cat:'alerts', fn:'Reconocer alerta',              sub:'open → acknowledged',               cg:'n',sv:'y',mg:'y', adm:'y',tests:'f',gate:'C6',  est:'ok'},
+  {cat:'alerts', fn:'Asignar / Reasignar',           sub:'acknowledged → assigned',           cg:'n',sv:'y',mg:'y', adm:'y',tests:'f',gate:'C6',  est:'ok'},
+  {cat:'alerts', fn:'Escalar alerta',                sub:'→ escalated (severity red)',        cg:'n',sv:'y',mg:'y', adm:'y',tests:'f',gate:'C6',  est:'ok'},
+  {cat:'alerts', fn:'Iniciar verificación',          sub:'→ in_verification',                 cg:'n',sv:'y',mg:'y', adm:'y',tests:'f',gate:'C6',  est:'ok'},
+  {cat:'alerts', fn:'Registrar resultado y resolver',sub:'→ resolved + outcome registrado',  cg:'n',sv:'y',mg:'y', adm:'y',tests:'f',gate:'C6',  est:'ok'},
+  {cat:'alerts', fn:'Cerrar alerta',                 sub:'resolved → closed',                 cg:'n',sv:'n',mg:'y', adm:'y',tests:'f',gate:'C6',  est:'ok'},
+  {cat:'demo',   fn:'Avanzar reloj simulado',        sub:'+15 min / +1 h / +8 h',            cg:'n',sv:'n',mg:'n', adm:'y',tests:'p',gate:'C7',  est:'p'},
+  {cat:'demo',   fn:'Activar escenario',             sub:'Sobrecarga, noche, etc.',           cg:'n',sv:'n',mg:'n', adm:'y',tests:'p',gate:'C7',  est:'p'},
+  {cat:'demo',   fn:'Restablecer demo',              sub:'Seed state completo',              cg:'n',sv:'n',mg:'n', adm:'y',tests:'p',gate:'C7',  est:'p'},
+];
+
+const CAT_LABELS = {
+  nav:'Navegación', rounds:'Acciones de ronda',
+  alerts:'Ciclo de vida de alertas', demo:'Control del sistema (solo demo_admin)',
+};
+const STORAGE_KEY = 'cs-seguimiento-v1';
+const CHECK = '<svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg>';
+
+/* ── State ── */
+let rows = [];
+let editMode = false;
+let catF = 'all', estF = 'all';
+let editIdx = -1; // -1 = new row
+
+/* ── Load ── */
+function loadRows() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      rows = JSON.parse(saved);
+      document.getElementById('badge-modified').hidden = false;
+      return;
+    }
+  } catch(e) {}
+  rows = DEFAULTS.map(r => ({...r}));
+}
+
+function saveRows() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(rows));
+    document.getElementById('badge-modified').hidden = false;
+  } catch(e) {}
+}
+
+function resetData() {
+  if (!confirm('¿Restablecer todos los datos originales? Se perderán los cambios guardados en este navegador.')) return;
+  try { localStorage.removeItem(STORAGE_KEY); } catch(e) {}
+  rows = DEFAULTS.map(r => ({...r}));
+  document.getElementById('badge-modified').hidden = true;
+  render(catF, estF);
+}
+
+/* ── Edit mode ── */
+function toggleEdit() {
+  editMode = !editMode;
+  document.body.classList.toggle('edit-mode', editMode);
+  const btn = document.getElementById('btn-edit');
+  btn.classList.toggle('active', editMode);
+  btn.textContent = editMode ? '✕ Salir de edición' : '✏ Editar';
+  document.getElementById('edit-bar').hidden = !editMode;
+  render(catF, estF);
+}
+
+/* ── Render ── */
+function roleCell(v) {
+  if (v === 'y') return `<span class="r-y">${CHECK}</span>`;
+  if (v === 'n') return '<span class="r-n">—</span>';
+  return '<span class="r-p">asig.</span>';
+}
+function testsCell(v) {
+  return v === 'f' ? '<span class="t-ok">E2E ✓</span>' : '<span class="t-par">⚠ parcial</span>';
+}
+function estadoCell(v) {
+  return v === 'ok' ? '<span class="e-ok">Completo</span>' : '<span class="e-par">Parcial</span>';
+}
+
+function render(catFilter, estFilter) {
+  const tbody = document.getElementById('tbody');
+  let html = '';
+  let lastCat = null;
+  let visible = 0;
+  const editBtn = editMode
+    ? '<td><button class="edit-row-btn" title="Editar fila">✎</button></td>'
+    : '<td></td>';
+
+  rows.forEach((r, idx) => {
+    const catOk = catFilter === 'all' || r.cat === catFilter;
+    const estOk = estFilter === 'all'
+      || (estFilter === 'ok'      && r.est === 'ok')
+      || (estFilter === 'partial' && r.est === 'p');
+    const show = catOk && estOk;
+
+    if (show && r.cat !== lastCat) {
+      html += `<tr class="cat-row"><td colspan="9">${CAT_LABELS[r.cat]}</td></tr>`;
+      if (editMode) {
+        const cat = r.cat;
+        html += `<tr class="add-row"><td colspan="9">
+          <button class="add-btn" data-cat="${cat}">＋ Agregar función en ${CAT_LABELS[cat]}</button>
+        </td></tr>`;
+      }
+      lastCat = r.cat;
+    }
+
+    html += `<tr class="${show ? '' : 'hide'}" data-idx="${idx}">
+      <td class="fn-c"><span class="fn-name">${r.fn}</span><span class="fn-sub">${r.sub}</span></td>
+      <td style="border-left:1px solid var(--border-s);">${roleCell(r.cg)}</td>
+      <td>${roleCell(r.sv)}</td>
+      <td>${roleCell(r.mg)}</td>
+      <td>${roleCell(r.adm)}</td>
+      <td style="border-left:1px solid var(--border-s);">${testsCell(r.tests)}</td>
+      <td><span class="gate-tag">${r.gate}</span></td>
+      <td>${estadoCell(r.est)}</td>
+      ${editBtn}
+    </tr>`;
+    if (show) visible++;
+  });
+
+  tbody.innerHTML = html;
+  document.getElementById('vis-n').textContent = visible;
+
+  // Update KPIs
+  const filtered = rows.filter(r => {
+    const catOk = catFilter === 'all' || r.cat === catFilter;
+    const estOk = estFilter === 'all'
+      || (estFilter === 'ok'      && r.est === 'ok')
+      || (estFilter === 'partial' && r.est === 'p');
+    return catOk && estOk;
+  });
+  document.getElementById('k-total').textContent = filtered.length;
+  document.getElementById('k-ok').textContent  = filtered.filter(r => r.est === 'ok').length;
+  document.getElementById('k-par').textContent = filtered.filter(r => r.est === 'p').length;
+
+  // Attach edit button listeners
+  tbody.querySelectorAll('.edit-row-btn').forEach(btn => {
+    const tr = btn.closest('tr');
+    const idx = parseInt(tr.dataset.idx, 10);
+    btn.addEventListener('click', () => openEditModal(idx));
+  });
+  tbody.querySelectorAll('.add-btn').forEach(btn => {
+    btn.addEventListener('click', () => openNewModal(btn.dataset.cat));
+  });
+}
+
+/* ── Modal ── */
+function openEditModal(idx) {
+  editIdx = idx;
+  const r = rows[idx];
+  document.getElementById('modal-title').textContent = 'Editar función';
+  document.getElementById('btn-del').hidden = false;
+  document.getElementById('f-fn').value    = r.fn;
+  document.getElementById('f-sub').value   = r.sub;
+  document.getElementById('f-cat').value   = r.cat;
+  document.getElementById('f-cg').value    = r.cg;
+  document.getElementById('f-sv').value    = r.sv;
+  document.getElementById('f-mg').value    = r.mg;
+  document.getElementById('f-adm').value   = r.adm;
+  document.getElementById('f-tests').value = r.tests;
+  document.getElementById('f-gate').value  = r.gate;
+  document.getElementById('f-est').value   = r.est;
+  document.getElementById('modal-ov').hidden = false;
+}
+
+function openNewModal(cat) {
+  editIdx = -1;
+  document.getElementById('modal-title').textContent = 'Agregar función';
+  document.getElementById('btn-del').hidden = true;
+  document.getElementById('f-fn').value    = '';
+  document.getElementById('f-sub').value   = '';
+  document.getElementById('f-cat').value   = cat;
+  document.getElementById('f-cg').value    = 'n';
+  document.getElementById('f-sv').value    = 'n';
+  document.getElementById('f-mg').value    = 'n';
+  document.getElementById('f-adm').value   = 'y';
+  document.getElementById('f-tests').value = 'p';
+  document.getElementById('f-gate').value  = '';
+  document.getElementById('f-est').value   = 'p';
+  document.getElementById('modal-ov').hidden = false;
+  setTimeout(() => document.getElementById('f-fn').focus(), 50);
+}
+
+function closeModal() {
+  document.getElementById('modal-ov').hidden = true;
+  editIdx = -1;
+}
+
+function saveRow() {
+  const updated = {
+    cat:   document.getElementById('f-cat').value,
+    fn:    document.getElementById('f-fn').value.trim(),
+    sub:   document.getElementById('f-sub').value.trim(),
+    cg:    document.getElementById('f-cg').value,
+    sv:    document.getElementById('f-sv').value,
+    mg:    document.getElementById('f-mg').value,
+    adm:   document.getElementById('f-adm').value,
+    tests: document.getElementById('f-tests').value,
+    gate:  document.getElementById('f-gate').value.trim(),
+    est:   document.getElementById('f-est').value,
+  };
+  if (!updated.fn) { document.getElementById('f-fn').focus(); return; }
+
+  if (editIdx === -1) {
+    // Find last row of that category and insert after
+    const lastIdx = rows.reduce((acc, r, i) => r.cat === updated.cat ? i : acc, -1);
+    rows.splice(lastIdx + 1, 0, updated);
+  } else {
+    rows[editIdx] = updated;
+  }
+
+  saveRows();
+  closeModal();
+  render(catF, estF);
+}
+
+function deleteRow() {
+  if (editIdx < 0) return;
+  if (!confirm(`¿Eliminar "${rows[editIdx].fn}"?`)) return;
+  rows.splice(editIdx, 1);
+  saveRows();
+  closeModal();
+  render(catF, estF);
+}
+
+/* ── JSON export ── */
+function showJSON() {
+  const json = JSON.stringify(rows, null, 2);
+  document.getElementById('json-pre').textContent = 'const ROWS = ' + json + ';';
+  document.getElementById('json-panel').hidden = false;
+  document.getElementById('json-panel').scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+function copyJSON() {
+  const text = document.getElementById('json-pre').textContent;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.querySelector('.json-hdr .btn-primary');
+      btn.textContent = '¡Copiado!';
+      setTimeout(() => btn.textContent = 'Copiar', 1800);
+    }).catch(() => selectJSON());
+  } else {
+    selectJSON();
+  }
+}
+
+function selectJSON() {
+  const pre = document.getElementById('json-pre');
+  const sel = window.getSelection();
+  const range = document.createRange();
+  range.selectNodeContents(pre);
+  sel.removeAllRanges();
+  sel.addRange(range);
+}
+
+/* ── Filters ── */
+document.querySelectorAll('.pill[data-cat]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.pill[data-cat]').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+    catF = btn.dataset.cat;
+    render(catF, estF);
+  });
+});
+document.querySelectorAll('.pill[data-est]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.pill[data-est]').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+    estF = btn.dataset.est;
+    render(catF, estF);
+  });
+});
+
+// Close modal on overlay click
+document.getElementById('modal-ov').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeModal();
+});
+
+// Keyboard: Escape closes modal
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+});
+
+loadRows();
+render('all', 'all');
+</script>
+</body>
+</html>

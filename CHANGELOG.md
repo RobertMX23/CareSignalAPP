@@ -7,6 +7,18 @@ silenciosamente; toda modificación material aprobada crea una nueva versión (p
 
 ## [Unreleased]
 
+### docs: agregar dashboard de seguimiento de funciones (2026-10-04)
+
+Nuevo archivo `docs/seguimiento-funciones.html` — dashboard interactivo standalone
+(sin dependencias externas salvo Google Fonts) que muestra la matriz completa de
+acceso por rol y estado de calidad de las 20 funciones del MVP.
+
+- **Agregado** `docs/seguimiento-funciones.html`
+- Filtros por categoría (Navegación, Rondas, Alertas, Demo) y por estado (Completo/Parcial)
+- KPIs dinámicos: Total · Completo (12) · Tests parciales (8) · Código en main (20)
+- Dark mode automático vía `prefers-color-scheme`
+- Compatible con todos los navegadores modernos; abre directamente desde el repo
+
 ### chore(ci): simplificar E2E a Chromium único — Chrome + Edge (2026-10-04)
 
 Decisión de alcance: el demo es una aplicación web presentada en navegador;
