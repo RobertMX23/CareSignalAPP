@@ -22,6 +22,31 @@ export async function goTo(page: Page, hash: string): Promise<void> {
 }
 
 /**
+ * Avanza el reloj simulado N minutos usando los botones de /control-demo.
+ * Requiere que exista un staff con role 'demo_admin' en la semilla.
+ * Llamadas consecutivas son aditivas. Deja la página en /control-demo;
+ * el test debe navegar al destino deseado después de llamar a esta función.
+ */
+export async function advanceClock(page: Page, minutes: number): Promise<void> {
+  await selectRole(page, 'demo_admin');
+  await goTo(page, '/control-demo');
+
+  let remaining = minutes;
+  while (remaining >= 15) {
+    await page.locator('button:has-text("Avanzar 15 minutos")').click();
+    remaining -= 15;
+  }
+  while (remaining >= 5) {
+    await page.locator('button:has-text("Avanzar 5 minutos")').click();
+    remaining -= 5;
+  }
+  while (remaining >= 1) {
+    await page.locator('button:has-text("Avanzar 1 minuto")').click();
+    remaining -= 1;
+  }
+}
+
+/**
  * Abre el menú de navegación en mobile (≤720 px) si el botón de hamburguesa
  * está visible y el menú aún no está abierto. En desktop es un no-op.
  */

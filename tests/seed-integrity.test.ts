@@ -13,7 +13,7 @@ describe('Semilla determinista (contrato Chunk 3)', () => {
 
   it('genera los conteos exigidos por el contrato', () => {
     expect(snapshot.residents).toHaveLength(20);
-    expect(snapshot.staffMembers).toHaveLength(14);
+    expect(snapshot.staffMembers).toHaveLength(15); // +1 staff-demo-admin-01
     expect(snapshot.rounds).toHaveLength(42);
     expect(snapshot.alerts).toHaveLength(7);
     expect(snapshot.incidents).toHaveLength(3);
