@@ -757,7 +757,8 @@ select {
   border-radius: 0;
   border: none;
   width: 100%;
-  table-layout: auto;
+  /* fixed: anchos calculados por CSS, no por contenido — columnas idénticas en las 3 tarjetas */
+  table-layout: fixed;
 }
 
 .roster-table th,
@@ -765,18 +766,26 @@ select {
   font-size: 0.875rem;
   padding: 0.45rem 0.75rem;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.roster-table td:first-child,
-.roster-table th:first-child {
+/* Nombre: ocupa el espacio restante, puede romper línea */
+.roster-table td:nth-child(1),
+.roster-table th:nth-child(1) {
   white-space: normal;
-  width: 100%;
 }
 
-/* Columna Estado siempre visible completa */
-.roster-table td:last-child,
-.roster-table th:last-child {
-  min-width: 110px;
+/* Rol: ancho fijo suficiente para "Supervisor/a" */
+.roster-table td:nth-child(2),
+.roster-table th:nth-child(2) {
+  width: 112px;
+}
+
+/* Estado: ancho fijo suficiente para "Fuera de turno" */
+.roster-table td:nth-child(3),
+.roster-table th:nth-child(3) {
+  width: 124px;
 }
 
 .availability-badge {
