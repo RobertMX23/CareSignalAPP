@@ -34,6 +34,7 @@ const SHIFT_LABELS: Record<Shift, string> = {
 const NAV_ITEMS: { to: string; label: string; roles: Role[] }[] = [
   { to: '/dashboard',    label: 'Dashboard',       roles: ['caregiver', 'supervisor', 'manager', 'demo_admin'] },
   { to: '/mis-rondas',   label: 'Mis rondas',      roles: ['caregiver', 'demo_admin'] },
+  { to: '/rondas',       label: 'Rondas',          roles: ['caregiver', 'supervisor', 'manager', 'demo_admin'] },
   { to: '/residentes',   label: 'Residentes',      roles: ['supervisor', 'manager', 'demo_admin'] },
   { to: '/alertas',      label: 'Alertas',         roles: ['supervisor', 'manager', 'demo_admin'] },
   { to: '/metricas',     label: 'Métricas',        roles: ['supervisor', 'manager', 'demo_admin'] },

@@ -1,0 +1,559 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CareSignal — Design Token Benchmark</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
+  <style>
+    :root {
+      --bg:       #f7f4f0;
+      --surface:  #ffffff;
+      --surface2: #f0ece7;
+      --border:   #ddd3c5;
+      --text:     #231a0f;
+      --muted:    #6b5744;
+      --accent:   #1a6b5c;
+      --accent-bg:#e5f3f0;
+      --red:      #b3261e;
+      --yellow:   #92680a;
+      --green:    #1a6b3c;
+      --score-a:  #1a6b3c;
+      --score-b:  #92680a;
+      --score-c:  #b3261e;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 15px; line-height: 1.6;
+      padding: 0 16px;
+    }
+
+    .page { max-width: 900px; margin: 0 auto; padding-block: 32px; }
+    .page-header { margin-bottom: 32px; }
+    .page-header h1 { font-size: 1.6rem; font-weight: 700; color: var(--accent); }
+    .page-header p  { color: var(--muted); margin-top: 4px; font-size: 0.9rem; }
+
+    /* Tabs */
+    .tabs { display: flex; border-bottom: 2px solid var(--border); margin-bottom: 28px; overflow-x: auto; }
+    .tab-btn {
+      background: none; border: none; padding: 10px 20px;
+      cursor: pointer; font: 600 0.9rem/1 inherit;
+      color: var(--muted); border-bottom: 2px solid transparent;
+      margin-bottom: -2px; white-space: nowrap; transition: color .15s;
+    }
+    .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .tab-btn:hover:not(.active) { color: var(--text); }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* Cards */
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 20px; margin-bottom: 16px;
+    }
+    .card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 12px; }
+    .section-title {
+      font-size: 0.75rem; font-weight: 700; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 12px;
+    }
+
+    /* Summary KPI row */
+    .summary-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
+    .summary-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 16px; text-align: center;
+    }
+    .summary-card__value { font-size: 2rem; font-weight: 700; color: var(--accent); }
+    .summary-card__label { font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
+
+    /* Dimension bars */
+    .dim-grid { display: flex; flex-direction: column; gap: 10px; }
+    .dim-row { display: grid; grid-template-columns: 160px 1fr 52px; align-items: center; gap: 10px; }
+    .dim-label { font-size: 0.85rem; }
+    .bar-track { background: var(--surface2); border-radius: 99px; height: 10px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 99px; transition: width .4s; }
+    .bar-fill--a { background: var(--score-a); }
+    .bar-fill--b { background: var(--score-b); }
+    .bar-fill--c { background: var(--score-c); }
+    .dim-pct { font-size: 0.8rem; font-weight: 700; text-align: right; }
+
+    /* Benchmark table */
+    .bench-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    .bench-table th {
+      text-align: left; padding: 8px 10px; font-size: 0.75rem; font-weight: 700;
+      letter-spacing: .06em; text-transform: uppercase; color: var(--muted);
+      border-bottom: 2px solid var(--border); background: var(--surface2);
+    }
+    .bench-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .bench-table tr:last-child td { border-bottom: none; }
+    .bench-table .highlight { background: var(--accent-bg); }
+    .chip { display: inline-block; padding: 2px 8px; border-radius: 99px; font-size: 0.75rem; font-weight: 600; }
+    .chip--yes  { background: #e3f3e8; color: #1a6b3c; }
+    .chip--part { background: #fff3d0; color: #92680a; }
+    .chip--no   { background: #fce9e8; color: #b3261e; }
+
+    /* Swatches */
+    .swatch-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+    .swatch { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .swatch__box { width: 52px; height: 52px; border-radius: 8px; border: 1px solid var(--border); }
+    .swatch__label { font-size: 0.65rem; color: var(--muted); text-align: center; max-width: 60px; }
+    .swatch__hex { font-size: 0.7rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+    /* Gap items */
+    .gap-list { display: flex; flex-direction: column; gap: 8px; }
+    .gap-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 12px 14px; border-radius: 8px;
+      border: 1px solid var(--border); background: var(--surface);
+    }
+    .gap-item--done { opacity: 0.6; }
+    .gap-item__priority {
+      width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; font-weight: 700; flex-shrink: 0;
+    }
+    .p1 { background: #fce9e8; color: #b3261e; }
+    .p2 { background: #fff3d0; color: #92680a; }
+    .p3 { background: #e3f3e8; color: #1a6b3c; }
+    .done-badge { background: #e3f3e8; color: #1a6b3c; border-radius: 99px; padding: 2px 8px; font-size: 0.72rem; font-weight: 700; margin-left: 8px; }
+    .gap-item__body { flex: 1; min-width: 0; }
+    .gap-item__title { font-weight: 700; font-size: 0.9rem; }
+    .gap-item__desc  { font-size: 0.82rem; color: var(--muted); margin-top: 2px; }
+    .gap-item__token { font-size: 0.78rem; font-family: monospace; color: var(--accent); margin-top: 4px; }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .dim-row { grid-template-columns: 110px 1fr 40px; }
+      .summary-row { grid-template-columns: 1fr 1fr; }
+      .bench-table { font-size: 0.75rem; }
+      .bench-table th, .bench-table td { padding: 6px 6px; }
+    }
+    @media (max-width: 420px) {
+      .summary-row { grid-template-columns: 1fr; }
+      .dim-row { grid-template-columns: 90px 1fr 36px; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+  <div class="page-header">
+    <h1>CareSignal — Design Token Benchmark</h1>
+    <p>Estado actual vs. WCAG 2.1, Material Design 3, IBM Carbon, Atlassian, Salesforce SLDS · Actualizado: 2026-10-04</p>
+  </div>
+
+  <!-- KPIs -->
+  <div class="summary-row">
+    <div class="summary-card">
+      <div class="summary-card__value">74%</div>
+      <div class="summary-card__label">Score global vs. estándar</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-card__value">50</div>
+      <div class="summary-card__label">Tokens definidos en :root</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-card__value">1</div>
+      <div class="summary-card__label">Gap pendiente (P3 · dark mode)</div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('overview', event)">Resumen</button>
+    <button class="tab-btn" onclick="switchTab('palette', event)">Paleta actual</button>
+    <button class="tab-btn" onclick="switchTab('benchmark', event)">Benchmark</button>
+    <button class="tab-btn" onclick="switchTab('gaps', event)">Gaps y plan</button>
+  </div>
+
+  <!-- ── Overview ── -->
+  <div id="tab-overview" class="tab-panel active">
+    <p class="section-title">Evaluación por dimensión (estado actual)</p>
+    <div class="card">
+      <div class="dim-grid">
+        <div class="dim-row">
+          <span class="dim-label">Tokens de color</span>
+          <div class="bar-track"><div class="bar-fill bar-fill--a" style="width:75%"></div></div>
+          <span class="dim-pct" style="color:var(--score-a)">75%</span>
+        </div>
+        <div class="dim-row">
+          <span class="dim-label">Contraste WCAG AA</span>
+          <div class="bar-track"><div class="bar-fill bar-fill--a" style="width:90%"></div></div>
+          <span class="dim-pct" style="color:var(--score-a)">90%</span>
+        </div>
+        <div class="dim-row">
+          <span class="dim-label">Dark mode</span>
+          <div class="bar-track"><div class="bar-fill bar-fill--c" style="width:0%"></div></div>
+          <span class="dim-pct" style="color:var(--score-c)">0%</span>
+        </div>
+        <div class="dim-row">
+          <span class="dim-label">Escala tipográfica</span>
+          <div class="bar-track"><div class="bar-fill bar-fill--a" style="width:85%"></div></div>
+          <span class="dim-pct" style="color:var(--score-a)">85%</span>
+        </div>
+        <div class="dim-row">
+          <span class="dim-label">Escala de espaciado</span>
+          <div class="bar-track"><div class="bar-fill bar-fill--a" style="width:85%"></div></div>
+          <span class="dim-pct" style="color:var(--score-a)">85%</span>
+        </div>
+        <div class="dim-row">
+          <span class="dim-label">Estados interactivos</span>
+          <div class="bar-track"><div class="bar-fill bar-fill--a" style="width:85%"></div></div>
+          <span class="dim-pct" style="color:var(--score-a)">85%</span>
+        </div>
+        <div class="dim-row">
+          <span class="dim-label">Tokens semánticos</span>
+          <div class="bar-track"><div class="bar-fill bar-fill--a" style="width:85%"></div></div>
+          <span class="dim-pct" style="color:var(--score-a)">85%</span>
+        </div>
+        <div class="dim-row">
+          <span class="dim-label">Elevación / sombras</span>
+          <div class="bar-track"><div class="bar-fill bar-fill--a" style="width:80%"></div></div>
+          <span class="dim-pct" style="color:var(--score-a)">80%</span>
+        </div>
+        <div class="dim-row">
+          <span class="dim-label">Border radius</span>
+          <div class="bar-track"><div class="bar-fill bar-fill--a" style="width:85%"></div></div>
+          <span class="dim-pct" style="color:var(--score-a)">85%</span>
+        </div>
+        <div class="dim-row">
+          <span class="dim-label">Motion / transiciones</span>
+          <div class="bar-track"><div class="bar-fill bar-fill--b" style="width:70%"></div></div>
+          <span class="dim-pct" style="color:var(--score-b)">70%</span>
+        </div>
+      </div>
+    </div>
+
+    <p class="section-title" style="margin-top:20px">Contexto</p>
+    <div class="card">
+      <p style="font-size:0.88rem;color:var(--muted);line-height:1.7">
+        CareSignal es un MVP operacional. A partir del análisis inicial (score 44% con 20 tokens),
+        se implementaron 30 tokens nuevos subiendo el score a <strong style="color:var(--text)">74%</strong>.
+        El único gap pendiente es <strong style="color:var(--text)">dark mode (P3)</strong>, que no es
+        necesario para el demo actual pero se requeriría antes de un lanzamiento a producción.
+        Los scores del 85–90% reflejan que los tokens existen pero no se han migrado todos los
+        valores hardcoded en el CSS existente — eso es trabajo futuro de refactor.
+      </p>
+    </div>
+  </div>
+
+  <!-- ── Palette ── -->
+  <div id="tab-palette" class="tab-panel">
+    <div class="card">
+      <h3>Neutrales cálidos</h3>
+      <div class="swatch-grid">
+        <div class="swatch"><div class="swatch__box" style="background:#f7f4f0"></div><span class="swatch__hex">#f7f4f0</span><span class="swatch__label">--color-bg</span></div>
+        <div class="swatch"><div class="swatch__box" style="background:#ffffff"></div><span class="swatch__hex">#ffffff</span><span class="swatch__label">--color-surface</span></div>
+        <div class="swatch"><div class="swatch__box" style="background:#ede6db"></div><span class="swatch__hex">#ede6db</span><span class="swatch__label">--border-light</span></div>
+        <div class="swatch"><div class="swatch__box" style="background:#ddd3c5"></div><span class="swatch__hex">#ddd3c5</span><span class="swatch__label">--color-border</span></div>
+        <div class="swatch"><div class="swatch__box" style="background:#6b5744"></div><span class="swatch__hex">#6b5744</span><span class="swatch__label">--text-muted</span></div>
+        <div class="swatch"><div class="swatch__box" style="background:#231a0f"></div><span class="swatch__hex">#231a0f</span><span class="swatch__label">--color-text</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Primario — Teal cálido</h3>
+      <div class="swatch-grid">
+        <div class="swatch"><div class="swatch__box" style="background:#e5f3f0"></div><span class="swatch__hex">#e5f3f0</span><span class="swatch__label">--primary-bg</span></div>
+        <div class="swatch"><div class="swatch__box" style="background:#7dbfb4"></div><span class="swatch__hex">#7dbfb4</span><span class="swatch__label">--primary-bd</span></div>
+        <div class="swatch"><div class="swatch__box" style="background:#1a6b5c"></div><span class="swatch__hex">#1a6b5c</span><span class="swatch__label">--color-primary</span></div>
+        <div class="swatch"><div class="swatch__box" style="background:#124f44"></div><span class="swatch__hex">#124f44</span><span class="swatch__label">--primary-dark</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Semánticos — los 5 estados</h3>
+      <div class="swatch-grid">
+        <div class="swatch"><div class="swatch__box" style="background:#e3f3e8"></div><span class="swatch__hex">#e3f3e8</span><span class="swatch__label">--green-bg</span></div>
+        <div class="swatch"><div class="swatch__box" style="background:#86c9a0"></div><span class="swatch__hex">#86c9a0</span><span class="swatch__label">--green-bd</span></div>
+        <div class="swatch"><div class="swatch__box" style="background:#1a6b3c"></div><span class="swatch__hex">#1a6b3c</span><span class="swatch__label">--color-green</span></div>
+        <div class="swatch"><div class="swatch__box" style="background:#fff3d0"></div><span class="swatch__hex">#fff3d0</span><span class="swatch__label">--yellow-bg</span></div>
+        <div class="swatch"><div class="swatch__box" style="background:#e8b84b"></div><span class="swatch__hex">#e8b84b</span><span class="swatch__label">--yellow-bd</span></div>
+        <div class="swatch"><div class="swatch__box" style="background:#92680a"></div><span class="swatch__hex">#92680a</span><span class="swatch__label">--color-yellow</span></div>
+        <div class="swatch"><div class="swatch__box" style="background:#fce9e8"></div><span class="swatch__hex">#fce9e8</span><span class="swatch__label">--red-bg</span></div>
+        <div class="swatch"><div class="swatch__box" style="background:#f09490"></div><span class="swatch__hex">#f09490</span><span class="swatch__label">--red-bd</span></div>
+        <div class="swatch"><div class="swatch__box" style="background:#b3261e"></div><span class="swatch__hex">#b3261e</span><span class="swatch__label">--color-red</span></div>
+        <div class="swatch"><div class="swatch__box" style="background:#f0ece7"></div><span class="swatch__hex">#f0ece7</span><span class="swatch__label">--gray-bg ✨</span></div>
+        <div class="swatch"><div class="swatch__box" style="background:#c5bab0"></div><span class="swatch__hex">#c5bab0</span><span class="swatch__label">--gray-bd ✨</span></div>
+        <div class="swatch"><div class="swatch__box" style="background:#7a6e65"></div><span class="swatch__hex">#7a6e65</span><span class="swatch__label">--color-gray ✨</span></div>
+        <div class="swatch"><div class="swatch__box" style="background:#e0f0ff"></div><span class="swatch__hex">#e0f0ff</span><span class="swatch__label">--info-bg ✨</span></div>
+        <div class="swatch"><div class="swatch__box" style="background:#7ab8f5"></div><span class="swatch__hex">#7ab8f5</span><span class="swatch__label">--info-bd ✨</span></div>
+        <div class="swatch"><div class="swatch__box" style="background:#0a5fa3"></div><span class="swatch__hex">#0a5fa3</span><span class="swatch__label">--color-info ✨</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Interacción ✨ (nuevos)</h3>
+      <div class="swatch-grid">
+        <div class="swatch"><div class="swatch__box" style="background:#1a6b5c;outline:3px solid #1a6b5c;outline-offset:3px"></div><span class="swatch__hex">#1a6b5c</span><span class="swatch__label">--color-focus</span></div>
+        <div class="swatch"><div class="swatch__box" style="background:#f0ece7"></div><span class="swatch__hex">#f0ece7</span><span class="swatch__label">--disabled-bg</span></div>
+        <div class="swatch"><div class="swatch__box" style="background:#b0a89e"></div><span class="swatch__hex">#b0a89e</span><span class="swatch__label">--color-disabled</span></div>
+      </div>
+    </div>
+    <p style="font-size:0.78rem;color:var(--muted);margin-top:8px">✨ = tokens agregados en la ronda de benchmark (2026-10-04)</p>
+  </div>
+
+  <!-- ── Benchmark ── -->
+  <div id="tab-benchmark" class="tab-panel">
+    <div style="overflow-x:auto">
+      <table class="bench-table">
+        <thead>
+          <tr>
+            <th style="min-width:140px">Dimensión</th>
+            <th class="highlight">CareSignal actual</th>
+            <th>WCAG 2.1</th>
+            <th>Material 3</th>
+            <th>IBM Carbon</th>
+            <th>Atlassian</th>
+            <th>Salesforce</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Tokens totales</strong></td>
+            <td class="highlight"><strong>50 ✨</strong></td>
+            <td>N/A</td>
+            <td>100+</td>
+            <td>85+</td>
+            <td>70+</td>
+            <td>90+</td>
+          </tr>
+          <tr>
+            <td><strong>Neutrales</strong></td>
+            <td class="highlight"><span class="chip chip--part">Parcial (6)</span></td>
+            <td>—</td>
+            <td><span class="chip chip--yes">Sí (13)</span></td>
+            <td><span class="chip chip--yes">Sí (10)</span></td>
+            <td><span class="chip chip--yes">Sí (10)</span></td>
+            <td><span class="chip chip--yes">Sí (12)</span></td>
+          </tr>
+          <tr>
+            <td><strong>Color primario</strong></td>
+            <td class="highlight"><span class="chip chip--part">Básico (4)</span></td>
+            <td>—</td>
+            <td><span class="chip chip--yes">Sí (6)</span></td>
+            <td><span class="chip chip--yes">Sí (6)</span></td>
+            <td><span class="chip chip--yes">Sí (5)</span></td>
+            <td><span class="chip chip--yes">Sí (6)</span></td>
+          </tr>
+          <tr>
+            <td><strong>Colores semánticos</strong></td>
+            <td class="highlight"><span class="chip chip--yes">5 completos ✨</span></td>
+            <td>—</td>
+            <td><span class="chip chip--yes">4 (+ info)</span></td>
+            <td><span class="chip chip--yes">4 (+ info)</span></td>
+            <td><span class="chip chip--yes">4 (+ info)</span></td>
+            <td><span class="chip chip--yes">5</span></td>
+          </tr>
+          <tr>
+            <td><strong>WCAG AA texto</strong></td>
+            <td class="highlight"><span class="chip chip--yes">Sí ✓</span></td>
+            <td><span class="chip chip--yes">Requerido</span></td>
+            <td><span class="chip chip--yes">Sí</span></td>
+            <td><span class="chip chip--yes">Sí</span></td>
+            <td><span class="chip chip--yes">Sí</span></td>
+            <td><span class="chip chip--yes">Sí</span></td>
+          </tr>
+          <tr>
+            <td><strong>WCAG AA componentes</strong></td>
+            <td class="highlight"><span class="chip chip--part">Parcial</span></td>
+            <td><span class="chip chip--yes">Requerido</span></td>
+            <td><span class="chip chip--yes">Sí</span></td>
+            <td><span class="chip chip--yes">Sí</span></td>
+            <td><span class="chip chip--yes">Sí</span></td>
+            <td><span class="chip chip--yes">Sí</span></td>
+          </tr>
+          <tr>
+            <td><strong>Focus ring token</strong></td>
+            <td class="highlight"><span class="chip chip--yes">Implementado ✨</span></td>
+            <td><span class="chip chip--yes">Requerido 2.4.7</span></td>
+            <td><span class="chip chip--yes">Sí</span></td>
+            <td><span class="chip chip--yes">Sí</span></td>
+            <td><span class="chip chip--yes">Sí</span></td>
+            <td><span class="chip chip--yes">Sí</span></td>
+          </tr>
+          <tr>
+            <td><strong>Dark mode</strong></td>
+            <td class="highlight"><span class="chip chip--no">Pendiente (P3)</span></td>
+            <td>—</td>
+            <td><span class="chip chip--yes">Sí</span></td>
+            <td><span class="chip chip--yes">Sí</span></td>
+            <td><span class="chip chip--yes">Sí</span></td>
+            <td><span class="chip chip--yes">Sí</span></td>
+          </tr>
+          <tr>
+            <td><strong>Escala tipográfica</strong></td>
+            <td class="highlight"><span class="chip chip--yes">6 pasos ✨</span></td>
+            <td>—</td>
+            <td><span class="chip chip--yes">Sí (6 pasos)</span></td>
+            <td><span class="chip chip--yes">Sí (8 pasos)</span></td>
+            <td><span class="chip chip--yes">Sí (6 pasos)</span></td>
+            <td><span class="chip chip--yes">Sí (7 pasos)</span></td>
+          </tr>
+          <tr>
+            <td><strong>Escala de espaciado</strong></td>
+            <td class="highlight"><span class="chip chip--yes">9 pasos base 4px ✨</span></td>
+            <td>—</td>
+            <td><span class="chip chip--yes">Sí (base 4px)</span></td>
+            <td><span class="chip chip--yes">Sí (base 4px)</span></td>
+            <td><span class="chip chip--yes">Sí (base 4px)</span></td>
+            <td><span class="chip chip--yes">Sí (base 4px)</span></td>
+          </tr>
+          <tr>
+            <td><strong>Border radius tokens</strong></td>
+            <td class="highlight"><span class="chip chip--yes">4 valores ✨</span></td>
+            <td>—</td>
+            <td><span class="chip chip--yes">Sí (5 pasos)</span></td>
+            <td><span class="chip chip--yes">Sí (4 pasos)</span></td>
+            <td><span class="chip chip--yes">Sí (4 pasos)</span></td>
+            <td><span class="chip chip--yes">Sí (5 pasos)</span></td>
+          </tr>
+          <tr>
+            <td><strong>Elevación / sombras</strong></td>
+            <td class="highlight"><span class="chip chip--yes">3 niveles ✨</span></td>
+            <td>—</td>
+            <td><span class="chip chip--yes">Sí (5 niveles)</span></td>
+            <td><span class="chip chip--yes">Sí (3 niveles)</span></td>
+            <td><span class="chip chip--yes">Sí (4 niveles)</span></td>
+            <td><span class="chip chip--yes">Sí (5 niveles)</span></td>
+          </tr>
+          <tr>
+            <td><strong>Tokens de motion</strong></td>
+            <td class="highlight"><span class="chip chip--yes">2 duraciones + easing ✨</span></td>
+            <td>—</td>
+            <td><span class="chip chip--yes">Sí</span></td>
+            <td><span class="chip chip--yes">Sí</span></td>
+            <td><span class="chip chip--yes">Sí</span></td>
+            <td><span class="chip chip--yes">Sí</span></td>
+          </tr>
+          <tr>
+            <td><strong>Color disabled</strong></td>
+            <td class="highlight"><span class="chip chip--yes">Implementado ✨</span></td>
+            <td>—</td>
+            <td><span class="chip chip--yes">Sí</span></td>
+            <td><span class="chip chip--yes">Sí</span></td>
+            <td><span class="chip chip--yes">Sí</span></td>
+            <td><span class="chip chip--yes">Sí</span></td>
+          </tr>
+          <tr>
+            <td><strong>Color info (azul)</strong></td>
+            <td class="highlight"><span class="chip chip--yes">Implementado ✨</span></td>
+            <td>—</td>
+            <td><span class="chip chip--yes">Sí</span></td>
+            <td><span class="chip chip--yes">Sí</span></td>
+            <td><span class="chip chip--yes">Sí</span></td>
+            <td><span class="chip chip--yes">Sí</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:10px;font-size:0.78rem;color:var(--muted)">
+      Referencias: Material Design 3 (m3.material.io) · IBM Carbon (carbondesignsystem.com) · Atlassian (atlassian.design) · Salesforce SLDS (lightningdesignsystem.com)
+    </p>
+  </div>
+
+  <!-- ── Gaps ── -->
+  <div id="tab-gaps" class="tab-panel">
+    <p class="section-title">P1 — Impacto en demo actual</p>
+    <div class="gap-list">
+      <div class="gap-item gap-item--done">
+        <div class="gap-item__priority p1">P1</div>
+        <div class="gap-item__body">
+          <div class="gap-item__title">Token de color gris <span class="done-badge">✓ Implementado</span></div>
+          <div class="gap-item__token">--color-gray: #7a6e65 · --color-gray-bg: #f0ece7 · --color-gray-bd: #c5bab0</div>
+        </div>
+      </div>
+      <div class="gap-item gap-item--done">
+        <div class="gap-item__priority p1">P1</div>
+        <div class="gap-item__body">
+          <div class="gap-item__title">Focus ring token (WCAG 2.4.7) <span class="done-badge">✓ Implementado</span></div>
+          <div class="gap-item__token">--color-focus: #1a6b5c · --focus-ring: 0 0 0 3px rgba(26,107,92,.35) · :focus-visible global en index.css</div>
+        </div>
+      </div>
+      <div class="gap-item gap-item--done">
+        <div class="gap-item__priority p1">P1</div>
+        <div class="gap-item__body">
+          <div class="gap-item__title">Color info / azul semántico <span class="done-badge">✓ Implementado</span></div>
+          <div class="gap-item__token">--color-info: #0a5fa3 · --color-info-bg: #e0f0ff · --color-info-bd: #7ab8f5</div>
+        </div>
+      </div>
+    </div>
+
+    <p class="section-title" style="margin-top:20px">P2 — Consistencia y mantenibilidad</p>
+    <div class="gap-list">
+      <div class="gap-item gap-item--done">
+        <div class="gap-item__priority p2">P2</div>
+        <div class="gap-item__body">
+          <div class="gap-item__title">Escala de espaciado <span class="done-badge">✓ Implementado</span></div>
+          <div class="gap-item__desc">Pendiente: migrar valores hardcoded del CSS existente a usar estas variables.</div>
+          <div class="gap-item__token">--space-1 (4px) a --space-12 (48px) — base 4px</div>
+        </div>
+      </div>
+      <div class="gap-item gap-item--done">
+        <div class="gap-item__priority p2">P2</div>
+        <div class="gap-item__body">
+          <div class="gap-item__title">Escala de border radius <span class="done-badge">✓ Implementado</span></div>
+          <div class="gap-item__desc">Pendiente: migrar valores hardcoded (6px, 8px, 10px, 999px) del CSS existente.</div>
+          <div class="gap-item__token">--radius-sm: 4px · --radius-md: 8px · --radius-lg: 12px · --radius-pill: 999px</div>
+        </div>
+      </div>
+      <div class="gap-item gap-item--done">
+        <div class="gap-item__priority p2">P2</div>
+        <div class="gap-item__body">
+          <div class="gap-item__title">Escala tipográfica <span class="done-badge">✓ Implementado</span></div>
+          <div class="gap-item__desc">Pendiente: migrar font-size ad-hoc (0.65rem, 0.75rem…) del CSS existente.</div>
+          <div class="gap-item__token">--text-xs (0.75rem) · --text-sm · --text-md · --text-lg · --text-xl · --text-2xl</div>
+        </div>
+      </div>
+      <div class="gap-item gap-item--done">
+        <div class="gap-item__priority p2">P2</div>
+        <div class="gap-item__body">
+          <div class="gap-item__title">Color disabled <span class="done-badge">✓ Implementado</span></div>
+          <div class="gap-item__token">--color-disabled: #b0a89e · --color-disabled-bg: #f0ece7 · regla global [disabled]</div>
+        </div>
+      </div>
+    </div>
+
+    <p class="section-title" style="margin-top:20px">P3 — Para evolución a producción</p>
+    <div class="gap-list">
+      <div class="gap-item">
+        <div class="gap-item__priority p3">P3</div>
+        <div class="gap-item__body">
+          <div class="gap-item__title">Dark mode</div>
+          <div class="gap-item__desc">Los 5 sistemas de referencia lo tienen. Para el demo no es bloqueante; necesario antes de lanzamiento real.</div>
+          <div class="gap-item__token">@media (prefers-color-scheme: dark) con variables sobreescritas en :root</div>
+        </div>
+      </div>
+      <div class="gap-item gap-item--done">
+        <div class="gap-item__priority p3">P3</div>
+        <div class="gap-item__body">
+          <div class="gap-item__title">Elevación / sombras <span class="done-badge">✓ Implementado</span></div>
+          <div class="gap-item__token">--shadow-sm · --shadow-md · --shadow-lg</div>
+        </div>
+      </div>
+      <div class="gap-item gap-item--done">
+        <div class="gap-item__priority p3">P3</div>
+        <div class="gap-item__body">
+          <div class="gap-item__title">Tokens de motion <span class="done-badge">✓ Implementado</span></div>
+          <div class="gap-item__token">--duration-fast: 100ms · --duration-base: 200ms · --easing-standard</div>
+        </div>
+      </div>
+    </div>
+
+    <p style="margin-top:16px;font-size:0.82rem;color:var(--muted)">
+      <strong>Trabajo futuro (refactor):</strong> migrar los valores hardcoded del CSS existente para
+      usar los nuevos tokens de escala (espaciado, tipografía, border radius). No es bloqueante —
+      los tokens están disponibles para componentes nuevos desde hoy.
+    </p>
+  </div>
+</div>
+
+<script>
+  function switchTab(id, event) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    event.currentTarget.classList.add('active');
+  }
+</script>
+</body>
+</html>
