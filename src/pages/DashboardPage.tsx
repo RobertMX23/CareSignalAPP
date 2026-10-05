@@ -27,19 +27,19 @@ const CaregiverDashboard = (): JSX.Element => {
 
       <h2>Mis rondas</h2>
       <div className="summary-cards">
-        <Link to="/mis-rondas" className="summary-card summary-card--red summary-card--link">
+        <Link to="/mis-rondas?filter=overdue" className="summary-card summary-card--red summary-card--link">
           <span className="summary-card__value">{counts.overdue}</span>
           <span className="summary-card__label">Vencidas</span>
         </Link>
-        <Link to="/mis-rondas" className="summary-card summary-card--link">
+        <Link to="/mis-rondas?filter=in_progress" className="summary-card summary-card--link">
           <span className="summary-card__value">{counts.inProgress}</span>
           <span className="summary-card__label">En progreso</span>
         </Link>
-        <Link to="/mis-rondas" className="summary-card summary-card--link">
+        <Link to="/mis-rondas?filter=pending" className="summary-card summary-card--link">
           <span className="summary-card__value">{counts.pending}</span>
           <span className="summary-card__label">Pendientes</span>
         </Link>
-        <Link to="/mis-rondas" className="summary-card summary-card--green summary-card--link">
+        <Link to="/mis-rondas?filter=completed" className="summary-card summary-card--green summary-card--link">
           <span className="summary-card__value">{counts.completed}</span>
           <span className="summary-card__label">Completadas</span>
         </Link>

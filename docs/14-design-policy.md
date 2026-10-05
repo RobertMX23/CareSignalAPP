@@ -22,7 +22,7 @@ Comparación contra WCAG 2.2 (Level AA) y guías de sistemas de diseño de refer
 | 2 | **Contraste UI no-texto 3:1** (WCAG 1.4.11 AA) | No documentado | Añadir §1.4 |
 | 3 | **Áreas de toque 24 px mín.** (WCAG 2.5.8 AA *nuevo en 2.2*) | ✅ Excedemos (44 px) | — |
 | 4 | **Áreas de toque 44 px** (WCAG 2.5.5 AAA) | ✅ Ya cumplimos | — |
-| 5 | **Foco visible** (WCAG 2.4.7 AA) | Parcial — "no eliminar outline" es vago | Refinar §4.3 |
+| 5 | **Foco visible** (WCAG 2.4.7 AA) | ✅ Implementado — `:focus-visible` global + `--color-focus` token | — |
 | 6 | **Foco no oculto** (WCAG 2.4.11 AA *nuevo en 2.2*) | No cubierto | Añadir §4.3 |
 | 7 | **Teclado completo** (WCAG 2.1.1 A) | Ausente del doc | Añadir §4.5 |
 | 8 | **ARIA role por severidad** (WAI-ARIA APG Alert) | Incompleto — toasts rojos usan `role="status"` en vez de `role="alert"` | Corregir §4.4 |
@@ -64,6 +64,67 @@ Cada color semántico tiene tres variantes: texto/ícono (`main`), fondo (`-bg`)
 | Rojo     | `--color-red`       | `--color-red-bg`      | `--color-red-bd`      | Alerta roja, acción de peligro, error    |
 | Amarillo | `--color-yellow`    | `--color-yellow-bg`   | `--color-yellow-bd`   | Alerta amarilla, advertencia             |
 | Verde    | `--color-green`     | `--color-green-bg`    | `--color-green-bd`    | Completado, residente sin alertas, éxito |
+| Gris     | `--color-gray`      | `--color-gray-bg`     | `--color-gray-bd`     | Cancelado, historial, estado inactivo    |
+| Info     | `--color-info`      | `--color-info-bg`     | `--color-info-bd`     | Informativo, estado "acknowledged"       |
+
+### 1.6 Tokens de interacción
+
+| Token                   | Valor                                         | Uso                                   |
+|-------------------------|-----------------------------------------------|---------------------------------------|
+| `--color-focus`         | `#1a6b5c`                                     | Outline de foco (WCAG 2.4.7)          |
+| `--focus-ring`          | `0 0 0 3px rgba(26,107,92,.35)`               | Box-shadow complementario al outline  |
+| `--color-disabled`      | `#b0a89e`                                     | Texto de controles deshabilitados     |
+| `--color-disabled-bg`   | `#f0ece7`                                     | Fondo de controles deshabilitados     |
+
+### 1.7 Escala de espaciado (base 4 px)
+
+| Token          | Valor  | Equivalente rem |
+|----------------|--------|-----------------|
+| `--space-1`    | 4 px   | 0.25 rem        |
+| `--space-2`    | 8 px   | 0.5 rem         |
+| `--space-3`    | 12 px  | 0.75 rem        |
+| `--space-4`    | 16 px  | 1 rem           |
+| `--space-5`    | 20 px  | 1.25 rem        |
+| `--space-6`    | 24 px  | 1.5 rem         |
+| `--space-8`    | 32 px  | 2 rem           |
+| `--space-10`   | 40 px  | 2.5 rem         |
+| `--space-12`   | 48 px  | 3 rem           |
+
+### 1.8 Escala tipográfica
+
+| Token          | Valor     | Equivalente px |
+|----------------|-----------|----------------|
+| `--text-xs`    | 0.75 rem  | 12 px          |
+| `--text-sm`    | 0.875 rem | 14 px          |
+| `--text-md`    | 1 rem     | 16 px (base)   |
+| `--text-lg`    | 1.125 rem | 18 px          |
+| `--text-xl`    | 1.25 rem  | 20 px          |
+| `--text-2xl`   | 1.5 rem   | 24 px          |
+
+### 1.9 Escala de border radius
+
+| Token           | Valor    | Uso                                      |
+|-----------------|----------|------------------------------------------|
+| `--radius-sm`   | 4 px     | Badges, chips pequeños                   |
+| `--radius-md`   | 8 px     | Tarjetas internas, inputs, botones       |
+| `--radius-lg`   | 12 px    | Tarjetas principales, modales            |
+| `--radius-pill` | 999 px   | Pills de estado, badges de nav           |
+
+### 1.10 Elevación y sombras
+
+| Token          | Valor                                    | Uso                     |
+|----------------|------------------------------------------|-------------------------|
+| `--shadow-sm`  | `0 1px 3px rgba(35,26,15,.08)`           | Tarjetas, inputs activos|
+| `--shadow-md`  | `0 4px 12px rgba(35,26,15,.12)`          | Modales, dropdowns      |
+| `--shadow-lg`  | `0 8px 24px rgba(35,26,15,.16)`          | Overlays, toasts        |
+
+### 1.11 Motion
+
+| Token                | Valor                          | Uso                               |
+|----------------------|--------------------------------|-----------------------------------|
+| `--duration-fast`    | 100 ms                         | Hover, toggle pequeño             |
+| `--duration-base`    | 200 ms                         | Transiciones de estado estándar   |
+| `--easing-standard`  | `cubic-bezier(.2,0,0,1)`       | Curva estándar Material M3        |
 
 ### 1.3 Regla de accesibilidad
 
@@ -206,14 +267,15 @@ ser `.button--secondary`.
 4. El `nav-toggle` y el menú de navegación móvil deben ser accesibles por teclado
    (Tab para abrir, Escape para cerrar).
 
-**Implementación pendiente:** actualmente el CSS no define un `:focus-visible` explícito
-más allá del estilo del navegador. Al implementar L-02 o posterior, añadir:
+**✅ Implementado (E5/benchmark):** `src/index.css` define globalmente:
 ```css
 :focus-visible {
-  outline: 3px solid var(--color-primary);
+  outline: 3px solid var(--color-focus);
   outline-offset: 2px;
+  box-shadow: var(--focus-ring);
 }
 ```
+El token `--color-focus` (#1a6b5c) y `--focus-ring` garantizan contraste ≥ 3:1 (WCAG 2.4.7 AA).
 
 ### 4.4 Feedback post-acción (patrón inline-banner)
 

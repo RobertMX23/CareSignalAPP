@@ -18,6 +18,70 @@ en las 8 páginas principales del MVP. Los tests se ejecutan dentro del job exis
 - Tags WCAG: `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa` (WCAG 2.1 Level AA completo)
 - Gate E6.4: cero violaciones en todas las rutas cubiertas
 
+### fix(personal): alineación y visibilidad de columnas en Plantilla de personal (2026-10-04)
+
+Dos defectos visuales en la vista `/personal`:
+
+1. **Badge "Administrador/a de demo" demasiado largo** — empujaba el layout y desalineaba
+   la fila de Admin Demo. Fix: etiqueta corta `'Admin demo'` en `ROLE_BADGE_LABEL` local
+   de `StaffRosterTable` (no modifica `labels.ts` global usado en el header y otros contextos).
+
+2. **Columna Estado cortada** — "Activo/a" aparecía como "Acti" porque la tabla
+   desbordaba el ancho del `roster-card`. Fix: wrapper `.roster-table-wrapper` con
+   `overflow-x: auto` y `min-width: 110px` en la última columna.
+
+- **Modificado** `src/components/StaffRosterTable.tsx` — `ROLE_BADGE_LABEL` con etiqueta
+  corta para `demo_admin`, tabla envuelta en `.roster-table-wrapper`
+- **Modificado** `src/index.css` — `.roster-table-wrapper { overflow-x: auto }` y
+  `.roster-table td:last-child { min-width: 110px }`
+
+### feat(design): tokens de diseño completos + benchmark internacional (2026-10-04)
+
+Formalización del sistema de design tokens de CareSignal contra estándares internacionales
+(WCAG 2.1, Material Design 3, IBM Carbon, Atlassian, Salesforce SLDS). Score global: 44%.
+
+- **Modificado** `src/index.css` — 30 tokens nuevos en `:root`:
+  - Semánticos: `--color-gray` · `--color-info` (tripletas main/bg/bd)
+  - Interacción: `--color-focus`, `--focus-ring`, `--color-disabled`, `--color-disabled-bg`
+  - Espaciado: `--space-1` a `--space-12` (base 4 px)
+  - Tipografía: `--text-xs` a `--text-2xl`
+  - Border radius: `--radius-sm/md/lg/pill`
+  - Elevación: `--shadow-sm/md/lg`
+  - Motion: `--duration-fast/base`, `--easing-standard`
+- **Modificado** `src/index.css` — regla global `:focus-visible` implementada
+  (WCAG 2.4.7 AA), usando `--color-focus` + `--focus-ring`
+- **Modificado** `src/index.css` — regla global `[disabled]` / `[aria-disabled]`
+- **Modificado** `docs/14-design-policy.md` — §§ 1.6–1.11 con nuevos tokens,
+  §4.3 marcado como ✅ implementado, tabla resumen de auditoría actualizada
+- **Publicado** artifact interactivo: benchmark de 10 dimensiones vs. 5 sistemas
+  de referencia con gap analysis y plan de priorización P1/P2/P3
+
+### feat(L04): vista de calendario de rondas (2026-10-04)
+
+Nueva página `/rondas` accesible para todos los roles con toggle Lista/Calendario
+y filtro por turno. Criterios del contrato `docs/13-capas-demo.md` L-04.
+
+- **Agregado** `src/features/rounds/RoundsCalendarView.tsx` — vista de agenda con
+  agrupación por turno (mañana/tarde/noche), colores por estado y hora de la ronda
+- **Agregado** `src/pages/RoundsPage.tsx` — página con toggle Lista↔Calendario,
+  filtro de turno y conteo total; toggle persiste en `sessionStorage`
+- **Modificado** `src/App.tsx` — ruta `/rondas` para `caregiver|supervisor|manager|demo_admin`
+- **Modificado** `src/components/AppLayout.tsx` — enlace "Rondas" en nav para todos los roles
+- **Modificado** `src/index.css` — estilos `.cal-*`, `.rounds-toolbar`, `.view-toggle`
+  responsive hasta 375 px
+- Colores: verde=scheduled/in_progress · amarillo=due · rojo=overdue · gris=cancelled/completed
+
+### fix(caregiver): alinear conteo de KPI cards con filtro de estado (2026-10-04)
+
+El dashboard mostraba "En progreso: 1" pero al hacer clic el filtro mostraba
+"2 rondas". Causa: `CaregiverRoundsPage.displayRows` usaba `isRelevant()` (incluye
+rondas con alertas abiertas sin asignar), mientras el dashboard contaba solo rondas
+con `assignedStaffId === activeStaff.id`. Fix: al activar un filtro de estado via
+query param, aplicar la misma base estricta que el dashboard.
+
+- **Modificado** `src/pages/CaregiverRoundsPage.tsx` — `displayRows` usa
+  `round.assignedStaffId === activeStaff.id` como base cuando hay filtro activo
+
 ### docs: agregar dashboard de seguimiento de funciones (2026-10-04)
 
 Nuevo archivo `docs/seguimiento-funciones.html` — dashboard interactivo standalone
