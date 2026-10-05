@@ -766,17 +766,14 @@ select {
   font-size: 0.875rem;
   padding: 0.45rem 0.75rem;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
-/* Nombre: ocupa el espacio restante, trunca con ellipsis si es muy largo.
-   max-width:0 es el truco estándar para "columna flexible que trunca" en table-layout:fixed. */
+/* Nombre: ocupa el espacio restante y trunca con ellipsis.
+   max-width:0 es el truco estándar para columna flexible en table-layout:fixed. */
 .roster-table td:nth-child(1),
 .roster-table th:nth-child(1) {
   max-width: 0;
   overflow: hidden;
-  white-space: nowrap;
   text-overflow: ellipsis;
 }
 
