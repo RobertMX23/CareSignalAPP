@@ -1061,8 +1061,9 @@ select {
 .top-residents-list__name { flex: 1; font-size: 0.85rem; }
 
 .badge--alert-count        { padding: 2px 8px; border-radius: 99px; font-size: 0.7rem; font-weight: 600; }
-.badge--alert-count-yellow { background: rgba(210,153,34,.15); color: #d29922; }
-.badge--alert-count-red    { background: rgba(248,81,73,.15);  color: #f85149; }
+/* Colores oscurecidos para cumplir WCAG 2.1 AA (4.5:1 mínimo) sobre fondo claro del badge */
+.badge--alert-count-yellow { background: rgba(210,153,34,.15); color: #7c5a00; }
+.badge--alert-count-red    { background: rgba(248,81,73,.15);  color: #9e1b00; }
 
 @media (max-width: 600px) {
   .kpi-grid { grid-template-columns: repeat(2, 1fr); }

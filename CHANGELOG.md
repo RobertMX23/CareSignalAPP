@@ -7,6 +7,17 @@ silenciosamente; toda modificación material aprobada crea una nueva versión (p
 
 ## [Unreleased]
 
+### E6.4 — Accesibilidad WCAG 2.1 AA con @axe-core/playwright (2026-10-04)
+
+Integración de `@axe-core/playwright` para validación automática de accesibilidad
+en las 8 páginas principales del MVP. Los tests se ejecutan dentro del job existente
+`e2e-chromium`; no se requiere job separado en CI.
+
+- **Agregado** `e2e/qa-accessibility.spec.ts` — 8 pruebas A-01 a A-08 (una por página/rol)
+- **Instalado** `@axe-core/playwright@^4.10` como devDependency
+- Tags WCAG: `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa` (WCAG 2.1 Level AA completo)
+- Gate E6.4: cero violaciones en todas las rutas cubiertas
+
 ### fix(personal): alineación y visibilidad de columnas en Plantilla de personal (2026-10-04)
 
 Dos defectos visuales en la vista `/personal`:

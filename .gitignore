@@ -32,3 +32,7 @@ coverage/
 
 # Lighthouse CI reports (generated locally; the CI job uploads them)
 .lighthouseci/
+
+# Playwright test results (local runs; CI uploads them on failure)
+test-results/
+playwright-report/
