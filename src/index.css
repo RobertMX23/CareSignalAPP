@@ -714,7 +714,7 @@ select {
 
 .roster-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 1.25rem;
 }
 
@@ -770,10 +770,14 @@ select {
   text-overflow: ellipsis;
 }
 
-/* Nombre: ocupa el espacio restante, puede romper línea */
+/* Nombre: ocupa el espacio restante, trunca con ellipsis si es muy largo.
+   max-width:0 es el truco estándar para "columna flexible que trunca" en table-layout:fixed. */
 .roster-table td:nth-child(1),
 .roster-table th:nth-child(1) {
-  white-space: normal;
+  max-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 /* Rol: ancho fijo suficiente para "Supervisor/a" */

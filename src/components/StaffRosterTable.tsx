@@ -87,7 +87,7 @@ export const StaffRosterTable = ({ staffMembers }: Props): JSX.Element => {
                 <tbody>
                   {group.map((staff) => (
                     <tr key={staff.id}>
-                      <td>{staff.displayName}</td>
+                      <td title={staff.displayName}>{staff.displayName}</td>
                       <td>
                         <span className={`badge badge--role-${staff.role}`}>
                           {ROLE_BADGE_LABEL[staff.role]}
