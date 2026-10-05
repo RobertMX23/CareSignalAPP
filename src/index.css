@@ -34,6 +34,57 @@
   --color-green-bg:   #e3f3e8;
   --color-green-bd:   #86c9a0;
 
+  /* Semántico — gris (cancelado / completado) */
+  --color-gray:     #7a6e65;
+  --color-gray-bg:  #f0ece7;
+  --color-gray-bd:  #c5bab0;
+
+  /* Semántico — info (azul) */
+  --color-info:     #0a5fa3;
+  --color-info-bg:  #e0f0ff;
+  --color-info-bd:  #7ab8f5;
+
+  /* Estados interactivos */
+  --color-focus:      #1a6b5c;
+  --focus-ring:       0 0 0 3px rgba(26,107,92,.35);
+  --color-disabled:   #b0a89e;
+  --color-disabled-bg:#f0ece7;
+
+  /* Escala de espaciado (múltiplos de 4 px) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  /* Escala tipográfica */
+  --text-xs:  0.75rem;   /* 12 px */
+  --text-sm:  0.875rem;  /* 14 px */
+  --text-md:  1rem;      /* 16 px */
+  --text-lg:  1.125rem;  /* 18 px */
+  --text-xl:  1.25rem;   /* 20 px */
+  --text-2xl: 1.5rem;    /* 24 px */
+
+  /* Escala de border radius */
+  --radius-sm:  4px;
+  --radius-md:  8px;
+  --radius-lg:  12px;
+  --radius-pill: 999px;
+
+  /* Elevación / sombras */
+  --shadow-sm:  0 1px 3px rgba(35,26,15,.08);
+  --shadow-md:  0 4px 12px rgba(35,26,15,.12);
+  --shadow-lg:  0 8px 24px rgba(35,26,15,.16);
+
+  /* Motion */
+  --duration-fast: 100ms;
+  --duration-base: 200ms;
+  --easing-standard: cubic-bezier(.2,0,0,1);
+
   /* Tipografía */
   font-family: 'Nunito', system-ui, -apple-system, 'Segoe UI', sans-serif;
   color-scheme: light;
@@ -41,6 +92,21 @@
 
 * {
   box-sizing: border-box;
+}
+
+/* Focus ring global — WCAG 2.4.7 */
+:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+  box-shadow: var(--focus-ring);
+}
+
+/* Estado deshabilitado global */
+[disabled],
+[aria-disabled="true"] {
+  color: var(--color-disabled);
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 body {
@@ -683,6 +749,10 @@ select {
 .roster-summary--busy      { color: var(--color-yellow); }
 .roster-summary--off       { color: var(--color-text-muted); }
 
+.roster-table-wrapper {
+  overflow-x: auto;
+}
+
 .roster-table {
   border-radius: 0;
   border: none;
@@ -701,6 +771,12 @@ select {
 .roster-table th:first-child {
   white-space: normal;
   width: 100%;
+}
+
+/* Columna Estado siempre visible completa */
+.roster-table td:last-child,
+.roster-table th:last-child {
+  min-width: 110px;
 }
 
 .availability-badge {

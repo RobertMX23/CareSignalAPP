@@ -16,6 +16,14 @@ const AVAILABILITY_CLASS: Record<StaffAvailability, string> = {
   off_shift: 'availability-badge availability-badge--off-shift',
 };
 
+// Etiquetas cortas para el badge dentro de la tabla (columna estrecha)
+const ROLE_BADGE_LABEL: Record<Role, string> = {
+  caregiver:  'Cuidador/a',
+  supervisor: 'Supervisor/a',
+  manager:    'Gerente',
+  demo_admin: 'Admin demo',
+};
+
 const ROLE_ORDER: Role[] = ['supervisor', 'caregiver', 'manager', 'demo_admin'];
 const AVAILABILITY_ORDER: Record<StaffAvailability, number> = { available: 0, busy: 1, off_shift: 2 };
 
@@ -67,32 +75,34 @@ export const StaffRosterTable = ({ staffMembers }: Props): JSX.Element => {
                 {offShift > 0 && <span className="roster-summary--off"> · {offShift} fuera</span>}
               </span>
             </div>
-            <table className="data-table roster-table">
-              <thead>
-                <tr>
-                  <th>Nombre</th>
-                  <th>Rol</th>
-                  <th>Estado</th>
-                </tr>
-              </thead>
-              <tbody>
-                {group.map((staff) => (
-                  <tr key={staff.id}>
-                    <td>{staff.displayName}</td>
-                    <td>
-                      <span className={`badge badge--role-${staff.role}`}>
-                        {ROLE_LABEL[staff.role]}
-                      </span>
-                    </td>
-                    <td>
-                      <span className={AVAILABILITY_CLASS[staff.availability]}>
-                        {AVAILABILITY_LABEL[staff.availability]}
-                      </span>
-                    </td>
+            <div className="roster-table-wrapper">
+              <table className="data-table roster-table">
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Rol</th>
+                    <th>Estado</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {group.map((staff) => (
+                    <tr key={staff.id}>
+                      <td>{staff.displayName}</td>
+                      <td>
+                        <span className={`badge badge--role-${staff.role}`}>
+                          {ROLE_BADGE_LABEL[staff.role]}
+                        </span>
+                      </td>
+                      <td>
+                        <span className={AVAILABILITY_CLASS[staff.availability]}>
+                          {AVAILABILITY_LABEL[staff.availability]}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         );
       })}
