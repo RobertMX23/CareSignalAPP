@@ -188,7 +188,7 @@ Ninguna. Solo archivos estáticos.
 
 ## L-04 — Vista de calendario de rondas
 
-### Estado: `pendiente`
+### Estado: `aprobada` — gate cerrado 2026-10-05 (PR #16 mergeado, 5/5 CI checks)
 
 ### Qué hace
 Una nueva vista en la página de rondas (o ruta separada) que muestra las rondas del
@@ -244,7 +244,7 @@ de instalarla y documentarlo en un PR separado.
 | Toast de notificaciones | L-01 | `aprobada` | #3 #4 | 2026-10-04 |
 | Dashboard de métricas | L-02 | `aprobada` | #7 | 2026-10-04 |
 | PWA instalable | L-03 | `en desarrollo` | — | — |
-| Vista de calendario | L-04 | `pendiente` | — | — |
+| Vista de calendario | L-04 | `aprobada` | #16 | 2026-10-05 |
 
 ---
 
