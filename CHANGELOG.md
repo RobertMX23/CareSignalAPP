@@ -7,6 +7,12 @@ silenciosamente; toda modificación material aprobada crea una nueva versión (p
 
 ## [Unreleased]
 
+### ci: GitHub Actions — despliegue automático a Firebase Hosting (2026-10-14)
+
+- **Agregado** `.github/workflows/firebase-deploy.yml` — job `deploy` que en cada push a `master` ejecuta `npm ci`, `npm run build` y despliega a Firebase Hosting con `FirebaseExtended/action-hosting-deploy@v0`
+- Proyecto Firebase: `caresignal-mvp-2026` · URL: https://caresignal-mvp-2026.web.app
+- Secret GitHub requerido: `FIREBASE_SERVICE_ACCOUNT_CARESIGNAL_MVP_2026` (ya configurado)
+
 ### E6.4 — Accesibilidad WCAG 2.1 AA con @axe-core/playwright (2026-10-04)
 
 Integración de `@axe-core/playwright` para validación automática de accesibilidad

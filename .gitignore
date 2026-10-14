@@ -36,3 +36,6 @@ coverage/
 # Playwright test results (local runs; CI uploads them on failure)
 test-results/
 playwright-report/
+
+# Firebase local cache (no commitear)
+.firebase/

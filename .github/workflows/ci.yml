@@ -72,7 +72,7 @@ jobs:
         id: playwright-cache
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-1.44.0-chromium
+          key: playwright-${{ hashFiles('**/package-lock.json') }}-chromium
       - name: Install Playwright (chromium)
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps chromium
