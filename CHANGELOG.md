@@ -7,6 +7,14 @@ silenciosamente; toda modificación material aprobada crea una nueva versión (p
 
 ## [Unreleased]
 
+### feat: botón de logout con perfil de usuario en el nav (2026-10-15)
+
+- `AppLayout` muestra avatar + nombre del usuario autenticado (Firebase Auth) al final del nav
+- Avatar circular: foto de Google si existe, inicial del nombre si no hay `photoURL`
+- Botón "Cerrar sesión" llama a `signOut()` de `AuthContext`; `AuthGuard` redirige a `/login` automáticamente
+- Estilos `.app-nav__user`, `.app-nav__avatar`, `.app-nav__logout` agregados en `index.css`
+- AT-01 a AT-06 (Ticket E5-L00) listos para verificar en producción
+
 ### fix: LoginPage redirige al dashboard si ya hay sesión activa (2026-10-15)
 
 - `LoginPage` ahora llama `<Navigate to="/dashboard" replace />` cuando `user !== null`

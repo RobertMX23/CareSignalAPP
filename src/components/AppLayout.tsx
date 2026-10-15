@@ -11,6 +11,7 @@
 import { useEffect, useMemo, useState, type ChangeEvent } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import { useDemoSession } from './DemoSessionContext';
+import { useAuth } from '../contexts/AuthContext';
 import type { Role, Shift } from '../domain/taxonomy';
 import { getCurrentTime } from '../data/demoClock';
 import { resetDemo } from '../data/resetDemo';
@@ -45,6 +46,7 @@ const NAV_ITEMS: { to: string; label: string; roles: Role[] }[] = [
 
 export const AppLayout = (): JSX.Element => {
   const { staffMembers, activeStaffId, activeStaff, setActiveStaffId, refreshDemoData } = useDemoSession();
+  const { user, signOut } = useAuth();
   const [navOpen, setNavOpen] = useState(false);
   const [filterRole, setFilterRole] = useState<Role | 'all'>('all');
   const [filterShift, setFilterShift] = useState<Shift | 'all'>('all');
@@ -199,6 +201,39 @@ export const AppLayout = (): JSX.Element => {
             )}
           </NavLink>
         ))}
+
+        {user && (
+          <div className="app-nav__user">
+            <span className="app-nav__user-info">
+              {user.photoURL ? (
+                <img
+                  src={user.photoURL}
+                  alt={user.displayName}
+                  className="app-nav__avatar"
+                  referrerPolicy="no-referrer"
+                />
+              ) : (
+                <span className="app-nav__avatar app-nav__avatar--initials" aria-hidden="true">
+                  {user.displayName.charAt(0).toUpperCase()}
+                </span>
+              )}
+              <span className="app-nav__username">{user.displayName}</span>
+            </span>
+            <button
+              type="button"
+              className="app-nav__logout"
+              onClick={signOut}
+              title="Cerrar sesión"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
+              Cerrar sesión
+            </button>
+          </div>
+        )}
       </nav>
 
       <main className="app-main">
