@@ -1,10 +1,12 @@
 name: CI
 
+# CI corre en PR hacia master y es invocado (workflow_call) por los workflows de
+# deploy (QA, demo, producción), de modo que un deploy nunca corre sin CI verde
+# sobre el mismo commit. No se dispara en push para no duplicar ejecuciones.
 on:
-  push:
-    branches: [master]
   pull_request:
     branches: [master]
+  workflow_call:
 
 jobs:
   # ── 1. TypeScript ────────────────────────────────────────────────────────────

@@ -1,0 +1,50 @@
+name: Deploy Demo público (demo)
+
+# Demo público para jurados: rama "demo", site caresignal-demo. Solo avanza por
+# fast-forward desde master. Se congela mientras dure la evaluación.
+on:
+  push:
+    branches: [demo]
+
+concurrency:
+  group: deploy-demo
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  checks: write
+
+jobs:
+  ci:
+    name: CI
+    uses: ./.github/workflows/ci.yml
+
+  deploy:
+    name: Deploy site caresignal-demo
+    needs: ci
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - run: npm run build
+        env:
+          VITE_ACCESS_MODE:           guest    # sin efecto hasta B-06
+          VITE_FIREBASE_API_KEY:      ${{ secrets.VITE_FIREBASE_API_KEY }}
+          VITE_FIREBASE_AUTH_DOMAIN:  caresignal-mvp-2026.firebaseapp.com
+          VITE_FIREBASE_PROJECT_ID:   caresignal-mvp-2026
+          VITE_FIREBASE_APP_ID:       ${{ secrets.VITE_FIREBASE_APP_ID }}
+
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken:              ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_CARESIGNAL_MVP_2026 }}
+          projectId:              caresignal-mvp-2026
+          target:                 demo
+          channelId:              live

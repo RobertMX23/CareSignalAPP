@@ -237,6 +237,73 @@ de instalarla y documentarlo en un PR separado.
 
 ---
 
+## L-05 — Recorrido guiado (tour) por rol
+
+### Estado: `propuesta` — aprobada para registro 2026-10-15; no iniciar hasta cerrar B-06
+(ver `docs/19-contrato-acciones-benchmark.md`, acciones B-06 y B-08)
+
+### Qué hace
+Un recorrido paso a paso que resalta un elemento de la pantalla, oscurece el resto y
+ofrece un botón "Siguiente". Guía a un jurado por un único camino feliz según el perfil
+elegido (cuidador, supervisor, gerente). Es una capa de presentación: no cambia dominio,
+reglas, estados ni transiciones.
+
+### Scope exacto (qué SÍ)
+- Motor de tour (componente propio o librería ligera: decisión humana, ver abajo).
+- Definición de pasos como datos, por rol, en un archivo único (`tours.ts`).
+- Anclas `data-tour="..."` en los elementos a resaltar (cambio de atributos únicamente).
+- Cada tour inicia con `resetDemo()` y, si hace falta, un escenario existente de
+  `src/features/demo/scenarios.ts`, para partir de un estado determinista.
+- Camino feliz por rol (2–3 min):
+  - Cuidador: Mis rondas → iniciar → completar → ver cambio de semáforo.
+  - Supervisor: Dashboard → abrir alerta → asignar → verificación → resolver.
+  - Gerente: Dashboard gerencial → Métricas → Bitácora → cerrar alerta resuelta.
+- Controles: Siguiente, Anterior, Saltar tour, `Esc` para cerrar, indicador de paso.
+- Activación: automática en modo `guest`; botón "Ver recorrido" en cualquier modo.
+
+### Out of scope (qué NO)
+- Nuevas pantallas, entidades, roles, estados o transiciones.
+- Tours ramificados, analítica de uso del tour, grabación de sesiones.
+- Contenido médico, diagnósticos o promesas de detección.
+- Persistencia remota del progreso del tour.
+- Voz, video o localización a otros idiomas.
+
+### Criterios de aceptación
+
+| ID | Criterio |
+|----|----------|
+| L05-01 | Existe un tour completo para cada uno de los tres perfiles y termina sin errores de consola. |
+| L05-02 | El aviso "MVP operacional, no dispositivo médico" y "Datos ficticios" permanecen visibles durante el tour. |
+| L05-03 | `Esc` cierra el tour, el foco vuelve al elemento previo y el estado de la app no se corrompe. |
+| L05-04 | Navegable solo con teclado; el paso actual se anuncia a lectores de pantalla (`aria-live`). |
+| L05-05 | Usable a 375 px: el globo del paso no se sale de la pantalla ni oculta el elemento resaltado. |
+| L05-06 | Cada tour parte de estado determinista (reset + escenario) y se puede repetir. |
+| L05-07 | Un tour de cada rol cabe en ≤ 3 minutos de lectura y ≤ 10 pasos. |
+| L05-08 | No se modifica ningún archivo de `src/domain/` ni `src/data/repository.ts`. |
+| L05-09 | Los tests E2E existentes siguen pasando; hay al menos un E2E por rol que recorre el tour. |
+
+### Archivos a crear / modificar
+```
+src/features/tour/TourProvider.tsx    — nuevo (estado, paso actual, navegación)
+src/features/tour/TourOverlay.tsx     — nuevo (oscurecido + resaltado + globo)
+src/features/tour/tours.ts            — nuevo (pasos por rol, solo datos)
+src/pages/*.tsx, src/components/*.tsx — añadir atributos data-tour (sin lógica)
+src/App.tsx                           — montar <TourProvider>
+e2e/qa-tour.spec.ts                   — nuevo
+```
+
+### Dependencias externas
+Decisión humana pendiente (evaluación 2026-10-15, empate práctico 3.55 vs 3.65):
+- **Opción 1:** componente propio (~150–200 líneas), cero dependencias.
+- **Opción 2:** librería ligera de tours con licencia permisiva, documentada en PR aparte.
+Cualquier dependencia nueva requiere aprobación explícita antes de instalarse.
+
+### Dependencias de proceso
+- Requiere B-06 (capa de acceso con modo `guest`) para activarse automáticamente.
+- Debe poder desarrollarse y probarse sin B-07 (entornos).
+
+---
+
 ## Registro de estado
 
 | Capa | ID | Estado | PR | Gate aprobado |
@@ -245,6 +312,7 @@ de instalarla y documentarlo en un PR separado.
 | Dashboard de métricas | L-02 | `aprobada` | #7 | 2026-10-04 |
 | PWA instalable | L-03 | `en desarrollo` | — | — |
 | Vista de calendario | L-04 | `aprobada` | #16 | 2026-10-05 |
+| Recorrido guiado por rol | L-05 | `propuesta` | — | — |
 
 ---
 
@@ -255,6 +323,7 @@ L-01 (Toasts)  →  Gate L-01
 L-02 (Métricas) →  Gate L-02
 L-03 (PWA)     →  Gate L-03   ← puede hacerse en paralelo con L-02 si se aprueba
 L-04 (Calendario) →  Gate L-04
+L-05 (Tour guiado) → Gate L-05   ← después de B-06 (capa de acceso invitado)
 ```
 
 L-01 se hace primero porque L-02 puede reutilizar el mismo mecanismo de contexto

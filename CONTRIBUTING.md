@@ -78,6 +78,24 @@ test/descripcion              ← solo pruebas
 chore/descripcion             ← configuración, dependencias
 ```
 
+### Ramas permanentes y promoción (B-07a)
+
+```
+feature/* ─PR─► master ─ff-only─► demo ─ff-only─► production
+```
+
+| Rama | Entorno | Deploy |
+|---|---|---|
+| `master` | Demo QA (quality gate) | canal `qa` del site de producción |
+| `demo` | Demo público para jurados (congelado) | site `caresignal-demo` |
+| `production` | Producción (beta) | site `caresignal-mvp-2026`, canal `live` |
+
+- Nunca push directo a estas tres ramas; todo entra a `master` por PR (squash).
+- `demo` y `production` solo avanzan por **fast-forward**; si no lo es, detente y pregunta.
+- Un `hotfix/*` nace de `production` y se re-integra a `master` el mismo día.
+- Rollback: revertir con PR o restaurar la versión anterior en Firebase Hosting.
+- Detalle completo y reglas: `docs/20-contrato-ramas-cicd.md`.
+
 ### Convención de commits
 ```
 feat: descripción de la nueva funcionalidad

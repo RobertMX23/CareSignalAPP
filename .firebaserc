@@ -2,6 +2,13 @@
   "projects": {
     "default": "caresignal-mvp-2026"
   },
-  "targets": {},
+  "targets": {
+    "caresignal-mvp-2026": {
+      "hosting": {
+        "production": ["caresignal-mvp-2026"],
+        "demo": ["caresignal-demo"]
+      }
+    }
+  },
   "etags": {}
 }
