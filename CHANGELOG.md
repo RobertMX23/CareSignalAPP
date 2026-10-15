@@ -15,6 +15,12 @@ silenciosamente; toda modificación material aprobada crea una nueva versión (p
 - Los tests de rules no corren en `npm test` (requieren emulador/Java)
 - Pendiente (humano): desplegar las rules corregidas a producción
 
+### ci/docs: Functions no bloqueante y notas de IAM/APIs (2026-10-15)
+
+- `deploy-production.yml`: job `Cloud Functions` con `continue-on-error` (B-04: trigger de Auth y migración a Node 22)
+- `docs/21-gcp-iam-apis-deploy.md`: cuentas de servicio, bindings `serviceAccountUser`, APIs habilitadas a mano y estado de Functions
+- `docs/20`: resultados T4–T6 de la primera promoción real `master → demo → production`
+
 ### ci: ramas permanentes y deploy por entorno — B-07a (2026-10-15)
 
 - Modelo de tres ramas: `master` (QA) → `demo` (jurados) → `production`, solo fast-forward
