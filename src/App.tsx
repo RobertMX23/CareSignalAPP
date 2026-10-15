@@ -3,7 +3,8 @@ import { AppLayout } from './components/AppLayout';
 import { DemoSessionProvider, useDemoSession } from './components/DemoSessionContext';
 import { ToastProvider } from './components/ToastContext';
 import { ToastContainer } from './components/ToastContainer';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { AccessProvider } from './access/AccessProvider';
+import { useAuth } from './contexts/AuthContext';
 import type { Role } from './domain/taxonomy';
 import { DashboardPage } from './pages/DashboardPage';
 import { CaregiverRoundsPage } from './pages/CaregiverRoundsPage';
@@ -44,8 +45,8 @@ function DefaultRedirect(): JSX.Element {
 }
 
 const App = (): JSX.Element => (
-  <AuthProvider>
   <DemoSessionProvider>
+  <AccessProvider>
     <ToastProvider>
     <Router>
       <Routes>
@@ -96,8 +97,8 @@ const App = (): JSX.Element => (
     </Router>
     <ToastContainer />
     </ToastProvider>
+  </AccessProvider>
   </DemoSessionProvider>
-  </AuthProvider>
 );
 
 export default App;

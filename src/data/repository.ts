@@ -104,6 +104,45 @@ export const resetToSeed = (): DemoStore => {
   return fresh;
 };
 
+// --- Sesión de invitado (B-06) ----------------------------------------------------
+// Perfil de demo elegido por el visitante en el modo `guest`/`hybrid`. Vive bajo su propia
+// clave: restablecer la demo (`resetToSeed`) NO cierra la sesión de invitado. Solo guarda
+// un ID de personal ficticio; nunca credenciales ni datos reales.
+
+const GUEST_KEY = 'caresignal:guest-profile:v1';
+
+/** Devuelve el ID de personal con el que el invitado entró, o `null` si no hay sesión. */
+export const readGuestStaffId = (): ID | null => {
+  try {
+    const raw = window.localStorage.getItem(GUEST_KEY);
+    if (raw === null) return null;
+    const parsed: unknown = JSON.parse(raw);
+    if (typeof parsed === 'object' && parsed !== null) {
+      const staffId = (parsed as Record<string, unknown>).staffId;
+      if (typeof staffId === 'string' && staffId.length > 0) return staffId;
+    }
+  } catch {
+    // Valor corrupto o almacenamiento no disponible: se trata como "sin sesión".
+  }
+  return null;
+};
+
+export const writeGuestStaffId = (staffId: ID): void => {
+  try {
+    window.localStorage.setItem(GUEST_KEY, JSON.stringify({ staffId }));
+  } catch {
+    // Almacenamiento no disponible (modo privado): la sesión dura solo en memoria.
+  }
+};
+
+export const clearGuestStaffId = (): void => {
+  try {
+    window.localStorage.removeItem(GUEST_KEY);
+  } catch {
+    // Nada que limpiar.
+  }
+};
+
 // --- Residentes ----------------------------------------------------------------
 
 export const listResidents = (): Resident[] => load().residents;

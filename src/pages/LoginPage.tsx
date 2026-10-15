@@ -5,14 +5,35 @@
  * de email/password — solo Google SSO según contrato de producción.
  */
 
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
+import { useAccess } from '../access/AccessContext';
 import { useAuth } from '../contexts/AuthContext';
+import type { Role } from '../domain/taxonomy';
+
+/** Perfiles de demo ofrecidos en la entrada de invitado (sin cuenta, datos ficticios). */
+const GUEST_PROFILES: { role: Role; title: string; description: string }[] = [
+  { role: 'caregiver',  title: 'Cuidador/a',   description: 'Inicia y completa las rondas de tu turno.' },
+  { role: 'supervisor', title: 'Supervisor/a', description: 'Atiende alertas, asigna y verifica.' },
+  { role: 'manager',    title: 'Gerente',      description: 'Revisa métricas y bitácora, y cierra alertas.' },
+];
 
 export const LoginPage = (): JSX.Element => {
   const { user, signIn, loading, error } = useAuth();
+  const { mode, isGuest, enterAsGuest } = useAccess();
+  const navigate = useNavigate();
 
-  // Si ya está autenticado, ir al dashboard (fix: popup completa pero la ruta /login no redirigía)
-  if (user) return <Navigate to="/dashboard" replace />;
+  const showGuest = mode !== 'google' && enterAsGuest !== null;
+  const showGoogle = mode !== 'guest';
+
+  // Si ya está autenticado con Google, ir al dashboard (fix: popup completa pero la ruta
+  // /login no redirigía). Un invitado SÍ puede ver esta pantalla para cambiar de perfil.
+  if (user && !isGuest) return <Navigate to="/dashboard" replace />;
+
+  const handleGuest = (role: Role): void => {
+    if (enterAsGuest === null) return;
+    enterAsGuest(role);
+    navigate('/dashboard', { replace: true });
+  };
 
   return (
     <div
@@ -55,13 +76,51 @@ export const LoginPage = (): JSX.Element => {
       >
         <div>
           <h1 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 700, color: '#0D1B36', fontFamily: 'system-ui, sans-serif' }}>
-            Iniciar sesión
+            {showGuest ? 'Explorar la demo' : 'Iniciar sesión'}
           </h1>
           <p style={{ margin: '0.35rem 0 0', fontSize: '0.85rem', color: '#4B5A75', fontFamily: 'system-ui, sans-serif' }}>
-            Usa tu cuenta de Google de la residencia.
+            {showGuest
+              ? 'Elige un perfil para recorrer la app. No necesitas cuenta.'
+              : 'Usa tu cuenta de Google de la residencia.'}
           </p>
         </div>
 
+        {showGuest && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+            {GUEST_PROFILES.map((profile) => (
+              <button
+                key={profile.role}
+                type="button"
+                data-testid={`guest-profile-${profile.role}`}
+                onClick={() => handleGuest(profile.role)}
+                style={{
+                  textAlign: 'left',
+                  padding: '0.7rem 0.9rem',
+                  borderRadius: 8,
+                  border: '1px solid #D0D6E8',
+                  background: '#fff',
+                  cursor: 'pointer',
+                  fontFamily: 'system-ui, sans-serif',
+                }}
+              >
+                <span style={{ display: 'block', fontSize: '0.92rem', fontWeight: 700, color: '#0D1B36' }}>
+                  {profile.title}
+                </span>
+                <span style={{ display: 'block', fontSize: '0.78rem', color: '#4B5A75', marginTop: 2 }}>
+                  {profile.description}
+                </span>
+              </button>
+            ))}
+          </div>
+        )}
+
+        {showGuest && showGoogle && (
+          <p style={{ margin: 0, fontSize: '0.72rem', color: '#8898B8', textAlign: 'center', fontFamily: 'system-ui, sans-serif' }}>
+            o
+          </p>
+        )}
+
+        {showGoogle && (
         <button
           onClick={signIn}
           disabled={loading}
@@ -92,6 +151,7 @@ export const LoginPage = (): JSX.Element => {
           </svg>
           {loading ? 'Verificando…' : 'Continuar con Google'}
         </button>
+        )}
 
         {error && (
           <p style={{ margin: 0, fontSize: '0.8rem', color: '#C53030', background: '#FEF2F2', padding: '0.6rem 0.75rem', borderRadius: 6, fontFamily: 'system-ui, sans-serif' }}>
@@ -99,9 +159,11 @@ export const LoginPage = (): JSX.Element => {
           </p>
         )}
 
-        <p style={{ margin: 0, fontSize: '0.72rem', color: '#8898B8', textAlign: 'center', fontFamily: 'system-ui, sans-serif' }}>
-          Solo se aceptan cuentas @residencia.com autorizadas.
-        </p>
+        {showGoogle && (
+          <p style={{ margin: 0, fontSize: '0.72rem', color: '#8898B8', textAlign: 'center', fontFamily: 'system-ui, sans-serif' }}>
+            Solo se aceptan cuentas @residencia.com autorizadas.
+          </p>
+        )}
       </div>
 
       {/* Disclaimer */}

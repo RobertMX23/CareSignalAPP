@@ -25,5 +25,12 @@ export default defineConfig({
     url: 'http://localhost:5173',
     reuseExistingServer: true,
     timeout: 30_000,
+    // Modo invitado con entrada directa: equivale a la demo v0.1.0 (sin pantalla de login).
+    // VITE_FIREBASE_API_KEY vacío evita que un .env local active Google durante los tests.
+    env: {
+      VITE_ACCESS_MODE: 'guest',
+      VITE_GUEST_ENTRY: 'auto',
+      VITE_FIREBASE_API_KEY: '',
+    },
   },
 });

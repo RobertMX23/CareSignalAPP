@@ -17,6 +17,18 @@ silenciosamente; toda modificación material aprobada crea una nueva versión (p
 - Efecto: un push a `master` **ya no** despliega a producción
 - Docs: `docs/18` benchmark, `docs/19` contrato de acciones, `docs/20` contrato de ramas
 
+### feat: capa de acceso con modo invitado — B-06 (2026-10-15)
+
+- `src/access/`: conmutador `VITE_ACCESS_MODE` = `guest` | `hybrid` | `google`; mismo contrato `useAuth()` en los tres modos
+- Entrada de invitado por perfil (cuidador/a, supervisor/a, gerente) sin cuenta ni Firebase; el perfil se conserva al recargar
+- Sin `VITE_ACCESS_MODE`: `google` si hay `VITE_FIREBASE_API_KEY` (comportamiento anterior), `guest` si no
+- `AuthContext`: no falla cuando Firebase no está configurado (antes dejaba la página en blanco)
+- `repository.ts`: `readGuestStaffId`/`writeGuestStaffId`/`clearGuestStaffId` bajo clave propia; restablecer demo no cierra la sesión
+- Corrige Lighthouse CI (`NO_FCP`) y la suite E2E, rotas en master desde la activación de `AuthGuard`
+- `playwright.config.ts`: la suite corre en `guest` con entrada `auto` (equivale a la demo v0.1.0)
+- Tests: `tests/access-mode.test.ts` (A-01..A-08), `e2e/qa-guest-entry.spec.ts` (GE-01..GE-05)
+- Fuera de alcance: eliminar el fallback `demo_admin` de `AuthContext` y unificar identidad token/demo
+
 ### feat: botón de logout con perfil de usuario en el nav (2026-10-15)
 
 - `AppLayout` muestra avatar + nombre del usuario autenticado (Firebase Auth) al final del nav
