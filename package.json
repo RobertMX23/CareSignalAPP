@@ -19,6 +19,7 @@
     "provision:firestore": "ts-node --project scripts/tsconfig.json scripts/provision-firestore.ts"
   },
   "dependencies": {
+    "firebase": "^13.0.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "react-router-dom": "^6.26.2",
