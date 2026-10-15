@@ -1,13 +1,30 @@
 name: Deploy to Firebase (Producción)
 
+# Producción (beta): rama "production", site caresignal-mvp-2026, canal live.
+# Solo avanza por fast-forward desde demo (o master). También manual.
 on:
   push:
-    branches: [master]
+    branches: [production]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  checks: write
 
 jobs:
+  # ── 0. CI sobre el mismo commit ────────────────────────────────────────────
+  ci:
+    name: CI
+    uses: ./.github/workflows/ci.yml
+
   # ── 1. Build + deploy Hosting ──────────────────────────────────────────────
   hosting:
     name: Hosting
+    needs: ci
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
@@ -21,6 +38,7 @@ jobs:
 
       - run: npm run build
         env:
+          VITE_ACCESS_MODE:           google   # sin efecto hasta B-06
           VITE_FIREBASE_API_KEY:      ${{ secrets.VITE_FIREBASE_API_KEY }}
           VITE_FIREBASE_AUTH_DOMAIN:  caresignal-mvp-2026.firebaseapp.com
           VITE_FIREBASE_PROJECT_ID:   caresignal-mvp-2026
@@ -32,10 +50,12 @@ jobs:
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_CARESIGNAL_MVP_2026 }}
           channelId:              live
           projectId:              caresignal-mvp-2026
+          target:                 production
 
   # ── 2. Deploy Firestore rules + indexes ────────────────────────────────────
   firestore:
     name: Firestore Rules & Indexes
+    needs: ci
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
@@ -54,6 +74,7 @@ jobs:
   # ── 3. Build + deploy Cloud Functions ──────────────────────────────────────
   functions:
     name: Cloud Functions
+    needs: ci
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4

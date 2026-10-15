@@ -1,0 +1,51 @@
+name: Deploy QA (master)
+
+# Demo QA / quality gate: cada merge a master se publica en el canal "qa" del
+# site de producción (URL de revisión; NO toca el canal live).
+on:
+  push:
+    branches: [master]
+
+concurrency:
+  group: deploy-qa
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  checks: write
+
+jobs:
+  ci:
+    name: CI
+    uses: ./.github/workflows/ci.yml
+
+  deploy:
+    name: Deploy canal qa
+    needs: ci
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - run: npm run build
+        env:
+          VITE_ACCESS_MODE:           hybrid   # sin efecto hasta B-06
+          VITE_FIREBASE_API_KEY:      ${{ secrets.VITE_FIREBASE_API_KEY }}
+          VITE_FIREBASE_AUTH_DOMAIN:  caresignal-mvp-2026.firebaseapp.com
+          VITE_FIREBASE_PROJECT_ID:   caresignal-mvp-2026
+          VITE_FIREBASE_APP_ID:       ${{ secrets.VITE_FIREBASE_APP_ID }}
+
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken:              ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_CARESIGNAL_MVP_2026 }}
+          projectId:              caresignal-mvp-2026
+          target:                 production
+          channelId:              qa
+          expires:                30d

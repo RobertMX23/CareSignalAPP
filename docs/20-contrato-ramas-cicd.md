@@ -19,7 +19,7 @@ feature/* ─PR─► master ─promover (ff-only)─► demo ─promover (ff-on
 | Rama | Existe | Rol | Escritura | Destino de deploy |
 |---|---|---|---|---|
 | `master` | ✅ | Tronco de integración y **Demo QA** | Solo por PR (squash) | Canal con nombre `qa` del site actual |
-| `demo` | ❌ crear | **Demo público** para jurados, congelado | Solo fast-forward desde `master` | Site dedicado `caresignal-demo` (requiere creación humana) |
+| `demo` | ❌ crear | **Demo público** para jurados, congelado | Solo fast-forward desde `master` | Site dedicado `caresignal-demo` ✅ creado 2026-10-15 (https://caresignal-demo.web.app) |
 | `production` | ❌ crear | **Producción (beta)** | Solo fast-forward desde `demo` (o `master` si no hay demo vigente) | Canal `live` del site `caresignal-mvp-2026` |
 
 Ramas efímeras permitidas: `feature/`, `fix/`, `chore/`, `docs/`, `hotfix/`. Vida objetivo ≤ 1 semana; máximo 4 abiertas.
@@ -37,7 +37,7 @@ Ramas efímeras permitidas: `feature/`, `fix/`, `chore/`, `docs/`, `hotfix/`. Vi
 6. Mensajes de commit en formato convencional ya vigente (`feat:`, `fix:`, `docs:`, `chore:`, `ci:`).
 
 ### 2.2 Reglas de CI/CD
-7. Un deploy nunca corre sin que CI esté verde sobre el mismo commit.
+7. Un deploy a QA, demo o producción nunca corre sin que CI esté verde sobre el mismo commit (el CI se invoca como `workflow_call` desde cada workflow de deploy). Única excepción: el preview efímero de PR, que es desechable.
 8. Cada entorno usa su propio `concurrency` group; nunca dos deploys simultáneos al mismo destino.
 9. Un workflow nuevo que reemplaza a uno viejo elimina al viejo **en el mismo commit** (regla 10 de `CLAUDE.md`).
 10. Secrets: solo por `secrets.*`; nunca impresos en logs ni escritos en archivos.
@@ -94,7 +94,7 @@ Eres un ingeniero DevOps senior especializado en GitHub Actions y Firebase Hosti
 4. Implementar, en commits separados y pequeños:
    - a. `ci.yml`: añadir `demo` y `production` a los triggers de push, manteniendo PR a `master`.
    - b. Nuevo workflow de **QA**: push a `master` → build + deploy al canal con nombre `qa` (URL de revisión; expira y se renueva en cada deploy).
-   - c. Nuevo workflow de **demo**: push a `demo` → build + deploy al site `caresignal-demo`. Debe quedar **deshabilitado por condición** (variable de repositorio `DEMO_SITE_ENABLED == 'true'`) hasta que el humano cree el site.
+   - c. Nuevo workflow de **demo**: push a `demo` → build + deploy al site `caresignal-demo` (el site ya existe; no hay bandera de habilitación).
    - d. Workflow de **producción**: renombrar/convertir `firebase-deploy.yml` para que dispare en push a `production` (y `workflow_dispatch`). Mantener los tres jobs tal como están; no corregir IAM aquí.
    - e. Encadenar cada deploy a CI verde sobre el mismo SHA (`workflow_run` o reutilizando el workflow de CI como `needs`).
    - f. `concurrency` por entorno y `permissions` mínimos en todos los workflows.
@@ -111,8 +111,8 @@ Eres un ingeniero DevOps senior especializado en GitHub Actions y Firebase Hosti
 | 1 | Crear `production` y `demo` apuntando al HEAD actual de `master` | `git ls-remote` muestra el mismo SHA en las tres |
 | 2 | Mergear el PR de B-07a a `master` | El push a `master` **ya no** despliega a `live`; despliega al canal `qa` |
 | 3 | Promover `master → demo → production` por fast-forward (primer ciclo de prueba) | Runs verdes y `live` actualizado solo desde `production` |
-| 4 | Crear el site `caresignal-demo`, activar `DEMO_SITE_ENABLED` | URL de demo responde |
-| 5 | Agregar el dominio del site demo a **Firebase Auth y a OAuth de GCP** (solo si usará Google) | Sin `auth/unauthorized-domain` |
+| 4 | Primer push a `demo` (el site ya existe) | `https://caresignal-demo.web.app` responde con el build |
+| 5 | Agregar `caresignal-demo.web.app` a **Firebase Auth y a OAuth de GCP** — necesario mientras el demo no tenga modo invitado (antes de B-06 pide login con Google) | Sin `auth/unauthorized-domain` |
 
 > Entre el paso 2 y el 3 `live` queda en el último build; es intencional y debe comunicarse.
 
@@ -168,7 +168,7 @@ Las pruebas de workflows se hacen **sin tocar producción**. Hasta el paso 3 del
 
 | ID | Estado | Evidencia (URL del run / SHA) | Fecha | Notas |
 |---|---|---|---|---|
-| T1 | ☐ pendiente | — | — | — |
+| T1 | ◐ parcial | YAML de los 5 workflows parsea (PyYAML); `firebase emulators:start --only hosting` carga los targets `production` y `demo` de `firebase.json`. `actionlint` no disponible localmente | 2026-10-15 | Falta `actionlint` o la primera ejecución en Actions |
 | T2 | ☐ pendiente | — | — | — |
 | T3 | ☐ pendiente | — | — | — |
 | T4 | ☐ pendiente | — | — | — |
@@ -178,6 +178,21 @@ Las pruebas de workflows se hacen **sin tocar producción**. Hasta el paso 3 del
 | T8 | ☐ pendiente | — | — | — |
 | T9 | ☐ pendiente | — | — | — |
 | T10 | ☐ pendiente | — | — | — |
+
+### Cambios realizados en el PR (rama `ci/b07a-branches-cicd`)
+
+| Archivo | Cambio |
+|---|---|
+| `.github/workflows/ci.yml` | Sale del trigger `push`; queda `pull_request` a master + `workflow_call` |
+| `.github/workflows/deploy-qa.yml` | Nuevo: push a `master` → CI → canal `qa` del site de producción |
+| `.github/workflows/deploy-preview.yml` | Nuevo: PR a `master` → canal efímero (7 días) |
+| `.github/workflows/deploy-demo.yml` | Nuevo: push a `demo` → CI → site `caresignal-demo` |
+| `.github/workflows/deploy-production.yml` | Reemplaza `firebase-deploy.yml` (eliminado): push a `production` o manual; hosting/firestore/functions con `needs: ci` |
+| `firebase.json` | `hosting` pasa a lista con targets `production` y `demo` (configuración idéntica duplicada) |
+| `.firebaserc` | Targets `production → caresignal-mvp-2026`, `demo → caresignal-demo` |
+| `CONTRIBUTING.md`, `CHANGELOG.md` | Flujo de ramas, promoción y rollback |
+
+Nota: `firebase deploy --only hosting` manual ahora despliega **ambos** targets; usar `--only hosting:production` o `hosting:demo`.
 
 ### Criterios del gate B-07a
 - [ ] `master`, `demo` y `production` existen y apuntan al mismo SHA inicial.

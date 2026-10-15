@@ -7,6 +7,16 @@ silenciosamente; toda modificación material aprobada crea una nueva versión (p
 
 ## [Unreleased]
 
+### ci: ramas permanentes y deploy por entorno — B-07a (2026-10-15)
+
+- Modelo de tres ramas: `master` (QA) → `demo` (jurados) → `production`, solo fast-forward
+- Nuevos workflows `deploy-qa`, `deploy-preview`, `deploy-demo`; `firebase-deploy.yml`
+  reemplazado por `deploy-production.yml` (dispara en `production`, no en `master`)
+- `ci.yml` pasa a `pull_request` + `workflow_call`; cada deploy invoca CI sobre el mismo commit
+- `firebase.json`/`.firebaserc`: targets de Hosting `production` y `demo` (site `caresignal-demo`)
+- Efecto: un push a `master` **ya no** despliega a producción
+- Docs: `docs/18` benchmark, `docs/19` contrato de acciones, `docs/20` contrato de ramas
+
 ### feat: botón de logout con perfil de usuario en el nav (2026-10-15)
 
 - `AppLayout` muestra avatar + nombre del usuario autenticado (Firebase Auth) al final del nav
