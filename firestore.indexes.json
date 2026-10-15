@@ -1,0 +1,40 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "rounds",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "residenciaId", "order": "ASCENDING" },
+        { "fieldPath": "status",       "order": "ASCENDING" },
+        { "fieldPath": "scheduledAt",  "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "rounds",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "residenciaId",    "order": "ASCENDING" },
+        { "fieldPath": "assignedStaffId", "order": "ASCENDING" },
+        { "fieldPath": "scheduledAt",     "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "alerts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "residenciaId", "order": "ASCENDING" },
+        { "fieldPath": "status",       "order": "ASCENDING" },
+        { "fieldPath": "createdAt",    "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "audit",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "residenciaId", "order": "ASCENDING" },
+        { "fieldPath": "timestamp",    "order": "DESCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

@@ -39,3 +39,12 @@ playwright-report/
 
 # Firebase local cache (no commitear)
 .firebase/
+
+# Service account keys (NUNCA commitear)
+*-service-account*.json
+*-key.json
+sa-key.json
+
+# Cloud Functions y backend — builds locales
+functions/lib/
+backend/dist/

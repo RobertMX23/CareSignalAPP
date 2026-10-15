@@ -7,6 +7,37 @@ silenciosamente; toda modificación material aprobada crea una nueva versión (p
 
 ## [Unreleased]
 
+### arch: Artefactos de producción — Firebase Auth + Google SSO + Cloud Run (2026-10-15)
+
+Implementación de la arquitectura de producción (sin afectar el demo v0.1.0-workshop):
+
+**Frontend:**
+- `src/lib/firebase.ts` — inicialización del cliente Firebase (lazy, no rompe el demo sin credenciales)
+- `src/contexts/AuthContext.tsx` — contexto de autenticación real con Google SSO (`useAuth`)
+- `src/pages/LoginPage.tsx` — pantalla de login con Google SSO
+- `src/data/firestoreRepository.ts` — repositorio de producción que llama a Cloud Run API
+
+**Cloud Functions:**
+- `functions/src/auth/setUserClaims.ts` — trigger `onCreate` que inyecta `role`, `residenciaId`, `staffId`
+- `functions/src/index.ts`, `functions/package.json`, `functions/tsconfig.json`
+
+**Backend Cloud Run (Express):**
+- `backend/src/app.ts` — servidor Express con CORS + Helmet
+- `backend/src/middleware/auth.ts` — verificación JWT con Firebase Admin SDK
+- `backend/src/routes/rounds.ts`, `alerts.ts`, `audit.ts` — rutas protegidas
+- `backend/src/firebaseAdmin.ts`, `backend/package.json`, `backend/tsconfig.json`, `backend/Dockerfile`
+
+**Firestore:**
+- `firestore.rules` — Security Rules multi-tenant, audit append-only
+- `firestore.indexes.json` — índices compuestos requeridos
+
+**CI/CD:**
+- `cloudbuild.yaml` — pipeline Cloud Build: build frontend + backend, deploy a Cloud Run + Firebase Hosting
+- `.env.example` — variables requeridas (sin valores; valores reales en Secret Manager)
+- `.gitignore` — añadidos `functions/lib/`, `backend/dist/`, patrones de service-account keys
+
+**Contrato:** `src/domain/` no modificado. Demo localStorage sigue funcionando sin cambios.
+
 ### chore(deps): React 18 → 19 + shim JSX global (2026-10-14)
 
 Upgrade coordinado de los 4 paquetes React para resolver el ERESOLVE que bloqueaba

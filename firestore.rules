@@ -1,0 +1,88 @@
+rules_version = '2';
+// firestore.rules — CareSignal producción
+// Multi-tenant: todas las colecciones están particionadas por residenciaId.
+// Los claims role / residenciaId / staffId los inyecta la Cloud Function onUserCreate.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Funciones de ayuda ─────────────────────────────────────────────────
+
+    function authed() {
+      return request.auth != null;
+    }
+
+    function sameResidencia(rid) {
+      return request.auth.token.residenciaId == rid;
+    }
+
+    function isSupervisor() {
+      return request.auth.token.role in ['supervisor', 'demo_admin'];
+    }
+
+    function isCaregiver() {
+      return request.auth.token.role in ['caregiver', 'supervisor', 'demo_admin'];
+    }
+
+    // ── Staff (provisioning) ───────────────────────────────────────────────
+    // Solo demo_admin puede escribir; cualquier usuario autenticado del mismo
+    // tenant puede leer para la vista de Personal.
+
+    match /staff/{residenciaId}/{staffId} {
+      allow read:  if authed() && sameResidencia(residenciaId);
+      allow write: if authed() && sameResidencia(residenciaId)
+                      && request.auth.token.role == 'demo_admin';
+    }
+
+    // ── Residentes ─────────────────────────────────────────────────────────
+
+    match /residents/{residenciaId}/{residentId} {
+      allow read:  if authed() && sameResidencia(residenciaId);
+      allow write: if authed() && sameResidencia(residenciaId) && isSupervisor();
+    }
+
+    // ── Rondas ─────────────────────────────────────────────────────────────
+    // El cuidador asignado puede actualizar su propia ronda; supervisor puede todo.
+
+    match /rounds/{residenciaId}/{roundId} {
+      allow read: if authed() && sameResidencia(residenciaId);
+      allow create: if authed() && sameResidencia(residenciaId) && isSupervisor();
+      allow update: if authed() && sameResidencia(residenciaId)
+        && (
+          isSupervisor() ||
+          (isCaregiver() && resource.data.assignedStaffId == request.auth.token.staffId)
+        );
+      allow delete: if false; // las rondas no se eliminan (se cancelan)
+    }
+
+    // ── Alertas ────────────────────────────────────────────────────────────
+
+    match /alerts/{residenciaId}/{alertId} {
+      allow read: if authed() && sameResidencia(residenciaId);
+      allow write: if authed() && sameResidencia(residenciaId) && isSupervisor();
+    }
+
+    // ── Incidentes ─────────────────────────────────────────────────────────
+
+    match /incidents/{residenciaId}/{incidentId} {
+      allow read: if authed() && sameResidencia(residenciaId);
+      allow write: if authed() && sameResidencia(residenciaId) && isSupervisor();
+    }
+
+    // ── Audit log — append-only ─────────────────────────────────────────────
+    // Nunca update ni delete desde ningún cliente.
+
+    match /audit/{residenciaId}/{eventId} {
+      allow read:   if authed() && sameResidencia(residenciaId);
+      allow create: if authed() && sameResidencia(residenciaId) && isCaregiver();
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    // ── Catch-all: denegar todo lo no listado ──────────────────────────────
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
