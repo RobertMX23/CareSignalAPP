@@ -171,9 +171,9 @@ Las pruebas de workflows se hacen **sin tocar producción**. Hasta el paso 3 del
 | T1 | ◐ parcial | YAML de los 5 workflows parsea (PyYAML); `firebase emulators:start --only hosting` carga los targets `production` y `demo` de `firebase.json`. `actionlint` no disponible localmente | 2026-10-15 | Falta `actionlint` o la primera ejecución en Actions |
 | T2 | ☐ pendiente | — | — | — |
 | T3 | ☐ pendiente | — | — | — |
-| T4 | ☐ pendiente | — | — | — |
-| T5 | ☐ pendiente | — | — | — |
-| T6 | ☐ pendiente | — | — | — |
+| T4 | ✅ pasó | Run Deploy QA tras merge de #27 (`05b8dc4`): CI verde y canal `qa` publicado; `live` intacto | 2026-10-15 | https://caresignal-mvp-2026--qa-i8ra5guw.web.app |
+| T5 | ✅ pasó | Run 38789322527: fast-forward `master → demo`, CI verde y deploy a `caresignal-demo`; HTTP 200 y selector de 3 perfiles | 2026-10-15 | https://caresignal-demo.web.app |
+| T6 | ◐ parcial | Run 38791570980: Hosting ✅, Firestore ✅, Functions ❌ (IAM, APIs y trigger Pub/Sub; ver `docs/21`) | 2026-10-15 | `live` actualizado; Functions → B-04 |
 | T7 | ☐ pendiente | — | — | — |
 | T8 | ☐ pendiente | — | — | — |
 | T9 | ☐ pendiente | — | — | — |
