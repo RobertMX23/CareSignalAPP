@@ -44,7 +44,7 @@ export interface AuthUser {
   staffId: ID;
 }
 
-interface AuthContextValue {
+export interface AuthContextValue {
   user: AuthUser | null;
   loading: boolean;
   signIn: () => Promise<void>;
@@ -52,7 +52,7 @@ interface AuthContextValue {
   error: string | null;
 }
 
-const AuthContext = createContext<AuthContextValue | undefined>(undefined);
+export const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 async function toAuthUser(firebaseUser: User): Promise<AuthUser> {
   let claims: Record<string, unknown> = {};
@@ -79,6 +79,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }): JSX.Element
   const [error, setError]     = useState<string | null>(null);
 
   useEffect(() => {
+    // Sin configuración de Firebase (CI, demo local) no hay sesión que verificar.
+    if (auth === undefined) {
+      setLoading(false);
+      return undefined;
+    }
     const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
         const authUser = await toAuthUser(firebaseUser); // toAuthUser nunca lanza
@@ -103,7 +108,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }): JSX.Element
   };
 
   const signOut = async (): Promise<void> => {
-    await firebaseSignOut(auth);
+    if (auth !== undefined) await firebaseSignOut(auth);
     setUser(null);
   };
 
