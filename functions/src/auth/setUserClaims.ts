@@ -12,7 +12,8 @@
  * debe llamar user.getIdToken(true) después del primer login para forzar el refresh.
  */
 
-import * as functions from 'firebase-functions/v2';
+import { auth as functionsAuth } from 'firebase-functions/v1';
+import { logger } from 'firebase-functions/v2';
 import { auth, db } from '../firebaseAdmin';
 
 interface StaffDoc {
@@ -22,7 +23,7 @@ interface StaffDoc {
   displayName: string;
 }
 
-export const setUserClaims = functions.auth.user().onCreate(async (user) => {
+export const setUserClaims = functionsAuth.user().onCreate(async (user) => {
   if (!user.email) return;
 
   const snap = await db
@@ -33,7 +34,7 @@ export const setUserClaims = functions.auth.user().onCreate(async (user) => {
 
   if (snap.empty) {
     // Usuario no provisionado — sin claims, sin acceso al producto
-    functions.logger.warn('setUserClaims: email no provisionado', { email: user.email });
+    logger.warn('setUserClaims: email no provisionado', { email: user.email });
     return;
   }
 
@@ -46,7 +47,7 @@ export const setUserClaims = functions.auth.user().onCreate(async (user) => {
     staffId:      doc.id,
   });
 
-  functions.logger.info('setUserClaims: claims inyectados', {
+  logger.info('setUserClaims: claims inyectados', {
     uid:          user.uid,
     role:         data.role,
     residenciaId: data.residenciaId,
