@@ -7,6 +7,19 @@ silenciosamente; toda modificación material aprobada crea una nueva versión (p
 
 ## [Unreleased]
 
+### chore(deps): React 18 → 19 + shim JSX global (2026-10-14)
+
+Upgrade coordinado de los 4 paquetes React para resolver el ERESOLVE que bloqueaba
+los PRs #21 y #23 de Dependabot (cerrados por ser upgrades parciales incompatibles).
+
+- **Actualizado** `react` 18.3.1 → 19.3.1
+- **Actualizado** `react-dom` 18.3.1 → 19.3.1
+- **Actualizado** `@types/react` 18.3.11 → 19.3.0
+- **Actualizado** `@types/react-dom` 18.3.0 → 19.3.0
+- **Modificado** `src/vite-env.d.ts` — shim que re-declara el namespace global `JSX`
+  (React 19 lo eliminó; el shim evita editar los ~36 archivos que usan `): JSX.Element`)
+- TypeScript ✓ · 59/59 tests ✓ · build ✓
+
 ### ci: GitHub Actions — despliegue automático a Firebase Hosting (2026-10-14)
 
 - **Agregado** `.github/workflows/firebase-deploy.yml` — job `deploy` que en cada push a `master` ejecuta `npm ci`, `npm run build` y despliega a Firebase Hosting con `FirebaseExtended/action-hosting-deploy@v0`
