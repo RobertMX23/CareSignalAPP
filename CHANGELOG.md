@@ -7,6 +7,14 @@ silenciosamente; toda modificación material aprobada crea una nueva versión (p
 
 ## [Unreleased]
 
+### fix(rules): Security Rules con los paths reales + tests en CI — B-01 (2026-10-15)
+
+- Confirmado con el emulador: con las rules originales 10 de 24 casos legítimos fallaban (los `match` de 3 segmentos no casaban con documentos de 4)
+- `firestore.rules`: `match /{coleccion}/{rid}/{coleccion}/{id}`; el rol `manager` (4.º rol de la taxonomía) con permisos de gestión y audit
+- `tests/rules/firestore.rules.test.ts` (24 casos) + `npm run test:rules` + job `Firestore rules (emulador)` en CI
+- Los tests de rules no corren en `npm test` (requieren emulador/Java)
+- Pendiente (humano): desplegar las rules corregidas a producción
+
 ### ci/docs: Functions no bloqueante y notas de IAM/APIs (2026-10-15)
 
 - `deploy-production.yml`: job `Cloud Functions` con `continue-on-error` (B-04: trigger de Auth y migración a Node 22)

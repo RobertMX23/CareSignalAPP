@@ -7,5 +7,7 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     include: ['tests/**/*.test.{ts,tsx}'],
+    // Las pruebas de Firestore Rules requieren el emulador: corren con `npm run test:rules`.
+    exclude: ['**/node_modules/**', '**/dist/**', 'tests/rules/**'],
   },
 });
