@@ -13,7 +13,7 @@
  */
 
 import { auth as functionsAuth } from 'firebase-functions/v1';
-import { logger } from 'firebase-functions/v2';
+import { logger } from 'firebase-functions/logger';
 import { auth, db } from '../firebaseAdmin';
 
 interface StaffDoc {

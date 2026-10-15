@@ -7,6 +7,15 @@ silenciosamente; toda modificación material aprobada crea una nueva versión (p
 
 ## [Unreleased]
 
+### feat(functions): migración a Node 22 y dependencias actuales — B-04 (2026-10-15)
+
+- `firebase.json` `runtime: nodejs22`, `functions/package.json` `engines.node: 22`, `tsconfig` target es2022
+- `firebase-functions` 5 → 7.4 y `firebase-admin` 12 → 14.5 (API modular: `firebase-admin/app|auth|firestore`)
+- Logger desde `firebase-functions/logger`; el trigger `auth.user().onCreate` (v1) se mantiene
+- `functions/test/claims.emulator.test.mjs` + `npm run test:functions` + job `Functions (emuladores)` en CI
+- Workflow de producción: job Functions con Node 22 y `firebase-tools@15` (sigue `continue-on-error`)
+- Pendiente (humano): borrar la función `setUserClaims` a medias antes de desplegar
+
 ### fix(rules): Security Rules con los paths reales + tests en CI — B-01 (2026-10-15)
 
 - Confirmado con el emulador: con las rules originales 10 de 24 casos legítimos fallaban (los `match` de 3 segmentos no casaban con documentos de 4)
