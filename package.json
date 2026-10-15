@@ -9,6 +9,7 @@
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "test:functions": "npm --prefix functions run build && npx --yes firebase-tools@15 emulators:exec --only auth,functions,firestore --project demo-caresignal-functions \"npm --prefix functions run test:emulator\"",
     "test:rules": "npx --yes firebase-tools@13 emulators:exec --only firestore --project demo-caresignal-rules \"vitest run --config vitest.rules.config.ts\"",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
