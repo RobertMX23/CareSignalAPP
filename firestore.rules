@@ -2,6 +2,11 @@ rules_version = '2';
 // firestore.rules — CareSignal producción
 // Multi-tenant: todas las colecciones están particionadas por residenciaId.
 // Los claims role / residenciaId / staffId los inyecta la Cloud Function onUserCreate.
+//
+// Forma de los documentos: {coleccion}/{residenciaId}/{coleccion}/{id}
+// (4 segmentos; la misma que escriben scripts/provision-firestore.ts y backend/src/routes/*).
+// Un documento ocupa un número PAR de segmentos: con 3 el `match` describe una colección
+// y no casa con ningún documento (B-01). Probado en tests/rules/firestore.rules.test.ts.
 
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -16,19 +21,21 @@ service cloud.firestore {
       return request.auth.token.residenciaId == rid;
     }
 
+    // Escritura de gestión: supervisor, gerente (manager) y demo_admin.
     function isSupervisor() {
-      return request.auth.token.role in ['supervisor', 'demo_admin'];
+      return request.auth.token.role in ['supervisor', 'manager', 'demo_admin'];
     }
 
+    // Cualquier rol operativo del tenant.
     function isCaregiver() {
-      return request.auth.token.role in ['caregiver', 'supervisor', 'demo_admin'];
+      return request.auth.token.role in ['caregiver', 'supervisor', 'manager', 'demo_admin'];
     }
 
     // ── Staff (provisioning) ───────────────────────────────────────────────
     // Solo demo_admin puede escribir; cualquier usuario autenticado del mismo
     // tenant puede leer para la vista de Personal.
 
-    match /staff/{residenciaId}/{staffId} {
+    match /staff/{residenciaId}/staff/{staffId} {
       allow read:  if authed() && sameResidencia(residenciaId);
       allow write: if authed() && sameResidencia(residenciaId)
                       && request.auth.token.role == 'demo_admin';
@@ -36,7 +43,7 @@ service cloud.firestore {
 
     // ── Residentes ─────────────────────────────────────────────────────────
 
-    match /residents/{residenciaId}/{residentId} {
+    match /residents/{residenciaId}/residents/{residentId} {
       allow read:  if authed() && sameResidencia(residenciaId);
       allow write: if authed() && sameResidencia(residenciaId) && isSupervisor();
     }
@@ -44,7 +51,7 @@ service cloud.firestore {
     // ── Rondas ─────────────────────────────────────────────────────────────
     // El cuidador asignado puede actualizar su propia ronda; supervisor puede todo.
 
-    match /rounds/{residenciaId}/{roundId} {
+    match /rounds/{residenciaId}/rounds/{roundId} {
       allow read: if authed() && sameResidencia(residenciaId);
       allow create: if authed() && sameResidencia(residenciaId) && isSupervisor();
       allow update: if authed() && sameResidencia(residenciaId)
@@ -57,14 +64,14 @@ service cloud.firestore {
 
     // ── Alertas ────────────────────────────────────────────────────────────
 
-    match /alerts/{residenciaId}/{alertId} {
+    match /alerts/{residenciaId}/alerts/{alertId} {
       allow read: if authed() && sameResidencia(residenciaId);
       allow write: if authed() && sameResidencia(residenciaId) && isSupervisor();
     }
 
     // ── Incidentes ─────────────────────────────────────────────────────────
 
-    match /incidents/{residenciaId}/{incidentId} {
+    match /incidents/{residenciaId}/incidents/{incidentId} {
       allow read: if authed() && sameResidencia(residenciaId);
       allow write: if authed() && sameResidencia(residenciaId) && isSupervisor();
     }
@@ -72,7 +79,7 @@ service cloud.firestore {
     // ── Audit log — append-only ─────────────────────────────────────────────
     // Nunca update ni delete desde ningún cliente.
 
-    match /audit/{residenciaId}/{eventId} {
+    match /audit/{residenciaId}/audit/{eventId} {
       allow read:   if authed() && sameResidencia(residenciaId);
       allow create: if authed() && sameResidencia(residenciaId) && isCaregiver();
       allow update: if false;
