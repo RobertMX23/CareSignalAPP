@@ -7,6 +7,13 @@ silenciosamente; toda modificación material aprobada crea una nueva versión (p
 
 ## [Unreleased]
 
+### fix: LoginPage redirige al dashboard si ya hay sesión activa (2026-10-15)
+
+- `LoginPage` ahora llama `<Navigate to="/dashboard" replace />` cuando `user !== null`
+- Causa raíz del bug "regresa a /login tras Google popup": la ruta `/login` nunca
+  redirigía al usuario autenticado; `AuthGuard` solo protege rutas privadas, no empuja
+  al usuario fuera de `/login` cuando la sesión se establece.
+
 ### arch: Unificación proyecto Firebase → caresignal-mvp-2026 (2026-10-15)
 
 - Consolidado en proyecto existente `caresignal-mvp-2026` (sin crear uno nuevo)

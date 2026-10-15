@@ -5,10 +5,14 @@
  * de email/password — solo Google SSO según contrato de producción.
  */
 
+import { Navigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 export const LoginPage = (): JSX.Element => {
-  const { signIn, loading, error } = useAuth();
+  const { user, signIn, loading, error } = useAuth();
+
+  // Si ya está autenticado, ir al dashboard (fix: popup completa pero la ruta /login no redirigía)
+  if (user) return <Navigate to="/dashboard" replace />;
 
   return (
     <div
