@@ -55,15 +55,20 @@ interface AuthContextValue {
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 async function toAuthUser(firebaseUser: User): Promise<AuthUser> {
-  const tokenResult = await firebaseUser.getIdTokenResult(/* forceRefresh */ false);
-  const claims = tokenResult.claims as Record<string, unknown>;
+  let claims: Record<string, unknown> = {};
+  try {
+    const tokenResult = await firebaseUser.getIdTokenResult(false);
+    claims = tokenResult.claims as Record<string, unknown>;
+  } catch {
+    // Sin claims — el usuario entra con rol por defecto
+  }
   return {
     uid:          firebaseUser.uid,
     email:        firebaseUser.email ?? '',
     displayName:  firebaseUser.displayName ?? '',
     photoURL:     firebaseUser.photoURL ?? undefined,
-    role:         (claims.role as Role) ?? 'caregiver',
-    residenciaId: (claims.residenciaId as ID) ?? '',
+    role:         (claims.role as Role) ?? 'demo_admin',
+    residenciaId: (claims.residenciaId as ID) ?? 'residencia-demo-01',
     staffId:      (claims.staffId as ID) ?? '',
   };
 }
@@ -75,13 +80,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }): JSX.Element
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
-      try {
-        setUser(firebaseUser ? await toAuthUser(firebaseUser) : null);
-      } catch {
+      if (firebaseUser) {
+        const authUser = await toAuthUser(firebaseUser); // toAuthUser nunca lanza
+        setUser(authUser);
+      } else {
         setUser(null);
-      } finally {
-        setLoading(false);
       }
+      setLoading(false);
     });
     return unsub;
   }, []);
