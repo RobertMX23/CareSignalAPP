@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "caresignal-mvp-2026"
-  }
+    "default": "caresignal-prod"
+  },
+  "targets": {},
+  "etags": {}
 }

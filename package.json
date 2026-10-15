@@ -15,7 +15,8 @@
     "docs:dossier": "node tools/build-dossier.cjs",
     "docs:deck": "node tools/build-deck.cjs",
     "docs:lamina": "node tools/build-lamina.cjs",
-    "docs:all": "npm run docs:dossier && npm run docs:deck && npm run docs:lamina"
+    "docs:all": "npm run docs:dossier && npm run docs:deck && npm run docs:lamina",
+    "provision:firestore": "ts-node --project scripts/tsconfig.json scripts/provision-firestore.ts"
   },
   "dependencies": {
     "react": "^19.3.1",

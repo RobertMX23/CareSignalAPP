@@ -7,6 +7,14 @@ silenciosamente; toda modificación material aprobada crea una nueva versión (p
 
 ## [Unreleased]
 
+### arch: Provisioning y configuración Firebase (2026-10-15)
+
+- `firebase.json` — hosting (SPA rewrites, cache headers, CSP headers), firestore, functions, emulators
+- `.firebaserc` — alias `default → caresignal-prod`
+- `scripts/provision-firestore.ts` — sube semilla demo + staff SSO a Firestore
+- `scripts/tsconfig.json` — compilación de scripts Node.js
+- `package.json` — script `provision:firestore` añadido
+
 ### arch: Artefactos de producción — Firebase Auth + Google SSO + Cloud Run (2026-10-15)
 
 Implementación de la arquitectura de producción (sin afectar el demo v0.1.0-workshop):
