@@ -7,6 +7,15 @@ silenciosamente; toda modificación material aprobada crea una nueva versión (p
 
 ## [Unreleased]
 
+### arch: Unificación proyecto Firebase → caresignal-mvp-2026 (2026-10-15)
+
+- Consolidado en proyecto existente `caresignal-mvp-2026` (sin crear uno nuevo)
+- `.firebaserc`, `.env.example`, `scripts/provision-firestore.ts` actualizados
+- `.github/workflows/firebase-deploy.yml` extendido: 3 jobs paralelos —
+  Hosting (ya existía), Firestore rules/indexes (nuevo), Cloud Functions (nuevo)
+- Secrets requeridos en GitHub: `VITE_FIREBASE_API_KEY`, `VITE_FIREBASE_APP_ID`
+  (además del existente `FIREBASE_SERVICE_ACCOUNT_CARESIGNAL_MVP_2026`)
+
 ### arch: Provisioning y configuración Firebase (2026-10-15)
 
 - `firebase.json` — hosting (SPA rewrites, cache headers, CSP headers), firestore, functions, emulators

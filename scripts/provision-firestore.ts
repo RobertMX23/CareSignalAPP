@@ -28,7 +28,7 @@ const { buildSeedSnapshot, DEMO_RESIDENCIA_ID } = require('../src/data/seed');
 if (!admin.apps.length) {
   admin.initializeApp({
     credential: admin.credential.applicationDefault(),
-    projectId:  process.env.FIREBASE_PROJECT_ID ?? 'caresignal-prod',
+    projectId:  process.env.FIREBASE_PROJECT_ID ?? 'caresignal-mvp-2026',
   });
 }
 
