@@ -5,6 +5,9 @@ name: Preview de PR
 on:
   pull_request:
     branches: [master]
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
 
 concurrency:
   group: preview-${{ github.event.pull_request.number }}

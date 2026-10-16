@@ -6,12 +6,23 @@ name: CI
 on:
   pull_request:
     branches: [master]
+    # Un PR que solo toca documentación no cambia el código: no gasta minutos.
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
   workflow_call:
 
+# En un PR, una corrida nueva cancela la anterior de la misma rama. Cuando lo invoca un
+# deploy (workflow_call) el grupo es único por corrida, así nunca se cancela un deploy.
+concurrency:
+  group: ci-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
-  # ── 1. TypeScript ────────────────────────────────────────────────────────────
-  typecheck:
-    name: TypeScript check
+  # ── 1. Verificación barata: typecheck + unit + build en UN job ────────────────
+  # Antes eran 3 jobs con 3 instalaciones (npm ci) y 3 redondeos al minuto.
+  verify:
+    name: Verify (tsc, vitest, build)
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
@@ -22,20 +33,10 @@ jobs:
       - run: npm ci
       - name: tsc --noEmit
         run: npm run typecheck
-
-  # ── 2. Unit tests (Vitest) ───────────────────────────────────────────────────
-  unit:
-    name: Unit tests (Vitest)
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'npm'
-      - run: npm ci
       - name: vitest run
         run: npm test
+      - name: vite build
+        run: npm run build
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -43,24 +44,10 @@ jobs:
           path: test-results/
           retention-days: 7
 
-  # ── 3. Build verification (Vite) ─────────────────────────────────────────────
-  build:
-    name: Build (vite build)
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'npm'
-      - run: npm ci
-      - name: vite build
-        run: npm run build
-
-  # ── 4. E2E — Chromium ────────────────────────────────────────────────────────
+  # ── 2. E2E — Chromium ────────────────────────────────────────────────────────
   e2e-chromium:
     name: E2E (Chromium)
-    needs: [typecheck, unit, build]
+    needs: [verify]
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
@@ -87,10 +74,10 @@ jobs:
           path: test-results/
           retention-days: 7
 
-  # ── 5. Lighthouse CI (E6.5) ──────────────────────────────────────────────────
+  # ── 3. Lighthouse CI (E6.5) ──────────────────────────────────────────────────
   lhci:
     name: Lighthouse CI
-    needs: [build]
+    needs: [verify]
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
@@ -110,7 +97,7 @@ jobs:
           path: lighthouse-report/
           retention-days: 7
 
-  # ── 6. Firestore Security Rules (emulador) — B-01 ────────────────────────────
+  # ── 4. Firestore Security Rules (emulador) — B-01 ────────────────────────────
   rules:
     name: Firestore rules (emulador)
     runs-on: ubuntu-22.04
@@ -128,7 +115,7 @@ jobs:
       - name: Rules tests (firebase emulators:exec)
         run: npm run test:rules
 
-  # ── 7. Cloud Functions en emuladores (Auth + Functions + Firestore) — B-04 ───
+  # ── 5. Cloud Functions en emuladores (Auth + Functions + Firestore) — B-04 ───
   functions:
     name: Functions (emuladores)
     runs-on: ubuntu-22.04
@@ -149,7 +136,7 @@ jobs:
       - name: setUserClaims contra emuladores
         run: npm run test:functions
 
-  # ── 8. Auditoría de dependencias de producción (aviso, NO bloquea) ────────────
+  # ── 6. Auditoría de dependencias de producción (aviso, NO bloquea) ────────────
   audit:
     name: npm audit (aviso)
     runs-on: ubuntu-22.04

@@ -37,7 +37,8 @@ Ramas efímeras permitidas: `feature/`, `fix/`, `chore/`, `docs/`, `hotfix/`. Vi
 6. Mensajes de commit en formato convencional ya vigente (`feat:`, `fix:`, `docs:`, `chore:`, `ci:`).
 
 ### 2.2 Reglas de CI/CD
-7. Un deploy a QA, demo o producción nunca corre sin que CI esté verde sobre el mismo commit (el CI se invoca como `workflow_call` desde cada workflow de deploy). Única excepción: el preview efímero de PR, que es desechable.
+7. Un deploy a QA, demo o producción nunca corre sin que CI esté verde sobre el mismo commit. QA invoca el CI (`workflow_call`); demo y producción pasan por un job `gate` que reutiliza la corrida verde de *Deploy QA* del **mismo SHA** (la promoción es fast-forward, el SHA es idéntico) y solo si no existe ejecutan el CI completo. Única excepción: el preview efímero de PR, que es desechable.
+7b. Ahorro de minutos de Actions: en PR una corrida nueva cancela la anterior de la misma rama (nunca se cancela un deploy); un PR que solo toca `docs/**` o `**/*.md` no dispara CI ni preview; typecheck, unit y build son un solo job `verify`.
 8. Cada entorno usa su propio `concurrency` group; nunca dos deploys simultáneos al mismo destino.
 9. Un workflow nuevo que reemplaza a uno viejo elimina al viejo **en el mismo commit** (regla 10 de `CLAUDE.md`).
 10. Secrets: solo por `secrets.*`; nunca impresos en logs ni escritos en archivos.
