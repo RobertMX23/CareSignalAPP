@@ -39,10 +39,14 @@ async function enterAsSupervisorWithCorruptAlert(page: Page): Promise<void> {
   await goTo(page, '/login');
   await page.getByTestId('guest-profile-supervisor').click();
   await expect(page).toHaveURL(/#\/dashboard/);
+  // El almacén se crea al primer render de la app: esperar a que el dashboard pinte.
+  await expect(page.locator('main.app-main').getByRole('heading', { name: 'Dashboard' })).toBeVisible();
 
   // Daña una alerta manteniendo la forma válida del almacén y recarga para que se relea.
   await page.evaluate((key) => {
-    const store = JSON.parse(localStorage.getItem(key) ?? '{}') as { alerts: Record<string, unknown>[] };
+    const raw = localStorage.getItem(key);
+    if (raw === null) throw new Error(`El almacén ${key} aún no existe`);
+    const store = JSON.parse(raw) as { alerts: Record<string, unknown>[] };
     store.alerts = store.alerts.map((a, i) => (i === 0 ? { ...a, severity: undefined } : a));
     localStorage.setItem(key, JSON.stringify(store));
   }, STORE_KEY);
