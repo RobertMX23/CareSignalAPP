@@ -7,6 +7,14 @@ silenciosamente; toda modificación material aprobada crea una nueva versión (p
 
 ## [Unreleased]
 
+### fix(invitado): recargar en una ruta de rol ya no rebota al dashboard (2026-10-16)
+
+- Causa: `DemoSessionContext` arrancaba siempre con el primer perfil (cuidador) y el perfil de invitado guardado se restauraba en un efecto, después del primer render; en ese instante `RoleGuard` rebotaba las rutas de supervisor o gerente (p. ej. `#/alertas`, `#/bitacora`) al dashboard
+- `src/access/initialProfile.ts` (pura): el perfil inicial se resuelve antes del primer render; en modos `guest` y `hybrid` usa el perfil guardado si existe, en `google` lo ignora
+- Se elimina el efecto de restauración de `useGuestSession`, ahora redundante
+- Verificado en navegador: recargar en `#/alertas/alert-04` (supervisor) y en `#/bitacora` (gerente) conserva ruta y rol; cerrar sesión y recargar vuelve al selector
+- Tests: `tests/initial-profile.test.tsx` (IP-01..IP-05) y `e2e/qa-guest-entry.spec.ts` (GE-06..GE-08)
+
 ### feat(observabilidad): ErrorBoundary en dos niveles y registro de errores — B-05, parte de código (2026-10-16)
 
 - `src/components/ErrorBoundary.tsx`: nivel `app` (pantalla completa, sin depender de contextos) y nivel `page` (solo el contenido; cabecera y navegación siguen vivas; cambiar de ruta limpia el error)
