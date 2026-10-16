@@ -33,6 +33,17 @@ const collectReports = (page: Page): ReportLike[] => {
   return reports;
 };
 
+/**
+ * Va a Alertas con un clic en la navegación. No se recarga en `#/alertas` a propósito: hoy, al
+ * recargar, la app aterriza en el dashboard (el rol del invitado se restaura un instante después
+ * del primer render y el guardia de rutas lo rebota). Es un defecto aparte de B-05.
+ */
+async function openAlertsFromNav(page: Page): Promise<void> {
+  await openNav(page);
+  await page.locator('nav.app-nav').getByRole('link', { name: /^Alertas/ }).click();
+  await expect(page).toHaveURL(/#\/alertas/);
+}
+
 async function enterAsSupervisorWithCorruptAlert(page: Page): Promise<void> {
   await page.goto('/');
   // Limpia y RECARGA: la app guarda el almacén en memoria, y solo un arranque nuevo lo reescribe.
@@ -51,8 +62,8 @@ async function enterAsSupervisorWithCorruptAlert(page: Page): Promise<void> {
     store.alerts = store.alerts.map((a, i) => (i === 0 ? { ...a, severity: undefined } : a));
     localStorage.setItem(key, JSON.stringify(store));
   }, STORE_KEY);
-  await page.goto('/#/alertas');
   await page.reload({ waitUntil: 'networkidle' });
+  await openAlertsFromNav(page);
 }
 
 test('EB-01: la pantalla falla pero la app sigue en pie', async ({ page }) => {
@@ -100,6 +111,9 @@ test('EB-04: restablecer la demo repara el dato dañado', async ({ page }) => {
 
   await alert.getByRole('button', { name: 'Restablecer demo y recargar' }).click();
 
+  // Tras recargar, el dato ya está sano: la pantalla de Alertas funciona.
+  await expect(page.locator('main.app-main').getByRole('alert')).toHaveCount(0);
+  await openAlertsFromNav(page);
   await expect(page.locator('main.app-main').getByRole('alert')).toHaveCount(0);
   await expect(page.locator('main.app-main').getByRole('heading', { name: 'Alertas' })).toBeVisible();
 });
