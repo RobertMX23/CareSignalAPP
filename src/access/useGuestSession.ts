@@ -6,7 +6,7 @@
  * código adicional. Solo se persiste el ID del perfil elegido, vía capa repositorio.
  */
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useDemoSession } from '../components/DemoSessionContext';
 import type { AuthUser } from '../contexts/AuthContext';
 import { clearGuestStaffId, readGuestStaffId, writeGuestStaffId } from '../data/repository';
@@ -27,6 +27,7 @@ export interface GuestSession {
 
 export const useGuestSession = (): GuestSession => {
   const { staffMembers, activeStaff, setActiveStaffId } = useDemoSession();
+  // El perfil guardado ya se aplica al crear DemoSessionContext (`resolveInitialStaffId`).
 
   // `undefined` = aún sin decisión (en modo `auto` cuenta como sesión abierta);
   // `false` = el visitante cerró sesión; `true` = entró con un perfil.
@@ -34,14 +35,6 @@ export const useGuestSession = (): GuestSession => {
   const [signedIn, setSignedIn] = useState<boolean | undefined>(
     storedStaffId !== null ? true : undefined,
   );
-
-  useEffect(() => {
-    if (storedStaffId !== null && staffMembers.some((s) => s.id === storedStaffId)) {
-      setActiveStaffId(storedStaffId);
-    }
-    // Solo al montar: restaura el perfil guardado.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const enter = useCallback(
     (role: Role): void => {

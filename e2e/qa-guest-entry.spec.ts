@@ -59,3 +59,40 @@ test('GE-05: cerrar sesión vuelve al selector', async ({ page }) => {
   await expect(page).toHaveURL(/#\/login/);
   await expect(page.getByTestId('guest-profile-caregiver')).toBeVisible();
 });
+
+test('GE-06: recargar en una ruta de supervisor conserva la ruta', async ({ page }) => {
+  await goTo(page, '/login');
+  await page.getByTestId('guest-profile-supervisor').click();
+  await expect(page).toHaveURL(/#\/dashboard/);
+
+  await goTo(page, '/alertas');
+  await expect(page.locator('main.app-main').getByRole('heading', { name: 'Alertas' })).toBeVisible();
+
+  await page.reload({ waitUntil: 'networkidle' });
+  await expect(page).toHaveURL(/#\/alertas$/);
+  await expect(page.locator('main.app-main').getByRole('heading', { name: 'Alertas' })).toBeVisible();
+  await expect(page.locator('.badge--role-supervisor')).toBeVisible();
+});
+
+test('GE-07: recargar en rutas de gerente y en un detalle de alerta las conserva', async ({ page }) => {
+  await goTo(page, '/login');
+  await page.getByTestId('guest-profile-manager').click();
+  await expect(page).toHaveURL(/#\/dashboard/);
+
+  await goTo(page, '/bitacora');
+  await page.reload({ waitUntil: 'networkidle' });
+  await expect(page).toHaveURL(/#\/bitacora$/);
+  await expect(page.locator('main.app-main').getByRole('heading', { name: 'Bitácora de auditoría' })).toBeVisible();
+
+  await goTo(page, '/alertas/alert-05');
+  await page.reload({ waitUntil: 'networkidle' });
+  await expect(page).toHaveURL(/#\/alertas\/alert-05$/);
+  await expect(page.locator('main.app-main').getByRole('heading', { name: 'Alerta alert-05' })).toBeVisible();
+});
+
+test('GE-08: recargar en la ruta del perfil por defecto sigue funcionando', async ({ page }) => {
+  await goTo(page, '/mis-rondas');
+  await page.reload({ waitUntil: 'networkidle' });
+  await expect(page).toHaveURL(/#\/mis-rondas$/);
+  await expect(page.locator('main.app-main').getByRole('heading', { name: 'Mis rondas' })).toBeVisible();
+});

@@ -34,9 +34,8 @@ const collectReports = (page: Page): ReportLike[] => {
 };
 
 /**
- * Va a Alertas con un clic en la navegación. No se recarga en `#/alertas` a propósito: hoy, al
- * recargar, la app aterriza en el dashboard (el rol del invitado se restaura un instante después
- * del primer render y el guardia de rutas lo rebota). Es un defecto aparte de B-05.
+ * Va a Alertas con un clic en la navegación (lo que haría una persona). La recarga en una ruta
+ * de rol ya se cubre en `qa-guest-entry.spec.ts` (GE-06..GE-08).
  */
 async function openAlertsFromNav(page: Page): Promise<void> {
   await openNav(page);

@@ -10,7 +10,9 @@
 
 import { createContext, useContext, useMemo, useState, type ReactNode } from 'react';
 import type { ID, StaffMember } from '../domain/types';
-import { listStaffMembers } from '../data/repository';
+import { getAccessMode } from '../access/accessMode';
+import { resolveInitialStaffId } from '../access/initialProfile';
+import { listStaffMembers, readGuestStaffId } from '../data/repository';
 
 interface DemoSessionValue {
   staffMembers: StaffMember[];
@@ -26,7 +28,11 @@ const DemoSessionContext = createContext<DemoSessionValue | undefined>(undefined
 export const DemoSessionProvider = ({ children }: { children: ReactNode }): JSX.Element => {
   const [refreshToken, setRefreshToken] = useState(0);
   const staffMembers = useMemo(() => listStaffMembers(), [refreshToken]);
-  const [activeStaffId, setActiveStaffId] = useState<ID>(staffMembers[0].id);
+  // Perfil inicial resuelto ANTES del primer render: si el invitado ya había elegido uno, la
+  // recarga en una ruta protegida por rol no debe rebotar al dashboard.
+  const [activeStaffId, setActiveStaffId] = useState<ID>(() =>
+    resolveInitialStaffId(staffMembers, getAccessMode(), readGuestStaffId()),
+  );
 
   const activeStaff = staffMembers.find((s) => s.id === activeStaffId) ?? staffMembers[0];
   const refreshDemoData = (): void => setRefreshToken((t) => t + 1);
