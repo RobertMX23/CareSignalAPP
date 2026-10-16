@@ -79,3 +79,27 @@ firebase functions:artifacts:setpolicy --project caresignal-mvp-2026 --location 
 
 Sin Cloud Run, buckets, funciones activas ni secretos; ~1 MB por versión de Hosting. Se estima ~USD 0/mes
 por estar bajo las cuotas gratuitas. Recomendado: alerta de presupuesto en Billing (p. ej. USD 5/mes).
+
+## 7. Provisión de claims de cuentas existentes
+
+`setUserClaims` (Cloud Function) solo corre al **crear** un usuario. Las cuentas que ya existían
+(p. ej. el primer login de Google, antes de provisionar el staff) no tienen claims y, desde B-06,
+la app les muestra "Tu cuenta aún no tiene acceso". Se provisionan a mano con
+`scripts/set-user-claims.mjs` (sin dependencias; usa tu sesión de `gcloud`).
+
+```bash
+# 1) Dry-run (no escribe nada): muestra claims actuales y nuevos
+node scripts/set-user-claims.mjs --email persona@correo.com --role demo_admin --staff staff-demo-admin-01
+
+# 2) Aplicar
+node scripts/set-user-claims.mjs --email persona@correo.com --role demo_admin --staff staff-demo-admin-01 --apply
+
+# Quitar claims
+node scripts/set-user-claims.mjs --email persona@correo.com --clear --apply
+```
+
+Roles válidos: `caregiver`, `supervisor`, `manager`, `demo_admin`. Tras aplicar, la persona debe
+cerrar sesión y volver a entrar (la app refresca el token al iniciar).
+
+Verificación independiente (solo lectura): listar usuarios con `accounts:batchGet` de Identity Toolkit
+y comprobar `customAttributes`.
