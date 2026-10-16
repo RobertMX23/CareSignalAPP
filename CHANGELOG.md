@@ -7,6 +7,16 @@ silenciosamente; toda modificación material aprobada crea una nueva versión (p
 
 ## [Unreleased]
 
+### docs/ci: evidencia pública — B-03 (2026-10-16)
+
+- `README.md`: badges de despliegue (QA, demo, producción) y de Lighthouse, y tabla de evidencia con enlaces verificables
+- `docs/22-arquitectura.md`: tres diagramas Mermaid (entornos y CI/CD, arquitectura en ejecución, modos de acceso); distingue lo conectado de lo no conectado
+- `scripts/lighthouse-report.mjs`: genera `informes/index.html` (sin scripts, apto para la CSP), `lighthouse.json` y `lighthouse-badge.json` a partir de los reportes del CI
+- `deploy-qa.yml` y `deploy-demo.yml` publican el informe en `/informes/` junto con el sitio
+- Corrección: el artefacto de Lighthouse nunca se subía (`.lighthouseci/` es una carpeta oculta y `upload-artifact@v4` las ignora); la salida pasa a `lighthouse-report/` y se miden 3 corridas
+- Medición local de referencia (Lighthouse 12.1.0, móvil, entrada en modo invitado): rendimiento 91–94, accesibilidad 90, buenas prácticas 96, SEO 90
+- Tests: `tests/lighthouse-report.test.ts` (L-01..L-07)
+
 ### fix(auth): quitar el fallback demo_admin — cierre de B-06 (2026-10-16)
 
 - `src/contexts/claims.ts` (pura, probada): un usuario está provisionado solo con `role` válido de la taxonomía, `residenciaId` y `staffId` no vacíos

@@ -41,6 +41,21 @@ jobs:
           VITE_FIREBASE_PROJECT_ID:   caresignal-mvp-2026
           VITE_FIREBASE_APP_ID:       ${{ secrets.VITE_FIREBASE_APP_ID }}
 
+      - name: Descargar reportes de Lighthouse (job del CI)
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: lighthouse-report
+          path: lighthouse-report
+
+      - name: Generar informe público de Lighthouse (dist/informes)
+        run: |
+          if ls lighthouse-report/*.report.json >/dev/null 2>&1; then
+            node scripts/lighthouse-report.mjs lighthouse-report dist/informes
+          else
+            echo "Sin reportes de Lighthouse: se omite el informe."
+          fi
+
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken:              ${{ secrets.GITHUB_TOKEN }}

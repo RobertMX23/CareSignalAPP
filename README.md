@@ -4,6 +4,25 @@
 > ficticios. La fuente de verdad del proyecto es el contrato congelado:
 > `contract/CareSignal_MVP_Proyecto_Ejecutivo_Contrato_v0.1.0_FROZEN.md`.
 
+[![Deploy QA](https://github.com/RobertMX23/CareSignalAPP/actions/workflows/deploy-qa.yml/badge.svg?branch=master)](https://github.com/RobertMX23/CareSignalAPP/actions/workflows/deploy-qa.yml)
+[![Deploy demo](https://github.com/RobertMX23/CareSignalAPP/actions/workflows/deploy-demo.yml/badge.svg?branch=demo)](https://github.com/RobertMX23/CareSignalAPP/actions/workflows/deploy-demo.yml)
+[![Deploy producción](https://github.com/RobertMX23/CareSignalAPP/actions/workflows/deploy-production.yml/badge.svg?branch=production)](https://github.com/RobertMX23/CareSignalAPP/actions/workflows/deploy-production.yml)
+[![Lighthouse](https://img.shields.io/endpoint?url=https%3A%2F%2Fcaresignal-demo.web.app%2Finformes%2Flighthouse-badge.json)](https://caresignal-demo.web.app/informes/)
+![Datos ficticios](https://img.shields.io/badge/datos-ficticios-6b46c1)
+
+| Evidencia | Enlace |
+|---|---|
+| **Demo público** (sin cuenta, recorrido guiado por rol) | https://caresignal-demo.web.app |
+| Informe Lighthouse (mediana de 3 corridas, actualizado en cada despliegue) | https://caresignal-demo.web.app/informes/ |
+| Producción beta (Google SSO con claims) | https://caresignal-mvp-2026.web.app |
+| Arquitectura con diagramas | [`docs/22-arquitectura.md`](docs/22-arquitectura.md) |
+| Ramas, CI/CD y despliegue | [`docs/20-contrato-ramas-cicd.md`](docs/20-contrato-ramas-cicd.md) |
+| Cuentas de servicio, roles y APIs de Google Cloud | [`docs/21-gcp-iam-apis-deploy.md`](docs/21-gcp-iam-apis-deploy.md) |
+| Benchmark de ingeniería y brechas | [`docs/18-benchmark-ingenieria.md`](docs/18-benchmark-ingenieria.md) |
+| Historial de cambios | [`CHANGELOG.md`](CHANGELOG.md) |
+
+> Los *badges* de GitHub Actions solo se muestran a quien tenga acceso al repositorio mientras este sea privado.
+
 ## 0. Resumen ejecutivo y punto de control
 
 ### Resumen ejecutivo
@@ -130,8 +149,11 @@ directamente ni importan reglas de negocio propias; todo pasa por
 del residente nunca se persiste: se recalcula en cada render con
 `deriveResidentStatus()`.
 
-**Stack:** React 18 + TypeScript estricto (sin `any`) + Vite + `react-router-dom`
-(navegación con `HashRouter`, sin necesidad de configurar un servidor). Sin backend.
+**Stack:** React + TypeScript estricto (sin `any`) + Vite + `react-router-dom`
+(navegación con `HashRouter`, sin necesidad de configurar un servidor). La demo no usa
+backend: persiste en `localStorage` a través del repositorio. La capa de producción
+(Firebase Auth, Security Rules, Cloud Functions) y lo que aún **no** está conectado están
+descritos con diagramas en [`docs/22-arquitectura.md`](docs/22-arquitectura.md).
 
 ## 5. Instalación
 

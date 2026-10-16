@@ -107,7 +107,7 @@ jobs:
         if: always()
         with:
           name: lighthouse-report
-          path: .lighthouseci/
+          path: lighthouse-report/
           retention-days: 7
 
   # ── 6. Firestore Security Rules (emulador) — B-01 ────────────────────────────
