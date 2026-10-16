@@ -7,6 +7,15 @@ silenciosamente; toda modificación material aprobada crea una nueva versión (p
 
 ## [Unreleased]
 
+### chore(deps): auditoría de dependencias de producción (2026-10-16)
+
+- `npm audit --omit=dev` pasa de **6** vulnerabilidades (4 altas, 2 moderadas) a **2** (0 altas, 2 moderadas)
+- `package.json`: `overrides` de `@grpc/grpc-js` a `^1.13.6` (resuelve 1.14.6); es código de servidor y **no llega al navegador**
+- El bundle de producción es **idéntico byte a byte** antes y después (mismo `sha256`); `tsc`, 115 pruebas y build pasan
+- `docs/23-auditoria-dependencias.md`: veredicto de cada advisory, evidencia reproducible y la trampa de `npm audit fix --force` (propone retroceder `firebase` a 9.14)
+- `ci.yml`: job `npm audit (aviso)` con `--audit-level=high`; solo emite una advertencia, **no bloquea** despliegues
+- Pendiente (PR aparte): `react-router-dom` 6 → 7 para cerrar las 2 moderadas restantes
+
 ### docs: estado real de E7 en `docs/19` y `docs/RESUME.md` (2026-10-16)
 
 - `docs/19`: tablero B-01 a B-08 con PR, fecha y evidencia verificable (§1.1), desviaciones respecto al plan, **B-04 marcado como parcial** (falta la escritura UI→Firestore con auditoría) y pendientes tras E7 (§1.2)

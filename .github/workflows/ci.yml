@@ -148,3 +148,19 @@ jobs:
         working-directory: functions
       - name: setUserClaims contra emuladores
         run: npm run test:functions
+
+  # ── 8. Auditoría de dependencias de producción (aviso, NO bloquea) ────────────
+  audit:
+    name: npm audit (aviso)
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+      # Solo avisa: npm audit tiene falsos positivos (ver docs/23-auditoria-dependencias.md)
+      # y no debe detener un despliegue. Lee el package-lock.json; no hace falta `npm ci`.
+      - name: npm audit --omit=dev --audit-level=high
+        run: |
+          npm audit --omit=dev --audit-level=high || echo "::warning title=npm audit::Hay vulnerabilidades ALTAS en dependencias de producción. Ver docs/23-auditoria-dependencias.md"
