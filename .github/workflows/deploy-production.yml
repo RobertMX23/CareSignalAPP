@@ -76,10 +76,8 @@ jobs:
     name: Cloud Functions
     needs: ci
     runs-on: ubuntu-22.04
-    # No bloqueante (decisión 2026-10-15, B-04): el deploy de setUserClaims aún falla al
-    # configurar el trigger de Auth y el runtime Node 20 vence el 2026-10-31. Hasta migrar a
-    # Node 22 y resolverlo, un fallo aquí no debe marcar en rojo la promoción de Hosting/Firestore.
-    continue-on-error: true
+    # Bloqueante desde B-04: setUserClaims despliega en Node 22 y la política de limpieza de
+    # Artifact Registry (gcf-artifacts, 3 días) está aplicada; un fallo aquí debe verse en rojo.
     steps:
       - uses: actions/checkout@v4
 

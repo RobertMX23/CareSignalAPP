@@ -59,19 +59,21 @@ APIs que el CLI sí habilitó solo: `cloudfunctions`, `cloudbuild`, `artifactreg
 | `caresignal-mvp-2026` | `production` (canal `live`) y `master` (canal `qa`) | `production` |
 | `caresignal-demo` | `demo` | `demo` |
 
-## 5. Estado de Cloud Functions (pendiente → B-04)
+## 5. Estado de Cloud Functions (B-04 — resuelto 2026-10-15)
 
-- `setUserClaims` (Auth `user.create`, 1.ª gen, Node 20) llega a crearse pero falla con
-  `Failed to configure trigger PubSub …`; la función queda en estado `UNKNOWN`. Causa **no determinada**.
-- Node.js 20 está descontinuado desde 2026-04-30 y se retira el **2026-10-31**.
-- Plan: migrar `functions/` a Node 22 (`firebase.json` → `runtime`, `functions/package.json` → `engines`,
-  `setup-node` del job) y actualizar `firebase-functions`, probando primero en el emulador.
-- Mientras tanto el job es `continue-on-error` para no marcar en rojo la promoción de Hosting/Firestore.
-- Limpieza pendiente (acción humana sobre producción): borrar la función a medias.
+- `setUserClaims` (Auth `user.create`, 1.ª gen) está **ACTIVE** en `nodejs22` con `firebase-functions` 7.4 y
+  `firebase-admin` 14.5 (API modular). El fallo de trigger Pub/Sub del runtime Node 20 no se repitió.
+- Test de integración con emuladores (`npm run test:functions`, job `Functions (emuladores)` en CI).
+- **Política de limpieza** de `gcf-artifacts` (Artifact Registry, `us-central1`): `firebase-functions-cleanup`,
+  borra imágenes con más de 3 días. Aplicada con:
 
 ```bash
-gcloud functions delete setUserClaims --region=us-central1 --project=caresignal-mvp-2026
+firebase functions:artifacts:setpolicy --project caresignal-mvp-2026 --location us-central1 --days 3 --force
 ```
+
+- El job `Cloud Functions` de `deploy-production.yml` ya **no** es `continue-on-error`.
+- Pendiente a futuro: el trigger `auth.user().onCreate` es de 1.ª generación (heredada). Alternativa en 2.ª gen:
+  blocking functions (`beforeUserCreated`), que requieren Identity Platform.
 
 ## 6. Costos (estimación, no factura)
 
