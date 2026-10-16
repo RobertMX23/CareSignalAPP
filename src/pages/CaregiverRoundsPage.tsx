@@ -143,17 +143,17 @@ export const CaregiverRoundsPage = (): JSX.Element => {
     return (
       <div className="row-actions">
         {round.status === 'due' && (
-          <button type="button" className="button button--small" onClick={() => handleStart(round)}>
+          <button type="button" className="button button--small" data-tour="round-start" onClick={() => handleStart(round)}>
             Iniciar
           </button>
         )}
         {round.status === 'in_progress' && (
-          <button type="button" className="button button--small" onClick={() => setModal({ kind: 'complete', round })}>
+          <button type="button" className="button button--small" data-tour="round-complete" onClick={() => setModal({ kind: 'complete', round })}>
             Completar
           </button>
         )}
         {canRequestSupport && (
-          <button type="button" className="button button--small button--secondary" onClick={() => setModal({ kind: 'support', round })}>
+          <button type="button" className="button button--small button--secondary" data-tour="round-support" onClick={() => setModal({ kind: 'support', round })}>
             Apoyo
           </button>
         )}
@@ -231,7 +231,7 @@ export const CaregiverRoundsPage = (): JSX.Element => {
 
           {/* ── Desktop: tabla ── */}
           <div className="rounds-table-view table-scroll">
-            <table className="data-table">
+            <table className="data-table" data-tour="rounds-list">
               <thead>
                 <tr>
                   <th>Hora</th>

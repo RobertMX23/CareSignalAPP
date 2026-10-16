@@ -12,7 +12,7 @@ export const BitacoraPage = (): JSX.Element => {
 
   return (
     <section>
-      <h1>Bitácora de auditoría</h1>
+      <h1 data-tour="audit-log">Bitácora de auditoría</h1>
       <p>Registro inmutable de todas las transiciones y acciones del sistema.</p>
 
       {auditEvents.length === 0 ? (

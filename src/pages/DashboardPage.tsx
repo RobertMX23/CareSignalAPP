@@ -22,7 +22,7 @@ const CaregiverDashboard = (): JSX.Element => {
   }, [refreshToken, activeStaff.id]);
 
   return (
-    <section>
+    <section data-tour="dashboard-main">
       <h1>Mi turno</h1>
 
       <h2>Mis rondas</h2>
@@ -63,7 +63,7 @@ const SupervisorDashboard = (): JSX.Element => {
   }, [refreshToken]);
 
   return (
-    <section>
+    <section data-tour="dashboard-main">
       <h1>Dashboard</h1>
 
       <h2>Alertas y verificaciones</h2>
@@ -150,7 +150,7 @@ const ManagerDashboard = (): JSX.Element => {
   };
 
   return (
-    <section>
+    <section data-tour="dashboard-main">
       <h1>Vista ejecutiva</h1>
 
       <h2>Residentes</h2>

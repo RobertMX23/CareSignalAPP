@@ -32,7 +32,7 @@ export const LoginPage = (): JSX.Element => {
   const handleGuest = (role: Role): void => {
     if (enterAsGuest === null) return;
     enterAsGuest(role);
-    navigate('/dashboard', { replace: true });
+    navigate('/dashboard', { replace: true, state: { startTour: true } });
   };
 
   return (
