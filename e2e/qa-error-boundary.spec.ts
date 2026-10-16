@@ -12,7 +12,7 @@
  */
 
 import { expect, test, type Page } from '@playwright/test';
-import { goTo, openNav } from './helpers';
+import { goTo, openNav, resetSeed } from './helpers';
 
 const STORE_KEY = 'caresignal:demo-store:v2';
 const FALLBACK = 'Esta pantalla tuvo un problema';
@@ -35,7 +35,8 @@ const collectReports = (page: Page): ReportLike[] => {
 
 async function enterAsSupervisorWithCorruptAlert(page: Page): Promise<void> {
   await page.goto('/');
-  await page.evaluate(() => localStorage.clear());
+  // Limpia y RECARGA: la app guarda el almacén en memoria, y solo un arranque nuevo lo reescribe.
+  await resetSeed(page);
   await goTo(page, '/login');
   await page.getByTestId('guest-profile-supervisor').click();
   await expect(page).toHaveURL(/#\/dashboard/);
