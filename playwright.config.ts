@@ -30,6 +30,8 @@ export default defineConfig({
     env: {
       VITE_ACCESS_MODE: 'guest',
       VITE_GUEST_ENTRY: 'auto',
+      // El recorrido guiado no arranca solo; qa-tour.spec.ts lo inicia con "Ver recorrido".
+      VITE_TOUR_AUTOSTART: 'off',
       VITE_FIREBASE_API_KEY: '',
     },
   },

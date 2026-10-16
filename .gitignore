@@ -48,3 +48,4 @@ sa-key.json
 # Cloud Functions y backend — builds locales
 functions/lib/
 backend/dist/
+.tmp/

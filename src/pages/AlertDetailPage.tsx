@@ -166,7 +166,7 @@ const AlertList = (): JSX.Element => {
         <p>Ninguna alerta coincide con los filtros seleccionados.</p>
       ) : (
         <div className="table-scroll">
-          <table className="data-table">
+          <table className="data-table" data-tour="alert-list">
             <thead>
               <tr>
                 <th>Alerta</th>
@@ -324,7 +324,7 @@ const AlertDetail = ({ alertId }: { alertId: string }): JSX.Element => {
       </dl>
 
       <h2>Acciones</h2>
-      <div className="row-actions">
+      <div className="row-actions" data-tour="alert-actions">
         {canManage && alert.status === 'open' && (
           <button type="button" className="button" onClick={handleAcknowledge}>
             Reconocer
@@ -401,7 +401,7 @@ const AlertDetail = ({ alertId }: { alertId: string }): JSX.Element => {
         </ul>
       )}
 
-      <h2>Línea de tiempo auditable</h2>
+      <h2 data-tour="alert-timeline">Línea de tiempo auditable</h2>
       <ul className="timeline">
         {data.timeline.map((entry, index) => (
           <li key={`${entry.timestamp}-${index}`}>

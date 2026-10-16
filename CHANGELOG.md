@@ -7,6 +7,16 @@ silenciosamente; toda modificación material aprobada crea una nueva versión (p
 
 ## [Unreleased]
 
+### feat(demo): recorrido guiado por rol — L-05 / B-08 (2026-10-16)
+
+- `src/features/tour/`: motor propio sin dependencias (`TourProvider`, `TourOverlay`) y pasos como datos en `tours.ts`
+- Un recorrido por rol: cuidador (6 pasos), supervisor (6) y gerente (5); parten de `resetDemo()` y de la semilla (alert-01 abierta, alert-04 en verificación, alert-05 resuelta)
+- Se inicia solo al elegir perfil en modo invitado y con el botón "Ver recorrido" (pide confirmación porque restablece los datos ficticios)
+- Controles: Siguiente, Anterior, Saltar recorrido y Esc; paso anunciado en región `aria-live`; globo anclado abajo en móvil
+- Anclas `data-tour` (solo atributos) en rondas, alertas, métricas, bitácora y dashboard; sin cambios en `src/domain/` ni en el repositorio
+- `VITE_TOUR_AUTOSTART=off` desactiva el inicio automático (la suite E2E lo usa)
+- Tests: `tests/tour-data.test.ts` (T-01..T-06) y `e2e/qa-tour.spec.ts` (TG-01..TG-05)
+
 ### ci: job de Functions bloqueante y política de limpieza — cierre de B-04 (2026-10-16)
 
 - Política `firebase-functions-cleanup` (3 días) aplicada en `gcf-artifacts` y verificada vía API

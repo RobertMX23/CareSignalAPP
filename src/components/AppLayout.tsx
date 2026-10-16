@@ -11,6 +11,7 @@
 import { useEffect, useMemo, useState, type ChangeEvent } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import { useDemoSession } from './DemoSessionContext';
+import { useTour } from '../features/tour/TourContext';
 import { useAuth } from '../contexts/AuthContext';
 import type { Role, Shift } from '../domain/taxonomy';
 import { getCurrentTime } from '../data/demoClock';
@@ -47,6 +48,7 @@ const NAV_ITEMS: { to: string; label: string; roles: Role[] }[] = [
 export const AppLayout = (): JSX.Element => {
   const { staffMembers, activeStaffId, activeStaff, setActiveStaffId, refreshDemoData } = useDemoSession();
   const { user, signOut } = useAuth();
+  const { canStart: canStartTour, start: startTour } = useTour();
   const [navOpen, setNavOpen] = useState(false);
   const [filterRole, setFilterRole] = useState<Role | 'all'>('all');
   const [filterShift, setFilterShift] = useState<Shift | 'all'>('all');
@@ -100,6 +102,13 @@ export const AppLayout = (): JSX.Element => {
 
   const handleUserChange = (event: ChangeEvent<HTMLSelectElement>): void => {
     setActiveStaffId(event.target.value);
+  };
+
+  const handleStartTour = (): void => {
+    const confirmed = window.confirm(
+      'El recorrido restablece los datos ficticios para partir de un estado conocido. ¿Continuar?',
+    );
+    if (confirmed) startTour();
   };
 
   const handleResetDemo = (): void => {
@@ -178,6 +187,12 @@ export const AppLayout = (): JSX.Element => {
             <span className="session-field__label">Hora simulada</span>
             <span className="clock-indicator">{formattedTime}</span>
           </span>
+
+          {canStartTour && (
+            <button type="button" className="button button--secondary" onClick={handleStartTour}>
+              Ver recorrido
+            </button>
+          )}
 
           <button type="button" className="button button--secondary" onClick={handleResetDemo}>
             Restablecer demo

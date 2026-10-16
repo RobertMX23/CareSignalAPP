@@ -3,6 +3,7 @@ import { AppLayout } from './components/AppLayout';
 import { DemoSessionProvider, useDemoSession } from './components/DemoSessionContext';
 import { ToastProvider } from './components/ToastContext';
 import { ToastContainer } from './components/ToastContainer';
+import { TourProvider } from './features/tour/TourProvider';
 import { AccessProvider } from './access/AccessProvider';
 import { useAuth } from './contexts/AuthContext';
 import type { Role } from './domain/taxonomy';
@@ -49,6 +50,7 @@ const App = (): JSX.Element => (
   <AccessProvider>
     <ToastProvider>
     <Router>
+      <TourProvider>
       <Routes>
         {/* Ruta pública de login */}
         <Route path="/login" element={<LoginPage />} />
@@ -94,6 +96,7 @@ const App = (): JSX.Element => (
           </Route>
         </Route>
       </Routes>
+      </TourProvider>
     </Router>
     <ToastContainer />
     </ToastProvider>

@@ -155,7 +155,7 @@ export const MetricasDashboardPage = (): JSX.Element => {
       </div>
 
       {/* ── KPIs ── */}
-      <section aria-label="Indicadores clave">
+      <section aria-label="Indicadores clave" data-tour="metrics-kpis">
         <div className="kpi-grid">
           <KpiCard
             label="Rondas completadas a tiempo"

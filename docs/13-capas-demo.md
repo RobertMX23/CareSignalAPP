@@ -239,7 +239,7 @@ de instalarla y documentarlo en un PR separado.
 
 ## L-05 — Recorrido guiado (tour) por rol
 
-### Estado: `propuesta` — aprobada para registro 2026-10-15; no iniciar hasta cerrar B-06
+### Estado: `en revisión` — implementada en rama `feature/b08-tour-guiado` (2026-10-16), pendiente de gate
 (ver `docs/19-contrato-acciones-benchmark.md`, acciones B-06 y B-08)
 
 ### Qué hace
@@ -312,7 +312,7 @@ Cualquier dependencia nueva requiere aprobación explícita antes de instalarse.
 | Dashboard de métricas | L-02 | `aprobada` | #7 | 2026-10-04 |
 | PWA instalable | L-03 | `en desarrollo` | — | — |
 | Vista de calendario | L-04 | `aprobada` | #16 | 2026-10-05 |
-| Recorrido guiado por rol | L-05 | `propuesta` | — | — |
+| Recorrido guiado por rol | L-05 | `en revisión` | pendiente | — |
 
 ---
 
