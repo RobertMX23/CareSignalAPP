@@ -17,6 +17,7 @@ import { PersonalPage } from './pages/PersonalPage';
 import { MetricasDashboardPage } from './pages/MetricasDashboardPage';
 import { RoundsPage } from './pages/RoundsPage';
 import { LoginPage } from './pages/LoginPage';
+import { NoAccessPage } from './pages/NoAccessPage';
 
 function defaultRouteForRole(_role: Role): string {
   return '/dashboard';
@@ -29,6 +30,8 @@ function AuthGuard(): JSX.Element {
   if (loading) return <></>;
   // Si no hay usuario autenticado (Firebase configurado), ir a login
   if (user === null) return <Navigate to="/login" replace />;
+  // Cuenta autenticada pero sin role/residenciaId/staffId válidos: sin acceso (B-06).
+  if (!user.provisioned) return <NoAccessPage />;
   return <Outlet />;
 }
 

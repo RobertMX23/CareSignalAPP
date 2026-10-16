@@ -30,19 +30,9 @@ import {
   type User,
 } from 'firebase/auth';
 import { auth, googleProvider } from '../lib/firebase';
-import type { ID } from '../domain/types';
-import type { Role } from '../domain/taxonomy';
+import { claimsToAuthUser, type AuthUser } from './claims';
 
-export interface AuthUser {
-  uid: string;
-  email: string;
-  displayName: string;
-  photoURL?: string;
-  /** Inyectado por Cloud Function onUserCreate */
-  role: Role;
-  residenciaId: ID;
-  staffId: ID;
-}
+export type { AuthUser } from './claims';
 
 export interface AuthContextValue {
   user: AuthUser | null;
@@ -57,20 +47,14 @@ export const AuthContext = createContext<AuthContextValue | undefined>(undefined
 async function toAuthUser(firebaseUser: User): Promise<AuthUser> {
   let claims: Record<string, unknown> = {};
   try {
-    const tokenResult = await firebaseUser.getIdTokenResult(false);
+    // `true` fuerza el refresco del token: los claims cambian en el servidor
+    // (scripts/set-user-claims.mjs o setUserClaims) y no deben quedar rancios.
+    const tokenResult = await firebaseUser.getIdTokenResult(true);
     claims = tokenResult.claims as Record<string, unknown>;
   } catch {
-    // Sin claims — el usuario entra con rol por defecto
+    // Sin claims verificables: el usuario queda sin provisionar (sin acceso), nunca con un rol por defecto.
   }
-  return {
-    uid:          firebaseUser.uid,
-    email:        firebaseUser.email ?? '',
-    displayName:  firebaseUser.displayName ?? '',
-    photoURL:     firebaseUser.photoURL ?? undefined,
-    role:         (claims.role as Role) ?? 'demo_admin',
-    residenciaId: (claims.residenciaId as ID) ?? 'residencia-demo-01',
-    staffId:      (claims.staffId as ID) ?? '',
-  };
+  return claimsToAuthUser(firebaseUser, claims);
 }
 
 export const AuthProvider = ({ children }: { children: ReactNode }): JSX.Element => {

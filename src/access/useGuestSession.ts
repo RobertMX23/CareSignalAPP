@@ -71,6 +71,7 @@ export const useGuestSession = (): GuestSession => {
             role: activeStaff.role,
             residenciaId: activeStaff.residenciaId,
             staffId: activeStaff.id,
+            provisioned: true,
           }
         : null,
     [open, activeStaff],

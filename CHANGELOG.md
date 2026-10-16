@@ -7,6 +7,16 @@ silenciosamente; toda modificación material aprobada crea una nueva versión (p
 
 ## [Unreleased]
 
+### fix(auth): quitar el fallback demo_admin — cierre de B-06 (2026-10-16)
+
+- `src/contexts/claims.ts` (pura, probada): un usuario está provisionado solo con `role` válido de la taxonomía, `residenciaId` y `staffId` no vacíos
+- Antes, una cuenta sin claims entraba como `demo_admin` de `residencia-demo-01`; ahora queda `provisioned: false` y ve `NoAccessPage`
+- `AuthGuard` bloquea cuentas sin provisionar; los invitados de demo siguen provisionados por definición
+- `AuthUser.role/residenciaId/staffId` pasan a `null` cuando faltan; el token se refresca al iniciar (`getIdTokenResult(true)`)
+- `scripts/set-user-claims.mjs`: asigna o quita claims de cuentas ya existentes (dry-run por defecto; usa tu sesión de `gcloud`)
+- Tests: `tests/claims.test.ts` (C-01..C-07) y `tests/no-access.test.tsx` (N-01..N-03)
+- **Operación previa a promover a producción:** las 2 cuentas de Google existentes no tienen claims; sin provisionarlas quedarían sin acceso
+
 ### feat(hosting): CSP en modo bloqueo — cierre de B-02 (2026-10-16)
 
 - `firebase.json` (targets `production` y `demo`): `Content-Security-Policy-Report-Only` pasa a `Content-Security-Policy`; misma política
