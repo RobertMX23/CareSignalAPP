@@ -16,15 +16,47 @@ permissions:
   checks: write
 
 jobs:
-  # ── 0. CI sobre el mismo commit ────────────────────────────────────────────
+  # ── 0. CI sobre el mismo commit (reutiliza el verde de QA si existe) ────────
+  # Evita repetir el CI: si el mismo commit ya pasó por "Deploy QA (master)" con éxito
+  # (la promoción es fast-forward, así que el SHA es idéntico), se reutiliza ese resultado.
+  # Si no hay una corrida verde de QA para este SHA, corre el CI completo como antes.
+  gate:
+    name: Gate (CI ya verde en QA)
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+      actions: read
+    outputs:
+      verified: ${{ steps.qa.outputs.verified }}
+      qa_run_id: ${{ steps.qa.outputs.run_id }}
+    steps:
+      - id: qa
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SHA: ${{ github.sha }}
+          REPO: ${{ github.repository }}
+        run: |
+          RUN_ID=$(gh api "repos/$REPO/actions/workflows/deploy-qa.yml/runs?head_sha=$SHA&status=success&per_page=1" --jq '.workflow_runs[0].id // empty')
+          if [ -n "$RUN_ID" ]; then
+            echo "verified=true" >> "$GITHUB_OUTPUT"
+            echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
+            echo "CI omitido: el commit $SHA ya está verde en Deploy QA (run $RUN_ID)."
+          else
+            echo "verified=false" >> "$GITHUB_OUTPUT"
+            echo "Sin corrida verde de QA para $SHA: se ejecuta el CI completo."
+          fi
+
   ci:
     name: CI
+    needs: gate
+    if: needs.gate.outputs.verified != 'true'
     uses: ./.github/workflows/ci.yml
 
   # ── 1. Build + deploy Hosting ──────────────────────────────────────────────
   hosting:
     name: Hosting
-    needs: ci
+    needs: [gate, ci]
+    if: ${{ !cancelled() && needs.gate.result == 'success' && (needs.ci.result == 'success' || needs.ci.result == 'skipped') }}
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
@@ -55,7 +87,8 @@ jobs:
   # ── 2. Deploy Firestore rules + indexes ────────────────────────────────────
   firestore:
     name: Firestore Rules & Indexes
-    needs: ci
+    needs: [gate, ci]
+    if: ${{ !cancelled() && needs.gate.result == 'success' && (needs.ci.result == 'success' || needs.ci.result == 'skipped') }}
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
@@ -74,7 +107,8 @@ jobs:
   # ── 3. Build + deploy Cloud Functions ──────────────────────────────────────
   functions:
     name: Cloud Functions
-    needs: ci
+    needs: [gate, ci]
+    if: ${{ !cancelled() && needs.gate.result == 'success' && (needs.ci.result == 'success' || needs.ci.result == 'skipped') }}
     runs-on: ubuntu-22.04
     # Bloqueante desde B-04: setUserClaims despliega en Node 22 y la política de limpieza de
     # Artifact Registry (gcf-artifacts, 3 días) está aplicada; un fallo aquí debe verse en rojo.

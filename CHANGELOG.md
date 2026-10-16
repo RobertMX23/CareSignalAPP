@@ -7,6 +7,13 @@ silenciosamente; toda modificación material aprobada crea una nueva versión (p
 
 ## [Unreleased]
 
+### ci: reducir consumo de minutos de GitHub Actions (2026-10-16)
+
+- `deploy-demo.yml` y `deploy-production.yml`: nuevo job `gate` que reutiliza el CI verde de *Deploy QA* del mismo SHA; sin ese verde, corre el CI completo (comportamiento anterior). El informe de Lighthouse se descarga de la corrida de QA cuando el CI se omite
+- `ci.yml`: `concurrency` que cancela corridas obsoletas solo en `pull_request`; `paths-ignore` para `docs/**` y `**/*.md` (también en `deploy-preview.yml`); `typecheck`, `unit` y `build` unidos en el job `verify`
+- `docs/20` regla 7 actualizada. Sin cambios en producto, contrato ni bundle
+- Ahorro estimado ~450 min/mes (estimación; verificar en Billing tras unas semanas)
+
 ### chore(deps): auditoría de dependencias de producción (2026-10-16)
 
 - `npm audit --omit=dev` pasa de **6** vulnerabilidades (4 altas, 2 moderadas) a **2** (0 altas, 2 moderadas)
