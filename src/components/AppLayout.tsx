@@ -9,7 +9,8 @@
  */
 
 import { useEffect, useMemo, useState, type ChangeEvent } from 'react';
-import { NavLink, Outlet } from 'react-router-dom';
+import { NavLink, Outlet, useLocation } from 'react-router-dom';
+import { ErrorBoundary } from './ErrorBoundary';
 import { useDemoSession } from './DemoSessionContext';
 import { useTour } from '../features/tour/TourContext';
 import { useAuth } from '../contexts/AuthContext';
@@ -48,6 +49,7 @@ const NAV_ITEMS: { to: string; label: string; roles: Role[] }[] = [
 export const AppLayout = (): JSX.Element => {
   const { staffMembers, activeStaffId, activeStaff, setActiveStaffId, refreshDemoData } = useDemoSession();
   const { user, signOut } = useAuth();
+  const { pathname } = useLocation();
   const { canStart: canStartTour, start: startTour } = useTour();
   const [navOpen, setNavOpen] = useState(false);
   const [filterRole, setFilterRole] = useState<Role | 'all'>('all');
@@ -252,7 +254,9 @@ export const AppLayout = (): JSX.Element => {
       </nav>
 
       <main className="app-main">
-        <Outlet />
+        <ErrorBoundary level="page" resetKey={pathname}>
+          <Outlet />
+        </ErrorBoundary>
       </main>
     </div>
   );

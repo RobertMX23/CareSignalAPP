@@ -7,6 +7,17 @@ silenciosamente; toda modificación material aprobada crea una nueva versión (p
 
 ## [Unreleased]
 
+### feat(observabilidad): ErrorBoundary en dos niveles y registro de errores — B-05, parte de código (2026-10-16)
+
+- `src/components/ErrorBoundary.tsx`: nivel `app` (pantalla completa, sin depender de contextos) y nivel `page` (solo el contenido; cabecera y navegación siguen vivas; cambiar de ruta limpia el error)
+- Fallback con código de error, "Reintentar" y "Restablecer demo y recargar"; los avisos "MVP operacional, no dispositivo médico" y "Datos ficticios" permanecen visibles
+- `src/lib/errorReporting.ts`: registro estructurado en consola con id `E-…`, deduplicación (1 s), destinos pluggables (`registerErrorSink`) y manejadores globales de `error` y `unhandledrejection` (instalados en `main.tsx`)
+- Antes un error de renderizado dejaba la pantalla en blanco
+- Verificado en navegador con un dato dañado real (alerta sin `severity`, que hace fallar a `SeverityBadge`): la pantalla falla, la app sigue en pie, "Reintentar" mantiene el error mientras el dato siga dañado y "Restablecer demo y recargar" lo repara
+- Tests: `tests/error-reporting.test.ts` (R-01..R-06), `tests/error-boundary.test.tsx` (B-01..B-07), `e2e/qa-error-boundary.spec.ts` (EB-01..EB-05)
+- Pendiente de B-05: alerta de caída con uptime checks de Cloud Monitoring (acción en la nube, con aprobación)
+- Observación: `SeverityBadge` lanza con una severidad desconocida; los tipos lo impiden, solo ocurre con datos dañados
+
 ### docs/ci: evidencia pública — B-03 (2026-10-16)
 
 - `README.md`: badges de despliegue (QA, demo, producción) y de Lighthouse, y tabla de evidencia con enlaces verificables

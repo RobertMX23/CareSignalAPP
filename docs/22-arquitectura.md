@@ -110,6 +110,20 @@ flowchart LR
 
 Sin la variable: `google` si hay configuración de Firebase, `guest` si no.
 
+## 5. Observabilidad
+
+| Capa | Estado | Dónde |
+|---|---|---|
+| Errores de renderizado (pantalla en blanco) | ✅ Contenidos en dos niveles, con código de error y recuperación | `src/components/ErrorBoundary.tsx` |
+| Errores fuera de React (eventos, promesas) | ✅ Registrados con el mismo formato | `src/lib/errorReporting.ts` |
+| Destino de los errores | Solo consola del navegador; los destinos remotos se enchufan con `registerErrorSink` | — |
+| Disponibilidad del sitio (alerta de caída) | ⏳ Pendiente: uptime checks de Cloud Monitoring con aviso por correo | Nube, con aprobación |
+| Lighthouse en cada despliegue | ✅ `/informes/` | `scripts/lighthouse-report.mjs` |
+
+Los errores del navegador **no salen del equipo de la persona**: el MVP usa datos ficticios y no tiene
+colector de errores. Añadir uno (propio o de terceros) cambia la política de privacidad y la CSP, y
+requiere decisión aparte.
+
 ## 4. Documentos relacionados
 
 | Tema | Archivo |
