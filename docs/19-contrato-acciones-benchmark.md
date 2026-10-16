@@ -4,6 +4,7 @@
 > Naturaleza: trabajo de ingeniería/infra. **No modifica el contrato congelado v0.1.0** ni agrega funcionalidad de producto.
 > Regla heredada del track E: **una acción a la vez, cada una cierra con aprobación humana (gate).**
 > Estado de este documento: vivo. Actualizar la columna *Estado* al cerrar cada gate y registrar en `CHANGELOG.md`.
+> **Última actualización: 2026-10-16** — B-01 a B-08 cerrados, salvo **B-04 (parcial)**. Cada estado de la tabla se verificó contra GitHub, la nube y los entornos (ver §1.1). Los "puntos esperados" son las estimaciones originales del benchmark; **no se recalculó el puntaje** (requiere una re-medición aparte).
 
 ---
 
@@ -11,30 +12,45 @@
 
 | ID | Acción | Dimensión | Puntos esperados | Esfuerzo | Depende de | Gate (criterio de cierre verificable) | Estado |
 |---|---|---|---|---|---|---|---|
-| **B-01** | Corregir paths de Firestore Rules + tests de rules en CI | D2, D1 | +1 / +0.5 | Medio | — | Job CI "Firestore rules tests" en verde; test que antes fallaba (acceso legítimo) ahora pasa; test cross-tenant denegado | ⏳ Pendiente (siguiente) |
-| **B-02** | Resolver discrepancia CSP/HSTS (añadir headers o corregir CHANGELOG) | D2, D7 | +0.5 | Bajo | — | `curl -I` a la URL de Hosting muestra los headers; CHANGELOG coherente con `firebase.json` | ⏳ Pendiente |
-| **B-03** | Evidencia pública: badges CI, diagrama de arquitectura, Lighthouse publicado | D7 | +1.5 | Bajo | B-01 (para badge verde de rules) | README con badges; reporte Lighthouse con URL; acceso de lectura para evaluadores (decisión humana sobre visibilidad del repo) | ⏳ Pendiente |
-| **B-04** | Flujo vertical real: IAM Functions → `setUserClaims` desplegada → una escritura vía Firestore/Cloud Run → fila en `audit` | D1, D6 | +1 / +1 | Alto | B-01, ADR de persistencia vigente | Log de Cloud Logging con `claims inyectados`; doc en `audit` con `staffId` del token; e2e contra emulador | ⏳ Pendiente |
-| **B-05** | Señal operativa: `ErrorBoundary` + monitoreo (Performance/Sentry) + alerta de uptime | D5, D3 | +1 | Bajo–Medio | — | Alerta configurada (captura de política); error de prueba visible en el panel | ⏳ Pendiente |
-| **B-06** | Capa de acceso (conmutador `guest` / `hybrid` / `google`) + selector de perfil como entrada | D3, D2, D7 | +0.5 / +0.5 / +0.5 | Medio | — (precede a B-08) | Con `VITE_ACCESS_MODE=google` el comportamiento es idéntico al actual; en `guest` un usuario sin cuenta llega al dashboard en ≤ 2 clics; e2e en modo `guest` en verde | ⏳ Pendiente |
-| **B-07** | Entornos y ramas: sites QA y demo en Hosting, deploy por rama, `VITE_ACCESS_MODE` por rama, deploy encadenado a CI verde | D5, D7, D1 | +0.5 / +0.5 / +0.5 | Medio | B-06 | URL de QA (`hybrid`) y de demo (`guest`) distintas de producción; PR genera preview; push a `master` ya no despliega a producción | ⏳ Pendiente |
-| **B-08** | Tour guiado por rol (capa L-05 de `docs/13-capas-demo.md`) | D3, D7 | +0.5 / +0.5 | Medio | B-06 | Los 9 criterios L05-01…L05-09 verificados; un tour por rol de ≤ 3 min | ⏳ Pendiente |
+| **B-01** | Corregir paths de Firestore Rules + tests de rules en CI | D2, D1 | +1 / +0.5 | Medio | — | Job CI "Firestore rules tests" en verde; test que antes fallaba (acceso legítimo) ahora pasa; test cross-tenant denegado | ✅ Cerrado 2026-10-15 · PR #30 |
+| **B-02** | Resolver discrepancia CSP/HSTS (añadir headers o corregir CHANGELOG) | D2, D7 | +0.5 | Bajo | — | `curl -I` a la URL de Hosting muestra los headers; CHANGELOG coherente con `firebase.json` | ✅ Cerrado 2026-10-16 · PR #34, #35 |
+| **B-03** | Evidencia pública: badges CI, diagrama de arquitectura, Lighthouse publicado | D7 | +1.5 | Bajo | B-01 (para badge verde de rules) | README con badges; reporte Lighthouse con URL; acceso de lectura para evaluadores (decisión humana sobre visibilidad del repo) | ✅ Cerrado 2026-10-16 · PR #37 |
+| **B-04** | Flujo vertical real: IAM Functions → `setUserClaims` desplegada → una escritura vía Firestore/Cloud Run → fila en `audit` | D1, D6 | +1 / +1 | Alto | B-01, ADR de persistencia vigente | Log de Cloud Logging con `claims inyectados`; doc en `audit` con `staffId` del token; e2e contra emulador | ◐ **Parcial** · PR #29, #31, #32 (falta la escritura UI→Firestore con auditoría) |
+| **B-05** | Señal operativa: `ErrorBoundary` + monitoreo (Performance/Sentry) + alerta de uptime | D5, D3 | +1 | Bajo–Medio | — | Alerta configurada (captura de política); error de prueba visible en el panel | ✅ Cerrado 2026-10-16 · PR #38 + nube |
+| **B-06** | Capa de acceso (conmutador `guest` / `hybrid` / `google`) + selector de perfil como entrada | D3, D2, D7 | +0.5 / +0.5 / +0.5 | Medio | — (precede a B-08) | Con `VITE_ACCESS_MODE=google` el comportamiento es idéntico al actual; en `guest` un usuario sin cuenta llega al dashboard en ≤ 2 clics; e2e en modo `guest` en verde | ✅ Cerrado 2026-10-16 · PR #28, #36, #39 |
+| **B-07** | Entornos y ramas: sites QA y demo en Hosting, deploy por rama, `VITE_ACCESS_MODE` por rama, deploy encadenado a CI verde | D5, D7, D1 | +0.5 / +0.5 / +0.5 | Medio | B-06 | URL de QA (`hybrid`) y de demo (`guest`) distintas de producción; PR genera preview; push a `master` ya no despliega a producción | ✅ Cerrado 2026-10-15 · PR #27, #29 |
+| **B-08** | Tour guiado por rol (capa L-05 de `docs/13-capas-demo.md`) | D3, D7 | +0.5 / +0.5 | Medio | B-06 | Los 9 criterios L05-01…L05-09 verificados; un tour por rol de ≤ 3 min | ✅ Cerrado 2026-10-16 · PR #33 |
 
 **Orden recomendado:** B-01 → B-02 → B-05 → B-06 → B-08 → B-07 → B-03 → B-04.
 B-01 y B-02 cierran credibilidad técnica; B-06 y B-08 hacen el demo presentable a jurados; B-07 protege producción; B-04 es el de mayor esfuerzo y necesita B-01 resuelto.
+
+**Orden real de ejecución:** B-07 (parte a) → B-06 → B-01 → B-04 (Functions) → B-08 → B-02 → B-03 → B-05 → cierre de B-06 → arreglo de recarga del modo invitado.
+
+### 1.1 Resultado por acción (verificado 2026-10-16)
+
+| ID | PR · commit en `master` | Evidencia verificable | Desviaciones respecto al plan |
+|---|---|---|---|
+| **B-01** | #30 · `69aab8d` | 24 casos en `tests/rules/firestore.rules.test.ts` y job de CI *Firestore rules (emulador)*. Con las rules originales **fallaban 10 de 24** (hipótesis de paths confirmada); corregidas y desplegadas, y el release se comprobó contra la API de `firebaserules` | Se agregó el rol `manager` a las rules (faltaba en `isSupervisor`/`isCaregiver`) |
+| **B-02** | #34 · #35 · `d5434cc` | `curl -I` en QA, demo y producción devuelve `Content-Security-Policy` (en bloqueo), `Permissions-Policy`, HSTS, `X-Frame-Options`, `nosniff`, `Referrer-Policy`; `tests/hosting-headers.test.ts` (6 casos) evita deriva entre `production` y `demo`. Login de Google probado por la persona responsable con la CSP en Report-Only (sin avisos) y en bloqueo | **Corrección al benchmark:** HSTS ya lo servía Firebase; lo que faltaba era la CSP, y el CHANGELOG afirmaba un header que no existía (corregido) |
+| **B-03** | #37 · `b77684a` | README con badges y tabla de evidencia; `docs/22-arquitectura.md` (3 diagramas Mermaid, validados); informe público en `https://caresignal-demo.web.app/informes/` e insignia vía shields.io. Lighthouse 12.1.0 (móvil, 3 corridas): rendimiento 93 (78–93 en CI), accesibilidad 90, buenas prácticas 96, SEO 90 | Se corrigió que el artefacto de Lighthouse **nunca se subía** (carpeta oculta). **Limitación:** el repo es privado, así que los badges de Actions solo los ve quien tenga acceso; accesibilidad y SEO están justo en el umbral |
+| **B-04** | #29 · #31 · #32 · `a392339` | `setUserClaims` **ACTIVE** en Node 22 (1.ª gen, trigger de Auth), `firebase-functions` 7.4 y `firebase-admin` 14.5; test de integración con emuladores (F-01/F-02); política de limpieza de Artifact Registry (3 días); job de Functions bloqueante y en verde en producción; `docs/21` documenta cuentas, roles y APIs. Cuentas existentes provisionadas con `scripts/set-user-claims.mjs` | **No cumplido del gate:** (a) una escritura desde la interfaz vía Firestore/Cloud Run con fila en `audit` — la UI sigue sobre `localStorage` y `backend/` no está desplegado; (b) el log de Cloud Logging con "claims inyectados" por un **alta real** — los claims de las cuentas actuales se pusieron a mano |
+| **B-05** | #38 · `6477ba4` + nube | `ErrorBoundary` en dos niveles (verificado con un fallo real en el sitio), registro con código `E-…` y manejadores globales; en Cloud Monitoring: 2 *uptime checks* (demo y producción, cada 5 min, 6 ubicaciones), 2 políticas de alerta y un canal de correo. **Prueba controlada:** un check temporal abrió un incidente en ~5 min, el correo llegó (captura de la persona responsable) y el incidente se cerró al borrar los recursos temporales | Sin Sentry ni Performance Monitoring: se decidió que los errores **no salgan del navegador** (datos ficticios, sin colector) |
+| **B-06** | #28 · #36 · #39 · `5cb686f` | Conmutador `guest`/`hybrid`/`google` (`src/access/`); sin el fallback `demo_admin` (cuenta sin claims ve "sin acceso"); arreglo de recarga en rutas por rol; e2e `qa-guest-entry` (8 casos) | La sesión de invitado vive en `useGuestSession` y `repository.ts`, no en `GuestAuthProvider` ni `guestSession.ts`. **Identidad unificada (token → rol de la interfaz): pendiente** |
+| **B-07** | #27 · #29 · `05b8dc4` | Ramas `master` → `demo` → `production` solo por *fast-forward*; 5 workflows; ningún deploy sin CI verde; `VITE_ACCESS_MODE` por rama (QA `hybrid`, demo `guest`, producción `google`); primera promoción real el 2026-10-15; contrato en `docs/20` | QA es el **canal `qa`** del site de producción (no un site aparte); el preview de PR dura 7 días |
+| **B-08** | #33 · `ac33399` | 3 recorridos (6, 6 y 5 pasos) con motor propio sin dependencias; `tests/tour-data.test.ts` (6) y e2e `qa-tour` (5); verificado en el sitio real del demo | Decisión del motor: componente propio (no librería) |
 
 ### Entornos objetivo (decisión 2026-10-15)
 
 | Entorno | Rama / evento | Destino | `VITE_ACCESS_MODE` | Datos |
 |---|---|---|---|---|
-| Producción (beta) | `production` (promoción manual) | Site actual `caresignal-mvp-2026` | `google` | Firestore real (tras B-04) |
+| Producción (beta) | `production` (promoción manual) | Site actual `caresignal-mvp-2026` | `google` | Rules y claims reales; **la interfaz aún usa `localStorage`** (flujo vertical pendiente) |
 | Demo QA (quality gate) | `master` | Site `…-qa` | `hybrid` | Ficticios |
 | Demo público (jurados) | `demo` (promoción manual, congelada) | Site `…-demo` | `guest` | Ficticios, `localStorage` |
 | Preview de PR | `feature/*` → PR | Preview channel efímero | `guest` | Ficticios |
 
 Promoción en un solo sentido: `master` → `demo` → `production`.
 
-### Detalle de B-06, B-07, B-08
+### Detalle de B-06, B-07, B-08 (plan original; el resultado real está en §1.1)
 
 **B-06 — Capa de acceso**
 - Crear `src/access/{accessMode,GuestAuthProvider,AccessProvider}.ts(x)` y `src/data/guestSession.ts`; reemplazar `<AuthProvider>` por `<AccessProvider>` en `src/App.tsx`.
@@ -66,6 +82,23 @@ Promoción en un solo sentido: `master` → `demo` → `production`.
 4. No instalar browsers ni artefactos pesados localmente: validar en CI (ver `feedback-playwright-install-ci`).
 5. Toda cifra o afirmación pública (score, "RBAC server-side") debe tener un enlace a evidencia verificable.
 6. Registrar cada cierre en `CHANGELOG.md` y actualizar `docs/RESUME.md`.
+
+### 1.2 Pendientes tras E7 (verificado 2026-10-16)
+
+| # | Pendiente | Prioridad | Nota |
+|---|---|---|---|
+| 1 | Vulnerabilidades en dependencias de producción | Alta | `npm audit --omit=dev`: **6** (4 altas, 2 moderadas); directas: `firebase` y `react-router-dom`. Falta evaluar cuáles aplican al navegador |
+| 2 | Identidad unificada (token → rol de la interfaz) | Alta | El selector "Usuario ficticio" sigue permitiendo cambiar de rol aun en modo `google`; rules y backend siguen protegiendo los datos reales |
+| 3 | **Flujo vertical real**: login → claims → escritura en Firestore → auditoría (cierra B-04) | Media (el mayor) | Hoy la interfaz no lee ni escribe Firestore |
+| 4 | Decisión de visibilidad del repositorio (hoy privado) | Media | Afecta badges, protección de ramas y *environments*. Antes, un escaneo de secretos del historial |
+| 5 | Alerta de presupuesto en Billing (p. ej. USD 5) | Baja | Acción manual de la persona responsable |
+| 6 | CI en Node 24 | Baja | Paquetes de Firebase 13 piden Node ≥ 24.12; el CI usa 22 (solo avisa) |
+| 7 | E2E del motor temporal inestable | Baja | 3–4 casos fallan al primer intento en cada corrida y pasan al reintentar (anterior a E7) |
+| 8 | Margen en Lighthouse | Baja | Accesibilidad y SEO en 90; rendimiento 78–93 entre corridas de CI |
+| 9 | `SeverityBadge` lanza con una severidad desconocida | Baja | Solo ocurre con datos dañados |
+| 10 | Cuenta de Google `robertogarciaits` sin claims | Baja | Solo importa si se va a usar |
+| 11 | Functions de 1.ª a 2.ª generación (*blocking functions*) | Baja | Requiere Identity Platform; decisión aparte |
+| 12 | Documentos con estado atrasado fuera de este PR | Baja | `docs/13-capas-demo.md` (L-03 "en desarrollo", L-05 "en revisión") y `CLAUDE.md` (posición del E-track, cifras de pruebas) |
 
 ---
 

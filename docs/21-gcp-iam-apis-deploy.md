@@ -103,3 +103,36 @@ cerrar sesión y volver a entrar (la app refresca el token al iniciar).
 
 Verificación independiente (solo lectura): listar usuarios con `accounts:batchGet` de Identity Toolkit
 y comprobar `customAttributes`.
+
+## 8. Alerta de caída (Cloud Monitoring, B-05)
+
+Creada el 2026-10-16 **por la API REST** (los componentes `alpha`/`beta` de `gcloud` no están instalados y no hace
+falta instalarlos). Todo vive en el proyecto `caresignal-mvp-2026`; el costo estimado es ~0 (dentro de la cuota
+gratuita; confirmar en Billing).
+
+| Recurso | Detalle |
+|---|---|
+| Canal de notificación | Correo a `robertgcits@gmail.com` (id `11463260939037076210`). La API no informa `verificationStatus` para canales de correo; la entrega se comprobó con la prueba descrita abajo |
+| Uptime check (demo) | `caresignal-demo.web.app`, HTTPS, `GET /`, cada 300 s, valida SSL y que la página contenga `CareSignal`, todas las regiones (6) |
+| Uptime check (producción) | `caresignal-mvp-2026.web.app`, misma configuración |
+| Política (demo) | Dispara si **2 o más ubicaciones** fallan durante 300 s; cierre automático a 1800 s; avisa al canal de correo |
+| Política (producción) | Ídem |
+
+Prueba controlada (2026-10-16): un check temporal apuntando a un host inexistente y su política temporal abrieron un
+incidente a los ~5 minutos desde 6 ubicaciones; el correo llegó; los recursos temporales se borraron y el incidente
+pasó a `CLOSED` en ~75 s. Quedan únicamente los 2 checks y las 2 políticas reales.
+
+Verificación (solo lectura; usa tu sesión de `gcloud`):
+
+```bash
+TOKEN=$(gcloud auth print-access-token)
+curl -s -H "Authorization: Bearer $TOKEN" -H "x-goog-user-project: caresignal-mvp-2026" \
+  "https://monitoring.googleapis.com/v3/projects/caresignal-mvp-2026/uptimeCheckConfigs"
+curl -s -H "Authorization: Bearer $TOKEN" -H "x-goog-user-project: caresignal-mvp-2026" \
+  "https://monitoring.googleapis.com/v3/projects/caresignal-mvp-2026/alertPolicies"
+curl -s -H "Authorization: Bearer $TOKEN" -H "x-goog-user-project: caresignal-mvp-2026" \
+  "https://monitoring.googleapis.com/v3/projects/caresignal-mvp-2026/alerts"
+```
+
+El último devuelve los incidentes (`state: OPEN` o `CLOSED`). Si el sitio estuviera caído, el correo llega a la
+dirección del canal y el incidente se abre en la consola de Cloud Monitoring.
