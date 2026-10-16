@@ -117,3 +117,5 @@ Ordenadas por impacto / esfuerzo.
 - No se ejecutó el emulador ni se consultó Firebase Console; las conclusiones de D1/D2 parten de lectura del código.
 - La hipótesis de la brecha 1 debe confirmarse con la acción 1 antes de comunicarse externamente.
 - Las puntuaciones son juicio del tribunal con evidencia citada, no una métrica estandarizada.
+
+> **Corrección (2026-10-16, B-02):** HSTS **sí** estaba activo: Firebase Hosting sirve `Strict-Transport-Security: max-age=31556926; includeSubDomains; preload`. La brecha real era la ausencia de CSP, añadida en modo Report-Only en B-02.

@@ -7,6 +7,15 @@ silenciosamente; toda modificación material aprobada crea una nueva versión (p
 
 ## [Unreleased]
 
+### feat(hosting): CSP en modo Report-Only y Permissions-Policy — B-02 (2026-10-16)
+
+- `firebase.json` (targets `production` y `demo`): `Content-Security-Policy-Report-Only` y `Permissions-Policy`
+- La CSP cubre Google Fonts, Firebase Auth (popup de Google, `apis.google.com`, `*.googleapis.com`) y Cloud Run; sin `unsafe-eval` ni `unsafe-inline` en scripts
+- **Corrección de registro:** la entrada "arch: Provisioning y configuración Firebase" afirmaba "CSP headers" en `firebase.json`; ese header **no existía** hasta este cambio. Los headers vigentes eran `X-Frame-Options`, `X-Content-Type-Options` y `Referrer-Policy`
+- HSTS no hace falta configurarlo: Firebase Hosting ya sirve `Strict-Transport-Security: max-age=31556926; includeSubDomains; preload`
+- `tests/hosting-headers.test.ts` (H-00..H-05): evita deriva entre `production` y `demo` y que la CSP pierda directivas base
+- Siguiente: revisar reportes con el login de Google y pasar a `Content-Security-Policy` (PR aparte)
+
 ### feat(demo): recorrido guiado por rol — L-05 / B-08 (2026-10-16)
 
 - `src/features/tour/`: motor propio sin dependencias (`TourProvider`, `TourOverlay`) y pasos como datos en `tours.ts`
