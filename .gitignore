@@ -49,3 +49,4 @@ sa-key.json
 functions/lib/
 backend/dist/
 .tmp/
+lighthouse-report/
