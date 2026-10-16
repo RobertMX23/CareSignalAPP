@@ -7,6 +7,12 @@ silenciosamente; toda modificación material aprobada crea una nueva versión (p
 
 ## [Unreleased]
 
+### ci: job de Functions bloqueante y política de limpieza — cierre de B-04 (2026-10-16)
+
+- Política `firebase-functions-cleanup` (3 días) aplicada en `gcf-artifacts` y verificada vía API
+- `deploy-production.yml`: se quita `continue-on-error` del job `Cloud Functions`
+- `docs/21`: estado de Functions actualizado
+
 ### feat(functions): migración a Node 22 y dependencias actuales — B-04 (2026-10-15)
 
 - `firebase.json` `runtime: nodejs22`, `functions/package.json` `engines.node: 22`, `tsconfig` target es2022
