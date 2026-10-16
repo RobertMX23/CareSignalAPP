@@ -61,6 +61,7 @@ describe('headers de seguridad de Hosting', () => {
       const headers = securityHeaders(site);
       for (const key of REQUIRED) expect(headers, `${site.target} sin ${key}`).toHaveProperty(key);
       expect(cspOf(headers), `${site.target} sin CSP`).toBeDefined();
+      expect(headers, `${site.target}: la CSP debe bloquear (no solo Report-Only)`).toHaveProperty('Content-Security-Policy');
     }
   });
 

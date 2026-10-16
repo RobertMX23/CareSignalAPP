@@ -7,6 +7,13 @@ silenciosamente; toda modificación material aprobada crea una nueva versión (p
 
 ## [Unreleased]
 
+### feat(hosting): CSP en modo bloqueo — cierre de B-02 (2026-10-16)
+
+- `firebase.json` (targets `production` y `demo`): `Content-Security-Policy-Report-Only` pasa a `Content-Security-Policy`; misma política
+- Antes de imponerla: login con Google en producción con la consola abierta y `Preserve log`, sin avisos `[Report Only]`; recorrido de la app en invitado sin violaciones
+- `tests/hosting-headers.test.ts` ahora exige la CSP que bloquea (H-01)
+- Reversión: revertir este commit devuelve la política a modo aviso
+
 ### feat(hosting): CSP en modo Report-Only y Permissions-Policy — B-02 (2026-10-16)
 
 - `firebase.json` (targets `production` y `demo`): `Content-Security-Policy-Report-Only` y `Permissions-Policy`
