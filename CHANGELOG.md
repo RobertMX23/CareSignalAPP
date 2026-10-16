@@ -7,6 +7,13 @@ silenciosamente; toda modificación material aprobada crea una nueva versión (p
 
 ## [Unreleased]
 
+### docs: estado real de E7 en `docs/19` y `docs/RESUME.md` (2026-10-16)
+
+- `docs/19`: tablero B-01 a B-08 con PR, fecha y evidencia verificable (§1.1), desviaciones respecto al plan, **B-04 marcado como parcial** (falta la escritura UI→Firestore con auditoría) y pendientes tras E7 (§1.2)
+- `docs/RESUME.md` reescrito: estaba en la captura del 2026-10-04 (L-01 en gate); ahora refleja entornos, E-track, inventario técnico (115 unitarias, 24 de rules, 2 de Functions, 66 E2E), pendientes y comandos de verificación
+- `docs/21`: sección 8 con la alerta de caída de Cloud Monitoring (recursos, prueba controlada y cómo verificarla)
+- No se recalculó el puntaje del benchmark (20/35 original); requiere una re-medición aparte
+
 ### fix(invitado): recargar en una ruta de rol ya no rebota al dashboard (2026-10-16)
 
 - Causa: `DemoSessionContext` arrancaba siempre con el primer perfil (cuidador) y el perfil de invitado guardado se restauraba en un efecto, después del primer render; en ese instante `RoleGuard` rebotaba las rutas de supervisor o gerente (p. ej. `#/alertas`, `#/bitacora`) al dashboard
